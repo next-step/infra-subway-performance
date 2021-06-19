@@ -9,6 +9,8 @@ import pl.allegro.tech.boot.autoconfigure.handlebars.HandlebarsHelper;
 
 @HandlebarsHelper
 public class SubwayHandlebarsHelper {
+    public static final String STATIC_URL_FORMAT = "/resources/%s%s";
+
     private static final Logger logger = LoggerFactory.getLogger(SubwayHandlebarsHelper.class);
 
     @Autowired
@@ -16,6 +18,6 @@ public class SubwayHandlebarsHelper {
 
     public String staticUrls(String path, Options options) {
         logger.debug("static url : {}", path);
-        return String.format("/resources/%s%s", subWayVersion.version(), path);
+        return String.format(STATIC_URL_FORMAT, subWayVersion.version(), path);
     }
 }

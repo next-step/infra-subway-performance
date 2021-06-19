@@ -32,7 +32,8 @@ class SubWayVersionTest {
     void version() {
         // given
         String actualVersion = subWayVersion.version();
-        LocalDateTime actual = LocalDateTime.parse(actualVersion, DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        LocalDateTime actual = LocalDateTime.parse(actualVersion,
+                DateTimeFormatter.ofPattern(SubWayVersion.DEFAULT_DATE_TIME_FORMAT));
 
         // when
         LocalDateTime startInclusive = actual.minus(1, ChronoUnit.HOURS);

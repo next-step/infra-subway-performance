@@ -15,6 +15,9 @@ class SubwayHandlebarsHelperTest {
     @Autowired
     SubwayHandlebarsHelper subwayHandlebarsHelper;
 
+    @Autowired
+    SubWayVersion subWayVersion;
+
     @DisplayName("SubwayHandlebarsHelper 빈이 생성되었는지 테스트")
     @Test
     void initialize() {
@@ -22,6 +25,21 @@ class SubwayHandlebarsHelperTest {
                 () -> assertThat(subwayHandlebarsHelper).isNotNull(),
                 () -> assertThat(subwayHandlebarsHelper).isInstanceOf(SubwayHandlebarsHelper.class)
         );
+    }
+
+    @DisplayName("SubwayHandlebarsHelper 빈이 알맞은 경로를 생성하는지 테스트")
+    @Test
+    void staticUrls() {
+        // given
+        String path = "main.js";
+        String expectedUrls = String.format(SubwayHandlebarsHelper.STATIC_URL_FORMAT,
+                subWayVersion.version(), path);
+
+        // when
+        String actualUrls = subwayHandlebarsHelper.staticUrls(path, null);
+
+        // then
+        assertThat(actualUrls).isEqualTo(expectedUrls);
     }
 
 }

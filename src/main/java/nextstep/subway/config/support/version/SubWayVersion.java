@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class SubWayVersion {
-    private static final String DEFAULT_DATE_TIME_FORMAT = "yyyyMMddHHmmss";
+    public static final String DEFAULT_DATE_TIME_FORMAT = "yyyyMMddHHmmss";
 
     private String version;
 
