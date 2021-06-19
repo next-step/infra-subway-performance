@@ -1,4 +1,4 @@
-package nextstep.subway.config.support;
+package nextstep.subway.config.support.version;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
