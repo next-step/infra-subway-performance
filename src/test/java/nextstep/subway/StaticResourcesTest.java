@@ -1,6 +1,5 @@
 package nextstep.subway;
 
-import nextstep.subway.config.WebMvcConfig;
 import nextstep.subway.config.support.version.SubWayVersion;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -10,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.concurrent.TimeUnit;
 
 import static nextstep.subway.config.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +33,7 @@ public class StaticResourcesTest {
                     .expectStatus()
                         .isOk()
                     .expectHeader()
-                        .cacheControl(CacheControl.maxAge(60 * 60 * 24 * 365, TimeUnit.SECONDS))
+                        .cacheControl(CacheControl.noCache().cachePrivate())
                     .expectBody(String.class)
                         .returnResult();
 
