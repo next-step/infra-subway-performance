@@ -13,17 +13,13 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    private String createdDate;
-    private String modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public LineResponse() {
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this(id, name, color, stations, createdDate.toString(), modifiedDate.toString());
-    }
-
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, String createdDate, String modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -65,11 +61,11 @@ public class LineResponse {
         return stations;
     }
 
-    public String getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public String getModifiedDate() {
+    public LocalDateTime getModifiedDate() {
         return modifiedDate;
     }
 }

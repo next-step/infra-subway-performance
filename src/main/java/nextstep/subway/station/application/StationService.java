@@ -26,7 +26,6 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    @Async
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
@@ -40,7 +39,6 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    // 동일한 메서드가 2개인데 이유가 있나요?
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
