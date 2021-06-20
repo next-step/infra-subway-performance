@@ -1,0 +1,126 @@
+############## 1회차
+
+[BASTION][08:26:03][ubuntu@ip-192-130-0-190 ~]
+$ k6 run smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.4s), 0/1 VUs, 9 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.....................: 100.00% ✓ 18  ✗ 0
+     data_received..............: 9.4 kB  906 B/s
+     data_sent..................: 2.9 kB  277 B/s
+     http_req_blocked...........: avg=9.98ms  min=244ns   med=305ns   max=179.69ms p(90)=767ns    p(95)=26.95ms
+     http_req_connecting........: avg=17.21µs min=0s      med=0s      max=309.78µs p(90)=0s       p(95)=46.46µs
+   ✓ http_req_duration..........: avg=67.82ms min=5.82ms  med=9.56ms  max=752.49ms p(90)=105.16ms p(95)=386.42ms
+     http_req_failed............: 100.00% ✓ 18  ✗ 0
+     http_req_receiving.........: avg=69.77µs min=48.51µs med=68.68µs max=104.11µs p(90)=85.75µs  p(95)=99.65µs
+     http_req_sending...........: avg=72.91µs min=22.21µs med=61.24µs max=200.18µs p(90)=132µs    p(95)=183.01µs
+     http_req_tls_handshaking...: avg=1.26ms  min=0s      med=0s      max=22.7ms   p(90)=0s       p(95)=3.4ms
+     http_req_waiting...........: avg=67.68ms min=5.72ms  med=9.4ms   max=752.19ms p(90)=105ms    p(95)=386.26ms
+     http_reqs..................: 18      1.728656/s
+     iteration_duration.........: avg=1.15s   min=1.01s   med=1.01s   max=2.25s    p(90)=1.26s    p(95)=1.76s
+     iterations.................: 9       0.864328/s
+     vus........................: 1       min=1 max=1
+     vus_max....................: 1       min=1 max=1
+
+
+############## 2회차
+[BASTION][08:34:36][ubuntu@ip-192-130-0-190 ~]
+$ k6 run smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.7s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.....................: 100.00% ✓ 20  ✗ 0
+     data_received..............: 10 kB   933 B/s
+     data_sent..................: 3.1 kB  293 B/s
+     http_req_blocked...........: avg=1.09ms  min=248ns   med=303ns   max=21.93ms  p(90)=837ns    p(95)=1.09ms
+     http_req_connecting........: avg=16.93µs min=0s      med=0s      max=338.65µs p(90)=0s       p(95)=16.93µs
+   ✓ http_req_duration..........: avg=32.62ms min=5.67ms  med=8.93ms  max=461.03ms p(90)=14.73ms  p(95)=54.92ms
+     http_req_failed............: 100.00% ✓ 20  ✗ 0
+     http_req_receiving.........: avg=76.99µs min=53.48µs med=70µs    max=222.89µs p(90)=84.09µs  p(95)=114.55µs
+     http_req_sending...........: avg=69.81µs min=24µs    med=55.35µs max=289.74µs p(90)=100.57µs p(95)=111.69µs
+     http_req_tls_handshaking...: avg=1.05ms  min=0s      med=0s      max=21.05ms  p(90)=0s       p(95)=1.05ms
+     http_req_waiting...........: avg=32.47ms min=5.59ms  med=8.82ms  max=460.63ms p(90)=14.63ms  p(95)=54.81ms
+     http_reqs..................: 20      1.871672/s
+     iteration_duration.........: avg=1.06s   min=1.01s   med=1.01s   max=1.51s    p(90)=1.07s    p(95)=1.29s
+     iterations.................: 10      0.935836/s
+     vus........................: 1       min=1 max=1
+     vus_max....................: 1       min=1 max=1
+
+
+############## 3회차
+[BASTION][08:34:50][ubuntu@ip-192-130-0-190 ~]
+$ k6 run smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.2s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.....................: 100.00% ✓ 20  ✗ 0
+     data_received..............: 10 kB   978 B/s
+     data_sent..................: 3.1 kB  307 B/s
+     http_req_blocked...........: avg=1.07ms  min=258ns   med=325ns   max=21.48ms  p(90)=583ns    p(95)=1.07ms
+     http_req_connecting........: avg=18.64µs min=0s      med=0s      max=372.92µs p(90)=0s       p(95)=18.64µs
+   ✓ http_req_duration..........: avg=8.29ms  min=5.57ms  med=8.27ms  max=13.2ms   p(90)=10.1ms   p(95)=11.14ms
+     http_req_failed............: 100.00% ✓ 20  ✗ 0
+     http_req_receiving.........: avg=66.83µs min=53.75µs med=69.71µs max=76.77µs  p(90)=73.97µs  p(95)=76.02µs
+     http_req_sending...........: avg=74.81µs min=22.68µs med=65.11µs max=348µs    p(90)=105.56µs p(95)=118.48µs
+     http_req_tls_handshaking...: avg=1.03ms  min=0s      med=0s      max=20.6ms   p(90)=0s       p(95)=1.03ms
+     http_req_waiting...........: avg=8.15ms  min=5.46ms  med=8.14ms  max=13.03ms  p(90)=9.91ms   p(95)=10.74ms
+     http_reqs..................: 20      1.961196/s
+     iteration_duration.........: avg=1.01s   min=1.01s   med=1.01s   max=1.04s    p(90)=1.02s    p(95)=1.03s
+     iterations.................: 10      0.980598/s
+     vus........................: 1       min=1 max=1
+     vus_max....................: 1       min=1 max=1
+
