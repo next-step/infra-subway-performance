@@ -43,9 +43,16 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+  - /perf_result 폴더의 after_smoke , before_smoke 파일에 업로드
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+  - nginx 설정 최적화 : 
+    - worker_process, connection 수정
+    - http gzip 압축 활성화
+    - proxy 캐시 설정
+    - upstream 수정 : connection이 가장 적은 server로 request 분배
+    - 웹 정적 자원(css/js/gif/png/jpg/jpeg) 캐싱 및 access log 찍지 않도록 수정
+    - http2 사용
+  - 노선 조회 하는 부분 redis caching 적용
 ---
 
 ### 2단계 - 조회 성능 개선하기
