@@ -41,112 +41,31 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
+### 시나리오   
+* 구글 지도(코리아) DAU 를 기준 : 549만  
+* 1일 사용자 수 : 183_000 (5_490_000 / 30)
+* 1명당 1일 평균 접속수 : 10회(가정)
+* 1일 총 접속 수 : 1_830_000 (183_000 * 10)  
+* 1일 평균 rps : 약 30rps (28.2 <- 1_830_000 / 64800 (86,400 - 새벽시간 6시간 제외(21600)))   
+* 1일 최대 rps : 약 300rps      
+                  
+지하철 노선도를 이용하여 경로 검색 서비스를 제공해주고자 한다.             
+대상은 주로, 등교하는 학생, 출근하는 직장인, 여행온 여행객이다.          
+대부분의 사람들은 아침시간과 퇴근 시간에 맞추어 해당 서비스에 접속을 한다.             
+이 과정에서 경로를 한번만 검색하는 경우가 없으므로 10번 정도 검색을 한다 가정한다.   
+그리고 새벽시간에는 전철이 운행을 하지 않으므로 트래픽이 없다고 가정한다.       
+   
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
-**nginx.conf 를 수정하기 전 결과를 날려서 ㅎㅎ.. 애플리케이션에서의 성능 향상 차이만 비교될 겁니다.**      
-  
+ 
 #### Smoke
 ```javascript
-import http from 'k6/http';
-import { check, group, sleep, fail } from 'k6';
 
-
-export let options = {
-    vus: 1, // 1 user looping for 1 minute
-    duration: '10s',
-};
-const BASE_URL = 'https://kwj1270.ga';
-
-export default () => {
-
-    // main page
-    let mainUrl = `${BASE_URL}`;
-    let mainPageResponse = http.get(mainUrl);
-    check(mainPageResponse, {
-        'main page running': (response) => response.status === 200
-    });
-
-    // GangNam search line
-    let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
-    let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
-    check(GangNamSearchLineResponse, {
-        'GangNam line searching success': (response) => response.status === 200
-    });
-
-    // Gasan search line
-    let GasanSearchLineUrl = `${BASE_URL}/paths/?source=3&target=24`;
-    let GasanSearchLineResponse = http.get(GasanSearchLineUrl);
-    check(GasanSearchLineResponse, {
-        'Gasan line searching success': (response) => response.status === 200
-    });
-
-    // YangJae search line
-    let YangJaeSearchLineUrl = `${BASE_URL}/paths/?source=3&target=150`;
-    let YangJaeSearchLineResponse = http.get(YangJaeSearchLineUrl);
-    check(YangJaeSearchLineResponse, {
-        'YangJae line searching success': (response) => response.status === 200
-    });
-
-};
 ```
-**개선전**
+**실행 결과**
 ```shell
-running (10.0s), 0/1 VUs, 25 complete and 0 interrupted iterations
-default ↓ [======================================] 1 VUs  10s
 
-     ✓ main page running
-     ✓ GangNam line searching success
-     ✓ Gasan line searching success
-     ✓ YangJae line searching success
-
-     checks.........................: 100.00% ✓ 100 ✗ 0
-     data_received..................: 133 kB  13 kB/s
-     data_sent......................: 9.1 kB  909 B/s
-     http_req_blocked...............: avg=3.4ms    min=264ns   med=567ns    max=340.42ms p(90)=634ns    p(95)=696ns
-     http_req_connecting............: avg=2.69µs   min=0s      med=0s       max=269.42µs p(90)=0s       p(95)=0s
-     http_req_duration..............: avg=96.36ms  min=2.18ms  med=110.95ms max=232.84ms p(90)=164.23ms p(95)=185.11ms
-       { expected_response:true }...: avg=96.36ms  min=2.18ms  med=110.95ms max=232.84ms p(90)=164.23ms p(95)=185.11ms
-     http_req_failed................: 0.00%   ✓ 0   ✗ 100
-     http_req_receiving.............: avg=111.54µs min=50.62µs med=77.05µs  max=2.01ms   p(90)=97.97µs  p(95)=112.04µs
-     http_req_sending...............: avg=52.54µs  min=24.85µs med=32.68µs  max=1.67ms   p(90)=38.7µs   p(95)=53.58µs
-     http_req_tls_handshaking.......: avg=239.94µs min=0s      med=0s       max=23.99ms  p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=96.19ms  min=2.08ms  med=110.01ms max=232.72ms p(90)=164.12ms p(95)=185ms
-     http_reqs......................: 100     9.995944/s
-     iteration_duration.............: avg=400.09ms min=266.4ms med=358.04ms max=1.01s    p(90)=506.23ms p(95)=591.3ms
-     iterations.....................: 25      2.498986/s
-     vus............................: 1       min=1 max=1
-     vus_max........................: 1       min=1 max=1
 ```
-**개선후**
-```shell
-running (10.0s), 0/1 VUs, 2175 complete and 0 interrupted iterations
-default ✓ [======================================] 1 VUs  10s
-
-     ✓ main page running
-     ✓ GangNam line searching success
-     ✓ Gasan line searching success
-     ✓ YangJae line searching success
-
-     checks.........................: 100.00% ✓ 8700 ✗ 0
-     data_received..................: 11 MB   1.1 MB/s
-     data_sent......................: 745 kB  74 kB/s
-     http_req_blocked...............: avg=48.09µs  min=232ns    med=400ns    max=387.39ms p(90)=471ns    p(95)=504ns
-     http_req_connecting............: avg=246ns    min=0s       med=0s       max=281.38µs p(90)=0s       p(95)=0s
-     http_req_duration..............: avg=969.68µs min=620.71µs med=985.78µs max=15.3ms   p(90)=1.07ms   p(95)=1.14ms
-       { expected_response:true }...: avg=969.68µs min=620.71µs med=985.78µs max=15.3ms   p(90)=1.07ms   p(95)=1.14ms
-     http_req_failed................: 0.00%   ✓ 0    ✗ 8700
-     http_req_receiving.............: avg=53.87µs  min=31.11µs  med=46.09µs  max=6.15ms   p(90)=69.49µs  p(95)=79.12µs
-     http_req_sending...............: avg=24.57µs  min=16.58µs  med=21.21µs  max=1.5ms    p(90)=33.66µs  p(95)=47.87µs
-     http_req_tls_handshaking.......: avg=7.87µs   min=0s       med=0s       max=45.2ms   p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=891.24µs min=547.61µs med=915.13µs max=15.23ms  p(90)=993.85µs p(95)=1.04ms
-     http_reqs......................: 8700    869.804855/s
-     iteration_duration.............: avg=4.58ms   min=3.84ms   med=4.2ms    max=395.04ms p(90)=4.62ms   p(95)=5.31ms
-     iterations.....................: 2175    217.451214/s
-     vus............................: 1       min=1  max=1
-     vus_max........................: 1       min=1  max=1
-```
-
 #### Load
 ```javascript
 import http from 'k6/http';
