@@ -27,11 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @Caching(evict = {
-            @CacheEvict(value="line", key="#id"),
-            @CacheEvict(value = "lines"),
-            @CacheEvict(value="lines-response")
-    })
+    @CacheEvict(value = "lines")
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -39,7 +35,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Cacheable(value="lines-response")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
