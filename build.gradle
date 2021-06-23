@@ -37,6 +37,9 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 
+	// date serializer
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
+
 	// mysql
 	implementation("mysql:mysql-connector-java")
 
