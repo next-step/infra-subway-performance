@@ -36,10 +36,12 @@ public class CacheConfig extends CachingConfigurerSupport {
     public CacheManager redisCacheManager() {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new CustomSerializer(Object.class)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
                 fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
         return redisCacheManager;
     }
+
+
 }
