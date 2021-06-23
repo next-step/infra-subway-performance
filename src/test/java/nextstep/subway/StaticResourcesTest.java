@@ -32,7 +32,7 @@ public class StaticResourcesTest {
                     .expectStatus()
                         .isOk()
                     .expectHeader()
-                        .cacheControl(CacheControl.maxAge(60 * 60 * 24 * 365, TimeUnit.SECONDS))
+                        .cacheControl(CacheControl.noCache().cachePrivate())
                     .expectBody(String.class)
                         .returnResult();
 
@@ -42,11 +42,11 @@ public class StaticResourcesTest {
                 .getETag();
 
         client
-                    .get()
-                    .uri(uri)
-                    .header("If-None-Match", etag)
-                .exchange()
-                    .expectStatus()
-                        .isNotModified();
+            .get()
+                .uri(uri)
+                .header("If-None-Match", etag)
+            .exchange()
+                .expectStatus()
+                    .isNotModified();
     }
 }

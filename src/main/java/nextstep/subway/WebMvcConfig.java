@@ -3,6 +3,7 @@ package nextstep.subway;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,14 +17,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES  + "/**.css")
-                .addResourceLocations("classpath:/static/")
-                .setCachePeriod(31556926);
-
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES  + "/**")
-                .addResourceLocations("classpath:/static/")
+        // css - max-age 1year
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES  + "/css/**")
+                .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(60 * 60 * 24 * 365);
 
+        // js - no-cache, private
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES  + "/js/**")
+                .addResourceLocations("classpath:/static/js/")
+                .setCacheControl(CacheControl.noCache().cachePrivate());
     }
 
     @Bean
