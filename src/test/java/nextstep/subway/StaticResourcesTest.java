@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.CacheControl;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import static nextstep.subway.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StaticResourcesTest {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourcesTest.class);
