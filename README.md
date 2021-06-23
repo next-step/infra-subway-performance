@@ -46,214 +46,270 @@ npm run dev
 * 1일 사용자 수 : 183_000 (5_490_000 / 30)
 * 1명당 1일 평균 접속수 : 10회(가정)
 * 1일 총 접속 수 : 1_830_000 (183_000 * 10)  
-* 1일 평균 rps : 약 30rps (28.2 <- 1_830_000 / 64800 (86,400 - 새벽시간 6시간 제외(21600)))   
-* 1일 최대 rps : 약 300rps      
-                  
+* 1일 평균 rps : 약 20rps (28.2 <- 1_830_000 / 86400)  
+* 1일 최대 rps : 약 200rps         
+* 목표 throughput : 100 rps 정도   
+   
 지하철 노선도를 이용하여 경로 검색 서비스를 제공해주고자 한다.             
 대상은 주로, 등교하는 학생, 출근하는 직장인, 여행온 여행객이다.          
 대부분의 사람들은 아침시간과 퇴근 시간에 맞추어 해당 서비스에 접속을 한다.             
 이 과정에서 경로를 한번만 검색하는 경우가 없으므로 10번 정도 검색을 한다 가정한다.   
 그리고 새벽시간에는 전철이 운행을 하지 않으므로 트래픽이 없다고 가정한다.       
+  
+유저 시나리오로는,        
+1. 유저가 메인 페이지 접속   
+2. 메인페이지에서 경로 검색 페이지로 이동   
+3. 용산 -> 강남 출근길 회사 경로 탐색  
    
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
  
 #### Smoke
 ```javascript
-
-```
-**실행 결과**
-```shell
-
-```
-#### Load
-```javascript
 import http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
 
-
 export let options = {
-    stages: [
-        { duration: '1m', target: 100 }, // simulate ramp-up of traffic from 1 to 100 users over 1 minutes.
-        { duration: '2m', target: 100 }, // stay at 100 users for 2 minutes
-        { duration: '10s', target: 0 }, // ramp-down to 0 users
-    ],
+   vus: 1, // 1 user looping for 1 minute
+   duration: '1m',
+
+   thresholds: {
+      http_req_duration: ['p(99)<100'],
+   },
+
 };
 
 const BASE_URL = 'https://kwj1270.ga';
 
 export default () => {
+   // scenario
+   // user into the service
+   // user move to /path
+   // user search office
+   
+   // main page
+   let mainUrl = `${BASE_URL}`;
+   let mainPageResponse = http.get(mainUrl);
+   check(mainPageResponse, {
+      'main page running': (response) => response.status === 200
+   });
 
-    // main page
-    let mainUrl = `${BASE_URL}`;
-    let mainPageResponse = http.get(mainUrl);
-    check(mainPageResponse, {
-        'main page running': (response) => response.status === 200
-    });
+   // move search path page
+   let pathUrl = `${BASE_URL}/path`;
+   let pathPageResponse = http.get(pathUrl);
+   check(pathPageResponse, {
+      'path page running': (response) => response.status === 200
+   });
 
-    // GangNam search line
-    let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
-    let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
-    check(GangNamSearchLineResponse, {
-        'GangNam line searching success': (response) => response.status === 200
-    });
-
-    // Gasan search line
-    let GasanSearchLineUrl = `${BASE_URL}/paths/?source=3&target=24`;
-    let GasanSearchLineResponse = http.get(GasanSearchLineUrl);
-    check(GasanSearchLineResponse, {
-        'Gasan line searching success': (response) => response.status === 200
-    });
-
-    // YangJae search line
-    let YangJaeSearchLineUrl = `${BASE_URL}/paths/?source=3&target=150`;
-    let YangJaeSearchLineResponse = http.get(YangJaeSearchLineUrl);
-    check(YangJaeSearchLineResponse, {
-        'YangJae line searching success': (response) => response.status === 200
-    });
+   // GangNam search line
+   let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
+   let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
+   check(GangNamSearchLineResponse, {
+      'GangNam line searching success': (response) => response.status === 200
+   });
 
 };
 ```
-**개선전**
+**실행 결과**
 ```shell
-running (3m13.5s), 000/100 VUs, 1326 complete and 0 interrupted iterations
-default ✓ [======================================] 000/100 VUs  3m10s
+running (1m00.0s), 0/1 VUs, 901 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
 
      ✓ main page running
+     ✓ path page running
      ✓ GangNam line searching success
-     ✓ Gasan line searching success
-     ✓ YangJae line searching success
 
-     checks.........................: 100.00% ✓ 5304  ✗ 0
-     data_received..................: 7.3 MB  38 kB/s
-     data_sent......................: 510 kB  2.6 kB/s
-     http_req_blocked...............: avg=110.8µs min=274ns    med=592ns   max=22.12ms p(90)=797ns    p(95)=933ns
-     http_req_connecting............: avg=6.68µs  min=0s       med=0s      max=1.46ms  p(90)=0s       p(95)=0s
-     http_req_duration..............: avg=3s      min=966.15µs med=4.28s   max=12.83s  p(90)=4.84s    p(95)=4.92s
-       { expected_response:true }...: avg=3s      min=966.15µs med=4.28s   max=12.83s  p(90)=4.84s    p(95)=4.92s
-     http_req_failed................: 0.00%   ✓ 0     ✗ 5304
-     http_req_receiving.............: avg=87.35µs min=39.6µs   med=80.28µs max=7.72ms  p(90)=102.23µs p(95)=114.36µs
-     http_req_sending...............: avg=45.2µs  min=18.88µs  med=35.19µs max=9.36ms  p(90)=45.5µs   p(95)=54.28µs
-     http_req_tls_handshaking.......: avg=98.61µs min=0s       med=0s      max=21.13ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=3s      min=73.21µs  med=4.28s   max=12.83s  p(90)=4.84s    p(95)=4.92s
-     http_reqs......................: 5304    27.41295/s
-     iteration_duration.............: avg=12.02s  min=272.74ms med=13.83s  max=22.43s  p(90)=14.49s   p(95)=14.64s
-     iterations.....................: 1326    6.853237/s
-     vus............................: 14      min=2   max=100
-     vus_max........................: 100     min=100 max=100
+     checks.........................: 100.00% ✓ 2703 ✗ 0
+     data_received..................: 3.6 MB  59 kB/s
+     data_sent......................: 312 kB  5.2 kB/s
+     http_req_blocked...............: avg=139.04µs min=1.5µs    med=2.53µs   max=362.09ms p(90)=3.95µs   p(95)=4.43µs
+     http_req_connecting............: avg=290ns    min=0s       med=0s       max=305.06µs p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=21.93ms  min=653.75µs med=923.11µs max=162.59ms p(90)=63.84ms  p(95)=65.31ms
+       { expected_response:true }...: avg=21.93ms  min=653.75µs med=923.11µs max=162.59ms p(90)=63.84ms  p(95)=65.31ms
+     http_req_failed................: 0.00%   ✓ 0    ✗ 2703
+     http_req_receiving.............: avg=80.35µs  min=35.83µs  med=74.35µs  max=1.69ms   p(90)=110.69µs p(95)=120.98µs
+     http_req_sending...............: avg=17.71µs  min=7.73µs   med=18.32µs  max=466.04µs p(90)=22.74µs  p(95)=23.95µs
+     http_req_tls_handshaking.......: avg=10.16µs  min=0s       med=0s       max=21.99ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=21.83ms  min=574.71µs med=830.76µs max=162.45ms p(90)=63.73ms  p(95)=65.2ms
+     http_reqs......................: 2703    45.036389/s
+     iteration_duration.............: avg=66.59ms  min=62.78ms  med=64.97ms  max=433.51ms p(90)=68.58ms  p(95)=70.62ms
+     iterations.....................: 901     15.01213/s
+     vus............................: 1       min=1  max=1
+     vus_max........................: 1       min=1  max=1
 ```
-**개선후**
-```shell
-running (3m10.0s), 000/100 VUs, 57678 complete and 0 interrupted iterations
-default ✓ [======================================] 000/100 VUs  3m10s
-
-     ✓ main page running
-     ✓ GangNam line searching success
-     ✓ Gasan line searching success
-     ✓ YangJae line searching success
-
-     checks.........................: 100.00% ✓ 230712 ✗ 0
-     data_received..................: 298 MB  1.6 MB/s
-     data_sent......................: 20 MB   104 kB/s
-     http_req_blocked...............: avg=150.49µs min=194ns    med=372ns    max=367.63ms p(90)=459ns    p(95)=527ns
-     http_req_connecting............: avg=38.32µs  min=0s       med=0s       max=140.61ms p(90)=0s       p(95)=0s
-     http_req_duration..............: avg=66.42ms  min=630.96µs med=55.33ms  max=402.79ms p(90)=129.76ms p(95)=175.11ms
-       { expected_response:true }...: avg=66.42ms  min=630.96µs med=55.33ms  max=402.79ms p(90)=129.76ms p(95)=175.11ms
-     http_req_failed................: 0.00%   ✓ 0      ✗ 230712
-     http_req_receiving.............: avg=741.9µs  min=20.33µs  med=57.95µs  max=225.55ms p(90)=717µs    p(95)=1.78ms
-     http_req_sending...............: avg=164.11µs min=8.85µs   med=25.98µs  max=207.84ms p(90)=62.38µs  p(95)=227.43µs
-     http_req_tls_handshaking.......: avg=106.51µs min=0s       med=0s       max=291.56ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=65.52ms  min=2.41µs   med=54.54ms  max=402.72ms p(90)=128.24ms p(95)=174.01ms
-     http_reqs......................: 230712  1214.241103/s
-     iteration_duration.............: avg=269.06ms min=4.02ms   med=239.56ms max=1.2s     p(90)=461.38ms p(95)=644.17ms
-     iterations.....................: 57678   303.560276/s
-     vus............................: 1       min=1    max=100
-     vus_max........................: 100     min=100  max=100
-```
-
-#### Stress
+#### Load
 ```javascript
 import http from 'k6/http';
 import {check} from 'k6';
 
 export let options = {
-    stages: [
-      { duration: '2s', target: 100 }, // below normal load
-      { duration: '5s', target: 200 },
-      { duration: '2s', target: 300 }, // normal load
-      { duration: '5s', target: 400 },
-      { duration: '1m', target: 1000 }, // sudden traffic
-      { duration: '30s', target: 400 }, // around the breaking point
-      { duration: '10s', target: 300 },
-      { duration: '15s', target: 200 }, // beyond the breaking point
-      { duration: '10s', target: 100 },
-      { duration: '5s', target: 0 }, // scale down. Recovery stage.
-    ],
+   stages: [
+      { duration: '45s', target: 250 },
+      { duration: '1m30s', target: 250 },
+      { duration: '45s', target: 0 },
+   ],
+   thresholds: {
+      http_req_duration: ['p(99)<100'],
+   },
 
 };
 
 const BASE_URL = 'https://kwj1270.ga';
 
 export default () => {
+   // scenario
+   // user into the service
+   // user move to /path
+   // user search office
 
-    // main page
-    let mainUrl = `${BASE_URL}`;
-    let mainPageResponse = http.get(mainUrl);
-    check(mainPageResponse, {
-        'main page running': (response) => response.status === 200
-    });
+   // main page
+   let mainUrl = `${BASE_URL}`;
+   let mainPageResponse = http.get(mainUrl);
+   check(mainPageResponse, {
+      'main page running': (response) => response.status === 200
+   });
 
-    // GangNam search line
-    let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
-    let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
-    check(GangNamSearchLineResponse, {
-        'GangNam line searching success': (response) => response.status === 200
-    });
+   // move search path page
+   let pathUrl = `${BASE_URL}/path`;
+   let pathPageResponse = http.get(pathUrl);
+   check(pathPageResponse, {
+      'path page running': (response) => response.status === 200
+   });
 
-    // Gasan search line
-    let GasanSearchLineUrl = `${BASE_URL}/paths/?source=3&target=24`;
-    let GasanSearchLineResponse = http.get(GasanSearchLineUrl);
-    check(GasanSearchLineResponse, {
-        'Gasan line searching success': (response) => response.status === 200
-    });
-
-    // YangJae search line
-    let YangJaeSearchLineUrl = `${BASE_URL}/paths/?source=3&target=150`;
-    let YangJaeSearchLineResponse = http.get(YangJaeSearchLineUrl);
-    check(YangJaeSearchLineResponse, {
-        'YangJae line searching success': (response) => response.status === 200
-    });
-
+   // GangNam search line
+   let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
+   let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
+   check(GangNamSearchLineResponse, {
+      'GangNam line searching success': (response) => response.status === 200
+   });
 };
 ```
 **개선전**
 ```shell
-running (2m54.0s), 0000/1000 VUs, 672 complete and 829 interrupted iterations
-default ↓ [======================================] 0294/1000 VUs  2m24s
+running (3m00.0s), 000/250 VUs, 5825 complete and 0 interrupted iterations
+default ✓ [======================================] 000/250 VUs  3m0s
 
-     ✓ main page running
-     ✓ GangNam line searching success
-     ✓ Gasan line searching success
-     ✓ YangJae line searching success
+     ✗ main page running
+      ↳  86% — ✓ 5032 / ✗ 793
+     ✗ path page running
+      ↳  85% — ✓ 4960 / ✗ 865
+     ✗ GangNam line searching success
+      ↳  84% — ✓ 4925 / ✗ 900
 
-     checks.........................: 100.00% ✓ 4304   ✗ 0
-     data_received..................: 10 MB   58 kB/s
-     data_sent......................: 1.1 MB  6.0 kB/s
-     http_req_blocked...............: avg=2.21ms   min=255ns    med=592ns   max=368.71ms p(90)=5.33ms   p(95)=5.82ms
-     http_req_connecting............: avg=116.77µs min=0s       med=0s      max=19.15ms  p(90)=322.09µs p(95)=390.89µs
-     http_req_duration..............: avg=20.39s   min=1.21ms   med=20.64s  max=54.2s    p(90)=34.1s    p(95)=37.92s
-       { expected_response:true }...: avg=20.39s   min=1.21ms   med=20.64s  max=54.2s    p(90)=34.1s    p(95)=37.92s
-     http_req_failed................: 0.00%   ✓ 0      ✗ 4304
-     http_req_receiving.............: avg=104.57µs min=35.97µs  med=82.96µs max=7.61ms   p(90)=113.73µs p(95)=150.5µs
-     http_req_sending...............: avg=104.89µs min=18.53µs  med=37.51µs max=4.43ms   p(90)=282.64µs p(95)=415.61µs
-     http_req_tls_handshaking.......: avg=1.39ms   min=0s       med=0s      max=79.77ms  p(90)=4.75ms   p(95)=5.06ms
-     http_req_waiting...............: avg=20.39s   min=203.13µs med=20.64s  max=54.2s    p(90)=34.1s    p(95)=37.92s
-     http_reqs......................: 4304    24.741875/s
-     iteration_duration.............: avg=1m8s     min=10.1s    med=1m8s    max=2m9s     p(90)=1m48s    p(95)=1m56s
-     iterations.....................: 672     3.863044/s
-     vus............................: 18      min=18   max=1000
-     vus_max........................: 1000    min=1000 max=1000
+     checks.........................: 85.36% ✓ 14917 ✗ 2558
+     data_received..................: 28 MB  157 kB/s
+     data_sent......................: 3.1 MB 17 kB/s
+     http_req_blocked...............: avg=1.41ms   min=0s       med=3.12µs   max=366.63ms p(90)=4.66ms   p(95)=7.33ms
+     http_req_connecting............: avg=983.35µs min=0s       med=0s       max=77.19ms  p(90)=1.28ms   p(95)=5.53ms
+   ✗ http_req_duration..............: avg=1.96s    min=0s       med=517ms    max=29.25s   p(90)=7.8s     p(95)=8.04s
+       { expected_response:true }...: avg=2.3s     min=671.06µs med=600.97ms max=29.25s   p(90)=7.86s    p(95)=8.09s
+     http_req_failed................: 14.63% ✓ 2558  ✗ 14917
+     http_req_receiving.............: avg=108.59µs min=0s       med=65.32µs  max=29.89ms  p(90)=116.88µs p(95)=148.08µs
+     http_req_sending...............: avg=229.95µs min=0s       med=15.33µs  max=87.44ms  p(90)=50.09µs  p(95)=96.13µs
+     http_req_tls_handshaking.......: avg=1.06ms   min=0s       med=0s       max=127.68ms p(90)=0s       p(95)=5.73ms
+     http_req_waiting...............: avg=1.96s    min=0s       med=516.32ms max=29.25s   p(90)=7.8s     p(95)=8.04s
+     http_reqs......................: 17475  97.058355/s
+     iteration_duration.............: avg=5.91s    min=4.88ms   med=7.57s    max=30.21s   p(90)=9.28s    p(95)=9.47s
+     iterations.....................: 5825   32.352785/s
+     vus............................: 1      min=1   max=250
+     vus_max........................: 250    min=250 max=250
+
+ERRO[0181] some thresholds have failed
 ```
+**개선후**
+```shell
+
+```
+
+#### Stress
+```javascript
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
+
+export let options = {
+   stages: [
+      { duration: '20s', target: 10 },
+      { duration: '20s', target: 100 },
+      { duration: '20s', target: 200 },
+      { duration: '20s', target: 300 },
+      { duration: '20s', target: 500 },
+      { duration: '20s', target: 800 },
+      { duration: '20s', target: 1000 },
+      { duration: '40s', target: 0 },
+   ],
+   thresholds: {
+      http_req_duration: ['p(99)<100'],
+   },
+
+};
+
+const BASE_URL = 'https://kwj1270.ga';
+
+export default () => {
+   // scenario
+   // user into the service
+   // user move to /path
+   // user search office
+
+   // main page
+   let mainUrl = `${BASE_URL}`;
+   let mainPageResponse = http.get(mainUrl);
+   check(mainPageResponse, {
+      'main page running': (response) => response.status === 200
+   });
+
+   // move search path page
+   let pathUrl = `${BASE_URL}/path`;
+   let pathPageResponse = http.get(pathUrl);
+   check(pathPageResponse, {
+      'path page running': (response) => response.status === 200
+   });
+
+
+   // GangNam search line
+   let GangNamSearchLineUrl = `${BASE_URL}/paths/?source=3&target=106`;
+   let GangNamSearchLineResponse = http.get(GangNamSearchLineUrl);
+   check(GangNamSearchLineResponse, {
+      'GangNam line searching success': (response) => response.status === 200
+   });
+
+};
+```
+
+**개선전**
+```shell
+running (3m03.9s), 0000/1000 VUs, 17850 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1000 VUs  3m0s
+
+     ✗ main page running
+      ↳  21% — ✓ 3820 / ✗ 14030
+     ✗ path page running
+      ↳  22% — ✓ 3934 / ✗ 13916
+     ✗ GangNam line searching success
+      ↳  21% — ✓ 3903 / ✗ 13947
+
+     checks.........................: 21.76% ✓ 11657  ✗ 41893
+     data_received..................: 83 MB  451 kB/s
+     data_sent......................: 16 MB  87 kB/s
+     http_req_blocked...............: avg=183.89ms min=0s       med=0s       max=2.78s  p(90)=758.32ms p(95)=1.05s
+     http_req_connecting............: avg=144.41ms min=0s       med=117ms    max=1.8s   p(90)=332.09ms p(95)=394.3ms
+   ✗ http_req_duration..............: avg=535.5ms  min=0s       med=0s       max=28.03s p(90)=447.79ms p(95)=3.9s
+       { expected_response:true }...: avg=2.39s    min=681.17µs med=287.92ms max=28.03s p(90)=9.68s    p(95)=11.65s
+     http_req_failed................: 78.23% ✓ 41893  ✗ 11657
+     http_req_receiving.............: avg=4.61ms   min=0s       med=0s       max=1.22s  p(90)=90.07µs  p(95)=8.58ms
+     http_req_sending...............: avg=11.41ms  min=0s       med=0s       max=1.49s  p(90)=29.3ms   p(95)=71.43ms
+     http_req_tls_handshaking.......: avg=141.43ms min=0s       med=0s       max=2.3s   p(90)=594.68ms p(95)=793.34ms
+     http_req_waiting...............: avg=519.47ms min=0s       med=0s       max=28.02s p(90)=372.18ms p(95)=3.9s
+     http_reqs......................: 53550  291.222597/s
+     iteration_duration.............: avg=4s       min=2.76ms   med=2.94s    max=32.83s p(90)=9.84s    p(95)=12.82s
+     iterations.....................: 17850  97.074199/s
+     vus............................: 30     min=1    max=1000
+     vus_max........................: 1000   min=1000 max=1000
+
+ERRO[0186] some thresholds have failed
+```
+여기서 알 수 있었던 점은, 270 정도부터 `EOF`가 발생하는 것을 알았습니다.
+
 **개선후**
 ```shell
 running (2m24.0s), 0000/1000 VUs, 33954 complete and 0 interrupted iterations

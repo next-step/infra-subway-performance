@@ -50,24 +50,4 @@ public class StaticResourcesTest {
                     .expectStatus()
                         .isNotModified();
     }
-
-    @Test
-    void index() {
-        EntityExchangeResult<String> response = client
-                    .get()
-                    .uri("/")
-                .exchange()
-                    .expectStatus()
-                        .isOk()
-                    .expectHeader()
-                        .cacheControl(CacheControl.empty())
-                    .expectBody(String.class)
-                        .returnResult();
-
-        String etag = response
-                .getResponseHeaders()
-                .getETag();
-
-        assertThat(etag).isNull();
-    }
 }
