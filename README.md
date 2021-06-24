@@ -778,7 +778,7 @@ Executed_Gtid_Set:
 ```
 docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
 ```
-- slave 서버 설정 진행 (이 때, MASTER_LOG_FILE 과 MASTER_LOG_POS 는 master db에서 `SHOW MASTER STATUS\G` 조회 된 값 입  )
+- slave 서버 설정 진행 (이 때, MASTER_LOG_FILE 과 MASTER_LOG_POS 는 master db에서 `SHOW MASTER STATUS\G` 조회 된 값 입력  )
 ```
 docker exec -it mysql-slave /bin/bash
  mysql -u root -p  
@@ -851,6 +851,8 @@ Master_SSL_Verify_Server_Cert: No
 1 row in set, 1 warning (0.00 sec)
 ```
 - 그리고 나서, 꼭 AWS internal 보안 그룹에 13306 / 13307 을 추가 ..^^.. !
+
+   
 - Application에 설정 추가
   - 저는 local 에서는 이중화 구성을 하지 않아서 prod 환경에서만 이중화 해서 사용한다고 가정하고 진행 했습니다!
   - application-prod.properties 설정 변경
