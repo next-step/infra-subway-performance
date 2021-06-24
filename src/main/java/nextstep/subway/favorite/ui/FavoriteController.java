@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,9 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
+    @Value("${favorite.max.size:5}")
+    private int favoriteMaxSize;
+
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
         favoriteService.createFavorite(loginMember, request);
@@ -29,7 +34,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, favoriteMaxSize);
         return ResponseEntity.ok().body(favorites);
     }
 
