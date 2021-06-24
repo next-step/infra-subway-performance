@@ -7,6 +7,10 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +36,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
@@ -45,7 +49,6 @@ public class LineService {
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
