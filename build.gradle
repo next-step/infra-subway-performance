@@ -38,6 +38,7 @@ dependencies {
 	implementation("mysql:mysql-connector-java")
 
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
 }
 
 test {
