@@ -49,7 +49,7 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @CachePut(value="favorite", key="#loginMember.id")
+    @Cacheable(value="favorite", key="#loginMember.id")
     private List<Favorite> getFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         return favorites;
