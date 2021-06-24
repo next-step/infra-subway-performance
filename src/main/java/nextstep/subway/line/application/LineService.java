@@ -35,14 +35,10 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineRepository.findAll();
     }
 
     @Cacheable(value="line", key="#id")
