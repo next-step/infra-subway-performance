@@ -31,7 +31,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(value="favorite")
+//    @CacheEvict(value="favorite")
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
@@ -49,13 +49,13 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @Cacheable(value="favorite")
+//    @Cacheable(value="favorite")
     private List<Favorite> getFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         return favorites;
     }
 
-    @CacheEvict(value="favorite")
+//    @CacheEvict(value="favorite")
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
