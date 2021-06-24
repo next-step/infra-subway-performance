@@ -37,7 +37,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    @Cacheable(value="favorite", key="#loginMember.id")
+    @CachePut(value="favorite", key="#loginMember.id")
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
