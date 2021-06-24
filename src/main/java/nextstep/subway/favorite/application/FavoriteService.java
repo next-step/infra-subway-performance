@@ -37,9 +37,8 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    @CachePut(value="favorite", key="#loginMember.id")
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+        List<Favorite> favorites = getFavorites(loginMember);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
@@ -48,6 +47,12 @@ public class FavoriteService {
                 StationResponse.of(stations.get(it.getSourceStationId())),
                 StationResponse.of(stations.get(it.getTargetStationId()))))
             .collect(Collectors.toList());
+    }
+
+    @CachePut(value="favorite", key="#loginMember.id")
+    private List<Favorite> getFavorites(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+        return favorites;
     }
 
     @CacheEvict(value="favorite", key="#loginMember.id")
