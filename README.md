@@ -533,7 +533,655 @@ ERRO[0040] some thresholds have failed
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 1차 적용 내용
+- favorite 테이블 db 인덱스 추가
+- paging 쿼리 추가
+- 적용 전 / 후 favorite 쿼리 조회 테스트 
+  - 로그인 후, favorite 조회 하는 script
+<details>
+    <summary> 적용 전 후 /  테스트 결과</summary>
+   
+## 적용 전 
+#### load      
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0203] Request Failed                                error="stream error: stream ID 27; INTERNAL_ERROR"
+ERRO[0203] GoError: cannot parse json due to an error at line 1, character 227133 , error: unexpected end of JSON input
+running at reflect.methodValueCall (native)
+default at file:///home/ubuntu/k6/load_favorite.js:52:37(59)  executor=ramping-vus scenario=default source=stacktrace
+
+running (3m39.8s), 000/100 VUs, 778 complete and 49 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 1605  ✗ 0    
+     data_received..................: 328 MB  1.5 MB/s
+     data_sent......................: 1.4 MB  6.5 kB/s
+     http_req_blocked...............: avg=363.78µs min=216ns   med=324ns   max=38.52ms  p(90)=724ns    p(95)=3.85ms  
+     http_req_connecting............: avg=19.68µs  min=0s      med=0s      max=3.62ms   p(90)=0s       p(95)=249.89µs
+   ✗ http_req_duration..............: avg=10.02s   min=55.16ms med=8.97s   max=51.4s    p(90)=13.71s   p(95)=26.8s   
+       { expected_response:true }...: avg=9.53s    min=55.16ms med=8.87s   max=51.4s    p(90)=13.15s   p(95)=15.32s  
+     http_req_failed................: 2.49%   ✓ 40    ✗ 1566 
+     http_req_receiving.............: avg=107.83ms min=25.34µs med=98.99µs max=1.43s    p(90)=277.26ms p(95)=354.15ms
+     http_req_sending...............: avg=72.64µs  min=18.26µs med=61.71µs max=885.44µs p(90)=134.89µs p(95)=170.76µs
+     http_req_tls_handshaking.......: avg=334.15µs min=0s      med=0s      max=38.04ms  p(90)=0s       p(95)=3.41ms  
+     http_req_waiting...............: avg=9.91s    min=54.98ms med=8.82s   max=51.36s   p(90)=13.57s   p(95)=26.73s  
+     http_reqs......................: 1606    7.306587/s
+     iteration_duration.............: avg=20.05s   min=5.99s   med=19.22s  max=58.61s   p(90)=24.03s   p(95)=38.71s  
+     iterations.....................: 778     3.539555/s
+     vus............................: 4       min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+ERRO[0221] some thresholds have failed  
+```
+#### stress      
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 400 max VUs, 1m8s max duration (incl. graceful stop):
+           * default: Up to 400 looping VUs for 38s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0059] Request Failed                                error="stream error: stream ID 3; INTERNAL_ERROR"
+ERRO[0059] GoError: cannot parse json due to an error at line 1, character 297671 , error: unexpected end of JSON input
+running at reflect.methodValueCall (native)
+default at file:///home/ubuntu/k6/stress_favorite.js:59:37(59)  executor=ramping-vus scenario=default source=stacktrace
+
+running (1m08.0s), 000/400 VUs, 113 complete and 317 interrupted iterations
+default ✓ [======================================] 000/400 VUs  38s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 560   ✗ 0    
+     data_received..................: 25 MB   371 kB/s
+     data_sent......................: 427 kB  6.3 kB/s
+     http_req_blocked...............: avg=3.88ms   min=244ns    med=3.87ms   max=73.3ms  p(90)=7.13ms   p(95)=8.82ms  
+     http_req_connecting............: avg=231.55µs min=0s       med=254.92µs max=14.1ms  p(90)=297.86µs p(95)=331.05µs
+   ✗ http_req_duration..............: avg=26.39s   min=36.02ms  med=30.13s   max=49.24s  p(90)=31.22s   p(95)=35.05s  
+       { expected_response:true }...: avg=22.87s   min=111.97ms med=27.12s   max=49.24s  p(90)=34.8s    p(95)=44.81s  
+     http_req_failed................: 51.33%  ✓ 288   ✗ 273  
+     http_req_receiving.............: avg=50.13ms  min=25.1µs   med=65.38µs  max=1.23s   p(90)=331.32µs p(95)=130.41ms
+     http_req_sending...............: avg=149.68µs min=15.86µs  med=149.02µs max=4.34ms  p(90)=222.85µs p(95)=264.71µs
+     http_req_tls_handshaking.......: avg=3.47ms   min=0s       med=3.46ms   max=47.07ms p(90)=6.29ms   p(95)=8.37ms  
+     http_req_waiting...............: avg=26.34s   min=35.96ms  med=30.13s   max=49.15s  p(90)=31.22s   p(95)=34.61s  
+     http_reqs......................: 561     8.249582/s
+     iteration_duration.............: avg=44.19s   min=12.81s   med=50.72s   max=1m5s    p(90)=57.59s   p(95)=57.65s  
+     iterations.....................: 113     1.661681/s
+     vus............................: 0       min=0   max=400
+     vus_max........................: 400     min=400 max=400
+
+ERRO[0069] some thresholds have failed   
+```
+   
+## 적용 후 
+#### load          
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
+running (3m10.5s), 000/100 VUs, 3558 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 7116  ✗ 0    
+     data_received..................: 6.3 MB  33 kB/s
+     data_sent......................: 1.4 MB  7.4 kB/s
+     http_req_blocked...............: avg=56.1µs  min=210ns   med=318ns   max=42.8ms   p(90)=582ns    p(95)=676ns   
+     http_req_connecting............: avg=3.72µs  min=0s      med=0s      max=392.79µs p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=1.7s    min=30.53ms med=2.03s   max=3.62s    p(90)=2.11s    p(95)=2.15s   
+       { expected_response:true }...: avg=1.7s    min=30.53ms med=2.03s   max=3.62s    p(90)=2.11s    p(95)=2.15s   
+     http_req_failed................: 0.00%   ✓ 0     ✗ 7116 
+     http_req_receiving.............: avg=72.77µs min=30.42µs med=71.26µs max=1.52ms   p(90)=88.77µs  p(95)=98.23µs 
+     http_req_sending...............: avg=60.99µs min=17.95µs med=50.93µs max=712.63µs p(90)=100.93µs p(95)=115.05µs
+     http_req_tls_handshaking.......: avg=47.12µs min=0s      med=0s      max=22.28ms  p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=1.7s    min=30.37ms med=2.03s   max=3.62s    p(90)=2.11s    p(95)=2.15s   
+     http_reqs......................: 7116    37.344994/s
+     iteration_duration.............: avg=4.4s    min=1.06s   med=5.08s   max=6.76s    p(90)=5.2s     p(95)=5.26s   
+     iterations.....................: 3558    18.672497/s
+     vus............................: 6       min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+
+```
+
+ #### stress          
+ ```
+ 
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 400 max VUs, 1m8s max duration (incl. graceful stop):
+           * default: Up to 400 looping VUs for 38s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (0m49.2s), 000/400 VUs, 932 complete and 0 interrupted iterations
+default ✓ [======================================] 000/400 VUs  38s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 1864  ✗ 0    
+     data_received..................: 3.4 MB  69 kB/s
+     data_sent......................: 581 kB  12 kB/s
+     http_req_blocked...............: avg=835.71µs min=220ns    med=394ns   max=70.29ms p(90)=3.34ms   p(95)=3.82ms  
+     http_req_connecting............: avg=76.78µs  min=0s       med=0s      max=14.46ms p(90)=249.47µs p(95)=272.89µs
+   ✗ http_req_duration..............: avg=6.14s    min=108.3ms  med=6.71s   max=18.13s  p(90)=9.85s    p(95)=10.07s  
+       { expected_response:true }...: avg=6.14s    min=108.3ms  med=6.71s   max=18.13s  p(90)=9.85s    p(95)=10.07s  
+     http_req_failed................: 0.00%   ✓ 0     ✗ 1864 
+     http_req_receiving.............: avg=78.77µs  min=29.26µs  med=72.56µs max=4.2ms   p(90)=95.59µs  p(95)=105.65µs
+     http_req_sending...............: avg=80.62µs  min=18.49µs  med=54.71µs max=1.04ms  p(90)=169.18µs p(95)=199.16µs
+     http_req_tls_handshaking.......: avg=720.13µs min=0s       med=0s      max=45.59ms p(90)=2.95ms   p(95)=3.4ms   
+     http_req_waiting...............: avg=6.14s    min=108.02ms med=6.71s   max=18.13s  p(90)=9.85s    p(95)=10.07s  
+     http_reqs......................: 1864    37.911436/s
+     iteration_duration.............: avg=13.29s   min=1.8s     med=14.18s  max=27.04s  p(90)=19.39s   p(95)=20.03s  
+     iterations.....................: 932     18.955718/s
+     vus............................: 16      min=16  max=400
+     vus_max........................: 400     min=400 max=400
+ERRO[0051] some thresholds have failed                  
+ ```   
+</details>    
+
+####  db 이중화 구성
+##### 구성 진행 방법
+  - internal 서버 접속
+    - master 폴더 생성 및 cnf파일 생성
+```
+mkdir -p ~/mysql/master
+vi /mysql/master/config_file.cnf
+```
+[config_file.cnf]
+```
+[mysqld]
+log-bin=mysql-bin  
+server-id=1
+```
+   - slave 폴더 생성 및 cnf파일 생성
+   ```
+   mkdir -p ~/mysql/slave
+   vi /mysql/slave/config_file.cnf
+   ```
+   [config_file.cnf]
+   ```
+[mysqld]
+server-id=2  
+   ``` 
+
+- master db container 생성 
+  - 저는 subway 데이터를 이용하기 위해서 기존 사용하던 data-subway:0.0.2 docker 이미지를 활용했어요!
+```
+docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d brainbackdoor/data-subway:0.0.2
+```
+- master 서버 설정 진행 (힌트 주신 내용 참고 했습니다!ㅎㅎ)
+```
+docker exec -it mysql-master /bin/bash
+mysql -u root -p 
+mysql> CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';  
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%'; 
+
+mysql> SHOW MASTER STATUS\G  
+*************************** 1. row ***************************
+             File: mysql-bin.000001
+         Position: 619
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+```
+
+- slave db container 생성 
+  - 이 때 master랑 같은 data-subway 이미지를 사용하면 replication설정 시 UUID?가 같다고 오류가 나서, mysql 이미지로 생성 후 data-subway의 데이터를 dump 하는 방식으로 migration 후 replication 진행 했습니다!
+  - 또, 기존 data-subway 를 이용하면 `MYSQL_ROOT_PASSWORD`를 slavepw로 환경 변수 지정해도 변경이 안돼더라구요.
+```
+docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
+```
+- slave 서버 설정 진행 (이 때, MASTER_LOG_FILE 과 MASTER_LOG_POS 는 master db에서 `SHOW MASTER STATUS\G` 조회 된 값 입력  )
+```
+docker exec -it mysql-slave /bin/bash
+ mysql -u root -p  
+mysql> SET GLOBAL server_id = 2;
+mysql> CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;  
+
+mysql> START SLAVE;  
+mysql> SHOW SLAVE STATUS\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 172.17.0.1
+                  Master_User: replication_user
+                  Master_Port: 13306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000001
+          Read_Master_Log_Pos: 619
+               Relay_Log_File: fedf552cb3d0-relay-bin.000002
+                Relay_Log_Pos: 322
+        Relay_Master_Log_File: mysql-bin.000001
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 619
+              Relay_Log_Space: 538
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 1
+                  Master_UUID: b83809e0-8eb2-11eb-a522-0242ac120002
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row in set, 1 warning (0.00 sec)
+```
+- 그리고 나서, 꼭 AWS internal 보안 그룹에 13306 / 13307 을 추가 ..^^.. !
+
+   
+- Application에 설정 추가
+  - 저는 local 에서는 이중화 구성을 하지 않아서 prod 환경에서만 이중화 해서 사용한다고 가정하고 진행 했습니다!
+  - application-prod.properties 설정 변경
+  - DataBaseConfig 설정 시, test / local 환경에서 오류 나지 않도록 prod profile인 경우만 적용 되도록 설정
+```java
+@Profile("prod")
+@Slf4j
+@Configuration
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@EnableTransactionManagement
+class DataBaseConfig {
+```
+
+- db 이중화 구성 적용 전 후 속도 측정
+  - insert / select 수행하는 테스트를 동시에 실행해야 master /slave로 나뉘어 속도 향상이 있는지 비교가 될 것 같아서 서버 두 대에서 진행 했습니다!
+    - load 테스트만 진행 해 보았는데요..! 
+    - load_favorite.js : 로그인 후, 인증 토큰으로 favorite 조회
+    - load_favorite_insert.js : 로그인 후, 인증 토큰으로 favorite insert
+ <details>
+     <summary> 적용 전 /후 테스트 결과</summary>
+        
+## 적용전 favorite조회
+        
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m12.9s), 000/100 VUs, 1786 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 3572  ✗ 0    
+     data_received..................: 3.4 MB  18 kB/s
+     data_sent......................: 731 kB  3.8 kB/s
+     http_req_blocked...............: avg=120.9µs  min=244ns   med=529ns   max=39.82ms  p(90)=756ns    p(95)=906ns   
+     http_req_connecting............: avg=7.14µs   min=0s      med=0s      max=530.96µs p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=3.95s    min=35.96ms med=4.73s   max=9.05s    p(90)=4.83s    p(95)=4.9s    
+       { expected_response:true }...: avg=3.95s    min=35.96ms med=4.73s   max=9.05s    p(90)=4.83s    p(95)=4.9s    
+     http_req_failed................: 0.00%   ✓ 0     ✗ 3572 
+     http_req_receiving.............: avg=82.83µs  min=39.17µs med=77.08µs max=899.17µs p(90)=106.63µs p(95)=119.79µs
+     http_req_sending...............: avg=78.33µs  min=22.85µs med=64.26µs max=960.84µs p(90)=149.3µs  p(95)=173.18µs
+     http_req_tls_handshaking.......: avg=104.39µs min=0s      med=0s      max=25.08ms  p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=3.95s    min=35.75ms med=4.73s   max=9.05s    p(90)=4.83s    p(95)=4.9s    
+     http_reqs......................: 3572    18.517779/s
+     iteration_duration.............: avg=8.91s    min=1.08s   med=10.48s  max=14.74s   p(90)=10.66s   p(95)=10.71s  
+     iterations.....................: 1786    9.25889/s
+     vus............................: 20      min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+ERRO[0195] some thresholds have failed  
+ ```
+   
+## 적용 전 favorite insert    
+ ```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite_insert.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m13.4s), 000/100 VUs, 1795 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ insert favorite
+
+     checks.........................: 100.00% ✓ 3590  ✗ 0    
+     data_received..................: 1.4 MB  7.2 kB/s
+     data_sent......................: 783 kB  4.1 kB/s
+     http_req_blocked...............: avg=110.79µs min=218ns   med=327ns   max=22.52ms  p(90)=623ns    p(95)=832ns   
+     http_req_connecting............: avg=7.5µs    min=0s      med=0s      max=877.47µs p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=3.93s    min=37.68ms med=4.74s   max=9.06s    p(90)=4.83s    p(95)=4.89s   
+       { expected_response:true }...: avg=3.93s    min=37.68ms med=4.74s   max=9.06s    p(90)=4.83s    p(95)=4.89s   
+     http_req_failed................: 0.00%   ✓ 0     ✗ 3590 
+     http_req_receiving.............: avg=60.03µs  min=15.77µs med=55.97µs max=975.3µs  p(90)=82.47µs  p(95)=91.52µs 
+     http_req_sending...............: avg=83.27µs  min=32.49µs med=74.55µs max=588.61µs p(90)=105.27µs p(95)=131.56µs
+     http_req_tls_handshaking.......: avg=98.71µs  min=0s      med=0s      max=21.64ms  p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=3.93s    min=37.51ms med=4.74s   max=9.06s    p(90)=4.83s    p(95)=4.89s   
+     http_reqs......................: 3590    18.565354/s
+     iteration_duration.............: avg=8.87s    min=1.09s   med=10.49s  max=14.98s   p(90)=10.66s   p(95)=10.72s  
+     iterations.....................: 1795    9.282677/s
+     vus............................: 12      min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+ERRO[0195] some thresholds have failed
+ ```
+## 적용 후 favorite 조회
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m12.9s), 000/100 VUs, 1808 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ retrieved favorite
+
+     checks.........................: 100.00% ✓ 3616  ✗ 0    
+     data_received..................: 3.4 MB  18 kB/s
+     data_sent......................: 740 kB  3.8 kB/s
+     http_req_blocked...............: avg=139.48µs min=233ns   med=506ns   max=127.28ms p(90)=730ns    p(95)=901ns   
+     http_req_connecting............: avg=6.88µs   min=0s      med=0s      max=480.15µs p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=3.89s    min=34.69ms med=4.66s   max=9.21s    p(90)=4.78s    p(95)=4.8s    
+       { expected_response:true }...: avg=3.89s    min=34.69ms med=4.66s   max=9.21s    p(90)=4.78s    p(95)=4.8s    
+     http_req_failed................: 0.00%   ✓ 0     ✗ 3616 
+     http_req_receiving.............: avg=81.17µs  min=30.15µs med=76.3µs  max=566.52µs p(90)=103.93µs p(95)=116.69µs
+     http_req_sending...............: avg=75.74µs  min=23.85µs med=63.08µs max=2.59ms   p(90)=139.14µs p(95)=167.9µs 
+     http_req_tls_handshaking.......: avg=124.25µs min=0s      med=0s      max=114.69ms p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=3.89s    min=34.41ms med=4.66s   max=9.21s    p(90)=4.78s    p(95)=4.8s    
+     http_reqs......................: 3616    18.747994/s
+     iteration_duration.............: avg=8.78s    min=1.08s   med=10.37s  max=14.94s   p(90)=10.49s   p(95)=10.54s  
+     iterations.....................: 1808    9.373997/s
+     vus............................: 16      min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+ERRO[0194] some thresholds have failed  
+```
+
+## 적용 후 favorite insert
+```
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load_favorite_insert.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m13.4s), 000/100 VUs, 1824 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ insert favorite
+
+     checks.........................: 100.00% ✓ 3648  ✗ 0    
+     data_received..................: 1.4 MB  7.3 kB/s
+     data_sent......................: 796 kB  4.1 kB/s
+     http_req_blocked...............: avg=105.98µs min=223ns   med=317ns   max=40.39ms  p(90)=604ns    p(95)=740ns   
+     http_req_connecting............: avg=7.32µs   min=0s      med=0s      max=490.14µs p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=3.86s    min=34.98ms med=4.66s   max=9.19s    p(90)=4.78s    p(95)=4.81s   
+       { expected_response:true }...: avg=3.86s    min=34.98ms med=4.66s   max=9.19s    p(90)=4.78s    p(95)=4.81s   
+     http_req_failed................: 0.00%   ✓ 0     ✗ 3648 
+     http_req_receiving.............: avg=60.23µs  min=16.36µs med=56.55µs max=1.86ms   p(90)=81.54µs  p(95)=90.63µs 
+     http_req_sending...............: avg=85.27µs  min=33.47µs med=75.81µs max=4.04ms   p(90)=106.41µs p(95)=129.05µs
+     http_req_tls_handshaking.......: avg=89.67µs  min=0s      med=0s      max=22.41ms  p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=3.86s    min=34.64ms med=4.66s   max=9.19s    p(90)=4.78s    p(95)=4.81s   
+     http_reqs......................: 3648    18.865314/s
+     iteration_duration.............: avg=8.73s    min=1.08s   med=10.37s  max=14.93s   p(90)=10.49s   p(95)=10.55s  
+     iterations.....................: 1824    9.432657/s
+     vus............................: 10      min=2   max=100
+     vus_max........................: 100     min=100 max=100
+
+ERRO[0195] some thresholds have failed          
+```     
+
+ </details>     
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- GET https://mysubway.kro.kr/favorites
+- k6 로도 확인 가능 합니다.! 
+<details>
+<summary> k6 API 테스트 결과</summary>
+  - --http-debug 기능과 console.log로 확인 하고자 하는 로그를 찍어 보았습니다 ㅎㅎ
+  
+```
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
 
+
+const BASE_URL = 'https://mysubway.kro.kr';
+const USERNAME = 'koun@kakao.com';
+const PASSWORD = '1234';
+export default function ()  {
+
+  var payload = JSON.stringify({
+    email: USERNAME,
+    password: PASSWORD
+  });
+
+  var params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+
+  let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+
+  check(loginRes, {
+    'logged in successfully': (resp) => resp.json('accessToken') !== '',
+  });
+
+
+  let authHeaders = {
+    headers: {
+      Authorization: `Bearer ${loginRes.json('accessToken')}`,
+      'Content-Type': 'application/json'
+    },
+  };
+  let myObjects = http.get(`${BASE_URL}/favorites`, authHeaders);
+  console.log(myObjects.body);
+  check(myObjects, { 'get favorite': (resp) => resp.status === 200 });
+  sleep(1);
+};
+```
+
+```
+$ k6 run --http-debug test.js 
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: test.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 10m30s max duration (incl. graceful stop):
+           * default: 1 iterations for each of 1 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+INFO[0000] Request:
+POST /login/token HTTP/1.1
+Host: mysubway.kro.kr
+User-Agent: k6/0.32.0 (https://k6.io/)
+Content-Length: 44
+Content-Type: application/json
+Accept-Encoding: gzip
+
+  group= iter=0 request_id=2cef4c42-9d61-44e1-5f89-8d808c0b03dd scenario=default source=http-debug vu=1
+INFO[0001] Response:
+HTTP/2.0 200 OK
+Connection: close
+Content-Type: application/json
+Date: Thu, 24 Jun 2021 20:10:19 GMT
+Server: nginx/1.21.0
+Strict-Transport-Security: max-age=31536000
+Vary: Accept-Encoding
+
+  group= iter=0 request_id=2cef4c42-9d61-44e1-5f89-8d808c0b03dd scenario=default source=http-debug vu=1
+INFO[0001] Request:
+GET /favorites HTTP/1.1
+Host: mysubway.kro.kr
+User-Agent: k6/0.32.0 (https://k6.io/)
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrb3VuQGtha2FvLmNvbSIsImlhdCI6MTYyNDU2NTQxOCwiZXhwIjoxNjI0NTY5MDE4fQ.DegnPHgKXcLuVZMcAYEouEAFHZUSqQlYZzEsRwtYX9s
+Content-Type: application/json
+Accept-Encoding: gzip
+
+  group= iter=0 request_id=a49a78a0-d9bf-4379-6f92-ffe0af93ae96 scenario=default source=http-debug vu=1
+INFO[0002] Response:
+HTTP/2.0 200 OK
+Connection: close
+Content-Type: application/json
+Date: Thu, 24 Jun 2021 20:10:19 GMT
+Server: nginx/1.21.0
+Strict-Transport-Security: max-age=31536000
+Vary: Accept-Encoding
+
+  group= iter=0 request_id=a49a78a0-d9bf-4379-6f92-ffe0af93ae96 scenario=default source=http-debug vu=1
+INFO[0002] [{"id":1804,"source":{"id":10,"name":"신이문","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"},"target":{"id":20,"name":"배방","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"}},{"id":1803,"source":{"id":10,"name":"신이문","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"},"target":{"id":20,"name":"배방","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"}},{"id":1802,"source":{"id":10,"name":"신이문","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"},"target":{"id":20,"name":"배방","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"}},{"id":1801,"source":{"id":10,"name":"신이문","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"},"target":{"id":20,"name":"배방","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"}},{"id":1800,"source":{"id":10,"name":"신이문","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"},"target":{"id":20,"name":"배방","createdDate":"2021-01-06 18:32:00","modifiedDate":"2021-01-06 18:32:00"}}]  source=console
+
+running (00m02.2s), 0/1 VUs, 1 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  00m02.2s/10m0s  1/1 iters, 1 per VU
+
+     ✓ logged in successfully
+     ✓ get favorite
+
+     checks.........................: 100.00% ✓ 2   ✗ 0  
+     data_received..................: 6.2 kB  2.9 kB/s
+     data_sent......................: 955 B   440 B/s
+     http_req_blocked...............: avg=15.36ms  min=712ns    med=15.36ms  max=30.73ms  p(90)=27.66ms  p(95)=29.19ms 
+     http_req_connecting............: avg=139.15µs min=0s       med=139.15µs max=278.31µs p(90)=250.48µs p(95)=264.39µs
+     http_req_duration..............: avg=567.01ms min=175.75ms med=567.01ms max=958.26ms p(90)=880.01ms p(95)=919.14ms
+       { expected_response:true }...: avg=567.01ms min=175.75ms med=567.01ms max=958.26ms p(90)=880.01ms p(95)=919.14ms
+     http_req_failed................: 0.00%   ✓ 0   ✗ 2  
+     http_req_receiving.............: avg=193.49µs min=159.58µs med=193.49µs max=227.41µs p(90)=220.62µs p(95)=224.01µs
+     http_req_sending...............: avg=95.37µs  min=35.07µs  med=95.37µs  max=155.66µs p(90)=143.6µs  p(95)=149.63µs
+     http_req_tls_handshaking.......: avg=11ms     min=0s       med=11ms     max=22ms     p(90)=19.8ms   p(95)=20.9ms  
+     http_req_waiting...............: avg=566.72ms min=175.56ms med=566.72ms max=957.88ms p(90)=879.65ms p(95)=918.76ms
+     http_reqs......................: 2       0.922982/s
+     iteration_duration.............: avg=2.16s    min=2.16s    med=2.16s    max=2.16s    p(90)=2.16s    p(95)=2.16s   
+     iterations.....................: 1       0.461491/s
+     vus............................: 1       min=1 max=1
+     vus_max........................: 1       min=1 max=1
+
+
+
+```
+
+</details>
