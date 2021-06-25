@@ -462,5 +462,103 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+  ```sql
+    SELECT 
+      n.count,
+      m.count
+    FROM(
+      SELECT count(1) as count FROM subway.programmer WHERE hobby='Yes'
+    ) n CROSS JOIN
+    (
+      SELECT count(1) as count FROM subway.programmer WHERE hobby='No'
+    ) m;
 
+  ```
+  - hobby index 생성
+  - 개별 카운드 후 cross join으로 생성
+  
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```sql
+    SELECT 
+      C.id, hospital.name 
+    FROM 
+      subway.covid AS C
+    JOIN 
+      subway.hospital
+    ON 
+      hospital.id = C.hospital_id
+    WHERE 
+      C.id >= 1000; 
+  ```
+  - covid 테이블에 hospital_id로 인덱스 생성
+  - hospital 테이블에 id PK 설정
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  ```sql
+    SELECT 
+	  P.id as member_id,
+	  H.name
+    FROM
+      subway.covid as C
+    INNER JOIN
+      subway.programmer as P
+    ON 
+      C.member_id = P.member_id
+    INNER JOIN
+      subway.hospital as H
+    ON 
+      H.id = C.hospital_id
+    WHERE
+      P.hobby = 'Yes'
+      AND (student LIKE 'Yes%' OR years_coding = '0-2 years')
+    LIMIT 0, 10;
+  ```
+  - join 후 where에서 필러링
+
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  ```sql
+    SELECT
+      covid.stay as stay,
+      count(member.id) as count
+    FROM
+      subway.covid
+    INNER JOIN subway.member    
+      ON covid.member_id = member.id
+    INNER JOIN subway.programmer
+      ON covid.member_id = programmer.member_id
+    WHERE
+      member.age BETWEEN 20 and 29
+      AND programmer.country = 'India'
+      AND covid.hospital_id = (
+        SELECT id FROM subway.hospital WHERE name='서울대병원' LIMIT 1
+      )
+    GROUP BY stay;
+  ```
+  - SubQuery로 id 추출하여 WHERE 조건절로 사용
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  ```sql
+    SELECT
+	  exercise,
+      count(exercise) as count
+    FROM
+      subway.covid as C
+      INNER JOIN subway.programmer AS P
+      ON C.member_id = P.member_id
+      INNER JOIN subway.member as M
+      ON M.id = C.member_id
+    WHERE
+      M.age BETWEEN 30 AND 39
+      AND C.hospital_id = (
+        SELECT id FROM subway.hospital WHERE name='서울대병원' LIMIT 1
+      )
+    GROUP BY exercise
+    ORDER BY null;
+  ```
+  - ORDER BY null로 order by 취소
+  - 병원 id를 통한 id 검색
+
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+  - https://app.realizeme.o-r.kr/favorites
