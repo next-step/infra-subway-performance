@@ -41,6 +41,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> findLines() {
+        return lineRepository.findAll();
+    }
+
     @Cacheable(value="line", key="#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
