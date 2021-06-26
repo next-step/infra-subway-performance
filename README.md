@@ -41,6 +41,11 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
+
+<details>
+<summary>1 단계</summary>
+<div markdown="1">
+
 ### 시나리오
 * 구글 지도(코리아) MAU 를 기준 : 549만
 * 1일 사용자 수 : 183_000 (5_490_000 / 30)
@@ -694,14 +699,25 @@ Stress 테스트 같은 경우, `270 VU`부터 발생하는 `EOF 에러`가 해�
       * `@Async`는 적용하면 테스트코드가 에러가 터져서... 적용안했습니다.
    * index.html 에도 지연 로딩을 적용시켰습니다.
 
-—
+</div>
+</details>
 
-### 2단계 - 조회 성능 개선하기
+<details>
+<summary>2 단계</summary>
+<div markdown="1">
+<h1> 2단계 - 조회 성능 개선하기 </h1>
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 > 우선 기본적으로 각각의 테이블에 (PK + UQ) 설정 했습니다.   
    
-#### Coding as a Hobby 와 같은 결과를 반환하세요. 
+<h2> Coding as a Hobby 와 같은 결과를 반환하세요. </h2>       
+             
+![image](https://user-images.githubusercontent.com/50267433/123516704-6e7e8f00-d6d8-11eb-8fa6-44ee342fc3d4.png)   
+  
+<img width="571" alt="스크린샷 2021-06-26 오후 11 12 19" src="https://user-images.githubusercontent.com/50267433/123516681-5870ce80-d6d8-11eb-9094-ef66fae869f3.png">
+   
+
+          
 ```sql
 SELECT (count(id) / (SELECT count(id) FROM programmer) * 100) as 'rate'
 FROM programmer
@@ -710,7 +726,12 @@ GROUP BY hobby
 1. 조회 대상인 hobby 칼럼에 인덱스 설정을 했습니다. 
 2. 커버링 인덱스를 적용시켰습니다. 
 
-#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+<h2> 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) </h2>     
+             
+<img width="1552" alt="스크린샷 2021-06-26 오후 11 27 19" src="https://user-images.githubusercontent.com/50267433/123516547-a46f4380-d6d7-11eb-9755-37be23895a05.png">     
+          
+<img width="557" alt="스크린샷 2021-06-26 오후 11 27 42" src="https://user-images.githubusercontent.com/50267433/123516555-a802ca80-d6d7-11eb-9b38-38a7ec844ad0.png">        
+          
 ```sql
 SELECT C.programmer_id as `프로그래머`, H.name as `병원이름`
 FROM (SELECT id, hospital_id, programmer_id FROM covid) C
@@ -725,8 +746,14 @@ FROM (SELECT id, hospital_id, programmer_id FROM covid) C
 2. 배운점 : 실습에서는 페이징 쿼리를 적용했었네요.   
    이점 참고해야겠습니다!!  
    
-#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-```sql
+<h2> 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) </h2>  
+
+![image](https://user-images.githubusercontent.com/50267433/123516785-d2a15300-d6d8-11eb-80b2-00c21bcea4a8.png)   
+             
+![image](https://user-images.githubusercontent.com/50267433/123516792-dfbe4200-d6d8-11eb-8e84-f31a4f8460bd.png)
+          
+
+```sql 
 SELECT P.id as `프로그래머`, CH.name as `병원이름`
 FROM (SELECT id FROM programmer
       WHERE hobby LIKE 'Y%'
@@ -743,7 +770,12 @@ FROM (SELECT id FROM programmer
 2. 배운점 : 여기서도 페이징 쿼리를 적용했었네요.   
    이점 참고해야겠습니다!!
 
-#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+<h2> 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay) </h2>
+            
+<img width="1552" alt="스크린샷 2021-06-26 오후 11 21 10" src="https://user-images.githubusercontent.com/50267433/123516830-1bf1a280-d6d9-11eb-92c8-37fc013ae594.png">
+     
+<img width="704" alt="스크린샷 2021-06-26 오후 11 21 33" src="https://user-images.githubusercontent.com/50267433/123516840-2b70eb80-d6d9-11eb-8ead-3fc7d46c3fe9.png">       
+          
 ```sql
 SELECT C.stay as `기간`, count(C.member_id) as `사람 수`
 FROM (SELECT member_id, hospital_id, programmer_id, stay FROM covid) C
@@ -759,7 +791,14 @@ GROUP BY `기간`;
 1. 실습과는 다르게 `country`에 대해서 `INDEX`를 설정하면 오히려 속도가 느려졌습니다.    
 2. 각각에 테이블에 조건절을 넣어서 필요 데이터만 가져왔습니다.      
    
-#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+<h2> 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) </h2>   
+ 
+<img width="1552" alt="스크린샷 2021-06-26 오후 11 22 32" src="https://user-images.githubusercontent.com/50267433/123516890-62df9800-d6d9-11eb-911e-2e722a372745.png">
+               
+<img width="704" alt="스크린샷 2021-06-26 오후 11 22 45" src="https://user-images.githubusercontent.com/50267433/123516894-67a44c00-d6d9-11eb-88f5-c6b1d6dbb273.png">  
+          
+    
+          
 ```sql
 SELECT exercise, COUNT(P.id)
 FROM (SELECT member_id, hospital_id, programmer_id FROM subway.covid) C
@@ -772,7 +811,7 @@ FROM (SELECT member_id, hospital_id, programmer_id FROM subway.covid) C
 GROUP BY exercise;
 ```
 1. `age` 에 대해서 인덱스 설정을 했습니다.  
-2. `exercise`에 대한 인덱스 설정을 했습니다. 다만 성능은 미비 했습니다.
+2. `exercise`에 대한 인덱스 설정을 했습니다. 다만 성능 향상은 미비 했습니다.
 
 ___  
 
@@ -780,7 +819,125 @@ ___
 - [https://kwj1270.ga/favorites](https://kwj1270.ga/favorites)   
 - memberId : kwj1270@naver.com
 
+<img width="662" alt="스크린샷 2021-06-26 오후 3 19 51" src="https://user-images.githubusercontent.com/50267433/123516915-886ca180-d6d9-11eb-80a4-793ee0a92b14.png">
+  
+___  
+          
+3. 이중화 작업 후 테스트(개인적으로 진행)  
 
+**master db**          
+```sql
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+             File: binlog.000002
+         Position: 5931647
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set:
+1 row in set (0.00 sec)          
+```          
+
+**slave db**
+```sql
+mysql> SHOW SLAVE STATUS\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 172.17.0.1
+                  Master_User: replication_user
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: binlog.000002
+          Read_Master_Log_Pos: 5931647
+               Relay_Log_File: 21fce5b39c23-relay-bin.000002
+                Relay_Log_Pos: 5931285
+        Relay_Master_Log_File: binlog.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB:
+          Replicate_Ignore_DB:
+           Replicate_Do_Table:
+       Replicate_Ignore_Table:
+      Replicate_Wild_Do_Table:
+  Replicate_Wild_Ignore_Table:
+                   Last_Errno: 0
+                   Last_Error:
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 5931647
+              Relay_Log_Space: 5931501
+              Until_Condition: None
+               Until_Log_File:
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File:
+           Master_SSL_CA_Path:
+              Master_SSL_Cert:
+            Master_SSL_Cipher:
+               Master_SSL_Key:
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error:
+               Last_SQL_Errno: 0
+               Last_SQL_Error:
+  Replicate_Ignore_Server_Ids:
+             Master_Server_Id: 1
+                  Master_UUID: da3c8eef-d5c2-11eb-b615-0242ac110002
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind:
+      Last_IO_Error_Timestamp:
+     Last_SQL_Error_Timestamp:
+               Master_SSL_Crl:
+           Master_SSL_Crlpath:
+           Retrieved_Gtid_Set:
+            Executed_Gtid_Set:
+                Auto_Position: 0
+         Replicate_Rewrite_DB:
+                 Channel_Name:
+           Master_TLS_Version:
+       Master_public_key_path:
+        Get_master_public_key: 0
+            Network_Namespace:
+1 row in set, 1 warning (0.01 sec)
+```
+![image](https://user-images.githubusercontent.com/50267433/123517360-73910d80-d6db-11eb-93fa-8a27a061923f.png)     
+                  
+**부하 테스트 진행해봤습니다.**             
+```shell
+running (3m00.0s), 000/300 VUs, 77928 complete and 0 interrupted iterations
+default ✗ [======================================] 000/300 VUs  3m0s
+
+     ✓ main page running
+     ✓ path page running
+     ✓ GangNam line searching success
+
+     checks.........................: 100.00% ✓ 233784 ✗ 0
+     data_received..................: 340 MB  1.9 MB/s
+     data_sent......................: 20 MB   112 kB/s
+     http_req_blocked...............: avg=607.57µs min=206ns    med=406ns    max=1.39s    p(90)=512ns    p(95)=599ns
+     http_req_connecting............: avg=201.3µs  min=0s       med=0s       max=684.35ms p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=165.09ms min=662.81µs med=164.07ms max=1.01s    p(90)=282.18ms p(95)=320.77ms
+       { expected_response:true }...: avg=165.09ms min=662.81µs med=164.07ms max=1.01s    p(90)=282.18ms p(95)=320.77ms
+     http_req_failed................: 0.00%   ✓ 0      ✗ 233784
+     http_req_receiving.............: avg=1.94ms   min=19.93µs  med=61.83µs  max=598.31ms p(90)=1.17ms   p(95)=2.3ms
+     http_req_sending...............: avg=346.13µs min=11.79µs  med=27.24µs  max=517.88ms p(90)=77.2µs   p(95)=577.43µs
+     http_req_tls_handshaking.......: avg=396.6µs  min=0s       med=0s       max=1.1s     p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=162.8ms  min=0s       med=162.65ms max=794.97ms p(90)=278.14ms p(95)=313.87ms
+     http_reqs......................: 233784  1298.7783/s
+     iteration_duration.............: avg=520.46ms min=2.88ms   med=543.47ms max=1.97s    p(90)=833.16ms p(95)=926.47ms
+     iterations.....................: 77928   432.9261/s
+     vus............................: 1       min=1    max=300
+     vus_max........................: 300     min=300  max=300
+```
+`http_req_duration`이 다소 증가하여 100ms 레이턴시는 실패하는 것을 알 수 있었습니다.   
+원래 이중화를 하면 시간이 더 길어지는 건가요..?          
+          
+          
+</div>
+</details>
 
 
 
