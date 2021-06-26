@@ -42,7 +42,7 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 시나리오
-* 구글 지도(코리아) DAU 를 기준 : 549만
+* 구글 지도(코리아) MAU 를 기준 : 549만
 * 1일 사용자 수 : 183_000 (5_490_000 / 30)
 * 1명당 1일 평균 접속수 : 10회(가정)
 * 1일 총 접속 수 : 1_830_000 (183_000 * 10)
@@ -699,4 +699,89 @@ Stress 테스트 같은 경우, `270 VU`부터 발생하는 `EOF 에러`가 해�
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+> 우선 기본적으로 각각의 테이블에 (PK + UQ) 설정 했습니다.   
+   
+#### Coding as a Hobby 와 같은 결과를 반환하세요. 
+```sql
+SELECT (count(id) / (SELECT count(id) FROM programmer) * 100) as 'rate'
+FROM programmer
+GROUP BY hobby
+```
+1. 조회 대상인 hobby 칼럼에 인덱스 설정을 했습니다. 
+2. 커버링 인덱스를 적용시켰습니다. 
+
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+SELECT C.programmer_id as `프로그래머`, H.name as `병원이름`
+FROM (SELECT id, hospital_id, programmer_id FROM covid) C
+         JOIN (SELECT id FROM programmer) P
+              ON P.id = C.programmer_id
+         JOIN (SELECT id, name FROM hospital) AS H
+              ON H.id = C.hospital_id;
+# WHERE C.id >= 1000
+# LIMIT 0, 10              
+```
+1. hospital name 에 대해서 UQ 설정 및 인덱스 설정   
+2. 배운점 : 실습에서는 페이징 쿼리를 적용했었네요.   
+   이점 참고해야겠습니다!!  
+   
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+SELECT P.id as `프로그래머`, CH.name as `병원이름`
+FROM (SELECT id FROM programmer
+      WHERE hobby LIKE 'Y%'
+        AND (student LIKE 'Y%' OR years_coding = '0-2 years')) P
+         JOIN (SELECT programmer_id, name
+               FROM (SELECT programmer_id, hospital_id FROM covid) AS C
+               JOIN (SELECT id, name FROM hospital) as H
+               ON C.hospital_id = H.id) CH
+         ON P.id = CH.programmer_id;
+# WHERE P.id >= 1000
+# LIMIT 0, 10         
+```
+1. hobby 칼럼에 인덱스 설정      
+2. 배운점 : 여기서도 페이징 쿼리를 적용했었네요.   
+   이점 참고해야겠습니다!!
+
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+SELECT C.stay as `기간`, count(C.member_id) as `사람 수`
+FROM (SELECT member_id, hospital_id, programmer_id, stay FROM covid) C
+         JOIN (SELECT id FROM hospital WHERE name = '서울대병원') H
+              ON H.id = C.hospital_id
+         JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) M
+              ON M.id = C.member_id
+         JOIN (SELECT id FROM subway.programmer  WHERE country = 'India') P
+              ON C.programmer_id = P.id
+GROUP BY `기간`;
+```
+
+1. 실습과는 다르게 `country`에 대해서 `INDEX`를 설정하면 오히려 속도가 느려졌습니다.    
+2. 각각에 테이블에 조건절을 넣어서 필요 데이터만 가져왔습니다.      
+   
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+SELECT exercise, COUNT(P.id)
+FROM (SELECT member_id, hospital_id, programmer_id FROM subway.covid) C
+         JOIN (SELECT id FROM subway.hospital WHERE name = '서울대병원') H
+              ON H.id = C.hospital_id
+         JOIN (SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) M
+              ON M.id = C.member_id
+         JOIN (SELECT id, exercise FROM subway.programmer) P
+              ON C.programmer_id = P.id
+GROUP BY exercise;
+```
+1. `age` 에 대해서 인덱스 설정을 했습니다.  
+2. `exercise`에 대한 인덱스 설정을 했습니다. 다만 성능은 미비 했습니다.
+
+___  
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- [https://kwj1270.ga/favorites](https://kwj1270.ga/favorites)   
+- memberId : kwj1270@naver.com
+
+
+
+
+
+
