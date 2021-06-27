@@ -5,6 +5,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, modifiedDateDescFivePageable());
         return ResponseEntity.ok().body(favorites);
     }
 
@@ -37,5 +40,9 @@ public class FavoriteController {
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         favoriteService.deleteFavorite(loginMember, id);
         return ResponseEntity.noContent().build();
+    }
+
+    private Pageable modifiedDateDescFivePageable() {
+        return PageRequest.of(0, 5, Sort.by("modifiedDate").descending());
     }
 }
