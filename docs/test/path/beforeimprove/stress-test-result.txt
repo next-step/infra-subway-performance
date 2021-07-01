@@ -1,0 +1,43 @@
+ubuntu@ip-192-168-2-97:~$ k6 run path-stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: path-stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 140 max VUs, 12m40s max duration (incl. graceful stop):
+           * default: Up to 140 looping VUs for 12m10s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (12m40.0s), 000/140 VUs, 7697 complete and 117 interrupted iterations
+default ✗ [======================================] 000/140 VUs  12m10s
+
+     ✗ logged in successfully
+      ↳  90% — ✓ 6983 / ✗ 714
+     ✗ correct distance
+      ↳  90% — ✓ 6983 / ✗ 714
+
+     checks.........................: 90.72% ✓ 13966 ✗ 1428
+     data_received..................: 27 MB  35 kB/s
+     data_sent......................: 1.6 MB 2.1 kB/s
+     http_req_blocked...............: avg=485.33µs min=3.7µs   med=6.83µs  max=64.88ms  p(90)=45.69µs p(95)=6.29ms
+     http_req_connecting............: avg=92.15µs  min=0s      med=0s      max=5.92ms   p(90)=0s      p(95)=1.19ms
+   ✗ http_req_duration..............: avg=6.55s    min=1.26ms  med=1.2s    max=1m0s     p(90)=7.49s   p(95)=59.99s
+       { expected_response:true }...: avg=2.39s    min=91.47ms med=1.14s   max=39.99s   p(90)=6.64s   p(95)=7.24s
+     http_req_failed................: 9.27%  ✓ 714   ✗ 6983
+     http_req_receiving.............: avg=58.38µs  min=0s      med=56.56µs max=899.01µs p(90)=77.77µs p(95)=88.5µs
+     http_req_sending...............: avg=28.55µs  min=10.1µs  med=22.48µs max=1.38ms   p(90)=50.88µs p(95)=61.2µs
+     http_req_tls_handshaking.......: avg=369.49µs min=0s      med=0s      max=30.13ms  p(90)=0s      p(95)=4.99ms
+     http_req_waiting...............: avg=6.55s    min=1.19ms  med=1.2s    max=1m0s     p(90)=7.49s   p(95)=59.99s
+     http_reqs......................: 7697   10.127584/s
+     iteration_duration.............: avg=7.48s    min=1s      med=2.2s    max=1m1s     p(90)=8.49s   p(95)=1m0s
+     iterations.....................: 7697   10.127584/s
+     vus............................: 13     min=1   max=140
+     vus_max........................: 140    min=140 max=140
+
+ERRO[0761] some thresholds have failed

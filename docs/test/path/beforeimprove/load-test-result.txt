@@ -1,0 +1,41 @@
+ubuntu@ip-192-168-2-97:~$ k6 run path-load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: path-load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 35 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 35 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m10.2s), 00/35 VUs, 3112 complete and 0 interrupted iterations
+default ↓ [======================================] 03/35 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ correct distance
+
+     checks.........................: 100.00% ✓ 6224 ✗ 0
+     data_received..................: 11 MB   56 kB/s
+     data_sent......................: 552 kB  2.9 kB/s
+     http_req_blocked...............: avg=102.36µs min=3.63µs  med=6.66µs   max=57.06ms  p(90)=17.93µs p(95)=36.34µs
+     http_req_connecting............: avg=16.74µs  min=0s      med=0s       max=5.93ms   p(90)=0s      p(95)=0s
+   ✗ http_req_duration..............: avg=751.68ms min=95.05ms med=417.01ms max=2.29s    p(90)=1.62s   p(95)=1.75s
+       { expected_response:true }...: avg=751.68ms min=95.05ms med=417.01ms max=2.29s    p(90)=1.62s   p(95)=1.75s
+     http_req_failed................: 0.00%   ✓ 0    ✗ 3112
+     http_req_receiving.............: avg=64.25µs  min=26.49µs med=58.52µs  max=566.04µs p(90)=76.8µs  p(95)=87.84µs
+     http_req_sending...............: avg=26.77µs  min=9.95µs  med=21.97µs  max=585.2µs  p(90)=43.78µs p(95)=61.1µs
+     http_req_tls_handshaking.......: avg=75.3µs   min=0s      med=0s       max=55.13ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=751.59ms min=94.97ms med=416.91ms max=2.29s    p(90)=1.62s   p(95)=1.75s
+     http_reqs......................: 3112    16.360151/s
+     iteration_duration.............: avg=1.75s    min=1.09s   med=1.41s    max=3.29s    p(90)=2.62s   p(95)=2.75s
+     iterations.....................: 3112    16.360151/s
+     vus............................: 3       min=1  max=35
+     vus_max........................: 35      min=35 max=35
+
+ERRO[0191] some thresholds have failed
