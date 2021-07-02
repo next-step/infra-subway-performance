@@ -167,6 +167,7 @@ npm run dev
 
 #### 1단계 코드리뷰 
 - [x] 불필요한 JsonSerializer, JsonDeserializer 설정 코드 제거
+- [x] prod profile의 hibernate ddl-auto level을 validate로 설정
 
 ---
 
