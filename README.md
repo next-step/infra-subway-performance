@@ -163,6 +163,10 @@ npm run dev
   - [x] private 서브넷에 인스턴스를 하나 더 만든 후  redis를 띄움
   - [x] prod profile에서는 private 서브넷의 redis에 접속
   - [x] 많은 엔티티를 조회 후 조합해서 응답을 만들어내는 findPath메서드에 캐시를 적용해서 redis에 저장
+  
+
+#### 1단계 코드리뷰 
+- [x] 불필요한 JsonSerializer, JsonDeserializer 설정 코드 제거
 
 ---
 
