@@ -58,12 +58,14 @@ public class LineService {
     }
 
     @Transactional
+    @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
+    @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
