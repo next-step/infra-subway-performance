@@ -1,0 +1,121 @@
+$ ./k6.exe run smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+running (10.3s), 0/1 VUs, 8 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 16  ✗ 0
+     data_received..................: 34 kB   3.3 kB/s
+     data_sent......................: 7.1 kB  687 B/s
+     http_req_blocked...............: avg=6.36ms   min=0s      med=0s      max=152.73ms p(90)=0s       p(95)=0s
+     http_req_connecting............: avg=206.9µs  min=0s      med=0s      max=4.96ms   p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=89.11ms  min=19.9ms  med=24.88ms max=440.47ms p(90)=165.39ms p(95)=375.81ms
+       { expected_response:true }...: avg=89.11ms  min=19.9ms  med=24.88ms max=440.47ms p(90)=165.39ms p(95)=375.81ms
+     http_req_failed................: 0.00%   ✓ 0   ✗ 24
+     http_req_receiving.............: avg=227.34µs min=0s      med=0s      max=1.1ms    p(90)=869.2µs  p(95)=1ms
+     http_req_sending...............: avg=17.78µs  min=0s      med=0s      max=297.4µs  p(90)=0s       p(95)=110.07µs
+     http_req_tls_handshaking.......: avg=5.07ms   min=0s      med=0s      max=121.7ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=88.87ms  min=19.82ms med=24.88ms max=439.62ms p(90)=165.39ms p(95)=375.81ms
+     http_reqs......................: 24      2.327622/s
+     iteration_duration.............: avg=1.28s    min=1.13s   med=1.16s   max=2.09s    p(90)=1.49s    p(95)=1.79s
+     iterations.....................: 8       0.775874/s
+     vus............................: 1       min=1 max=1
+     vus_max........................: 1       min=1 max=1
+
+
+/******************************************************************************************************************/
+
+$ ./k6.exe run load.js
+
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 20 max VUs, 2m10s max duration (incl. graceful stop):
+           * default: Up to 20 looping VUs for 1m40s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+bash: $: command not found
+running (1m40.6s), 00/20 VUs, 1463 complete and 0 interrupted iterations
+default ✓ [======================================] 00/20 VUs  1m40s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 2926 ✗ 0
+     data_received..................: 5.6 MB  56 kB/s
+     data_sent......................: 1.2 MB  12 kB/s
+     http_req_blocked...............: avg=150.73µs min=0s      med=0s      max=141.15ms p(90)=0s      p(95)=0s
+     http_req_connecting............: avg=39.16µs  min=0s      med=0s      max=32.22ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=34.13ms  min=11.27ms med=19.3ms  max=131.88ms p(90)=67.61ms p(95)=75.45ms
+       { expected_response:true }...: avg=34.13ms  min=11.27ms med=19.3ms  max=131.88ms p(90)=67.61ms p(95)=75.45ms
+     http_req_failed................: 0.00%   ✓ 0    ✗ 4389
+     http_req_receiving.............: avg=170.74µs min=0s      med=0s      max=1.27ms   p(90)=743.2µs p(95)=928.33µs
+     http_req_sending...............: avg=12.07µs  min=0s      med=0s      max=1.08ms   p(90)=0s      p(95)=0s
+     http_req_tls_handshaking.......: avg=104.61µs min=0s      med=0s      max=121.17ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=33.94ms  min=11.27ms med=19.21ms max=131.02ms p(90)=67.27ms p(95)=75.23ms
+     http_reqs......................: 4389    43.642205/s
+     iteration_duration.............: avg=1.1s     min=1.08s   med=1.1s    max=1.28s    p(90)=1.12s   p(95)=1.13s
+     iterations.....................: 1463    14.547402/s
+     vus............................: 2       min=1  max=20
+     vus_max........................: 20      min=20 max=20
+
+
+/******************************************************************************************************************/
+
+$ ./k6.exe run stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 290 max VUs, 4m30s max duration (incl. graceful stop):
+           * default: Up to 290 looping VUs for 4m0s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+running (4m00.1s), 000/290 VUs, 14250 complete and 0 interrupted iterations
+default ✓ [======================================] 000/290 VUs  4m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 28500 ✗ 0
+     data_received..................: 55 MB   228 kB/s
+     data_sent......................: 12 MB   50 kB/s
+     http_req_blocked...............: avg=180.26µs min=0s      med=0s       max=146.47ms p(90)=0s       p(95)=0s
+     http_req_connecting............: avg=49.94µs  min=0s      med=0s       max=45.3ms   p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=324.21ms min=10.62ms med=424.85ms max=1.78s    p(90)=538.52ms p(95)=569.56ms
+       { expected_response:true }...: avg=324.21ms min=10.62ms med=424.85ms max=1.78s    p(90)=538.52ms p(95)=569.56ms
+     http_req_failed................: 0.00%   ✓ 0     ✗ 42750
+     http_req_receiving.............: avg=143.96µs min=0s      med=0s       max=1.98ms   p(90)=623.5µs  p(95)=889.7µs
+     http_req_sending...............: avg=8.38µs   min=0s      med=0s       max=3.02ms   p(90)=0s       p(95)=0s
+     http_req_tls_handshaking.......: avg=127.29µs min=0s      med=0s       max=140.38ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=324.06ms min=10.62ms med=424.78ms max=1.78s    p(90)=538.31ms p(95)=569.42ms
+     http_reqs......................: 42750   178.050357/s
+     iteration_duration.............: avg=1.97s    min=1.08s   med=2.23s    max=4.24s    p(90)=2.54s    p(95)=2.85s
+     iterations.....................: 14250   59.350119/s
+     vus............................: 1       min=1   max=290
+     vus_max........................: 290     min=290 max=290
