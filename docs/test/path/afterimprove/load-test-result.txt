@@ -1,0 +1,39 @@
+ubuntu@ip-192-168-2-97:~$ k6 run path-load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: path-load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 35 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 35 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m10.7s), 00/35 VUs, 5405 complete and 0 interrupted iterations
+default ↓ [======================================] 03/35 VUs  3m10s
+
+     ✓ logged in successfully
+     ✓ correct distance
+
+     checks.........................: 100.00% ✓ 10810 ✗ 0
+     data_received..................: 18 MB   95 kB/s
+     data_sent......................: 485 kB  2.5 kB/s
+     http_req_blocked...............: avg=58.7µs  min=2.28µs  med=2.63µs  max=69.08ms p(90)=2.88µs  p(95)=5.8µs
+     http_req_connecting............: avg=8.83µs  min=0s      med=0s      max=1.5ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=7.21ms  min=4ms     med=6.74ms  max=30.32ms p(90)=9.69ms  p(95)=11.01ms
+       { expected_response:true }...: avg=7.21ms  min=4ms     med=6.74ms  max=30.32ms p(90)=9.69ms  p(95)=11.01ms
+     http_req_failed................: 0.00%   ✓ 0     ✗ 5405
+     http_req_receiving.............: avg=66.45µs min=31.64µs med=53.81µs max=3.12ms  p(90)=84.61µs p(95)=141.11µs
+     http_req_sending...............: avg=42.35µs min=17.74µs med=32.17µs max=603.6µs p(90)=65.48µs p(95)=76.35µs
+     http_req_tls_handshaking.......: avg=43.87µs min=0s      med=0s      max=59.66ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=7.1ms   min=3.91ms  med=6.63ms  max=30.25ms p(90)=9.55ms  p(95)=10.91ms
+     http_reqs......................: 5405    28.336211/s
+     iteration_duration.............: avg=1s      min=1s      med=1s      max=1.09s   p(90)=1.01s   p(95)=1.01s
+     iterations.....................: 5405    28.336211/s
+     vus............................: 3       min=1   max=35
+     vus_max........................: 35      min=35  max=35

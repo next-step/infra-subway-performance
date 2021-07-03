@@ -1,0 +1,41 @@
+ubuntu@ip-192-168-2-97:~$ k6 run path-smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: path-smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (11.1s), 0/1 VUs, 8 complete and 0 interrupted iterations
+default ↓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ correct distance
+
+     checks.........................: 100.00% ✓ 16  ✗ 0
+     data_received..................: 32 kB   2.8 kB/s
+     data_sent......................: 1.8 kB  158 B/s
+     http_req_blocked...............: avg=8.03ms   min=4.87µs   med=7.1µs    max=64.21ms  p(90)=19.26ms  p(95)=41.74ms
+     http_req_connecting............: avg=170.16µs min=0s       med=0s       max=1.36ms   p(90)=408.39µs p(95)=884.84µs
+   ✗ http_req_duration..............: avg=383.29ms min=197.68ms med=250.85ms max=848.2ms  p(90)=807.74ms p(95)=827.97ms
+       { expected_response:true }...: avg=383.29ms min=197.68ms med=250.85ms max=848.2ms  p(90)=807.74ms p(95)=827.97ms
+     http_req_failed................: 0.00%   ✓ 0   ✗ 8
+     http_req_receiving.............: avg=69.06µs  min=45.23µs  med=65.14µs  max=125.28µs p(90)=88.71µs  p(95)=106.99µs
+     http_req_sending...............: avg=30.36µs  min=17.44µs  med=24.44µs  max=69.99µs  p(90)=44.2µs   p(95)=57.1µs
+     http_req_tls_handshaking.......: avg=7.76ms   min=0s       med=0s       max=62.1ms   p(90)=18.63ms  p(95)=40.36ms
+     http_req_waiting...............: avg=383.19ms min=197.59ms med=250.78ms max=848.11ms p(90)=807.58ms p(95)=827.84ms
+     http_reqs......................: 8       0.718211/s
+     iteration_duration.............: avg=1.39s    min=1.19s    med=1.25s    max=1.85s    p(90)=1.85s    p(95)=1.85s
+     iterations.....................: 8       0.718211/s
+     vus............................: 1       min=1 max=1
+     vus_max........................: 1       min=1 max=1
+
+ERRO[0012] some thresholds have failed

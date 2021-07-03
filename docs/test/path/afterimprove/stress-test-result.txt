@@ -1,0 +1,39 @@
+ubuntu@ip-192-168-2-97:~$ k6 run path-stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: path-stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 140 max VUs, 12m40s max duration (incl. graceful stop):
+           * default: Up to 140 looping VUs for 12m10s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (12m10.8s), 000/140 VUs, 59106 complete and 0 interrupted iterations
+default ↓ [======================================] 005/140 VUs  12m10s
+
+     ✓ logged in successfully
+     ✓ correct distance
+
+     checks.........................: 100.00% ✓ 118212 ✗ 0
+     data_received..................: 197 MB  269 kB/s
+     data_sent......................: 5.2 MB  7.1 kB/s
+     http_req_blocked...............: avg=20.54µs min=2.26µs  med=2.6µs   max=58.58ms p(90)=2.84µs  p(95)=2.97µs
+     http_req_connecting............: avg=3.16µs  min=0s      med=0s      max=3.46ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=5.59ms  min=3.56ms  med=5.28ms  max=92.88ms p(90)=6.79ms  p(95)=7.82ms
+       { expected_response:true }...: avg=5.59ms  min=3.56ms  med=5.28ms  max=92.88ms p(90)=6.79ms  p(95)=7.82ms
+     http_req_failed................: 0.00%   ✓ 0      ✗ 59106
+     http_req_receiving.............: avg=71.57µs min=28.59µs med=52.21µs max=8.11ms  p(90)=98.88µs p(95)=181.92µs
+     http_req_sending...............: avg=39.67µs min=16.27µs med=30.37µs max=4.99ms  p(90)=61.87µs p(95)=71.18µs
+     http_req_tls_handshaking.......: avg=13.33µs min=0s      med=0s      max=51.26ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=5.48ms  min=35.12µs med=5.16ms  max=92.8ms  p(90)=6.68ms  p(95)=7.7ms
+     http_reqs......................: 59106   80.878197/s
+     iteration_duration.............: avg=1s      min=1s      med=1s      max=1.09s   p(90)=1s      p(95)=1s
+     iterations.....................: 59106   80.878197/s
+     vus............................: 5       min=1    max=140
+     vus_max........................: 140     min=140  max=140
