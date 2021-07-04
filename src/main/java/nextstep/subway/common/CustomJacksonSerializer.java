@@ -37,9 +37,8 @@ public class CustomJacksonSerializer extends Jackson2JsonRedisSerializer {
     private void setLocalDateMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
 
-        //LocalDateTime series serialization and deserialization module, inherited from jsr310, we modified the date format here
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
                 DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
