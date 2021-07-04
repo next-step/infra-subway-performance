@@ -23,6 +23,7 @@ dependencies {
 	implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 
 	// log
+	implementation "net.logstash.logback:logstash-logback-encoder:6.1"
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 
 	// jgraph
@@ -35,6 +36,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+	implementation("mysql:mysql-connector-java")
+
+	// redis
+	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
+	// date serializer
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
 }
 
 test {
