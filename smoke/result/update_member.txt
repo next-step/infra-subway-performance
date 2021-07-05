@@ -1,0 +1,38 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: update_member.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 40s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (11.0s), 000/100 VUs, 869 complete and 0 interrupted iterations
+default ✓ [======================================] 100 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 1738  ✗ 0
+     data_received..................: 1.1 MB  101 kB/s
+     data_sent......................: 541 kB  49 kB/s
+     http_req_blocked...............: avg=12.93ms  min=3.47µs  med=5.35µs  max=300.28ms p(90)=20.28µs  p(95)=167.87ms
+     http_req_connecting............: avg=1.07ms   min=0s      med=0s      max=35.6ms   p(90)=0s       p(95)=9.63ms
+   ✓ http_req_duration..............: avg=84.11ms  min=7.46ms  med=25.21ms max=749.26ms p(90)=266.88ms p(95)=386.63ms
+       { expected_response:true }...: avg=92.78ms  min=7.46ms  med=23.02ms max=749.26ms p(90)=337.4ms  p(95)=496.38ms
+     http_req_failed................: 50.00%  ✓ 869   ✗ 869
+     http_req_receiving.............: avg=249.11µs min=24.1µs  med=46.02µs max=49.35ms  p(90)=141.95µs p(95)=512.87µs
+     http_req_sending...............: avg=1.9ms    min=12.35µs med=20.12µs max=117.38ms p(90)=702.78µs p(95)=12.91ms
+     http_req_tls_handshaking.......: avg=11.78ms  min=0s      med=0s      max=285.41ms p(90)=0s       p(95)=144.95ms
+     http_req_waiting...............: avg=81.95ms  min=7.38ms  med=24.57ms max=683.78ms p(90)=264.96ms p(95)=381.01ms
+     http_reqs......................: 1738    157.833698/s
+     iteration_duration.............: avg=1.2s     min=1.01s   med=1.06s   max=2.09s    p(90)=1.91s    p(95)=2.01s
+     iterations.....................: 869     78.916849/s
+     vus............................: 7       min=7   max=100
+     vus_max........................: 100     min=100 max=100
