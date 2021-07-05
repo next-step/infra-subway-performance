@@ -53,3 +53,26 @@ npm run dev
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+
+---
+
+1단계 - 화면 응답 개선하기
+
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ - 기존 성능은 아래와 같습니다.
+
+
+
+힌트에서 알려주는 할 수 있는 행위들
+
+1. 정적 파일 경량화
+   
+2. Reverse Proxy 개선하기
+   
+3. WAS 성능 개선하기
+
+4. 비동기 처리하기
+   
+5. HTTP 캐싱 적용하기
+
+> 공인 IP 확인 >  curl bot.whatismyipaddress.com
