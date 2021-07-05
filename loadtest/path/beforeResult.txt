@@ -1,0 +1,121 @@
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: pathSmoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.5s), 0/1 VUs, 9 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ path search success
+
+     checks.........................: 100.00% ✓ 18       ✗ 0
+     data_received..................: 15 kB   1.5 kB/s
+     data_sent......................: 4.0 kB  379 B/s
+     http_req_blocked...............: avg=2.49ms   min=4.72µs  med=6.82µs   max=44.7ms   p(90)=8.77µs   p(95)=6.71ms
+     http_req_connecting............: avg=31.98µs  min=0s      med=0s       max=575.79µs p(90)=0s       p(95)=86.36µs
+   ✓ http_req_duration..............: avg=79.11ms  min=4.9ms   med=45.31ms  max=456.32ms p(90)=148ms    p(95)=205.81ms
+       { expected_response:true }...: avg=152.75ms min=83.95ms med=113.06ms max=456.32ms p(90)=220.54ms p(95)=338.43ms
+     http_req_failed................: 50.00%  ✓ 9        ✗ 9
+     http_req_receiving.............: avg=105.07µs min=66.06µs med=102.08µs max=150.98µs p(90)=141.31µs p(95)=147.41µs
+     http_req_sending...............: avg=29.09µs  min=13.56µs med=25.88µs  max=84.8µs   p(90)=42.02µs  p(95)=49.04µs
+     http_req_tls_handshaking.......: avg=1.57ms   min=0s      med=0s       max=28.31ms  p(90)=0s       p(95)=4.24ms
+     http_req_waiting...............: avg=78.98ms  min=4.77ms  med=45.15ms  max=456.14ms p(90)=147.88ms p(95)=205.65ms
+     http_reqs......................: 18      1.717479/s
+     iteration_duration.............: avg=1.16s    min=1.09s   med=1.11s    max=1.5s     p(90)=1.23s    p(95)=1.37s
+     iterations.....................: 9       0.85874/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+
+--------------------------------------------------------------------------------------------------------------------
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: pathLoad.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 50 max VUs, 2m10s max duration (incl. graceful stop):
+           * default: Up to 50 looping VUs for 1m40s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (1m40.5s), 00/50 VUs, 1681 complete and 0 interrupted iterations
+default ✓ [======================================] 00/50 VUs  1m40s
+
+     ✓ logged in successfully
+     ✓ path search success
+
+     checks.........................: 100.00% ✓ 3362      ✗ 0
+     data_received..................: 2.2 MB  22 kB/s
+     data_sent......................: 690 kB  6.9 kB/s
+     http_req_blocked...............: avg=96.79µs  min=3.47µs  med=6.26µs   max=29.16ms p(90)=8.91µs  p(95)=11.16µs
+     http_req_connecting............: avg=10.28µs  min=0s      med=0s       max=1.34ms  p(90)=0s      p(95)=0s
+   ✗ http_req_duration..............: avg=703.91ms min=3.34ms  med=687.82ms max=1.92s   p(90)=1.22s   p(95)=1.34s
+       { expected_response:true }...: avg=931.42ms min=57.42ms med=1.01s    max=1.92s   p(90)=1.34s   p(95)=1.43s
+     http_req_failed................: 50.00%  ✓ 1681      ✗ 1681
+     http_req_receiving.............: avg=102.59µs min=27.68µs med=79.82µs  max=5.79ms  p(90)=142.1µs p(95)=183.87µs
+     http_req_sending...............: avg=31.62µs  min=10.6µs  med=25.44µs  max=1.98ms  p(90)=37.22µs p(95)=50.34µs
+     http_req_tls_handshaking.......: avg=76.04µs  min=0s      med=0s       max=27.37ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=703.77ms min=3.25ms  med=687.68ms max=1.92s   p(90)=1.22s   p(95)=1.34s
+     http_reqs......................: 3362    33.447146/s
+     iteration_duration.............: avg=2.4s     min=1.06s   med=2.64s    max=3.88s   p(90)=2.86s   p(95)=2.94s
+     iterations.....................: 1681    16.723573/s
+     vus............................: 5       min=2       max=50
+     vus_max........................: 50      min=50      max=50
+
+ERRO[0102] some thresholds have failed
+
+--------------------------------------------------------------------------------------------------------------------
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: pathStress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 5m15s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 4m45.03s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (4m45.3s), 000/100 VUs, 4942 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  4m45.03s
+
+     ✓ logged in successfully
+     ✓ path search success
+
+     checks.........................: 100.00% ✓ 9884     ✗ 0
+     data_received..................: 6.4 MB  22 kB/s
+     data_sent......................: 2.0 MB  7.0 kB/s
+     http_req_blocked...............: avg=59.82µs  min=3.29µs  med=6.19µs   max=30.06ms p(90)=8.96µs   p(95)=10.35µs
+     http_req_connecting............: avg=6.18µs   min=0s      med=0s       max=2.03ms  p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=1.12s    min=2.86ms  med=962.31ms max=6.2s    p(90)=2.32s    p(95)=2.53s
+       { expected_response:true }...: avg=1.35s    min=57.02ms med=1.14s    max=6.2s    p(90)=2.51s    p(95)=2.66s
+     http_req_failed................: 50.00%  ✓ 4942     ✗ 4942
+     http_req_receiving.............: avg=106.14µs min=27.5µs  med=80.14µs  max=7.68ms  p(90)=147.04µs p(95)=199.82µs
+     http_req_sending...............: avg=40.37µs  min=10.44µs med=23.93µs  max=30.25ms p(90)=36.14µs  p(95)=43.77µs
+     http_req_tls_handshaking.......: avg=43.72µs  min=0s      med=0s       max=28.49ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=1.12s    min=2.74ms  med=962.22ms max=6.2s    p(90)=2.32s    p(95)=2.53s
+     http_reqs......................: 9884    34.64242/s
+     iteration_duration.............: avg=3.24s    min=1.06s   med=2.74s    max=10.55s  p(90)=5.44s    p(95)=5.54s
+     iterations.....................: 4942    17.32121/s
+     vus............................: 4       min=2      max=100
+     vus_max........................: 100     min=100    max=100
+
+ERRO[0286] some thresholds have failed
