@@ -68,8 +68,8 @@ npm run dev
 힌트에서 알려주는 할 수 있는 행위들
 
 1. 정적 파일 경량화
-   - [ ] webpack-bundle-analyzer 플로그인 설치 후 불필요한 import 제거하기
-   - [ ] code Splitting 플러그인 적용하기
+   - [x] webpack-bundle-analyzer 플로그인 설치 후 불필요한 import 제거하기
+   - [x] code Splitting 플러그인 적용하기
    - [x] 다이나믹 임포트 적용하기(이미 적용됨을 확인)
    - [x] 웹 폰트 최적화(이미 적용됨을 확인)
    
