@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
+import { Trend } from 'k6/metrics';
 
 export let options = {
     vus: 1, // 1 user looping for 1 minute
@@ -9,6 +10,9 @@ export let options = {
         http_req_duration: ['p(99)<1500'], // 99% of requests must complete below 1.5s
     },
 };
+
+let loginTrend = new Trend('DURATION TIME - logged in successfully', true);
+let myInfoTrend = new Trend('DURATION TIME - retrieved member', true);
 
 const BASE_URL = 'https://xn--vo5bi4h.xn--yq5b.xn--3e0b707e';
 const USERNAME = 'abc@gmail.com';
@@ -28,6 +32,7 @@ export default function ()  {
     };
 
     let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+    loginTrend.add(loginRes.timings.duration);
 
     check(loginRes, {
         'logged in successfully': (resp) => resp.json('accessToken') !== '',
@@ -39,7 +44,11 @@ export default function ()  {
             Authorization: `Bearer ${loginRes.json('accessToken')}`,
         },
     };
-    let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
+
+    let myInfoRes = http.get(`${BASE_URL}/members/me`, authHeaders);
+    myInfoTrend.add(myInfoRes.timings.duration);
+
+    let myObjects = myInfoRes.json();
     check(myObjects, {
         'retrieved member': (obj) => obj.id != 0
     });

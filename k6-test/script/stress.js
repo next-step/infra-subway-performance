@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
+import { Trend } from 'k6/metrics';
 
 export let options = {
     scenarios: {
@@ -34,6 +35,13 @@ export let options = {
     },
 };
 
+let loginTrend = new Trend('DURATION TIME - logged in successfully', true);
+let myInfoTrend = new Trend('DURATION TIME - retrieved member', true);
+let infoUpdateTrend = new Trend('DURATION TIME - information updated', true);
+let findPathTrend = new Trend('DURATION TIME - retrieved path', true);
+let lineTrend = new Trend('DURATION TIME - retrieved lines', true);
+let stationTrend = new Trend('DURATION TIME - retrieved stations', true);
+
 const BASE_URL = 'https://xn--vo5bi4h.xn--yq5b.xn--3e0b707e';
 const USERNAME = 'abc@gmail.com';
 const PASSWORD = '123456';
@@ -52,6 +60,7 @@ export default function ()  {
     };
 
     let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+    loginTrend.add(loginRes.timings.duration);
 
     check(loginRes, {
         'logged in successfully': (resp) => resp.json('accessToken') !== '',
@@ -63,7 +72,11 @@ export default function ()  {
             'Authorization': `Bearer ${loginRes.json('accessToken')}`,
         },
     };
-    let myInfoObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
+
+    let myInfoRes = http.get(`${BASE_URL}/members/me`, authHeaders);
+    myInfoTrend.add(myInfoRes.timings.duration);
+
+    let myInfoObjects = myInfoRes.json();
     check(myInfoObjects, {
         'retrieved member': (obj) => obj.id !== 0,
     });
@@ -82,14 +95,32 @@ export default function ()  {
         },
     };
     let updateRes = http.put(`${BASE_URL}/members/me`, updatePayload, updateHeaders);
+    infoUpdateTrend.add(updateRes.timings.duration);
     check(updateRes, {
         'information updated': (res) => res.status === 200
     });
 
 
-    let pathObjects = http.get(`${BASE_URL}/paths/?source=7&target=29`).json();
+    let pathRes = http.get(`${BASE_URL}/paths/?source=7&target=29`);
+    findPathTrend.add(pathRes.timings.duration);
+
+    let pathObjects = pathRes.json();
     check(pathObjects, {
         'retrieved path': (obj) => obj.stations !== undefined
+    });
+
+    let lineRes = http.get(`${BASE_URL}/lines`);
+    lineTrend.add(lineRes.timings.duration);
+
+    check(lineRes, {
+        'retrieved lines': (res) => res.status === 200
+    });
+
+    let stationRes = http.get(`${BASE_URL}/stations`);
+    stationTrend.add(stationRes.timings.duration);
+
+    check(stationRes, {
+        'retrieved stations': (res) => res.status === 200
     });
 
     sleep(1);
