@@ -1,3 +1,5 @@
+
+
 <p align="center">
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
@@ -66,12 +68,22 @@ npm run dev
 힌트에서 알려주는 할 수 있는 행위들
 
 1. 정적 파일 경량화
+   - [ ] webpack-bundle-analyzer 플로그인 설치 후 불필요한 import 제거하기
+   - [ ] code Splitting 플러그인 적용하기
+   - [x] 다이나믹 임포트 적용하기(이미 적용됨을 확인)
+   - [x] 웹 폰트 최적화(이미 적용됨을 확인)
    
 2. Reverse Proxy 개선하기
+
+    - [ ] SSL 에 추가 개선하기
    
 3. WAS 성능 개선하기
+   
+   - [ ] Spring Data Cache
 
 4. 비동기 처리하기
+   - [ ] 적절한 Thread pool size 구하기
+   - [ ] Thread pool 설정
    
 5. HTTP 캐싱 적용하기
 
