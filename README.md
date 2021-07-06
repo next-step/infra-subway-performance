@@ -55,7 +55,11 @@ npm run dev
     - gzip 압축 활성화
     - 정적 파일 캐시 적용
     - http 2.0 적용
-    
+
+- PageSpeed 데스크톱 기준 메인 페이지 테스트
+  - 개선 전 : 68점 
+  - 개선 후 : 92점 
+
 ```shell
 ## CPU Core에 맞는 적절한 Worker 프로세스를 할당
 worker_processes auto;
