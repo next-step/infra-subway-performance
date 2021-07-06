@@ -1,4 +1,4 @@
-## 개선전
+
 ```sql
 SELECT (total_cnt - yes_cnt) / total_cnt * 100 'hobby'
          FROM
