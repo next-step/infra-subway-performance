@@ -79,10 +79,23 @@ npm run dev
    
 3. WAS 성능 개선하기
    
-   - [ ] Spring Data Cache
+   - [x] Spring Data Cache - radis 설정
 
 4. 비동기 처리하기
-   - [ ] 적절한 Thread pool size 구하기
+   - [x] 적절한 Thread pool size 구하기
+     ```shell
+      $ cat /proc/cpuinfo | grep "model name" | uniq -c | awk '{print $5 $6, $7,$8, $9, $10 $11}'
+      Intel(R)Xeon(R) CPU E5-2676 v3 @2.40GHz
+      [WEB2][10:57:45][ubuntu@ip-172-22-1-28 ~]
+      $ cat /proc/cpuinfo | grep "cpu cores" | tail -1 | awk '{print $4}'
+      2
+      [WEB2][10:57:57][ubuntu@ip-172-22-1-28 ~]
+      $ cat /proc/cpuinfo | grep "physical id" | sort -u | wc -l
+      1
+      [WEB2][10:58:05][ubuntu@ip-172-22-1-28 ~]
+      $ grep -c processor /proc/cpuinfo
+      2
+     ```
    - [ ] Thread pool 설정
    
 5. HTTP 캐싱 적용하기
