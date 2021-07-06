@@ -63,8 +63,7 @@ export function findPath(loginRes, source, target) {
     };
     return http
         .get(
-            `${BASE_URL}/paths/?source=` + source + `&target=` + target,
-            authHeaders
+            `${BASE_URL}/paths?source=` + source + `&target=` + target, authHeaders
         )
         .json();
 }
