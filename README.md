@@ -53,7 +53,7 @@ npm run dev
         - cache control 적용(max-age 30일)
         - HTTP/2 설정
     - WAS 성능 개선
-        - 노선, 역 조회 기능 redis cache 적용
+        - 노선, 역, 경로 조회 기능 redis cache 적용
 
 ---
 
