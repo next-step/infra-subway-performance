@@ -45,8 +45,8 @@ class DataBaseConfig {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
         HashMap<Object, Object> sources = new HashMap<>();
-        sources.put(DATASOURCE_KEY_MASTER, master);
-        sources.put(DATASOURCE_KEY_SLAVE, slave);
+        sources.put(ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER, master);
+        sources.put(ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE, slave);
 
         routingDataSource.setTargetDataSources(sources);
         routingDataSource.setDefaultTargetDataSource(master);
