@@ -22,8 +22,8 @@ import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY
 
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-@EnableTransactionManagement
 @Profile("prod")
+@EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"nextstep.subway"})
 class DataBaseConfig {
 
@@ -45,8 +45,8 @@ class DataBaseConfig {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
         HashMap<Object, Object> sources = new HashMap<>();
-        sources.put(ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER, master);
-        sources.put(ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE, slave);
+        sources.put(DATASOURCE_KEY_MASTER, master);
+        sources.put(DATASOURCE_KEY_SLAVE, slave);
 
         routingDataSource.setTargetDataSources(sources);
         routingDataSource.setDefaultTargetDataSource(master);
