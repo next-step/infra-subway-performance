@@ -96,13 +96,13 @@ npm run dev
       $ grep -c processor /proc/cpuinfo
       2
      ```
-   - [ ] Thread pool 설정
+   - [x] Async Thread pool 설정
    
-5. HTTP 캐싱 적용하기
-
 > cheatsheet
 > 
 > 공인 IP 확인 >  curl bot.whatismyipaddress.com
+> 
+> docker run -d -p 3306:3306 brainbackdoor/data-subway:0.0.1
 > 
 > find ./* -name "*.jar"
 >
