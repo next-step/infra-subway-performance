@@ -385,4 +385,4 @@ where   hos.id = 9
 group by pro.exercise;
 ```
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+기존의 경로와 똑같이 맞춰놨습니다. GET /favorites  
