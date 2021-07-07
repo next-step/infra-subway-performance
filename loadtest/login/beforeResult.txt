@@ -1,0 +1,111 @@
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: loginSmoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.4s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ log in success
+
+     checks.....................: 100.00% ✓ 10       ✗ 0
+     data_received..............: 8.1 kB  782 B/s
+     data_sent..................: 2.6 kB  253 B/s
+     http_req_blocked...........: avg=4.85ms   min=7.9µs   med=8.14µs  max=48.49ms  p(90)=4.86ms   p(95)=26.67ms
+     http_req_connecting........: avg=192.65µs min=0s      med=0s      max=1.92ms   p(90)=192.65µs p(95)=1.05ms
+   ✓ http_req_duration..........: avg=34.66ms  min=9.61ms  med=10.5ms  max=251.82ms p(90)=36.32ms  p(95)=144.07ms
+     http_req_failed............: 100.00% ✓ 10       ✗ 0
+     http_req_receiving.........: avg=101.63µs min=67.68µs med=99.94µs max=135.44µs p(90)=125.5µs  p(95)=130.47µs
+     http_req_sending...........: avg=40.12µs  min=30.38µs med=33.53µs max=91.41µs  p(90)=46.44µs  p(95)=68.92µs
+     http_req_tls_handshaking...: avg=3.14ms   min=0s      med=0s      max=31.44ms  p(90)=3.14ms   p(95)=17.29ms
+     http_req_waiting...........: avg=34.52ms  min=9.46ms  med=10.38ms max=251.63ms p(90)=36.19ms  p(95)=143.91ms
+     http_reqs..................: 10      0.960892/s
+     iteration_duration.........: avg=1.04s    min=1.01s   med=1.01s   max=1.3s     p(90)=1.04s    p(95)=1.17s
+     iterations.................: 10      0.960892/s
+     vus........................: 1       min=1      max=1
+     vus_max....................: 1       min=1      max=1
+
+--------------------------------------------------------------------------------------------------------------------
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: loginLoad.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 50 max VUs, 2m10s max duration (incl. graceful stop):
+           * default: Up to 50 looping VUs for 1m40s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (1m40.9s), 00/50 VUs, 3998 complete and 0 interrupted iterations
+default ✓ [======================================] 00/50 VUs  1m40s
+
+     ✓ log in success
+
+     checks.....................: 100.00% ✓ 3998    ✗ 0
+     data_received..............: 1.7 MB  17 kB/s
+     data_sent..................: 919 kB  9.1 kB/s
+     http_req_blocked...........: avg=76.51µs min=3.98µs  med=7.78µs  max=31.32ms p(90)=9.19µs  p(95)=14.34µs
+     http_req_connecting........: avg=7.95µs  min=0s      med=0s      max=1.94ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..........: avg=6.3ms   min=2.93ms  med=5.81ms  max=37.07ms p(90)=8.72ms  p(95)=10.2ms
+     http_req_failed............: 100.00% ✓ 3998    ✗ 0
+     http_req_receiving.........: avg=90.77µs min=22.21µs med=75.49µs max=3.08ms  p(90)=138.8µs p(95)=167.53µs
+     http_req_sending...........: avg=37.13µs min=13µs    med=31.43µs max=3.36ms  p(90)=44.4µs  p(95)=58.8µs
+     http_req_tls_handshaking...: avg=56.56µs min=0s      med=0s      max=29.14ms p(90)=0s      p(95)=0s
+     http_req_waiting...........: avg=6.17ms  min=2.84ms  med=5.69ms  max=36.94ms p(90)=8.6ms   p(95)=10.08ms
+     http_reqs..................: 3998    39.6323/s
+     iteration_duration.........: avg=1s      min=1s      med=1s      max=1.04s   p(90)=1.01s   p(95)=1.01s
+     iterations.................: 3998    39.6323/s
+     vus........................: 3       min=2     max=50
+     vus_max....................: 50      min=50    max=50
+
+--------------------------------------------------------------------------------------------------------------------
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: loginStress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 100 max VUs, 5m15s max duration (incl. graceful stop):
+           * default: Up to 100 looping VUs for 4m45.03s over 9 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (4m45.7s), 000/100 VUs, 15759 complete and 0 interrupted iterations
+default ✓ [======================================] 000/100 VUs  4m45.03s
+
+     ✓ log in success
+
+     checks.....................: 100.00% ✓ 15759     ✗ 0
+     data_received..............: 6.2 MB  22 kB/s
+     data_sent..................: 3.6 MB  13 kB/s
+     http_req_blocked...........: avg=44.61µs min=3.57µs  med=7.01µs  max=45.45ms p(90)=9.19µs   p(95)=15.64µs
+     http_req_connecting........: avg=4.12µs  min=0s      med=0s      max=1.46ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..........: avg=4.89ms  min=2.54ms  med=4.35ms  max=44.9ms  p(90)=6.73ms   p(95)=8.13ms
+     http_req_failed............: 100.00% ✓ 15759     ✗ 0
+     http_req_receiving.........: avg=92.55µs min=22.11µs med=63.47µs max=10.6ms  p(90)=138.49µs p(95)=220.25µs
+     http_req_sending...........: avg=44.18µs min=11.73µs med=28.93µs max=6.86ms  p(90)=47.5µs   p(95)=75.71µs
+     http_req_tls_handshaking...: avg=27.82µs min=0s      med=0s      max=43.62ms p(90)=0s       p(95)=0s
+     http_req_waiting...........: avg=4.75ms  min=2.44ms  med=4.22ms  max=44.78ms p(90)=6.58ms   p(95)=7.95ms
+     http_reqs..................: 15759   55.164466/s
+     iteration_duration.........: avg=1s      min=1s      med=1s      max=1.05s   p(90)=1s       p(95)=1.01s
+     iterations.................: 15759   55.164466/s
+     vus........................: 2       min=2       max=100
+     vus_max....................: 100     min=100     max=100
