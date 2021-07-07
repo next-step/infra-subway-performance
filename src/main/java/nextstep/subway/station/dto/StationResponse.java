@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
 public class StationResponse {
     private Long id;
     private String name;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime createdDate;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
