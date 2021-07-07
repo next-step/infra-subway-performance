@@ -34,7 +34,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findTop5ByMemberIdOrderById(loginMember.getId());
+        List<Favorite> favorites = favoriteRepository.findTop5ByMemberIdOrderByIdDesc(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
