@@ -8,3 +8,7 @@ where h.name ='서울대병원' and p.country = 'India' AND m.age between 20 AND
 group by c.stay;
 ```
 
+```sql
+create index idx_covid on covid (hospital_id, programmer_id, stay);
+create index idx_programmer_country on programmer (country);
+```
