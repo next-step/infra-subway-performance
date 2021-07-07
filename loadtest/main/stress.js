@@ -2,14 +2,14 @@ import http from "k6/http";
 import { check, group, sleep, fail } from "k6";
 export let options = {
   stages: [
-    { duration: "30s", target: 50 },
-    { duration: "1m", target: 50 },
+    { duration: "30s", target: 250 },
+    { duration: "1m", target: 250 },
     { duration: "15s", target: 0 },
-    { duration: "30s", target: 100 },
-    { duration: "1m", target: 100 },
+    { duration: "30s", target: 300 },
+    { duration: "1m", target: 300 },
     { duration: "15s", target: 0 },
-    { duration: "30", target: 50 },
-    { duration: "1m", target: 50 },
+    { duration: "30", target: 350 },
+    { duration: "1m", target: 350 },
     { duration: "15s", target: 0 },
   ],
   thresholds: {
