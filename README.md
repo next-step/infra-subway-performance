@@ -386,3 +386,5 @@ group by pro.exercise;
 ```
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 기존의 경로와 똑같이 맞춰놨습니다. GET /favorites  
+   
+Master Slave 테스트는 slave를 내리면서 테스트 진행했습니다.
