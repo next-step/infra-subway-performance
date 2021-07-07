@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +35,12 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value="findPath", allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
+    @Async("subway-async-findStation")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
