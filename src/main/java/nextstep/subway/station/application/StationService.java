@@ -40,7 +40,6 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    @Async("subway-async-findStation")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
