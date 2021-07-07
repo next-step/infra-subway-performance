@@ -1,13 +1,24 @@
 package nextstep.subway.station.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.time.LocalDateTime;
 import nextstep.subway.station.domain.Station;
 
-import java.time.LocalDateTime;
-
 public class StationResponse {
+
     private Long id;
+
     private String name;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdDate;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
@@ -38,5 +49,15 @@ public class StationResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "StationResponse{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", createdDate=" + createdDate +
+            ", modifiedDate=" + modifiedDate +
+            '}';
     }
 }
