@@ -313,6 +313,76 @@ Nginx에서는 Cache적용 및 GZip 압축을 적용을 했습니다. 하지만 
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### 인덱스 이해하기
+간단하게 PK만 잡아주고, FK 대신 Index를 잡아주니 다 통과를 합니다..
 
+##### Coding as a Hobby
+변수를 사용하지 않고 바로 가능하지만, 조금 더 빠른 시간을 내기위해 작업해줬습니다.
+``` sql
+ALTER TABLE `subway`.`programmer` ADD INDEX `hobby` (`hobby` ASC);
+
+set @a := (select count(1) as cnt from programmer);
+select	hobby
+	,	count(1) / @a
+from	programmer
+group by hobby;
+```
+#### 프로그래머별로 해당 하는 병원 이름 반환
+문제가 잘 이해가 안되서, covid.id, hospital.name을 리턴하도록 했습니다. covid.programmer_id를 사용할 수 있어서, programmer랑 조인이 필요는 없어 보입니다.
+```sql
+ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL ,ADD PRIMARY KEY (`id`);
+
+select	cov.id, hos.name
+from	covid	as cov
+        join hospital	as hos
+             on cov.hospital_id = hos.id;
+```
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요
+```sql
+alter table programmer add constraint programmer_pk primary key (id);
+select  pro.id
+     ,  hos.name
+from    covid as cov
+            join programmer  as pro
+                 on cov.programmer_id = pro.id
+            join  hospital as hos
+                  on cov.hospital_id = hos.id
+where   (hobby = 'Yes' AND dev_type = '%student%') # like를 쓸 수 밖에 없는 데이터 규격들..ㅜㅜ
+   or years_coding = '0-2 years'
+order by pro.id;
+```
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+```sql
+alter table covid add constraint covid_pk primary key (id);
+create index covid_index on covid (hospital_id, programmer_id, member_id, stay);
+select  cov.stay
+     ,  count(1)
+from    hospital hos
+            join covid as cov
+                 on cov.hospital_id = hos.id
+            join programmer pro
+                 on cov.programmer_id = pro.id
+where   hos.id = 9
+  and   country = 'India'
+group by cov.stay;
+```
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+위에 잡힌 인덱스로 충분이 100ms 언더로 잡힘.
+```sql
+select  pro.exercise
+    ,   count(1)
+from    hospital hos
+            join covid as cov
+                 on cov.hospital_id = hos.id
+            join programmer pro
+                 on cov.programmer_id = pro.id
+            join member mem
+                on cov.member_id = mem.id
+where   hos.id = 9
+    and mem.age between 30 and 39
+group by pro.exercise;
+```
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+기존의 경로와 똑같이 맞춰놨습니다. GET /favorites  
+   
+Master Slave 테스트는 slave를 내리면서 테스트 진행했습니다.
