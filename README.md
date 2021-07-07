@@ -340,18 +340,16 @@ from	covid	as cov
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요
 ```sql
 alter table programmer add constraint programmer_pk primary key (id);
-select  cov.id
-     ,   hos.name
-     ,   pro.hobby
-     ,   pro.dev_type
-     ,   pro.years_coding
+select  pro.id
+     ,  hos.name
 from    covid as cov
             join programmer  as pro
                  on cov.programmer_id = pro.id
             join  hospital as hos
                   on cov.hospital_id = hos.id
 where   (hobby = 'Yes' AND dev_type = '%student%') # like를 쓸 수 밖에 없는 데이터 규격들..ㅜㅜ
-   or years_coding = '0-2 years' ;
+   or years_coding = '0-2 years'
+order by pro.id;
 ```
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
 ```sql
