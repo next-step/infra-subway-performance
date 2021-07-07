@@ -35,7 +35,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    @Cacheable(value = "findFavorites")
+   @Cacheable(value = "findFavorites", key = "#loginMember.getId")
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
@@ -48,7 +48,7 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "findFavorites")
+    @CacheEvict(value = "findFavorites", key = "#loginMember.getId", allEntries = true)
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
