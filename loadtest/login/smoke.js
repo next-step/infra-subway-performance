@@ -8,7 +8,7 @@ export let options = {
   },
 };
 const BASE_URL = "https://sojeong-subway.n-e.kr/";
-const USERNAME = "user1@test.com";
+const USERNAME = "psj6414@naver.com";
 const PASSWORD = "1234";
 export default function () {
   let loginRes = 로그인();
