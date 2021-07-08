@@ -239,12 +239,14 @@ npm run dev
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
    - 정적파일 경량화 (css를 main.js로 통합)
-   - 렌더링 차단 리소스 제거하기 (js async 적용)
+   - 렌더링 차단 리소스 제거하기 (js defer 적용)
    - nginx : gzip 압축 적용
    - nginx : worker 옵션 변경
-      - worker_processes : 1
+      - worker_processes : auto
       - worker_connections : 1024
    - nginx : http2 적용
+   - nginx : 로드밸런싱 알고리즘 변경 (round robin -> least connection)
+   - nginx : 정적파일 cache 적용 (css,js,gif,png,jpg,jpeg)
    - was : 경로 찾기 캐시 적용 (redis)
    - was 인스턴스 추가
 
