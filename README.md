@@ -61,12 +61,14 @@ npm run dev
           <th>개선후 (동일조건)</th>
           <th>개선후 (vus증가)</th>
           <th>개선후 (was+1)</th>
+          <th>개선후 (was+3)</th>
       </tr>
       </thead>
       <tbody>
       <tr>
           <td rowspan="2">Smoke</td>
           <td>max vus</td>
+          <td>1</td>
           <td>1</td>
           <td>1</td>
           <td>1</td>
@@ -78,12 +80,14 @@ npm run dev
           <td>11.04ms</td>
           <td>14.46ms</td>
           <td>9.47ms</td>
+          <td>12.33ms</td>
       </tr>
       <tr>
           <td rowspan="2">Load</td>
           <td>max vus</td>
           <td>200</td>
           <td>200</td>
+          <td>300</td>
           <td>300</td>
           <td>300</td>
       </tr>
@@ -93,12 +97,14 @@ npm run dev
           <td>81.44ms</td>
           <td>135.59ms</td>
           <td>85.34ms</td>
+          <td>36.61ms</td>
       </tr>
       <tr>
           <td rowspan="2">Stress</td>
           <td>max vus</td>
           <td>250</td>
           <td>250</td>
+          <td>500</td>
           <td>500</td>
           <td>500</td>
       </tr>
@@ -108,147 +114,162 @@ npm run dev
           <td>158.66ms</td>
           <td>317.51ms</td>
           <td>219.28ms</td>
+          <td>83.19ms</td>
       </tr>
       </tbody>
       </table>
 
-   - 데이터를 갱신하는 페이지 (회원가입을 요청)
+    - 데이터를 갱신하는 페이지 (회원가입을 요청)
 
-      <table>
-      <thead>
-      <tr>
-          <th>시나리오</th>
-          <th>구분</th>
-          <th>개선전</th>
-          <th>개선후 (동일조건)</th>
-          <th>개선후 (vus증가)</th>
-          <th>개선후 (was+1)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-          <td rowspan="2">Smoke</td>
-          <td>max vus</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>16.05ms</td>
-          <td>11.32ms</td>
-          <td>11.94ms</td>
-          <td>12.09ms</td>
-      </tr>
-      <tr>
-          <td rowspan="2">Load</td>
-          <td>max vus</td>
-          <td>200</td>
-          <td>200</td>
-          <td>300</td>
-          <td>300</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>80.41ms</td>
-          <td>80.3ms</td>
-          <td>106.2ms</td>
-          <td>71.72ms</td>
-      </tr>
-      <tr>
-          <td rowspan="2">Stress</td>
-          <td>max vus</td>
-          <td>250</td>
-          <td>250</td>
-          <td>500</td>
-          <td>500</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>153.63ms</td>
-          <td>151.29</td>
-          <td>247.2ms</td>
-          <td>174.65ms</td>
-      </tr>
-      </tbody>
-      </table>
+       <table>
+       <thead>
+       <tr>
+           <th>시나리오</th>
+           <th>구분</th>
+           <th>개선전</th>
+           <th>개선후 (동일조건)</th>
+           <th>개선후 (vus증가)</th>
+           <th>개선후 (was+1)</th>
+           <th>개선후 (was+3)</th>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+           <td rowspan="2">Smoke</td>
+           <td>max vus</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>16.05ms</td>
+           <td>11.32ms</td>
+           <td>11.94ms</td>
+           <td>12.09ms</td>
+           <td>11.44ms</td>
+       </tr>
+       <tr>
+           <td rowspan="2">Load</td>
+           <td>max vus</td>
+           <td>200</td>
+           <td>200</td>
+           <td>300</td>
+           <td>300</td>
+           <td>300</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>80.41ms</td>
+           <td>80.3ms</td>
+           <td>106.2ms</td>
+           <td>71.72ms</td>
+           <td>33.6ms</td>
+       </tr>
+       <tr>
+           <td rowspan="2">Stress</td>
+           <td>max vus</td>
+           <td>250</td>
+           <td>250</td>
+           <td>500</td>
+           <td>500</td>
+           <td>500</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>153.63ms</td>
+           <td>151.29</td>
+           <td>247.2ms</td>
+           <td>174.65ms</td>
+           <td>79.22ms</td>
+       </tr>
+       </tbody>
+       </table>
 
-   - 데이터를 조회하는데 여러 데이터를 참조하는 페이지 (로그인 후 경로를 검색)
+    - 데이터를 조회하는데 여러 데이터를 참조하는 페이지 (로그인 후 경로를 검색)
 
-      <table>
-      <thead>
-      <tr>
-          <th>시나리오</th>
-          <th>구분</th>
-          <th>개선전</th>
-          <th>개선후 (동일조건)</th>
-          <th>개선후 (vus증가)</th>
-          <th>개선후 (was+1)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-          <td rowspan="2">Smoke</td>
-          <td>max vus</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>27.07ms</td>
-          <td>17.36ms</td>
-          <td>18.25ms</td>
-          <td>11.84ms</td>
-      </tr>
-      <tr>
-          <td rowspan="2">Load</td>
-          <td>max vus</td>
-          <td>200</td>
-          <td>200</td>
-          <td>300</td>
-          <td>300</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>266.66ms</td>
-          <td>242.73ms</td>
-          <td>209.74ms</td>
-          <td>106.03ms</td>
-      </tr>
-      <tr>
-          <td rowspan="2">Stress</td>
-          <td>max vus</td>
-          <td>250</td>
-          <td>250</td>
-          <td>500</td>
-          <td>500</td>
-      </tr>
-      <tr>
-          <td>http_req_duration</td>
-          <td>557.94ms</td>
-          <td>543.63ms</td>
-          <td>511.72ms</td>
-          <td>243.14ms</td>
-      </tr>
-      </tbody>
-      </table>
+       <table>
+       <thead>
+       <tr>
+           <th>시나리오</th>
+           <th>구분</th>
+           <th>개선전</th>
+           <th>개선후 (동일조건)</th>
+           <th>개선후 (vus증가)</th>
+           <th>개선후 (was+1)</th>
+           <th>개선후 (was+3)</th>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+           <td rowspan="2">Smoke</td>
+           <td>max vus</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+           <td>1</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>27.07ms</td>
+           <td>17.36ms</td>
+           <td>18.25ms</td>
+           <td>11.84ms</td>
+           <td>27.23ms</td>
+       </tr>
+       <tr>
+           <td rowspan="2">Load</td>
+           <td>max vus</td>
+           <td>200</td>
+           <td>200</td>
+           <td>300</td>
+           <td>300</td>
+           <td>300</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>266.66ms</td>
+           <td>242.73ms</td>
+           <td>209.74ms</td>
+           <td>106.03ms</td>
+           <td>40.57ms</td>
+       </tr>
+       <tr>
+           <td rowspan="2">Stress</td>
+           <td>max vus</td>
+           <td>250</td>
+           <td>250</td>
+           <td>500</td>
+           <td>500</td>
+           <td>500</td>
+       </tr>
+       <tr>
+           <td>http_req_duration</td>
+           <td>557.94ms</td>
+           <td>543.63ms</td>
+           <td>511.72ms</td>
+           <td>243.14ms</td>
+           <td>85.02ms</td>
+       </tr>
+       </tbody>
+       </table>
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
-   - 정적파일 경량화 (css를 main.js로 통합)
-   - 렌더링 차단 리소스 제거하기 (js defer 적용)
-   - nginx : gzip 압축 적용
-   - nginx : worker 옵션 변경
-      - worker_processes : auto
-      - worker_connections : 1024
-   - nginx : http2 적용
-   - nginx : 로드밸런싱 알고리즘 변경 (round robin -> least connection)
-   - nginx : 정적파일 cache 적용 (css,js,gif,png,jpg,jpeg)
-   - was : 경로 찾기 캐시 적용 (redis)
-   - was 인스턴스 추가
+    - 정적파일 경량화 (css를 main.js로 통합)
+    - 렌더링 차단 리소스 제거하기 (js defer 적용)
+    - nginx : gzip 압축 적용
+    - nginx : worker 옵션 변경
+        - worker_processes : auto
+        - worker_connections : 1024
+    - nginx : http2 적용
+    - nginx : 로드밸런싱 알고리즘 변경 (round robin -> least connection)
+    - nginx : 정적파일 cache 적용 (css,js,gif,png,jpg,jpeg)
+    - was : 경로 찾기 캐시 적용 (redis)
+    - was 인스턴스 추가
 
    ```javascript
       (개선후 PageSpeed 측정값)
