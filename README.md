@@ -173,7 +173,7 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
   - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요
     * docs/optimize/query/codingasahobby 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
   - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -182,6 +182,8 @@ npm run dev
     * docs/optimize/query/juniorhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
   - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     * docs/optimize/query/seoulhospitalindiatwenty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    * docs/optimize/query/seoulhospitalexercisethirty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
     
    
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
