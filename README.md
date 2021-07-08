@@ -189,3 +189,39 @@ npm run dev
   * https://public.enemfk777.kro.kr/favorites
   * login id : probitanima1@gmail.com
   * login pw : 11
+
+3. 데이터 베이스 이중화
+  * master config file
+    ```text
+      [mysqld]
+      log-bin=binlog
+      server-id=1
+    ```
+  * master mysql container 실행
+    ```text
+      docker run --name mysql-master -p 3306:3306 -v ~:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d brainbackdoor/data-subway:0.0.2
+    ```
+
+  * master mysql에 master 설정 명령
+    ```sql
+      CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';
+      GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
+      SHOW MASTER STATUS\G
+    ```
+
+  * slave config file
+    ```text
+      [mysqld]
+      server-id=2
+    ```
+    
+  * slave mysql container 실행
+    ```text
+      docker run --name mysql-slave -p 3306:3306 -v ~:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
+    ```
+  * slave mysql에 slave 설정 명령
+    ```sql
+      CHANGE MASTER TO MASTER_HOST='192.168.2.150', MASTER_PORT=3306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=619;
+      START SLAVE;
+      SHOW SLAVE STATUS\G
+    ```
