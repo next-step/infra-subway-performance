@@ -203,6 +203,85 @@ CacheConfig 클래스의 RedisCacheConfiguration에서 entryTtl 값을 추가하
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+* Coding as a Hobby 와 같은 결과를 반환하세요.
+  ```sql
+  SELECT (Count(id) / (SELECT COUNT(id) FROM subway.programmer) * 100) as 'HobbyRate'
+  FROM programmer
+  GROUP BY hobby;
+  ```
+  이 요구사항은 실습 해설을 참고하였습니다. (어떤 결과를 내야 하는지 가늠이 잘 안왔었네요). 실제로 인덱스를 걸기 전과 건 후를 비교 했는데 약 100ms 차이가 나네요.
+  <br>
+* 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```sql
+  select c.programmer_id, h.name
+  from covid c
+  join hospital h on c.hospital_id = h.id
+  ;
+  ```
+
+  위의 쿼리의 경우 조인 쿼리가 단순하기에 빠른 시간이 걸린 것으로 예상했습니다.
+
+<br>
+
+* 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+  ```sql
+  select p.*, h.name
+  from (select p.id, p.years_coding, p.student, p.hobby from programmer p where (hobby = 'Yes' and student like 'Yes%') or years_coding = '0-2 years' order by p.id) as p
+  join covid c on p.id = c.programmer_id
+  join hospital h on c.hospital_id = h.id;
+  ```
+
+  테이블 3개 모두 full scan을 적용합니다.
+  또한 쿼리의 결과가 나오지 않습니다. <br>
+  따라서 인덱스를 추가해 보겠습니다.  <br>
+  일단 테이블을 보니 pk가 모두 빠져 있는 것을 확인. 테이블의 id 컬럼에 pk를 모두 추가하고 쿼리를 다시 실행시켰습니다.
+
+  인덱스 추가는 programmer의 hobby,student로 인덱싱을 하였습니다.
+
+<br>
+* 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+  ```sql
+  select c.stay, count(*) cnt
+  from covid c
+      join member m on m.id = c.member_id and m.age >= 20 and m.age < 30
+  join hospital h on h.id = c.hospital_id and h.name = '서울대병원'
+  join programmer p on c.programmer_id = p.id and p.country = 'India'
+  group by stay;
+  ```
+
+아래 30대 환자들을 먼저 작성해서 조금 혼란이 왔는데요 (인덱스를 어디까지 걸었더라...)
+
+일단 hospital의 name의 컬럼을 varchar(255)로 수정하고 인덱스를 추가하였습니다.
+
+covid의 hospital_id에 인덱스를 추가하였습니다. 그리고 member의 age, programmer의  country에 인덱스를 추가하였습니다. hospital의 name에 여전히 싱글 로우로 익스플레인에 나오고 group에는 파일 소트가 일어났는데요.
+
+
+  <br>
+
+* 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+  ```sql
+  select exercise, count(*)
+  from (select id from member where age >= 30 and age <40) as m
+  join covid c on m.id = c.member_id
+  join hospital h on h.id = c.hospital_id and h.name = '서울대병원'
+  join programmer p on p.id = c.programmer_id
+  group by exercise
+  order by null;
+
+  ```
+
+그리고 유니크 인덱스 까지 추가하여 단건에 대하여 조회 되도록 하였습니다.
+
+programmer의 exercise에 인덱스 추가, covid의 hospital_id에 인덱스를 추가하였습니다. 그런데 exercise의 컬럼을 바꾸기 전보다 되려 쿼리 실행시간이 늘어 다시 롤백하였습니다...! (실습 해설에 있는 쿼리도 비교했는데 동일네요.)
+
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+request param을 이용하여 페이징 처리했습니다!
+
+https://lkimilhol.p-e.kr/favorites?page=2
 
