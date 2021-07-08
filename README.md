@@ -63,6 +63,95 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
  - 기존 성능은 아래와 같습니다.
 
+테스트를 진행해보니, 생각보다 흥미로운 부분이 많았습니다.
+일단 테스트를 진행하다가 script 가 총 9개 너무 많다고 느껴서, 하나의 결과를 통해서 공유드리고자 합니다.
+(전체 결과는 다음 `script/Connectionfrequency /result.md` 에서 찾아볼 수 있습니다.)
+
+맨 처음에는 아무것도 설정하지 않은 상태에서 시작했습니다.(중요하다고 여겨지는 지표만 분리해서 요약했습니다)
+
+|             | checks                   | http_req_duration(avg) | http_reqs     |
+| ----------- | ------------------------ | ---------------------- | ------------- |
+| Load test   | 100.00% ✓ 56888          | 26.81ms                | 563.273188/s  |
+| Smoke test  | 100.00% ✓ 200            | 1.35ms                 | 1.992402/s    |
+| Stress test | 86.23% ✓ 85949   ✗ 13722 | 62.61ms                | 1132.896511/s |
+
+이렇게 된 상태에서 Redis 캐시와 정적리소스 호출시 비동기로 받아오도록 수정했습니다.
+
+|             | checks                  | http_req_duration(avg) | http_reqs    |
+| ----------- | ----------------------- | ---------------------- | ------------ |
+| Load test   | 100.00% ✓ 56704         | 29.02ms                | 561.418494/s |
+| Smoke test  | 100.00% ✓ 200           | 1.5ms                  | 1.991849/s   |
+| Stress test | 96.27% ✓ 53458   ✗ 2069 | 436.61ms               | 633.338505/s |
+
+확실히, 캐시를 적용하니 서비스가 안정되는 모습을 보여줬습니다. 스트레스 테스트에서 Fail 나는 부분이 적어졌을 뿐만 아니라, HTTP_Reqs 가 줄어드는 효과가 나타났습니다.
+
+
+
+이번에는 reverse-proxy 를 개선하는 작업을 수행해보았습니다.
+
+먼저 reverse-proxy를 개선하는 작업을 하기전 아래와 같은 nginx.conf 내용으로 수행했습니다.
+
+```shell
+events {}
+
+http {       
+  upstream app {
+    server 172.17.0.1:8080;
+  }
+  
+  # Redirect all traffic to HTTPS
+  server {
+    listen 80;
+    return 301 https://$host$request_uri;
+  }
+
+  server {
+    listen 443 ssl;  
+    ssl_certificate /etc/letsencrypt/live/[도메인주소]/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/[도메인주소]/privkey.pem;
+
+    # Disable SSL
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    # 통신과정에서 사용할 암호화 알고리즘
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+    # Enable HSTS
+    # client의 browser에게 http로 어떠한 것도 load 하지 말라고 규제합니다.
+    # 이를 통해 http에서 https로 redirect 되는 request를 minimize 할 수 있습니다.
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    # SSL sessions
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;      
+
+    location / {
+      proxy_pass http://app;    
+    }
+  }
+}
+```
+
+이 상태에서 성능 테스트를 해본 결과 아래와 같았습니다. (redis 캐시 적용 되어있습니다.)
+
+|             | checks                   | http_req_duration(avg) | http_reqs    |
+| ----------- | ------------------------ | ---------------------- | ------------ |
+| Load test   | 99.97%  ✓ 53398  ✗ 14    | 51.68ms                | 528.841772/s |
+| Smoke test  | 100.00% ✓ 200            | 2.57ms                 | 1.986918/s   |
+| Stress test | 48.50%  ✓ 27197  ✗ 28871 | 96.09ms                | 646.726603/s |
+
+이후 위 `nginx 세팅하기`에서 http2, reverse 캐시, 정적리소스 압축 등을 추가하여 다시 성능 테스트를 해본 결과 아래와 같았습니다.
+
+|             | checks                     | http_req_duration(avg) | http_reqs    |
+| ----------- | -------------------------- | ---------------------- | ------------ |
+| Load test   | 100.00% ✓ 51730  ✗ 0       | 66.98ms                | 512.190122/s |
+| Smoke test  | 100.00% ✓ 200              | 2.12ms                 | 1.97ms       |
+| Stress test | 93.92% ✓ 72378      ✗ 4684 | 150.96ms               | 877.031136/s |
+
+`nginx 개선하기` 세팅을 하고난 이후로, 스트레스 테스트에서 더 많은 트래픽을 견디는 효과가 났습니다. 그리고, Load, Smoke 테스트에서 조금 더 나은 개선효과를 보여줬습니다.
+
+
 
 
 힌트에서 알려주는 할 수 있는 행위들
@@ -75,7 +164,7 @@ npm run dev
    
 2. Reverse Proxy 개선하기
 
-    - [ ] SSL 에 추가 개선하기
+   - [x] SSL 에 추가 개선하기
    
 3. WAS 성능 개선하기
    
@@ -97,7 +186,6 @@ npm run dev
       2
      ```
    - [x] Async Thread pool 설정
-   
 > cheatsheet
 > 
 > 공인 IP 확인 >  curl bot.whatismyipaddress.com
@@ -109,75 +197,6 @@ npm run dev
 > java -jar ./build/libs/subway-0.0.1-SNAPSHOT.jar
 >
 > k6 run smoke.js
-
-
-**기존 요청 시간**
-
-```
-$ k6 run script/Connectionfrequency/load.js
-[ 생략 ] 
-     checks.........................: 100.00% ✓ 57198      ✗ 0
-     data_received..................: 13 MB   128 kB/s
-     data_sent......................: 13 MB   128 kB/s
-     http_req_blocked...............: avg=230.47µs min=2.93µs   med=4.45µs  max=268.95ms p(90)=7.04µs   p(95)=11.93µs
-     http_req_connecting............: avg=199.9µs  min=0s       med=0s      max=79.37ms  p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=23.82ms  min=832.48µs med=2.33ms  max=1.95s    p(90)=21.52ms  p(95)=88.21ms
-       { expected_response:true }...: avg=23.82ms  min=832.48µs med=2.33ms  max=1.95s    p(90)=21.52ms  p(95)=88.21ms
-     http_req_failed................: 0.00%   ✓ 0          ✗ 57198
-     http_req_receiving.............: avg=691.83µs min=16.2µs   med=48.39µs max=443.43ms p(90)=226.68µs p(95)=971.68µs
-     http_req_sending...............: avg=248.31µs min=8.22µs   med=15.38µs max=316.11ms p(90)=42.12µs  p(95)=157.31µs
-     http_req_tls_handshaking.......: avg=0s       min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=22.88ms  min=751.39µs med=2.14ms  max=1.95s    p(90)=19.28ms  p(95)=83.7ms
-     http_reqs......................: 57198   566.291892/s
-     iteration_duration.............: avg=1.05s    min=1s       med=1s      max=3.53s    p(90)=1.05s    p(95)=1.22s
-     iterations.....................: 28599   283.145946/s
-     vus............................: 0       min=0        max=300
-     vus_max........................: 300
-```
-
-```
-k6 run script/Connectionfrequency/smoke.js
-[생략]
-     checks.........................: 100.00% ✓ 200      ✗ 0
-     data_received..................: 45 kB   450 B/s
-     data_sent......................: 45 kB   450 B/s
-     http_req_blocked...............: avg=11.53µs min=3.95µs   med=6.57µs  max=575.63µs p(90)=7.88µs   p(95)=8.24µs
-     http_req_connecting............: avg=4.78µs  min=0s       med=0s      max=506.72µs p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=1.31ms  min=981.6µs  med=1.37ms  max=4.78ms   p(90)=1.52ms   p(95)=1.57ms
-       { expected_response:true }...: avg=1.31ms  min=981.6µs  med=1.37ms  max=4.78ms   p(90)=1.52ms   p(95)=1.57ms
-     http_req_failed................: 0.00%   ✓ 0        ✗ 200
-     http_req_receiving.............: avg=75.97µs min=41.33µs  med=73.22µs max=144.22µs p(90)=100.96µs p(95)=118.94µs
-     http_req_sending...............: avg=24.16µs min=11.8µs   med=26.28µs max=72.96µs  p(90)=37.48µs  p(95)=40.55µs
-     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=1.21ms  min=915.78µs med=1.26ms  max=4.64ms   p(90)=1.4ms    p(95)=1.44ms
-     http_reqs......................: 200     1.992378/s
-     iteration_duration.............: avg=1s      min=1s       med=1s      max=1s       p(90)=1s       p(95)=1s
-     iterations.....................: 100     0.996189/s
-     vus............................: 1       min=1      max=1
-     vus_max........................: 1       min=1      max=1
-```
-
-```
-k6 run script/Connectionfrequency/stress.js
-
-     checks.........................: 82.51% ✓ 87250       ✗ 18492
-     data_received..................: 20 MB  224 kB/s
-     data_sent......................: 20 MB  224 kB/s
-     http_req_blocked...............: avg=387.24µs min=0s       med=4.17µs  max=373.32ms p(90)=6.53µs   p(95)=17.97µs
-     http_req_connecting............: avg=332.02µs min=0s       med=0s      max=373.25ms p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=51.4ms   min=0s       med=3.48ms  max=783.48ms p(90)=192.9ms  p(95)=265.9ms
-       { expected_response:true }...: avg=62.3ms   min=784.71µs med=8.18ms  max=783.48ms p(90)=212.94ms p(95)=285.52ms
-     http_req_failed................: 17.48% ✓ 18492       ✗ 87250
-     http_req_receiving.............: avg=734.72µs min=0s       med=31.91µs max=272.07ms p(90)=117.32µs p(95)=376.46µs
-     http_req_sending...............: avg=2ms      min=0s       med=13.76µs max=551.57ms p(90)=102.81µs p(95)=1.29ms
-     http_req_tls_handshaking.......: avg=0s       min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=48.66ms  min=0s       med=3.2ms   max=783.39ms p(90)=184.37ms p(95)=254.47ms
-     http_reqs......................: 105742 1202.085852/s
-     iteration_duration.............: avg=819.01ms min=155.61µs med=1s      max=2.43s    p(90)=1.41s    p(95)=1.61s
-     iterations.....................: 62117  706.152398/s
-     vus............................: 57     min=50        max=1100
-     vus_max........................: 1100   min=1100      max=1100
-```
-
-
+> 
+> https://k6.io/docs/getting-started/results-output/
 
