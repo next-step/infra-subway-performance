@@ -60,7 +60,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @CachePut(value = REDIS_VALUE, key = "REDIS_KEY")
+    @CachePut(value = REDIS_VALUE, key = REDIS_KEY)
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
