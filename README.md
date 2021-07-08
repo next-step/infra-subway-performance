@@ -184,7 +184,8 @@ npm run dev
     * docs/optimize/query/seoulhospitalindiatwenty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
   - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
     * docs/optimize/query/seoulhospitalexercisethirty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
-    
-   
+  
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+  * https://public.enemfk777.kro.kr/favorites
+  * login id : probitanima1@gmail.com
+  * login pw : 11
