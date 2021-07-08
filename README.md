@@ -196,6 +196,7 @@ npm run dev
       [mysqld]
       log-bin=binlog
       server-id=1
+      binlog_do_db=subway
     ```
   * master mysql container 실행
     ```text
@@ -212,7 +213,9 @@ npm run dev
   * slave config file
     ```text
       [mysqld]
+      log-bin=binlog
       server-id=2
+      replicate-do-db=subway
     ```
     
   * slave mysql container 실행
