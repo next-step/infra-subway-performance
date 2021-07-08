@@ -35,6 +35,17 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
+
+	// MySQL connector
+	implementation("mysql:mysql-connector-java")
+
+	// AOP
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// Redis
+	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
+	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
 }
 
 test {
