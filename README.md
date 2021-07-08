@@ -67,7 +67,32 @@ npm run dev
 ---
 
 ### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요 
+    1. Coding as a Hobby 와 같은 결과를 반환하세요.
+    - asset 폴더 sql, problem1의 조회 결과 첨부하였습니다.
+    - Programmer의 테이블의 PK를 설정하고, hobby column에 index를 걸었습니다.
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요. 
+    - Covid, Hospital, Programmer 테이블의 id에 PK를 설정했습니다.
+    - Covid의 programmer column에 인덱스를 설정했습니다. 
+    - Hospital의 데이터가 32개라서 불필요한 인덱스는 설정하지 않았습니다.
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 programmer.id 기준으로 정렬하세요.
+    - Programmer 테이블의 hobby, student, years_coding 항목에 인덱스 설정.
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+    - Hospital, Covid, Programmer, Member의 id에 PK 설정
+    - Programmer의 country에 index 설정
+    - Covid의 stay에 인덱스 설정
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+    - Hospital, Covid, Programmer, Member의 id에 PK 설정
+    - Programmer의 excercise의 인덱스 설정
+    - Covid의 programmer_id 인덱스 설정. hospital_id에 인덱스 설정
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- https://happy-subway.p-e.kr/favorites
+- id: user@test.com pw: 1234
 
+![favorite](./asset/favorite/favorite.png)
+
+- 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+
+3. 데이터베이스 이중화
+- master - slave 이중화
