@@ -58,9 +58,12 @@ npm run dev
 
 ---
 
-1단계 - 화면 응답 개선하기
 
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+# 1단계 - 화면 응답 개선하기
+
+### 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
  - 기존 성능은 아래와 같습니다.
 
 테스트를 진행해보니, 생각보다 흥미로운 부분이 많았습니다.
@@ -89,7 +92,7 @@ npm run dev
 
 이번에는 reverse-proxy 를 개선하는 작업을 수행해보았습니다.
 
-먼저 reverse-proxy를 개선하는 작업을 하기전 아래와 같은 nginx.conf 내용으로 수행했습니다.
+먼저 `reverse-proxy를 개선하기` 작업을 하기전 아래와 같은 기본 `nginx.conf` 내용으로 수행했습니다.
 
 ```shell
 events {}
@@ -153,8 +156,7 @@ http {
 
 
 
-
-힌트에서 알려주는 할 수 있는 행위들
+### 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
 1. 정적 파일 경량화
    - [x] webpack-bundle-analyzer 플로그인 설치 후 불필요한 import 제거하기
@@ -186,17 +188,4 @@ http {
       2
      ```
    - [x] Async Thread pool 설정
-> cheatsheet
-> 
-> 공인 IP 확인 >  curl bot.whatismyipaddress.com
-> 
-> docker run -d -p 3306:3306 brainbackdoor/data-subway:0.0.1
-> 
-> find ./* -name "*.jar"
->
-> java -jar ./build/libs/subway-0.0.1-SNAPSHOT.jar
->
-> k6 run smoke.js
-> 
-> https://k6.io/docs/getting-started/results-output/
 
