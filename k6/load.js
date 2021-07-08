@@ -10,7 +10,7 @@ export let options = {
   },
 };
 
-const BASE_URL = 'https://performance.honbabzone.com';
+const BASE_URL = 'http://localhost:8080';
 const USERNAME = 'user@test.com';
 const PASSWORD = '1234';
 
@@ -18,7 +18,7 @@ export default function ()  {
   let loginResponse = 로그인();
   
 
-  즐겨찾기_조회하기(loginResponse);
+  //즐겨찾기_조회하기(loginResponse);
 
   경로_조회하기(loginResponse)
 
