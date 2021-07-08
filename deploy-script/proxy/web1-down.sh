@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo echo -e "server 192.168.100.157:8080 down;\nserver 192.168.100.157:8081;" > /etc/nginx/upstream.conf
+sudo echo -e "least_conn;\nserver 192.168.100.157:8080 down;\nserver 192.168.100.157:8081 max_fails=3 fail_timeout=3s;" > /etc/nginx/upstream.conf
 sudo nginx -s reload
