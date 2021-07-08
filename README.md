@@ -173,6 +173,10 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
+- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요
+    * docs/optimize/query/codingasahobby 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+    
+   
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
