@@ -176,6 +176,8 @@ npm run dev
 - [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
   - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요
     * docs/optimize/query/codingasahobby 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    * docs/optimize/query/programmerhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
     
    
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
