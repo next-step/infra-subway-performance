@@ -92,17 +92,87 @@ default ✓ [======================================] 0000/1100 VUs  1m27s
 
 ```text
 // load.js
+running (1m41.0s), 000/300 VUs, 29820 complete and 0 interrupted iterations
+default ✓ [======================================] 300 VUs  1m40s
 
+     ✓ find path in successfully
+     ✗ distance
+      ↳  0% — ✓ 0 / ✗ 29820
+
+     checks.........................: 50.00% ✓ 29820      ✗ 29820
+     data_received..................: 15 MB  148 kB/s
+     data_sent......................: 4.2 MB 41 kB/s
+     http_req_blocked...............: avg=754.06µs min=3.28µs  med=5.15µs  max=238.36ms p(90)=6.71µs   p(95)=9.56µs
+     http_req_connecting............: avg=700.55µs min=0s      med=0s      max=213.71ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=8.05ms   min=1.37ms  med=2.13ms  max=918.66ms p(90)=6.24ms   p(95)=11.16ms
+       { expected_response:true }...: avg=8.05ms   min=1.37ms  med=2.13ms  max=918.66ms p(90)=6.24ms   p(95)=11.16ms
+     http_req_failed................: 0.00%  ✓ 0          ✗ 29820
+     http_req_receiving.............: avg=197.87µs min=17.27µs med=51.4µs  max=60.32ms  p(90)=168.77µs p(95)=245.34µs
+     http_req_sending...............: avg=123.55µs min=8.79µs  med=14.45µs max=229.16ms p(90)=29.99µs  p(95)=50.89µs
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s      max=0s       p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=7.73ms   min=1.3ms   med=2ms     max=885.57ms p(90)=5.94ms   p(95)=10.52ms
+     http_reqs......................: 29820  295.205037/s
+     iteration_duration.............: avg=1.01s    min=1s      med=1s      max=1.98s    p(90)=1s       p(95)=1.01s
+     iterations.....................: 29820  295.205037/s
+     vus............................: 4      min=4        max=300
+     vus_max........................: 300
 ```
 
 ```text
 // smoke.js
+running (1m40.3s), 0/1 VUs, 100 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m40s
 
+     ✓ find path in successfully
+     ✗ distance
+      ↳  0% — ✓ 0 / ✗ 100
+
+     checks.........................: 50.00% ✓ 100      ✗ 100
+     data_received..................: 50 kB  499 B/s
+     data_sent......................: 14 kB  140 B/s
+     http_req_blocked...............: avg=13.07µs min=6.91µs  med=7.44µs  max=514.15µs p(90)=8.3µs    p(95)=11.2µs
+     http_req_connecting............: avg=4.56µs  min=0s      med=0s      max=456.81µs p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=2.18ms  min=1.98ms  med=2.12ms  max=5.63ms   p(90)=2.24ms   p(95)=2.33ms
+       { expected_response:true }...: avg=2.18ms  min=1.98ms  med=2.12ms  max=5.63ms   p(90)=2.24ms   p(95)=2.33ms
+     http_req_failed................: 0.00%  ✓ 0        ✗ 100
+     http_req_receiving.............: avg=83.95µs min=49.62µs med=72.52µs max=352.81µs p(90)=109.12µs p(95)=123.31µs
+     http_req_sending...............: avg=33.31µs min=20.37µs med=23.38µs max=657.46µs p(90)=38.91µs  p(95)=43.53µs
+     http_req_tls_handshaking.......: avg=0s      min=0s      med=0s      max=0s       p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=2.07ms  min=1.89ms  med=2.01ms  max=5.51ms   p(90)=2.1ms    p(95)=2.17ms
+     http_reqs......................: 100    0.996938/s
+     iteration_duration.............: avg=1s      min=1s      med=1s      max=1s       p(90)=1s       p(95)=1s
+     iterations.....................: 100    0.996938/s
+     vus............................: 1      min=1      max=1
+     vus_max........................: 1      min=1      max=1
 ```
 
 ```text
 // stress.js
+running (1m27.8s), 0000/1100 VUs, 52729 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
 
+     ✗ find path in successfully
+      ↳  91% — ✓ 48252 / ✗ 4477
+     ✗ distance
+      ↳  0% — ✓ 0 / ✗ 52729
+
+     checks.........................: 45.75% ✓ 48252      ✗ 57206
+     data_received..................: 24 MB  275 kB/s
+     data_sent......................: 6.8 MB 77 kB/s
+     http_req_blocked...............: avg=45.62µs  min=0s       med=4.93µs  max=164.92ms p(90)=7.12µs   p(95)=21.32µs
+     http_req_connecting............: avg=26.25µs  min=0s       med=0s      max=133.09ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=40.49ms  min=0s       med=3.57ms  max=1.28s    p(90)=123.37ms p(95)=252.56ms
+       { expected_response:true }...: avg=44.24ms  min=1.36ms   med=4.37ms  max=1.28s    p(90)=138.38ms p(95)=266.97ms
+     http_req_failed................: 8.49%  ✓ 4477       ✗ 48252
+     http_req_receiving.............: avg=1.33ms   min=0s       med=40.58µs max=232.83ms p(90)=212.07µs p(95)=958.58µs
+     http_req_sending...............: avg=624.98µs min=0s       med=14.16µs max=305.99ms p(90)=76.88µs  p(95)=246.1µs
+     http_req_tls_handshaking.......: avg=0s       min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=38.53ms  min=0s       med=3.32ms  max=1.28s    p(90)=118.32ms p(95)=238.35ms
+     http_reqs......................: 52729  600.433574/s
+     iteration_duration.............: avg=964.89ms min=152.29µs med=1s      max=2.29s    p(90)=1.13s    p(95)=1.26s
+     iterations.....................: 52729  600.433574/s
+     vus............................: 53     min=50       max=1100
+     vus_max........................: 1100   min=1100     max=1100
 ```
 
 # 리버스-프록시와 최적화 반영 후
