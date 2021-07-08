@@ -178,6 +178,8 @@ npm run dev
     * docs/optimize/query/codingasahobby 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
   - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     * docs/optimize/query/programmerhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    * docs/optimize/query/juniorhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
     
    
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
