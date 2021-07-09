@@ -60,6 +60,13 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    * 키를 사용하지 않아 조회 횟수가 많고 속도가 느릴 것이라 생각한 곳에 index를 추가했습니다.
+        * ```CREATE INDEX IDX_SECTION_PATH ON subway.section (down_station_id, up_station_id);```
+          * Line table 과 조인 하기 위해 line_id index 추가
+        ![img.png](img.png)
+        * ```CREATE INDEX idx_member_01 ON subway.member (email);```
+    
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    
 
