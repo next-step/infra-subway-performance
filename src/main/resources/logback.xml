@@ -4,7 +4,7 @@
   <include resource="file-appender.xml" />
   <include resource="json-appender.xml" />
 
-  <logger name="console" level="TRACE">
+  <logger name="console" level="INFO">
     <appender-ref ref="console"/>
   </logger>
 
