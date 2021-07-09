@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -30,25 +31,26 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @CachePut(value = "findFavorites", key = "#loginMember.getId")
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
     }
 
-   @Cacheable(value = "findFavorites", key = "#loginMember.getId")
+    @Cacheable(value = "findFavorites", key = "#loginMember.getId")
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(
-                it,
-                StationResponse.of(stations.get(it.getSourceStationId())),
-                StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+                .map(it -> FavoriteResponse.of(
+                        it,
+                        StationResponse.of(stations.get(it.getSourceStationId())),
+                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "findFavorites", key = "#loginMember.getId", allEntries = true)
+    @CacheEvict(value = "findFavorites", key = "#loginMember.getId")
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
@@ -60,7 +62,7 @@ public class FavoriteService {
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     private Set<Long> extractStationIds(List<Favorite> favorites) {
