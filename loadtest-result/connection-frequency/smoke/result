@@ -1,0 +1,83 @@
+1. 개선전
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.3s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ↓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 20       ✗ 0
+     data_received..................: 11 kB   1.1 kB/s
+     data_sent......................: 5.4 kB  524 B/s
+     http_req_blocked...............: avg=2.22ms  min=5.2µs   med=8.51µs  max=44.33ms  p(90)=12.58µs  p(95)=2.24ms
+     http_req_connecting............: avg=23.21µs min=0s      med=0s      max=464.28µs p(90)=0s       p(95)=23.21µs
+   ✓ http_req_duration..............: avg=11.2ms  min=7.06ms  med=8.7ms   max=58.37ms  p(90)=10.18ms  p(95)=13.05ms
+       { expected_response:true }...: avg=11.2ms  min=7.06ms  med=8.7ms   max=58.37ms  p(90)=10.18ms  p(95)=13.05ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 20
+     http_req_receiving.............: avg=87.61µs min=56.35µs med=87.18µs max=140.44µs p(90)=113.72µs p(95)=119.97µs
+     http_req_sending...............: avg=36.3µs  min=16.6µs  med=33.45µs max=129.78µs p(90)=49.41µs  p(95)=53.59µs
+     http_req_tls_handshaking.......: avg=1.98ms  min=0s      med=0s      max=39.77ms  p(90)=0s       p(95)=1.98ms
+     http_req_waiting...............: avg=11.08ms min=6.94ms  med=8.57ms  max=58.1ms   p(90)=10.03ms  p(95)=12.92ms
+     http_reqs......................: 20      1.945026/s
+     iteration_duration.............: avg=1.02s   min=1.01s   med=1.01s   max=1.11s    p(90)=1.03s    p(95)=1.07s
+     iterations.....................: 10      0.972513/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+
+2. 개선후(프록시 서버)
+- CPU Core에 맞는 적절한 Worker 프로세스를 할당
+- worker_connections 1024;
+- gzip 텍스트 압축 활성화
+- 캐시 설정
+- http2 적용
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.3s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 20       ✗ 0
+     data_received..................: 9.8 kB  947 B/s
+     data_sent......................: 4.2 kB  411 B/s
+     http_req_blocked...............: avg=2.7ms    min=2.92µs  med=3.07µs  max=53.95ms  p(90)=5.25µs   p(95)=2.71ms
+     http_req_connecting............: avg=28.87µs  min=0s      med=0s      max=577.44µs p(90)=0s       p(95)=28.87µs
+   ✓ http_req_duration..............: avg=12.22ms  min=5.44ms  med=6.83ms  max=56.75ms  p(90)=20.65ms  p(95)=55.99ms
+       { expected_response:true }...: avg=12.22ms  min=5.44ms  med=6.83ms  max=56.75ms  p(90)=20.65ms  p(95)=55.99ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 20
+     http_req_receiving.............: avg=88.55µs  min=68.75µs med=84µs    max=138.79µs p(90)=114.66µs p(95)=132.38µs
+     http_req_sending...............: avg=108.75µs min=41.95µs med=88.67µs max=302.26µs p(90)=165.85µs p(95)=301.2µs
+     http_req_tls_handshaking.......: avg=1.51ms   min=0s      med=0s      max=30.37ms  p(90)=0s       p(95)=1.51ms
+     http_req_waiting...............: avg=12.02ms  min=5.24ms  med=6.7ms   max=56.58ms  p(90)=20.48ms  p(95)=55.57ms
+     http_reqs......................: 20      1.939497/s
+     iteration_duration.............: avg=1.03s    min=1.01s   med=1.01s   max=1.16s    p(90)=1.03s    p(95)=1.1s
+     iterations.....................: 10      0.969749/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1

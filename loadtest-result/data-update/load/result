@@ -1,0 +1,84 @@
+1. 개선전
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load-update.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 250 max VUs, 2m10s max duration (incl. graceful stop):
+           * default: 250 looping VUs for 1m40s (gracefulStop: 30s)
+
+
+running (1m41.0s), 000/250 VUs, 23766 complete and 0 interrupted iterations
+default ✓ [======================================] 250 VUs  1m40s
+
+     ✓ logged in successfully
+     ✓ updated in successfully
+
+     checks.........................: 100.00% ✓ 47532      ✗ 0
+     data_received..................: 15 MB   151 kB/s
+     data_sent......................: 14 MB   142 kB/s
+     http_req_blocked...............: avg=1.78ms   min=2.89µs  med=5.65µs  max=547.6ms  p(90)=9.31µs   p(95)=32.61µs
+     http_req_connecting............: avg=140.06µs min=0s      med=0s      max=55.16ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=24.6ms   min=3.52ms  med=11.24ms max=1.15s    p(90)=44.81ms  p(95)=68.25ms
+       { expected_response:true }...: avg=24.6ms   min=3.52ms  med=11.24ms max=1.15s    p(90)=44.81ms  p(95)=68.25ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 47532
+     http_req_receiving.............: avg=292.66µs min=15.72µs med=41.69µs max=78.51ms  p(90)=239.1µs  p(95)=832.68µs
+     http_req_sending...............: avg=492.38µs min=11.77µs med=20.65µs max=101.56ms p(90)=284.28µs p(95)=1.39ms
+     http_req_tls_handshaking.......: avg=1.56ms   min=0s      med=0s      max=487.28ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=23.82ms  min=3.45ms  med=10.79ms max=1.14s    p(90)=42.94ms  p(95)=65.33ms
+     http_reqs......................: 47532   470.575641/s
+     iteration_duration.............: avg=1.05s    min=1s      med=1.02s   max=2.47s    p(90)=1.09s    p(95)=1.13s
+     iterations.....................: 23766   235.287821/s
+     vus............................: 3       min=3        max=250
+     vus_max........................: 250     min=250      max=250
+
+2. 개선후(프록시 서버)
+- CPU Core에 맞는 적절한 Worker 프로세스를 할당
+- worker_connections 1024;
+- gzip 텍스트 압축 활성화
+- 캐시 설정
+- http2 적용
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load-update.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 250 max VUs, 2m10s max duration (incl. graceful stop):
+           * default: 250 looping VUs for 1m40s (gracefulStop: 30s)
+
+
+running (1m41.0s), 000/250 VUs, 22973 complete and 0 interrupted iterations
+default ✓ [======================================] 250 VUs  1m40s
+
+     ✓ logged in successfully
+     ✓ updated in successfully
+
+     checks.........................: 100.00% ✓ 45946      ✗ 0
+     data_received..................: 12 MB   123 kB/s
+     data_sent......................: 9.7 MB  96 kB/s
+     http_req_blocked...............: avg=3.05ms   min=2.09µs  med=2.84µs  max=1.09s    p(90)=3.16µs   p(95)=5.33µs
+     http_req_connecting............: avg=256.49µs min=0s      med=0s      max=91.36ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=38.06ms  min=19.12µs med=17.65ms max=1.09s    p(90)=87.17ms  p(95)=128.01ms
+       { expected_response:true }...: avg=38.06ms  min=19.12µs med=17.65ms max=1.09s    p(90)=87.17ms  p(95)=128.01ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 45946
+     http_req_receiving.............: avg=619.67µs min=13.25µs med=48.03µs max=356.16ms p(90)=388.55µs p(95)=1.19ms
+     http_req_sending...............: avg=1.85ms   min=0s      med=86.74µs max=481.57ms p(90)=1.75ms   p(95)=6.22ms
+     http_req_tls_handshaking.......: avg=2.39ms   min=0s      med=0s      max=934.8ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=35.59ms  min=0s      med=16.32ms max=1.09s    p(90)=80.53ms  p(95)=120.1ms
+     http_reqs......................: 45946   454.812947/s
+     iteration_duration.............: avg=1.09s    min=1s      med=1.04s   max=2.8s     p(90)=1.18s    p(95)=1.26s
+     iterations.....................: 22973   227.406473/s
+     vus............................: 7       min=7        max=250
+     vus_max........................: 250     min=250      max=250

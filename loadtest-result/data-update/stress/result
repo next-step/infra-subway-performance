@@ -1,0 +1,60 @@
+1. 개선전
+
+running (1m28.0s), 0000/1100 VUs, 26767 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
+
+     ✗ logged in successfully
+      ↳  96% — ✓ 25759 / ✗ 1008
+     ✓ updated in successfully
+
+     checks.........................: 98.08% ✓ 51518      ✗ 1008
+     data_received..................: 20 MB  226 kB/s
+     data_sent......................: 16 MB  180 kB/s
+     http_req_blocked...............: avg=8.31ms   min=0s       med=5.41µs   max=2.79s    p(90)=9.53µs   p(95)=75.78µs
+     http_req_connecting............: avg=1.24ms   min=0s       med=0s       max=621.36ms p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=438.28ms min=0s       med=238.54ms max=4.1s     p(90)=1.21s    p(95)=1.49s
+       { expected_response:true }...: avg=446.85ms min=3.61ms   med=250.1ms  max=4.1s     p(90)=1.22s    p(95)=1.49s
+     http_req_failed................: 1.91%  ✓ 1008       ✗ 51518
+     http_req_receiving.............: avg=1.82ms   min=0s       med=38.5µs   max=965.89ms p(90)=424.16µs p(95)=1.72ms
+     http_req_sending...............: avg=4.2ms    min=0s       med=19.88µs  max=1.07s    p(90)=1.14ms   p(95)=13.68ms
+     http_req_tls_handshaking.......: avg=6.84ms   min=0s       med=0s       max=2.69s    p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=432.25ms min=0s       med=232.34ms max=4.1s     p(90)=1.2s     p(95)=1.48s
+     http_reqs......................: 52526  596.926018/s
+     iteration_duration.............: avg=1.9s     min=186.04µs med=1.53s    max=6.46s    p(90)=3.43s    p(95)=3.92s
+     iterations.....................: 26767  304.190662/s
+     vus............................: 49     min=49       max=1100
+     vus_max........................: 1100   min=1100     max=1100
+
+2. 개선후(프록시 서버)
+- CPU Core에 맞는 적절한 Worker 프로세스를 할당
+- worker_connections 1024;
+- gzip 텍스트 압축 활성화
+- 캐시 설정
+- http2 적용
+
+running (1m27.8s), 0000/1100 VUs, 21758 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
+
+     ✗ logged in successfully
+      ↳  98% — ✓ 21361 / ✗ 397
+     ✓ updated in successfully
+
+     checks.........................: 99.07% ✓ 42722      ✗ 397
+     data_received..................: 17 MB  194 kB/s
+     data_sent......................: 9.7 MB 110 kB/s
+     http_req_blocked...............: avg=50.47ms  min=0s       med=2.83µs   max=5.46s p(90)=3.2µs    p(95)=96.87µs
+     http_req_connecting............: avg=14.74ms  min=0s       med=0s       max=3.21s p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=502.85ms min=0s       med=443.79ms max=4.52s p(90)=1.03s    p(95)=1.25s
+       { expected_response:true }...: avg=507.53ms min=49µs     med=449.29ms max=4.52s p(90)=1.03s    p(95)=1.25s
+     http_req_failed................: 0.92%  ✓ 397        ✗ 42722
+     http_req_receiving.............: avg=6.6ms    min=0s       med=44.61µs  max=1.31s p(90)=700.46µs p(95)=3.35ms
+     http_req_sending...............: avg=23.57ms  min=0s       med=79.27µs  max=4.26s p(90)=11.28ms  p(95)=130.92ms
+     http_req_tls_handshaking.......: avg=33.98ms  min=0s       med=0s       max=3.93s p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=472.67ms min=0s       med=406.66ms max=2.7s  p(90)=991.59ms p(95)=1.19s
+     http_reqs......................: 43119  491.005341/s
+     iteration_duration.............: avg=2.33s    min=188.17µs med=2.31s    max=9.23s p(90)=3.56s    p(95)=3.98s
+     iterations.....................: 21758  247.763033/s
+     vus............................: 54     min=50       max=1100
+     vus_max........................: 1100   min=1100     max=1100
+
+ERRO[0090] some thresholds have failed
