@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
-    private static final String REDIS_VALUE = "member";
+    private static final String REDIS_VALUE = "station";
     private static final String REDIS_KEY = "#id";
 
     private StationRepository stationRepository;
