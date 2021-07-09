@@ -42,9 +42,34 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 1단계 - 화면 응답 개선하기
+#### 타겟 : https://performance.honbabzone.com/
+
+ ### 목표 - PageSpeed : 총점 70점 이상 
+ #### First Contentful Paint (FCP) : 1초 미만
+ #### Time to Interactive (TTI) : 2초 미만
+ #### Speed Index : 3초 미만
+ #### Total Blocking Time : 150ms 미만
+ #### Large Contentful Paint (LCP) : 3초 미만
+ 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ ### 전
+ ![Lighthouse.png](before/Lighthouse.png)
+ ![load.png](before/load.png)
+ ![smoke.png](before/smoke.png)
+ ![stress.png](before/stress.png)
+ 
+ ### 후
+ ![Lighthouse.png](after/Lighthouse.png)
+ ![load.png](after/load.png)
+ ![smoke.png](after/smoke.png)
+ ![stress.png](after/stress.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+ - 리버스 프록시 개선 :  강의에서 다룬 내용을 위주로 Reverse Proxy 설정 중 gzip 설정을 통해 패킷의 양을 줄였으며 css,js이미지 파일 등에 대해 캐쉬를 
+ 설정하여 반복된 요청에 대한 효율적인 응답을 가지도록 하였습니다. 또한 HTTP 2.0 병렬화를 통해 1.0의 문제인  HOL 블로킹을 해결하여 TCP 
+ 사용 효율을 높였습니다. 
+
+ - WAS 개선 : Redis를 통해 매서드에 대한 재 사용성을 높였습니다.
 
 ---
 
