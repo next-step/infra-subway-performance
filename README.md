@@ -425,7 +425,7 @@ npm run dev
         <img src="https://user-images.githubusercontent.com/67728580/125135564-2cc3fe80-e144-11eb-8376-a158e6ebe4dd.png" width="600" />
         
          ```sql
-            - 이것도 데이터가 9만건이 넘어서 페이징을 적용했습니다.
+            - 데이터가 9만건이 넘어서 페이징을 적용했습니다.
             - 진료기록에 페이징을 하여 범위를 축소한다음 축소한 데이터에서 프로그래머와 병원정보를 조인하여 데이터를 조회합니다.
             - 프로그래머의 정렬을 위하여 인덱스를 생성해주었습니다.
          ```
@@ -463,7 +463,7 @@ npm run dev
         <img src="https://user-images.githubusercontent.com/67728580/125136271-782adc80-e145-11eb-9cf2-dcb1f2df4440.png" width="600" />
         
          ```sql
-         - 이 쿼리도 데이터량이 많아서 페이징 적용했구요.먼저 프로그래머의 범위를 축소한다음, 축소한 데이터를 다른 테이블과 조인하여 추가 데이터를 조회하였습니다.
+         - 이 쿼리도 데이터량이 많아서 페이징 적용했구요. 먼저 프로그래머 테이블을 페이징하여 범위를 축소한다음, 축소한 데이터를 다른 테이블과 조인하여 추가 데이터를 조회하였습니다.
          - 이전에 생성해두었던 idx_covid_pgrm_hsptl 인덱스가 재사용되었습니다.
          ```
       
@@ -474,7 +474,6 @@ npm run dev
          
          -- 병원명 인덱스 생성
          CREATE INDEX idx_hospital_name ON hospital(name);
-         
          
          -- 조회
          select
