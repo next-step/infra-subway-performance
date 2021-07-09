@@ -58,3 +58,30 @@ default ✓ [======================================] 0000/1100 VUs  1m27s
      vus_max........................: 1100   min=1100     max=1100
 
 ERRO[0090] some thresholds have failed
+
+3. was 개선후(캐시적용)
+
+running (1m27.7s), 0000/1100 VUs, 21537 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
+
+     ✗ logged in successfully
+      ↳  98% — ✓ 21300 / ✗ 237
+     ✓ updated in successfully
+
+     checks.........................: 99.44% ✓ 42600      ✗ 237
+     data_received..................: 15 MB  172 kB/s
+     data_sent......................: 9.4 MB 107 kB/s
+     http_req_blocked...............: avg=29.33ms  min=0s       med=2.81µs   max=4.01s p(90)=3.21µs   p(95)=24.98µs
+     http_req_connecting............: avg=9.66ms   min=0s       med=0s       max=2.17s p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=520.87ms min=0s       med=471.09ms max=3.11s p(90)=1.13s    p(95)=1.29s
+       { expected_response:true }...: avg=523.76ms min=44.31µs  med=475.96ms max=3.11s p(90)=1.13s    p(95)=1.29s
+     http_req_failed................: 0.55%  ✓ 237        ✗ 42600
+     http_req_receiving.............: avg=7.1ms    min=0s       med=47.81µs  max=1.71s p(90)=766.55µs p(95)=3.37ms
+     http_req_sending...............: avg=22.96ms  min=0s       med=84.63µs  max=2.61s p(90)=10.99ms  p(95)=145.43ms
+     http_req_tls_handshaking.......: avg=18.75ms  min=0s       med=0s       max=3.13s p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=490.79ms min=0s       med=429.7ms  max=2.69s p(90)=1.09s    p(95)=1.25s
+     http_reqs......................: 42837  488.633327/s
+     iteration_duration.............: avg=2.35s    min=191.66µs med=2.32s    max=8.3s  p(90)=3.78s    p(95)=4.34s
+     iterations.....................: 21537  245.66837/s
+     vus............................: 63     min=50       max=1100
+     vus_max........................: 1100   min=1100     max=1100
