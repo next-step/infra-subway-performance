@@ -360,12 +360,167 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-   - index range scan에는 손익분기점이라는것이 존재함. 전체데이터의 5~20%를 넘어서는 양을 조회할때는 table full scan이 나음
-   ```sql
-   //전체데이터 98,855건중 13,800건 
-   SELECT * FROM subway.programmer WHERE  id < 10
-   SELECT * FROM subway.programmer WHERE  id > 10
-   ```
+
+   > pk와 fk가 잡혀있지않아서 pk와 fk를 먼저 잡아주고 시작했는데, 
+   > 대부분 제가 작성한 쿼리들이 큰 무리없이 100ms 이내로 쿼리가 작동하는것 같습니다.
+   > 마지막 쿼리는 제가 작성했을때 100ms 언저리였는데 실습해석의 쿼리를 동작시켜보니 30ms대로 나오네요. 
+   > 차이를 비교해보았는데 드라이빙 테이블이 어느것이 먼저냐에 따라 속도차이가 크게 나는것 같습니다.
+
+      - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+         ```sql
+         -- 인덱스 생성
+         CREATE INDEX idx_programmer_hobby ON programmer(hobby);
+         
+         -- 조회
+         select
+             hobby,
+             ((count(hobby)/(select count(hobby) from programmer)) * 100) as percentage
+         from programmer
+         group by hobby
+         order by hobby desc;
+         ```
+         ```sql
+         Duration : 56ms
+         ```
+      
+      - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+         ```sql
+         -- covid - pk 생성
+         ALTER TABLE subway.covid ADD CONSTRAINT covid_PK PRIMARY KEY (id);
+         
+         -- covid - fk 생성
+         ALTER TABLE subway.covid ADD CONSTRAINT covid_FK FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
+         
+         -- programmer - pk 생성
+         ALTER TABLE subway.programmer ADD CONSTRAINT programmer_PK PRIMARY KEY (id);
+         
+         -- programmer - fk 생성
+         ALTER TABLE subway.programmer ADD CONSTRAINT programmer_FK FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
+         
+         -- hospital - pk 생성
+         ALTER TABLE subway.hospital ADD CONSTRAINT hospital_PK PRIMARY KEY (id);
+         
+         -- hospital_id 타입 변경
+         ALTER TABLE subway.covid MODIFY COLUMN hospital_id int(11) NULL;
+         
+         -- covid - fk 생성
+         ALTER TABLE subway.covid ADD CONSTRAINT covid_FK_1 FOREIGN KEY (hospital_id) REFERENCES subway.hospital(id);
+         
+         -- 조회쿼리
+         select
+            p.id as programer_id,
+            c.id as covid_id,
+            h.name as hospital_name
+         from
+            programmer p,
+            covid c,
+            hospital h
+         where
+            p.member_id = c.member_id
+           and c.hospital_id = h.id
+         ```
+         ```sql
+            Duration : 11ms
+         ```
+      
+      - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+         ```sql
+         select
+             c.id as covid_id,
+             h.name as hospital_name,
+             u.hobby,
+             u.dev_type,
+             u.years_coding
+         from
+             covid c,
+             hospital h,
+             (
+             select
+                 p.id,
+                 p.hobby,
+                 p.dev_type,
+                 p.years_coding
+             from
+                 programmer p,
+                 member m
+             where
+                 (p.hobby = 'yes'
+                     or years_coding = '0-2 years')
+                 and
+                     p.member_id = m.id
+             ) u
+         where
+             c.hospital_id = h.id
+             and
+             u.id = c.programmer_id;
+         ```
+         ```sql
+         Duration : 5ms
+         ```
+      
+      - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+         ```sql
+         select
+             c.stay,
+             count(p.id) member_cnt
+         from
+             hospital h,
+             covid c,
+             (
+             select
+                 p.id
+             from
+                 programmer p
+             where
+                 p.country = 'india'
+         ) p,
+             (
+             select
+                 m.id
+             from
+                 `member` m
+             where
+                 m.age between 20 and 29
+         ) m
+         where
+             h.name = '서울대병원'
+             and h.id = c.hospital_id
+             and c.member_id = m.id
+             and c.programmer_id = p.id
+         group by
+             c.stay
+         order by
+             c.stay;
+         ```
+         ```sql
+         Duration : 94ms
+         ```
+      
+      - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+         ```sql
+         select
+             p.exercise,
+             count(p.id) member_cnt
+         from
+             (select id from subway.member where age between 30 and 39) m,
+             (select member_id, hospital_id, programmer_id from subway.covid) c,
+             (select id from subway.hospital where name = '서울대병원') h,
+             (select id, exercise from subway.programmer) p
+         where m.id = c.member_id
+         and c.hospital_id = h.id
+         and c.programmer_id = p.id
+         group by
+             p.exercise;
+         ```
+         ```sql
+         Duration : 33ms
+         ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+   ```
+   로그인계정 : test@test.com / 1234
+   
+   https://jhh992000.ddns.net/favorites
+   https://jhh992000.ddns.net/favorites?page=0&size=5
+   ```
