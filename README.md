@@ -65,8 +65,75 @@ npm run dev
           * Line table 과 조인 하기 위해 line_id index 추가
         ![img.png](img.png)
         * ```CREATE INDEX idx_member_01 ON subway.member (email);```
-    
+    1. Coding as a Hobby 와 같은 결과를 반환하세요.
+        * hobby에 index를 걸어 주었습니다.
+        ```
+        create index idx_subway_hoddy on subway.programmer (hobby);
+       
+        select  ((select count(id) from subway.programmer where hobby = 'Yes') / count(id)) * 100 as 'Yes',
+        ((select count(id) from subway.programmer where hobby = 'No') / count(id)) * 100 as 'No'
+        from subway.programmer;
+        ```
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요.
+        * 두 테이블이 key로 join을 하기 때문에 인덱스를 따로 걸진 않았습니다.
+        ```
+        select covid.id as "ProgrammerId", hospital.name "HospitalName"
+        from subway.covid as covid
+        left join subway.hospital as hospital on covid.id = hospital.id;
+        ```
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name,
+       * id 가 key값으로 자동 정렬 되어 order by 는 넣지 않았습니다
+        ```
+        select *
+        from (
+        select id as id
+        from subway.programmer p
+        where p.hobby = 'yes'
+        union
+        select id as id
+        from subway.programmer a
+        where a.years_coding = '0-2 years'
+        ) a join (
+        select c.programmer_id, h.name
+        from subway.covid c
+        join subway.hospital h on c.hospital_id = h.id
+        ) b on a.id = b.programmer_id;
+        ```
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+       * 다른 쿼리를 먼저하느라 인덱스가 잡혀있어서 하나만 잡았습니다
+        ```
+        create index idx_programmer_country on subway.programmer (country);
+       
+        select stay
+        , count(m.id)
+        from subway.member m
+        join (select member_id FROM subway.programmer WHERE country = 'India') p on m.id = p.member_id
+        join (select c.member_id, c.stay from subway.covid c left join subway.hospital h on c.hospital_id and h.name = '서울대병원') c
+        on m.id = c.member_id
+        where age between 20 and 29
+        group by stay;
+
+        ```
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       * subway name을 fulltext 인덱스로 잡고 programmer_id / hospital_id 를 인덱스로
+        age를 인덱스로 설정했습니다
+        ```
+        create fulltext index idx_hospital_name on subway.hospital (name);
+        create index idx_member_age on subway.member (age);
+        create index idx_covid_ph on subway.covid (programmer_id, hospital_id);  
+       
+        select exercise
+        , count(m.id)
+        from subway.member m
+        join subway.covid c on m.id = c.member_id
+        join subway.programmer p on c.programmer_id = p.id
+        join subway.hospital h on c.hospital_id = h.id and h.name = '서울대병원'
+        where age between 30 and 39
+        group by exercise;
+        ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    * https://chungsun.kro.kr/favorites
+    ![img_2.png](img_2.png)
     
 
