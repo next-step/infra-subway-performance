@@ -280,10 +280,92 @@ npm run dev
       - Largest Contentful Paint : 15.9 -> 5.3
    ```
 
+   - 인스턴스 scaleUp, scaleOut 후 부하테스트
+      - reverse proxy : scale up (t2.medium -> t2.large)
+      - was : scale out (인스턴스 5개)
+      - db : scale up (t2.medium -> t2.large)
+      ```javascript
+      // 데이터를 조회하는데 여러 데이터를 참조하는 페이지로 테스트
+      export let options = {
+         stages: [
+            { duration: '5s', target: 500 },
+            { duration: '10s', target: 1000 },
+            { duration: '20s', target: 2000 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '30s', target: 3000 },
+            { duration: '30s', target: 2500 },
+            { duration: '10s', target: 2000 },
+            { duration: '5s', target: 1000 },
+            { duration: '5s', target: 500 },
+         ],
+      
+         thresholds: {
+            http_req_duration: ['p(99)<1500'], // 99% of requests must complete below 1.5s
+         },
+      };
+      ```
+      ```javascript
+      max = 14414.95ms, p(90) = 786.81ms, p(95) = 1036.40ms, avg = 503.54ms, min = 7.19ms, med = 380.00msINFO[0629] 
+           ✓ 메인페이지가 정상적으로 응답함
+           ✓ 로그인이 정상적으로 처리됨
+           ✓ 나의 즐겨찾기 목록이 정상적으로 조회됨
+           ✓ 경로가 정상적으로 검색됨
+      
+           checks.........................: 100.00% ✓ 3235856     ✗ 0      
+           data_received..................: 1.9 GB  3.1 MB/s
+           data_sent......................: 455 MB  728 kB/s
+           http_req_blocked...............: avg=389.54µs min=0s      med=0s       max=8.56s   p(90)=1µs      p(95)=1µs  
+           http_req_connecting............: avg=110.22µs min=0s      med=0s       max=1.8s    p(90)=0s       p(95)=0s   
+         ✓ http_req_duration..............: avg=503.53ms min=7.18ms  med=380ms    max=14.41s  p(90)=786.81ms p(95)=1.03s
+             { expected_response:true }...: avg=503.53ms min=7.18ms  med=380ms    max=14.41s  p(90)=786.81ms p(95)=1.03s
+           http_req_failed................: 0.00%   ✓ 0           ✗ 3235856
+           http_req_receiving.............: avg=53.74µs  min=16µs    med=46µs     max=17.09ms p(90)=72µs     p(95)=87µs 
+           http_req_sending...............: avg=43.06µs  min=11µs    med=34µs     max=16.08ms p(90)=65µs     p(95)=79µs 
+           http_req_tls_handshaking.......: avg=278.53µs min=0s      med=0s       max=7.63s   p(90)=0s       p(95)=0s   
+           http_req_waiting...............: avg=503.44ms min=7.13ms  med=379.91ms max=14.41s  p(90)=786.7ms  p(95)=1.03s
+           http_reqs......................: 3235856 5175.009258/s
+           iteration_duration.............: avg=2.03s    min=41.79ms med=2.03s    max=15.75s  p(90)=2.57s    p(95)=2.81s
+           iterations.....................: 808964  1293.752314/s
+           vus............................: 508     min=100       max=3000 
+           vus_max........................: 3000    min=3000      max=3000   source=console
+      ```
+
+   - reverse proxy를 scaleUp 하고 was를 5대로 늘렸더니 아래 사진처럼 db에 병목이 생기더군요.
+   ![image](https://user-images.githubusercontent.com/67728580/125015249-149fa100-e0aa-11eb-9294-eae5b1886eb5.png)
+   
+   - 그래서 간단하게 db 인스턴스를 t2.large로 한단계 scaleUp 해보았는데요. reverse proxy와 was의 cpu 점유율이 오르긴 했지만, 그래도 db의 병목발생은 여전했습니다. 
+   - db 인스턴스를 하나 늘려주면 병목이 해결될것 같습니다. (미션의 내용에 있는 db이중화는 1대의 서버내에서 인스턴스 분리만 하는거라 실제 성능향상은 크게 없는것 같습니다.)
+   - 실제 운영시에는 예상 사용자수를 고려해서 이번 테스트처럼 서버들을 확충해나가면 될것 같다는 생각이 드네요.
+   - aws를 마음껏 써볼수 있는 기회라서 놓치면 안되겠다는 생각에 한번 시도해보았는데요. 재미있고 의미있는 경험을 해보게 된 것 같습니다.
+     ![image](https://user-images.githubusercontent.com/67728580/125015555-aad3c700-e0aa-11eb-93ef-38d356cd2b82.png)
+   
+
 ---
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   - index range scan에는 손익분기점이라는것이 존재함. 전체데이터의 5~20%를 넘어서는 양을 조회할때는 table full scan이 나음
+   ```sql
+   //전체데이터 98,855건중 13,800건 
+   SELECT * FROM subway.programmer WHERE  id < 10
+   SELECT * FROM subway.programmer WHERE  id > 10
+   ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
