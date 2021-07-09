@@ -361,10 +361,26 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-   > pk와 fk가 잡혀있지않아서 pk와 fk를 먼저 잡아주고 시작했는데, 
-   > 대부분 제가 작성한 쿼리들이 큰 무리없이 100ms 이내로 쿼리가 작동하는것 같습니다.
-   > 마지막 쿼리는 제가 작성했을때 100ms 언저리였는데 실습해석의 쿼리를 동작시켜보니 30ms대로 나오네요. 
-   > 차이를 비교해보았는데 드라이빙 테이블이 어느것이 먼저냐에 따라 속도차이가 크게 나는것 같습니다.
+      ```sql
+      -- 실습전 각 테이블에 누락된 pk와 fk를 모두 생성해주었습니다.
+
+      -- pk 생성
+      ALTER TABLE subway.covid ADD CONSTRAINT pk_covid PRIMARY KEY (id);
+      
+      ALTER TABLE subway.programmer ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
+      
+      ALTER TABLE subway.hospital ADD CONSTRAINT pk_hospital PRIMARY KEY (id);
+      
+      -- fk 생성
+      ALTER TABLE subway.covid ADD CONSTRAINT fk_covid_member_id FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
+      
+      ALTER TABLE subway.programmer ADD CONSTRAINT fk_programmer_member_id FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
+      
+      ALTER TABLE subway.covid MODIFY COLUMN hospital_id int(11) NULL;
+      
+      ALTER TABLE subway.covid ADD CONSTRAINT fk_covid_hospital_id FOREIGN KEY (hospital_id) REFERENCES subway.hospital(id);
+
+      ```
 
       - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
          ```sql
@@ -379,121 +395,122 @@ npm run dev
          group by hobby
          order by hobby desc;
          ```
+
+        <img src="https://user-images.githubusercontent.com/67728580/125132965-13b94e80-e140-11eb-8d3f-5ca342fa0139.png" width="350" />
+
          ```sql
-         Duration : 56ms
+            - programmer 테이블의 hobby 컬럼에 인덱스를 생성하여 인덱스 검색이 되도록 하였습니다.
          ```
       
       - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
          ```sql
-         -- covid - pk 생성
-         ALTER TABLE subway.covid ADD CONSTRAINT covid_PK PRIMARY KEY (id);
-         
-         -- covid - fk 생성
-         ALTER TABLE subway.covid ADD CONSTRAINT covid_FK FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
-         
-         -- programmer - pk 생성
-         ALTER TABLE subway.programmer ADD CONSTRAINT programmer_PK PRIMARY KEY (id);
-         
-         -- programmer - fk 생성
-         ALTER TABLE subway.programmer ADD CONSTRAINT programmer_FK FOREIGN KEY (member_id) REFERENCES subway.`member`(id);
-         
-         -- hospital - pk 생성
-         ALTER TABLE subway.hospital ADD CONSTRAINT hospital_PK PRIMARY KEY (id);
-         
-         -- hospital_id 타입 변경
-         ALTER TABLE subway.covid MODIFY COLUMN hospital_id int(11) NULL;
-         
-         -- covid - fk 생성
-         ALTER TABLE subway.covid ADD CONSTRAINT covid_FK_1 FOREIGN KEY (hospital_id) REFERENCES subway.hospital(id);
-         
-         -- 조회쿼리
+         -- 인덱스 생성
+         CREATE INDEX idx_covid_pgrm_hsptl ON covid(programmer_id, hospital_id);
+
+         -- 조회
          select
-            p.id as programer_id,
-            c.id as covid_id,
-            h.name as hospital_name
+             p.id as programer_id,
+             h.name as hospital_name
          from
-            programmer p,
-            covid c,
-            hospital h
-         where
-            p.member_id = c.member_id
-           and c.hospital_id = h.id
+             programmer p,
+             hospital h,
+             (
+             select programmer_id, hospital_id from covid
+             where programmer_id is not null
+             limit 0, 10
+             ) t
+         where p.id = t.programmer_id
+         and t.hospital_id = h.id;
          ```
+        <img src="https://user-images.githubusercontent.com/67728580/125135564-2cc3fe80-e144-11eb-8376-a158e6ebe4dd.png" width="600" />
+        
          ```sql
-            Duration : 11ms
+            - 이것도 데이터가 9만건이 넘어서 페이징을 적용했습니다.
+            - 진료기록에 페이징을 하여 범위를 축소한다음 축소한 데이터에서 프로그래머와 병원정보를 조인하여 데이터를 조회합니다.
+            - 프로그래머의 정렬을 위하여 인덱스를 생성해주었습니다.
          ```
       
       - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
          ```sql
+         -- 조회
          select
-             c.id as covid_id,
-             h.name as hospital_name,
-             u.hobby,
-             u.dev_type,
-             u.years_coding
+            c.id as covid_id,
+            h.name as hospital_name,
+            u.hobby,
+            u.dev_type,
+            u.years_coding
          from
-             covid c,
-             hospital h,
-             (
-             select
-                 p.id,
-                 p.hobby,
-                 p.dev_type,
-                 p.years_coding
-             from
-                 programmer p,
-                 member m
-             where
-                 (p.hobby = 'yes'
-                     or years_coding = '0-2 years')
-                 and
-                     p.member_id = m.id
-             ) u
+            covid c,
+            hospital h,
+            (
+               select
+                  p.id,
+                  p.hobby,
+                  p.dev_type,
+                  p.years_coding
+               from
+                   programmer p
+               where
+                   (p.hobby = 'yes' or years_coding = '0-2 years')
+               limit 0, 10
+            ) u
          where
              c.hospital_id = h.id
-             and
+         and
              u.id = c.programmer_id;
          ```
+
+        <img src="https://user-images.githubusercontent.com/67728580/125136271-782adc80-e145-11eb-9cf2-dcb1f2df4440.png" width="600" />
+        
          ```sql
-         Duration : 5ms
+         - 이 쿼리도 데이터량이 많아서 페이징 적용했구요.먼저 프로그래머의 범위를 축소한다음, 축소한 데이터를 다른 테이블과 조인하여 추가 데이터를 조회하였습니다.
+         - 이전에 생성해두었던 idx_covid_pgrm_hsptl 인덱스가 재사용되었습니다.
          ```
       
       - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
          ```sql
+         -- 병원명 필드 타입 변경
+         ALTER TABLE subway.hospital MODIFY COLUMN name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+         
+         -- 병원명 인덱스 생성
+         CREATE INDEX idx_hospital_name ON hospital(name);
+         
+         
+         -- 조회
          select
-             c.stay,
-             count(p.id) member_cnt
+            c.stay,
+            count(m.id) member_cnt
          from
-             hospital h,
-             covid c,
-             (
-             select
-                 p.id
-             from
-                 programmer p
-             where
-                 p.country = 'india'
-         ) p,
-             (
-             select
-                 m.id
-             from
-                 `member` m
-             where
-                 m.age between 20 and 29
-         ) m
+               (select id from hospital where name = "서울대병원") h,
+               covid c,
+               (
+                  select
+                     m.id
+                  from
+                     programmer p, member m
+                  where
+                     p.member_id = m.id
+                    and
+                     m.age between 20 and 29
+                    and
+                     p.country = 'India'
+               ) m
          where
-             h.name = '서울대병원'
-             and h.id = c.hospital_id
-             and c.member_id = m.id
-             and c.programmer_id = p.id
+            h.id = c.hospital_id
+           and
+            c.member_id = m.id
          group by
-             c.stay
+            c.stay
          order by
-             c.stay;
+            c.stay;
          ```
+
+        <img src="https://user-images.githubusercontent.com/67728580/125138167-1e2c1600-e149-11eb-93f1-59f39e4b45bf.png" width="800" />
+        
          ```sql
-         Duration : 94ms
+         - 병원명의 필드가 대량문자열을 저장할수있는 TEXT 타입으로 되어있어서 VARCHAR로 변경했습니다.
+         - 병원명의 인덱스를 생성했습니다.
+         - India에 사는 20대를 범위를 축소한다음 진료기록과 병원을 조인하여 그룹핑하여 통계를 산출했습니다.
          ```
       
       - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -512,8 +529,12 @@ npm run dev
          group by
              p.exercise;
          ```
+
+        <img src="https://user-images.githubusercontent.com/67728580/125138595-e4a7da80-e149-11eb-853b-4e750f353fd2.png" width="800" />
+        
          ```sql
-         Duration : 33ms
+         - 서브쿼리를 작성하여 범위축소가능한 테이블들의 데이터수를 줄였고, 필요한 컬럼만 조회를 하였습니다.
+         - 이전에 생성해 둔 인덱스들이 적절히 활용되어졌습니다.
          ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
@@ -523,4 +544,5 @@ npm run dev
    
    https://jhh992000.ddns.net/favorites
    https://jhh992000.ddns.net/favorites?page=0&size=5
+   https://jhh992000.ddns.net/favorites?page=0&size=5&sort=id,asc
    ```
