@@ -383,7 +383,7 @@ npm run dev
          Duration : 56ms
          ```
       
-      - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+      - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
          ```sql
          -- covid - pk 생성
          ALTER TABLE subway.covid ADD CONSTRAINT covid_PK PRIMARY KEY (id);
