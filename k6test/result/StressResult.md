@@ -89,28 +89,28 @@ ERRO[0171] some thresholds have failed
            * default: Up to 300 looping VUs for 2m45s over 6 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
-running (2m45.0s), 000/300 VUs, 53815 complete and 0 interrupted iterations
+running (2m45.0s), 000/300 VUs, 65949 complete and 0 interrupted iterations
 default ✓ [======================================] 000/300 VUs  2m45s
 
      ✓ Entered main screen successfully
      ✓ Logged in successfully
      ✓ Found shortest path successfully
 
-     checks.........................: 100.00% ✓ 161445     ✗ 0
-     data_received..................: 105 MB  638 kB/s
-     data_sent......................: 19 MB   116 kB/s
-     http_req_blocked...............: avg=779.77µs min=2.13µs  med=2.82µs   max=1.27s    p(90)=3.07µs   p(95)=3.34µs
-     http_req_connecting............: avg=207.22µs min=0s      med=0s       max=424.77ms p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=181.37ms min=52.93µs med=166.45ms max=1.66s    p(90)=341.73ms p(95)=404.34ms
-       { expected_response:true }...: avg=181.37ms min=52.93µs med=166.45ms max=1.66s    p(90)=341.73ms p(95)=404.34ms
-     http_req_failed................: 0.00%   ✓ 0          ✗ 161445
-     http_req_receiving.............: avg=1.83ms   min=28.33µs med=50.18µs  max=587.56ms p(90)=588.16µs p(95)=1.86ms
-     http_req_sending...............: avg=1.22ms   min=0s      med=39.41µs  max=478.25ms p(90)=300.61µs p(95)=1.09ms
-     http_req_tls_handshaking.......: avg=508.31µs min=0s      med=0s       max=953.22ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=178.31ms min=0s      med=163.92ms max=1.65s    p(90)=335.87ms p(95)=399.28ms
-     http_reqs......................: 161445  978.433932/s
-     iteration_duration.............: avg=572.62ms min=10.15ms med=579.24ms max=2.79s    p(90)=988.46ms p(95)=1.14s
-     iterations.....................: 53815   326.144644/s
+     checks.........................: 100.00% ✓ 197847     ✗ 0
+     data_received..................: 130 MB  785 kB/s
+     data_sent......................: 23 MB   142 kB/s
+     http_req_blocked...............: avg=708.94µs min=2.01µs  med=2.77µs   max=943.84ms p(90)=3.02µs   p(95)=3.52µs
+     http_req_connecting............: avg=207.95µs min=0s      med=0s       max=382.55ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=146.57ms min=54.05µs med=145.19ms max=1.28s    p(90)=250.04ms p(95)=282.36ms
+       { expected_response:true }...: avg=146.57ms min=54.05µs med=145.19ms max=1.28s    p(90)=250.04ms p(95)=282.36ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 197847
+     http_req_receiving.............: avg=1.84ms   min=27.57µs med=49.86µs  max=592.4ms  p(90)=693.69µs p(95)=1.84ms
+     http_req_sending...............: avg=1.18ms   min=0s      med=40.23µs  max=445.63ms p(90)=408.15µs p(95)=1.15ms
+     http_req_tls_handshaking.......: avg=432.93µs min=0s      med=0s       max=852.38ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=143.54ms min=0s      med=143.01ms max=1.28s    p(90)=245.43ms p(95)=275.66ms
+     http_reqs......................: 197847  1199.02829/s
+     iteration_duration.............: avg=467.14ms min=9.63ms  med=491.95ms max=1.99s    p(90)=735.43ms p(95)=806.26ms
+     iterations.....................: 65949   399.676097/s
      vus............................: 1       min=1        max=300
      vus_max........................: 300     min=300      max=300
 ```
