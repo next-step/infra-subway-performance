@@ -81,12 +81,21 @@ npm run dev
         from subway.programmer;
         ```
     2. 프로그래머별로 해당하는 병원 이름을 반환하세요.
-        * 두 테이블이 key로 join을 하기 때문에 인덱스를 따로 걸진 않았습니다.
+       * 각 테이블에 id 키값을 설정했습니다.
+       ```ALTER TABLE subway.covid ADD CONSTRAINT covid_id_pk PRIMARY KEY (id);
+       ALTER TABLE subway.programmer ADD CONSTRAINT programmer_id_pk PRIMARY KEY (id);
+       ALTER TABLE subway.hospital ADD CONSTRAINT hospital_id_pk PRIMARY KEY (id);
+       ```
+       * 인덱스는 아래 5번에서 covid의 index를 programmer_id 와 hospital_i를 잡아서 생략했습니다
         ```
-        select covid.id as "ProgrammerId", hospital.name "HospitalName"
-        from subway.covid as covid
-        left join subway.hospital as hospital on covid.id = hospital.id;
+        create index idx_covid_ph on subway.covid (programmer_id, hospital_id); 
         ```
+       ```
+       select p.id , h.name
+       from subway.programmer p
+       join subway.covid c on p.id = c.programmer_id
+       join subway.hospital h on c.hospital_id = h.id;
+       ```
     3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name,
        * id 가 key값으로 자동 정렬 되어 order by 는 넣지 않았습니다
         ```
@@ -121,6 +130,7 @@ npm run dev
 
         ```
     5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       * member pk는 기존에 잡혀있어서 생략했습니다.
        * subway name을 fulltext 인덱스로 잡고 programmer_id / hospital_id 를 인덱스로
         age를 인덱스로 설정했습니다
         ```
