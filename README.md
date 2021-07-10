@@ -52,7 +52,100 @@ npm run dev
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+## 접속 빈도가 높은 페이지
+### smoke
+
+* 스크립트 위치
+> /script/stress/connectionfrequency/smoke.js
+
+* 결과
+> /script/result/connectionfrequency/SMOKE_RESULT.md
+
+<br>
+
+### load
+* 스크립트 위치
+> /script/stress/connectionfrequency/load.js
+
+* 결과
+> /script/result/connectionfrequency/LOAD_RESULT.md
+
+<br>
+
+### stress
+* 스크립트 위치
+> /script/stress/connectionfrequency/stress.js
+
+* 결과
+> /script/result/connectionfrequency/STRESS_RESULT.md
+
+<br><br>
+
+## 데이터를 갱신하는 페이지
+### smoke
+* 스크립트 위치
+> /script/stress/dataupdate/smoke.js
+
+* 결과
+> /script/result/dataupdate/SMOKE_RESULT.md
+
+<br>
+
+### load
+* 스크립트 위치
+> /script/stress/dataupdate/load.js
+
+* 결과
+> /script/result/dataupdate/LOAD_RESULT.md
+
+<br>
+
+### stress
+* 스크립트 위치
+> /script/stress/dataupdate/stress.js
+
+* 결과
+> /script/result/dataupdate/STRESS_RESULT.md
+
+<br><br>
+
+## 데이터를 조회하는데 여러 데이터를 참조하는 페이지
+
+### smoke
+* 스크립트 위치
+> /script/stress/refertomultiplepage/smoke.js
+
+* 결과
+> /script/result/refertomultiplepage/SMOKE_RESULT.md
+
+<br>
+
+### load
+* 스크립트 위치
+> /script/stress/refertomultiplepage/load.js
+
+* 결과
+> /script/result/refertomultiplepage/LOAD_RESULT.md
+
+<br>
+
+### stress
+* 스크립트 위치
+> /script/stress/refertomultiplepage/stress.js
+
+* 결과
+> /script/result/refertomultiplepage/STRESS_RESULT.md
+
+<br><br>
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+    * Reverse proxy 역할을 하는 Nginx 개선
+      * 적당한 worker 프로세스 Connection 갯수 적용 
+      * Gzip 압축 적용
+      * Proxy 캐시 적용
+    * Application 캐시 적용
+      * Redis cache를 이용하여 조회 빈도 수가 많은 서비스 캐싱
+
 
 ---
 
