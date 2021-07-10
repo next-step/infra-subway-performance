@@ -76,15 +76,15 @@ npm run dev
 
    - ./training 디렉토리에 단계별로 md파일로 저장하였습니다.
 
-   1. [Coding as a Hobby 와 같은 결과를 반환하세요.](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step1/Step1.md, "Step1")
+   1. [Coding as a Hobby 와 같은 결과를 반환하세요.](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step1/Step1.md)
 
-   2. [프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step2/Step2.md, "Step2")
+   2. [프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step2/Step2.md)
 
-   3. [프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step3/Step3.md, "Step3")
+   3. [프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step3/Step3.md)
 
-   4. [서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step4/Step4.md, "Step4")
+   4. [서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step4/Step4.md)
 
-   5. [서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step5/Step5.md, "Step5")
+   5. [서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step5/Step5.md)
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
