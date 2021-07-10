@@ -39,6 +39,8 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 	implementation("mysql:mysql-connector-java")
+
+	compile "org.flywaydb:flyway-core:7.10.0"
 }
 
 test {
