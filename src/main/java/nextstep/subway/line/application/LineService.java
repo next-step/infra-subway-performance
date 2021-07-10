@@ -41,6 +41,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
