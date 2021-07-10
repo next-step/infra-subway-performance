@@ -17,19 +17,16 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    @Cacheable(value="member", key="#id")
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
-    @Cacheable(value="member", key="#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    @Cacheable(value="member", key="#id")
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
