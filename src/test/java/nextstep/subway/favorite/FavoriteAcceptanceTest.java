@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
@@ -78,6 +81,52 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
         // then
         즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기 페이징을 적용한다.")
+    @Test
+    void findFavoriteByPage() {
+        // given
+        StationResponse 잠실역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+        StationResponse 신천역 = StationAcceptanceTest.지하철역_등록되어_있음("신천역").as(StationResponse.class);
+        StationResponse 성내역 = StationAcceptanceTest.지하철역_등록되어_있음("성내역").as(StationResponse.class);
+        StationResponse 강변역 = StationAcceptanceTest.지하철역_등록되어_있음("강변역").as(StationResponse.class);
+        StationResponse 구의역 = StationAcceptanceTest.지하철역_등록되어_있음("구의역").as(StationResponse.class);
+        StationResponse 건대역 = StationAcceptanceTest.지하철역_등록되어_있음("건대역").as(StationResponse.class);
+        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 잠실역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 잠실역, 신천역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 신천역, 성내역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 성내역, 강변역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강변역, 구의역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 구의역, 건대역, 3);
+        즐겨찾기_생성을_요청(사용자, 정자역, 잠실역);
+        즐겨찾기_생성을_요청(사용자, 잠실역, 신천역);
+        즐겨찾기_생성을_요청(사용자, 신천역, 성내역);
+        즐겨찾기_생성을_요청(사용자, 성내역, 강변역);
+        즐겨찾기_생성을_요청(사용자, 강변역, 구의역);
+        즐겨찾기_생성을_요청(사용자, 구의역, 건대역);
+        // when
+        ExtractableResponse<Response> 페이지_2 = 즐겨찾기_목록_조회_요청(사용자, 1);
+        // then
+        List<FavoriteResponse> favoriteResponses = 페이지_2.jsonPath().getList("", FavoriteResponse.class);
+        assertThat(favoriteResponses.size()).isEqualTo(1);
+        assertThat(favoriteResponses.get(0).getSource().getName()).isEqualTo("정자역");
+        assertThat(favoriteResponses.get(0).getTarget().getName()).isEqualTo("잠실역");
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse, int page) {
+        Map<String, Integer> param = new HashMap<>();
+        param.put("page", page);
+        param.put("size", 5);
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                params(param).
+                when().
+                get("/favorites/").
+                then().
+                log().all().
+                extract();
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
