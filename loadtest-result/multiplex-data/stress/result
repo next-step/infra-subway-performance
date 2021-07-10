@@ -1,0 +1,86 @@
+1. 개선전
+
+running (1m57.0s), 0000/1100 VUs, 2638 complete and 500 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
+
+     ✗ find path in successfully
+      ↳  71% — ✓ 1900 / ✗ 760
+
+     checks.........................: 71.42% ✓ 1900      ✗ 760
+     data_received..................: 9.5 MB 81 kB/s
+     data_sent......................: 959 kB 8.2 kB/s
+     http_req_blocked...............: avg=2.06ms   min=0s       med=9.16µs  max=61.5ms  p(90)=5.26ms   p(95)=6.5ms
+     http_req_connecting............: avg=299.56µs min=0s       med=0s      max=23.2ms  p(90)=599.05µs p(95)=750.37µs
+   ✗ http_req_duration..............: avg=19.6s    min=0s       med=17.48s  max=1m0s    p(90)=45.98s   p(95)=49.34s
+       { expected_response:true }...: avg=27.39s   min=421.74ms med=28.73s  max=56.62s  p(90)=46.76s   p(95)=51.11s
+     http_req_failed................: 28.57% ✓ 760       ✗ 1900
+     http_req_receiving.............: avg=93.05µs  min=0s       med=93.46µs max=6.09ms  p(90)=148.62µs p(95)=171.44µs
+     http_req_sending...............: avg=47.58µs  min=0s       med=29.61µs max=3.09ms  p(90)=91.16µs  p(95)=111.94µs
+     http_req_tls_handshaking.......: avg=1.71ms   min=0s       med=0s      max=39.46ms p(90)=4.48ms   p(95)=5.44ms
+     http_req_waiting...............: avg=19.6s    min=0s       med=17.48s  max=1m0s    p(90)=45.98s   p(95)=49.34s
+     http_reqs......................: 2660   22.734093/s
+     iteration_duration.............: avg=20.34s   min=1s       med=18.45s  max=1m1s    p(90)=46.92s   p(95)=49.4s
+     iterations.....................: 2638   22.546067/s
+     vus............................: 0      min=0       max=1100
+     vus_max........................: 1100   min=1100    max=1100
+
+ERRO[0119] some thresholds have failed
+
+2. 개선후(프록시 서버)
+- CPU Core에 맞는 적절한 Worker 프로세스를 할당
+- worker_connections 1024;
+- gzip 텍스트 압축 활성화
+- 캐시 설정
+- http2 적용
+
+running (1m57.0s), 0000/1100 VUs, 4169 complete and 305 interrupted iterations
+default ↓ [======================================] 0951/1100 VUs  1m27s
+
+     ✗ find path in successfully
+      ↳  61% — ✓ 2580 / ✗ 1606
+
+     checks.........................: 61.63% ✓ 2580      ✗ 1606
+     data_received..................: 17 MB  146 kB/s
+     data_sent......................: 2.2 MB 18 kB/s
+     http_req_blocked...............: avg=15.07ms  min=0s       med=4.64ms   max=399.79ms p(90)=37.7ms   p(95)=71.61ms
+     http_req_connecting............: avg=5.95ms   min=0s       med=691.28µs max=153.1ms  p(90)=18.46ms  p(95)=32.13ms
+   ✗ http_req_duration..............: avg=13.52s   min=0s       med=7.32s    max=47.74s   p(90)=36.08s   p(95)=38.24s
+       { expected_response:true }...: avg=21.68s   min=567.05ms med=21.29s   max=40.91s   p(90)=37.95s   p(95)=38.86s
+     http_req_failed................: 38.36% ✓ 1606      ✗ 2580
+     http_req_receiving.............: avg=311.56µs min=0s       med=97.5µs   max=109.26ms p(90)=177µs    p(95)=325.94µs
+     http_req_sending...............: avg=2.99ms   min=0s       med=119.34µs max=476.26ms p(90)=709.77µs p(95)=5.93ms
+     http_req_tls_handshaking.......: avg=12.75ms  min=0s       med=4ms      max=339.09ms p(90)=32.72ms  p(95)=63.82ms
+     http_req_waiting...............: avg=13.52s   min=0s       med=7.32s    max=47.74s   p(90)=36.08s   p(95)=38.24s
+     http_reqs......................: 4186   35.779373/s
+     iteration_duration.............: avg=14.44s   min=1s       med=8.28s    max=48.79s   p(90)=37.04s   p(95)=39.2s
+     iterations.....................: 4169   35.634067/s
+     vus............................: 22     min=22      max=1100
+     vus_max........................: 1100   min=1100    max=1100
+
+ERRO[0119] some thresholds have failed
+
+3. was 개선후(캐시적용)
+
+running (1m27.9s), 0000/1100 VUs, 45115 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1100 VUs  1m27s
+
+     ✗ find path in successfully
+      ↳  98% — ✓ 44584 / ✗ 531
+
+     checks.........................: 98.82% ✓ 44584      ✗ 531
+     data_received..................: 81 MB  926 kB/s
+     data_sent......................: 4.6 MB 53 kB/s
+     http_req_blocked...............: avg=5.09ms   min=0s     med=2.79µs  max=792.5ms  p(90)=3.26µs   p(95)=60.93µs
+     http_req_connecting............: avg=981.97µs min=0s     med=0s      max=549.5ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=94.3ms   min=0s     med=19.36ms max=1.21s    p(90)=319.99ms p(95)=424.49ms
+       { expected_response:true }...: avg=95.41ms  min=1.61ms med=20.22ms max=1.21s    p(90)=321.71ms p(95)=425.67ms
+     http_req_failed................: 1.17%  ✓ 531        ✗ 44584
+     http_req_receiving.............: avg=1.15ms   min=0s     med=73.33µs max=534.7ms  p(90)=374.08µs p(95)=1.3ms
+     http_req_sending...............: avg=4.29ms   min=0s     med=48.14µs max=1.17s    p(90)=249.11µs p(95)=879.45µs
+     http_req_tls_handshaking.......: avg=1.65ms   min=0s     med=0s      max=629.87ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=88.85ms  min=0s     med=18.25ms max=746.17ms p(90)=309.54ms p(95)=410.07ms
+     http_reqs......................: 45115  512.997686/s
+     iteration_duration.............: avg=1.13s    min=1s     med=1.03s   max=2.28s    p(90)=1.4s     p(95)=1.55s
+     iterations.....................: 45115  512.997686/s
+     vus............................: 41     min=41       max=1100
+     vus_max........................: 1100   min=1100     max=1100
