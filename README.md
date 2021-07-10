@@ -387,4 +387,6 @@ group by exercise;
 ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+https://bbbnam-public.kro.kr/favorites
+계정 : bbbnam@naver.com
+pw : 12345
