@@ -59,6 +59,12 @@ npm run dev
 ---
 
 ### 2단계 - 조회 성능 개선하기
+
+#### 요구사항 정의
+- [x] 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [x] 즐겨찾기 페이지에 페이징 쿼리를 적용
+    * 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+- [x] 데이터베이스 이중화
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
     * 키를 사용하지 않아 조회 횟수가 많고 속도가 느릴 것이라 생각한 곳에 index를 추가했습니다.
         * ```CREATE INDEX IDX_SECTION_PATH ON subway.section (down_station_id, up_station_id);```
@@ -70,8 +76,8 @@ npm run dev
         ```
         create index idx_subway_hoddy on subway.programmer (hobby);
        
-        select  ((select count(id) from subway.programmer where hobby = 'Yes') / count(id)) * 100 as 'Yes',
-        ((select count(id) from subway.programmer where hobby = 'No') / count(id)) * 100 as 'No'
+        select  ((select count(hobby) from subway.programmer where hobby = 'Yes') / count(hobby)) * 100 as 'Yes',
+        ((select count(hobby) from subway.programmer where hobby = 'No') / count(hobby)) * 100 as 'No'
         from subway.programmer;
         ```
     2. 프로그래머별로 해당하는 병원 이름을 반환하세요.
