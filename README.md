@@ -43,9 +43,23 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+    - 스크립트 : /k6test/script
+    - 결과 : /k6test/result
+        * Load/Smoke/Stress별로 파일을 나누었고, 아래와 같이 총 3가지 상황에서의 결과값을 작성하였습니다.
+            * 개선 전
+            * Reverse Proxy 개선 후
+            * Redis를 이용한 캐싱 후
+    
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+    - Reverse Proxy 서버 개선과 WAS 개선, 두 가지로 나눌 수 있을 것 같습니다.
+    1) Reverse Proxy 개선
+        * gzip 압축 적용
+        * css, js 등에 대해 Nginx 캐시 적용
+    2) WAS 
+        * WAS 서버 내에 Redis 구동 
+        * 가장 시간이 오래 걸리고, 여러 엔티티(`Line`, `Station`)를 조회하는 `MapService`의 
+    `findPath()` 메소드에 캐시 적용
+      
 ---
 
 ### 2단계 - 조회 성능 개선하기
