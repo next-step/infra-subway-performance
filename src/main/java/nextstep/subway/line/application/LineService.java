@@ -39,22 +39,22 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", key = FIND_LINES)
     public List<LineResponse> findLineResponses() {
         return findLines().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", key = FIND_LINES)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Cacheable(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
