@@ -273,6 +273,118 @@ default ✓ [======================================] 000/120 VUs  18s
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+   
+사용 쿼리
+select hobby, ROUND(count(id)/(select count(id) from programmer) * 100, 1)
+from programmer
+group by hobby
+order by hobby desc;
+
+인덱스 설정 : CREATE INDEX `idx_user_id_hobby`  ON `subway`.`programmer` (id, hobby); 
+
+인덱스 설정전 시간 : 0.35355425 초 -> 약 300ms
+인덱스 설정후 시간 : 0.08988600 초 -> 약 80ms
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요.(covid.id, hospital.name)
+
+사용쿼리
+select p.id programmer_id, c.id covid_id, h.name
+from programmer as p
+join covid as c
+on p.id = c.id
+join hospital as h
+on c.hospital_id = h.id;
+
+pk설정 전 시간 : 0.00515725초 -> 약 5ms
+pk설정 후 시간 : 0.00241350초 -> 약 2ms
+실행계획을 보니 hospital과 covid가 풀 스캔을 타다가
+pk설정을 해주니, 다 index스캔을 타게 되었음.
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 
+user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+사용쿼리
+select c.id covid_id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer as p
+join covid as c
+on p.id = c.id 
+and p.hobby = 'Yes'
+and (p.student like 'Yes%' or p.years_coding = '0-2 years')
+join hospital as h
+on c.hospital_id = h.id
+order by p.id;
+
+소요시간 : 0.02557625 -> 약 20ms
+위에서 설정한 인덱스 및 pk 설정으로 추가 인덱스 설정 필요 없는 것으로 판단됨.
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+사용쿼리
+select r.stay, count(r.id) from (
+	select p.id, c.stay  
+		from member as m
+		join programmer as p
+		on m.age between 20 and 29
+		and p.country = 'India'
+		and m.id = p.id
+		join covid as c
+		on m.id = c.id
+		join hospital as h
+		on c.hospital_id = h.id
+		and h.name = '서울대병원'
+) r
+group by stay;
+
+소요시간 : 0.20710175초 -> 약 200ms
+
+소요시간이 100ms를 초과해서 이를 줄이기 위해 실행계획을 보니
+member테이블이랑 hospital이 풀 스캔을 타고 있어서
+해당 테이블들에 조건문에 쓰인 컬럼들을 인덱스 걸어주기로 함.
+CREATE INDEX `idx_member_id_age`  ON `subway`.`member` (id, age);
+hospital은 id랑 name밖에 없어서 인덱스 의미가 없는 것 같아 걸지 않음.
+
+위의 인덱스 처리 후 소요시간 : 0.17337200초 -> 약 170ms
+더 이상은 줄여지지 않아서 여기까지 했습니다.
+미션 페이지에 예시로 나와있는 쿼리보다는 빠릅니다.ㅠㅠ..
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+사용 쿼리 
+select r.exercise, count(r.id) from (
+	select p.id, p.exercise  
+		from member as m
+		join programmer as p
+		on m.age between 30 and 39
+		and m.id = p.id
+		join covid as c
+		on m.id = c.id
+		join hospital as h
+		on c.hospital_id = h.id
+		and h.name = '서울대병원'
+) r
+group by exercise;
+
+소요시간 : 0.21912950 초 -> 약 200ms
+
+인덱스는 따로 설정할 만한 것이 없었고,
+쿼리를 
+select r.exercise, count(r.id) from (
+	select c.id, p.exercise from covid c
+    join (select id from member where age between 30 and 39) as m
+    on m.id = c.id
+    join (select id, exercise from programmer) as p
+    on c.id = p.id
+    join (select id from hospital where name = '서울대병원') as h
+    on c.hospital_id = h.id
+) r
+group by exercise;
+
+이렇게 수정해보았으나, 별 차이는 없었습니다.
+
+변경 후 소요시간 : 0.21545900 초 -> 약 200ms
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
