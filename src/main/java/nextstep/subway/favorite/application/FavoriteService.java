@@ -9,6 +9,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -28,21 +29,39 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+        return savedFavorite.getId();
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(),
+                PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id")));
 
-        return favorites.stream()
+        Map<Long, Station> stations = extractStations(favorites.getContent());
+
+        return favorites.getContent().stream()
             .map(it -> FavoriteResponse.of(
                 it,
                 StationResponse.of(stations.get(it.getSourceStationId())),
                 StationResponse.of(stations.get(it.getTargetStationId()))))
             .collect(Collectors.toList());
+    }
+
+    public Page<FavoriteResponse> findFavoritesV2(LoginMember loginMember, Pageable pageable) {
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        List<Favorite> content = favorites.getContent();
+        Map<Long, Station> stations = extractStations(content);
+
+        List<FavoriteResponse> favoriteResponses = content.stream()
+                .map(it -> FavoriteResponse.of(
+                        it,
+                        StationResponse.of(stations.get(it.getSourceStationId())),
+                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(favoriteResponses, pageable, favorites.getTotalElements());
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
