@@ -34,6 +34,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -46,6 +47,7 @@ public class LineService {
     }
 
     @Cacheable(value = "line", key = "#id")
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
