@@ -11,7 +11,7 @@ export let options = {
     { duration: '10s', target: 0 },
   ],
   thresholds: {
-    http_req_duration: ['p(90)<10000','p(95)<15000','p(99)<30000']
+    http_req_duration: ['p(90)<100','p(95)<200','p(99)<600']
   },
 };
 

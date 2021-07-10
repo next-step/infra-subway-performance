@@ -6,7 +6,7 @@ export let options = {
   duration: '10s',
 
   thresholds: {
-    http_req_duration: ['p(90)<400', 'p(95)<500', 'p(99)<600'], // 99% of requests must complete below 1.5s
+    http_req_duration: ['p(90)<20', 'p(95)<30', 'p(99)<40'],
   },
 };
 
@@ -41,7 +41,7 @@ export default function ()  {
     },
   };
   let myObjects1 = http.get(`${BASE_URL}/members/me`, authHeaders).json();
-  let myObjects2 = http.get(`${BASE_URL}/paths?source=1&target=5`, authHeaders).json();
+  let myObjects2 = http.get(`${BASE_URL}/paths?source=2&target=5`, authHeaders).json();
   let myObjects3 = http.get(`${BASE_URL}/favorites`, authHeaders).json();
   check(myObjects1, { 'retrieved member': (obj) => obj.id != 0 });
   check(myObjects2, { 'find Paths': (obj) => obj.stations != null});

@@ -3,12 +3,12 @@ import { check, group, sleep, fail } from 'k6';
 
 export let options = {
   stages: [
-    { duration: '30s', target: 35 },
-    { duration: '30s', target: 35 },
-    { duration: '30s', target: 0}
+    { duration: '15s', target: 35 },
+    { duration: '20s', target: 35 },
+    { duration: '15s', target: 0}
   ],
   thresholds: {
-    http_req_duration: ['p(90)<700', 'p(95)<900', 'p(99)<1500']
+    http_req_duration: ['p(90)<40', 'p(95)<45', 'p(99)<50']
   },
 };
 
@@ -43,7 +43,7 @@ export default function ()  {
     },
   };
   let myObjects1 = http.get(`${BASE_URL}/members/me`, authHeaders).json();
-  let myObjects2 = http.get(`${BASE_URL}/paths?source=1&target=5`, authHeaders).json();
+  let myObjects2 = http.get(`${BASE_URL}/paths?source=2&target=5`, authHeaders).json();
   let myObjects3 = http.get(`${BASE_URL}/favorites`, authHeaders).json();
   check(myObjects1, { 'retrieved member': (obj) => obj.id != 0 });
   check(myObjects2, { 'find Paths': (obj) => obj.stations != null});
