@@ -106,7 +106,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성을_요청(사용자, 강변역, 구의역);
         즐겨찾기_생성을_요청(사용자, 구의역, 건대역);
         // when
-        ExtractableResponse<Response> 페이지_2 = 즐겨찾기_목록_조회_요청(사용자, 2);
+        ExtractableResponse<Response> 페이지_2 = 즐겨찾기_목록_조회_요청(사용자, 1);
         // then
         List<FavoriteResponse> favoriteResponses = 페이지_2.jsonPath().getList("", FavoriteResponse.class);
         assertThat(favoriteResponses.size()).isEqualTo(1);
@@ -115,10 +115,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse, int page) {
+        Map<String, Integer> param = new HashMap<>();
+        param.put("page", page);
+        param.put("size", 5);
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
-                param("page", page).
+                params(param).
                 when().
                 get("/favorites/").
                 then().
