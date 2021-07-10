@@ -22,8 +22,8 @@ import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY
 
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-@EnableTransactionManagement
 @Profile("prod")
+@EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"nextstep.subway"})
 class DataBaseConfig {
 
