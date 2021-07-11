@@ -148,6 +148,7 @@ http {
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+  - [Coding as a Hobby 와 같은 결과를 반환하세요.](training/step1/step1.md)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
