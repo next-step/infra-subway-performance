@@ -21,7 +21,7 @@ const mutations = {
 const actions = {
   async [FETCH_FAVORITES]({ commit }) {
     return FavoriteService.get().then(({ data }) => {
-      commit(SET_FAVORITES, data)
+      commit(SET_FAVORITES, data.content);
     })
   },
   async [CREATE_FAVORITE]({ commit }, newFavorite) {

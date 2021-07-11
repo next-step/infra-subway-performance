@@ -173,6 +173,61 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요
+    * docs/optimize/query/codingasahobby 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    * docs/optimize/query/programmerhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    * docs/optimize/query/juniorhospital 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    * docs/optimize/query/seoulhospitalindiatwenty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    * docs/optimize/query/seoulhospitalexercisethirty 안에 실행 sql과 실행계획 캡처를 저장해두었습니다.
+  
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+  * https://public.enemfk777.kro.kr/favorites
+  * login id : probitanima1@gmail.com
+  * login pw : 11
 
+3. 데이터 베이스 이중화
+  * master config file
+    ```text
+      [mysqld]
+      log-bin=binlog
+      server-id=1
+      binlog_do_db=subway
+    ```
+  * master mysql container 실행
+    ```text
+      docker run --name mysql-master -p 3306:3306 -v ~:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d brainbackdoor/data-subway:0.0.2
+    ```
+
+  * master mysql에 master 설정 명령
+    ```sql
+      CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';
+      GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';
+      SHOW MASTER STATUS\G
+    ```
+
+  * slave config file
+    ```text
+      [mysqld]
+      log-bin=binlog
+      server-id=2
+      replicate-do-db=subway
+    ```
+    
+  * slave mysql container 실행
+    ```text
+      docker run --name mysql-slave -p 3306:3306 -v ~:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
+    ```
+  * slave mysql에 slave 설정 명령
+    ```sql
+      CHANGE MASTER TO MASTER_HOST='192.168.2.150', MASTER_PORT=3306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000001', MASTER_LOG_POS=619;
+      START SLAVE;
+      SHOW SLAVE STATUS\G
+    ```
+
+### 코드리뷰 반영
+- [x] 페이징 api 의 응답을 Page로 감싸기
