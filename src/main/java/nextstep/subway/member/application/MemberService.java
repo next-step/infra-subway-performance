@@ -29,7 +29,6 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @CachePut(value = "member", key = "#id")
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());

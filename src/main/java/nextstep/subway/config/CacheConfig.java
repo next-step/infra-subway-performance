@@ -31,7 +31,6 @@ public class CacheConfig extends CachingConfigurerSupport {
     @Bean
     public ObjectMapper objectMapper() {
         return Jackson2ObjectMapperBuilder.json()
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .modules(new JavaTimeModule()).build();
     }
 
@@ -42,6 +41,7 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
         return RedisCacheManager.RedisCacheManagerBuilder.
-                fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
+                fromConnectionFactory(connectionFactory)
+                .cacheDefaults(redisCacheConfiguration).build();
     }
 }
