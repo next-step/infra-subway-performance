@@ -43,6 +43,8 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* test script: /performance/script
+* 개선전 테스트 결과: /performance/result/before/*
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -52,7 +54,7 @@ npm run dev
     * 개선 전/후를 직접 계측하여 확인
 
 #### 작업 진행 순서
-* [ ] 성능 개선전 somke, load, stress 테스트 진행
+* [x] 성능 개선전 somke, load, stress 테스트 진행
 * [ ] reverse proxy 개선 후 성능 측정
 * [ ] redis 적용 후 성능 측정
 
