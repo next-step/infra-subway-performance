@@ -7,10 +7,13 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,9 +50,12 @@ public class LineService {
     }
 
 
-    public LineResponse findLineResponseById(Long id) {
+    @Async
+    public CompletableFuture<LineResponse> findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        final LineResponse lineResponse = LineResponse.of(persistLine);
+
+        return CompletableFuture.completedFuture(lineResponse);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

@@ -6,10 +6,13 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class FavoriteController {
@@ -28,9 +31,11 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
-        return ResponseEntity.ok().body(favorites);
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember)
+        throws ExecutionException, InterruptedException {
+        CompletableFuture<List<FavoriteResponse>> completableFuture = favoriteService.findFavorites(loginMember);
+
+        return ResponseEntity.ok().body(completableFuture.get());
     }
 
     @DeleteMapping("/favorites/{id}")

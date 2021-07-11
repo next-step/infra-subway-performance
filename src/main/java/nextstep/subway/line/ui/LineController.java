@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/lines")
@@ -32,8 +34,11 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id)
+        throws ExecutionException, InterruptedException {
+        final CompletableFuture<LineResponse> completableFuture = lineService.findLineResponseById(id);
+
+        return ResponseEntity.ok(completableFuture.get());
     }
 
     @PutMapping("/{id}")

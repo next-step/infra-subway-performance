@@ -7,10 +7,13 @@ import nextstep.subway.map.dto.PathResponse;
 import nextstep.subway.map.dto.PathResponseAssembler;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional
@@ -25,12 +28,14 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    @Async
+    public CompletableFuture<PathResponse> findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
         SubwayPath subwayPath = pathService.findPath(lines, sourceStation, targetStation);
+        final PathResponse pathResponse = PathResponseAssembler.assemble(subwayPath);
 
-        return PathResponseAssembler.assemble(subwayPath);
+        return CompletableFuture.completedFuture(pathResponse);
     }
 }
