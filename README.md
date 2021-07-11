@@ -228,3 +228,6 @@ npm run dev
       START SLAVE;
       SHOW SLAVE STATUS\G
     ```
+
+### 코드리뷰 반영
+- [x] 페이징 api 의 응답을 Page로 감싸기
