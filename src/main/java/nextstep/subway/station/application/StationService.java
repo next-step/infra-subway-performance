@@ -43,13 +43,11 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value=REDIS_VALUE, key =REDIS_KEY)
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value=REDIS_VALUE, key =REDIS_KEY)
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
