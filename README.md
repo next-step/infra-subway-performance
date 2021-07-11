@@ -59,7 +59,21 @@ npm run dev
 
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-- [ ] 리버스 Proxy 개선하기
+- [X] 리버스 Proxy 개선하기
+    - [X] CPU Core에 맞는 적절한 Worker 프로세스 할당
+    - [X] http 수준에서 gzip 압축 활성화 
+      ~~~
+      text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
+      ~~~
+    - [X] 캐시 유지 기간 10분 설정
+    - [X] 전체 캐시 크기 200MB 설정
+    - [X] 캐시 구분을 위한 Key 규칙 설정
+    - [X] 로드 벨런서 설정 (8080, 8081 포트로 나눠져서 Request 분배)
+    - [X] http 로드 금지 
+    - [X] access log 찍지 않기 설정
+    - [X] http2 계층 위에서 동작하기 설
+    
+
 - [ ] WAS 성능 개선하기
 - [ ] 
 ---
