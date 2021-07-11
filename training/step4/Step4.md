@@ -60,3 +60,20 @@ group by mch.stay;
 ![쿼리수정후](./step4_after_sql.png)
 
 소요시간 : 0.057 sec
+
+4. 피드백후 쿼리수정
+
+```sql
+SELECT stay, count(p.id) cnt
+FROM hospital h
+    JOIN covid c on h.id = c.hospital_id
+    JOIN programmer p on c.programmer_id = p.id
+    JOIN member m on c.member_id = m.id
+WHERE
+	h.name = '서울대병원' and p.country = 'india' and age BETWEEN 20 AND 29
+    group by stay;
+```
+
+소요시간 : 0.177 sec
+
+![쿼리수정후](./step4_after_feedback.png)
