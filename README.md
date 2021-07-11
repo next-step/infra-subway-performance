@@ -59,7 +59,97 @@ npm run dev
 ---
 
 ### 2단계 - 조회 성능 개선하기
+
+#### 요구사항 정의
+- [x] 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [x] 즐겨찾기 페이지에 페이징 쿼리를 적용
+    * 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+- [x] 데이터베이스 이중화
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    * 키를 사용하지 않아 조회 횟수가 많고 속도가 느릴 것이라 생각한 곳에 index를 추가했습니다.
+        * ```CREATE INDEX IDX_SECTION_PATH ON subway.section (down_station_id, up_station_id);```
+          * Line table 과 조인 하기 위해 line_id index 추가
+        ![img.png](img.png)
+        * ```CREATE INDEX idx_member_01 ON subway.member (email);```
+    1. Coding as a Hobby 와 같은 결과를 반환하세요.
+        * hobby에 index를 걸어 주었습니다.
+        ```
+        create index idx_subway_hoddy on subway.programmer (hobby);
+       
+        select  ((select count(hobby) from subway.programmer where hobby = 'Yes') / count(hobby)) * 100 as 'Yes',
+        ((select count(hobby) from subway.programmer where hobby = 'No') / count(hobby)) * 100 as 'No'
+        from subway.programmer;
+        ```
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요.
+       * 각 테이블에 id 키값을 설정했습니다.
+       ```ALTER TABLE subway.covid ADD CONSTRAINT covid_id_pk PRIMARY KEY (id);
+       ALTER TABLE subway.programmer ADD CONSTRAINT programmer_id_pk PRIMARY KEY (id);
+       ALTER TABLE subway.hospital ADD CONSTRAINT hospital_id_pk PRIMARY KEY (id);
+       ```
+       * 인덱스는 아래 5번에서 covid의 index를 programmer_id 와 hospital_i를 잡아서 생략했습니다
+        ```
+        create index idx_covid_ph on subway.covid (programmer_id, hospital_id); 
+        ```
+       ```
+       select p.id , h.name
+       from subway.programmer p
+       join subway.covid c on p.id = c.programmer_id
+       join subway.hospital h on c.hospital_id = h.id;
+       ```
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name,
+       * id 가 key값으로 자동 정렬 되어 order by 는 넣지 않았습니다
+        ```
+        select *
+        from (
+        select id as id
+        from subway.programmer p
+        where p.hobby = 'yes'
+        union
+        select id as id
+        from subway.programmer a
+        where a.years_coding = '0-2 years'
+        ) a join (
+        select c.programmer_id, h.name
+        from subway.covid c
+        join subway.hospital h on c.hospital_id = h.id
+        ) b on a.id = b.programmer_id;
+        ```
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+       * 다른 쿼리를 먼저하느라 인덱스가 잡혀있어서 하나만 잡았습니다
+        ```
+        create index idx_programmer_country on subway.programmer (country);
+       
+        select stay
+        , count(m.id)
+        from subway.member m
+        join (select member_id FROM subway.programmer WHERE country = 'India') p on m.id = p.member_id
+        join (select c.member_id, c.stay from subway.covid c left join subway.hospital h on c.hospital_id and h.name = '서울대병원') c
+        on m.id = c.member_id
+        where age between 20 and 29
+        group by stay;
+
+        ```
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       * member pk는 기존에 잡혀있어서 생략했습니다.
+       * subway name을 fulltext 인덱스로 잡고 programmer_id / hospital_id 를 인덱스로
+        age를 인덱스로 설정했습니다
+        ```
+        create fulltext index idx_hospital_name on subway.hospital (name);
+        create index idx_member_age on subway.member (age);
+        create index idx_covid_ph on subway.covid (programmer_id, hospital_id);  
+       
+        select exercise
+        , count(m.id)
+        from subway.member m
+        join subway.covid c on m.id = c.member_id
+        join subway.programmer p on c.programmer_id = p.id
+        join subway.hospital h on c.hospital_id = h.id and h.name = '서울대병원'
+        where age between 30 and 39
+        group by exercise;
+        ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    * https://chungsun.kro.kr/favorites
+    ![img_2.png](img_2.png)
+    
 
