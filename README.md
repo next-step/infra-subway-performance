@@ -542,6 +542,4 @@ npm run dev
    로그인계정 : test@test.com / 1234
    
    https://jhh992000.ddns.net/favorites
-   https://jhh992000.ddns.net/favorites?page=0&size=5
-   https://jhh992000.ddns.net/favorites?page=0&size=5&sort=id,asc
    ```
