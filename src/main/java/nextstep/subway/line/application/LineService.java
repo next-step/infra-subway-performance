@@ -50,6 +50,7 @@ public class LineService {
         return lineRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value=REDIS_VALUE, key =REDIS_KEY)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
