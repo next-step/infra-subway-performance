@@ -54,9 +54,11 @@ npm run dev
       
 - K6 개선 후 테스트 결과
     - Smoke 결과
+      ![img.png](src/main/resources/images/after_smoke.png)
     - Load 결과
+      ![img.png](src/main/resources/images/after_load.png)
     - Stress 결과
-
+      ![img.png](src/main/resources/images/after_stress.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - [X] 리버스 Proxy 개선하기
@@ -68,13 +70,16 @@ npm run dev
     - [X] 캐시 유지 기간 10분 설정
     - [X] 전체 캐시 크기 200MB 설정
     - [X] 캐시 구분을 위한 Key 규칙 설정
-    - [X] 로드 벨런서 설정 (8080, 8081 포트로 나눠져서 Request 분배)
+    - [X] Connection이 적은 요청 분배 설정 (8080, 8081 포트로 나눠져서 Request 분배)
     - [X] http 로드 금지 
     - [X] access log 찍지 않기 설정
     - [X] http2 계층 위에서 동작하기 설정
     
-- [ ] WAS 성능 개선하기
-    - [ ]  
+- [X] WAS 성능 개선하기
+    - [X] Redis를 이용한 Cache 이용
+    - [X] MemberService Cache 적용  
+    - [X] MemberResponse Json Serialization 적용
+    
 ---
 
 ### 2단계 - 조회 성능 개선하기
