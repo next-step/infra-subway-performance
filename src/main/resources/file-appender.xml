@@ -3,15 +3,15 @@
     <property name="home" value="/home/ubuntu/workspace/log/" />
 
     <springProfile name="local">
-        <property name="filename" value="infra-subway-monitoring" />
+        <property name="filename" value="infra-subway-performance" />
     </springProfile>
 
     <springProfile name="test">
-        <property name="filename" value="infra-subway-monitoring-test" />
+        <property name="filename" value="infra-subway-performance-test" />
     </springProfile>
 
     <springProfile name="prod">
-        <property name="filename" value="infra-subway-monitoring" />
+        <property name="filename" value="infra-subway-performance" />
     </springProfile>
 
     <appender name="file-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
