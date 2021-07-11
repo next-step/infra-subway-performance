@@ -23,15 +23,19 @@ public class MemberService {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
+
+    @Transactional(readOnly = true)
     @Cacheable(value = "member", key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
+    @CachePut(value = "member", key = "#id")
+    public Member updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
+        return member;
     }
 
     @CacheEvict(value = "member", key = "#id")

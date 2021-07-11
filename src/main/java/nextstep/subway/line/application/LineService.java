@@ -41,25 +41,29 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
+
     @CachePut(value = "line", key = "#id")
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public Line updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        return persistLine;
     }
+
     @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
