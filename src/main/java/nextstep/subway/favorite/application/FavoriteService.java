@@ -1,5 +1,11 @@
 package nextstep.subway.favorite.application;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -9,18 +15,16 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 @Service
 public class FavoriteService {
+
+    public static final int START_PAGE_NO = 0;
+    public static final int LATEST_FAVORITE_SIZE = 5;
+
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
 
@@ -34,8 +38,9 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+    public List<FavoriteResponse> findLatestFavorites(LoginMember loginMember) {
+        Pageable pageable = PageRequest.of(START_PAGE_NO, LATEST_FAVORITE_SIZE);
+        List<Favorite> favorites = favoriteRepository.findByMemberIdOrderByCreatedDateDesc(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
