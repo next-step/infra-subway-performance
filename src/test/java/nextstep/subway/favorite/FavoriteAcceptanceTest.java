@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -15,9 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -78,6 +83,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
         // then
         즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기목록 조회시 페이징되어서 default 5개 조회된다.")
+    @Test
+    void favoriteList_default_paging() {
+        // given
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 광교역);
+        즐겨찾기_생성을_요청(사용자, 정자역, 광교역);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        즐겨찾기_목록_페이징_적용되어서_조회됨(findResponse);
+    }
+
+    public static void 즐겨찾기_목록_페이징_적용되어서_조회됨(ExtractableResponse<Response> response) {
+        즐겨찾기_목록_조회됨(response);
+        List<Long> favoriteIds = response.jsonPath().getList("content.", FavoriteResponse.class)
+                .stream()
+                .map(FavoriteResponse::getId)
+                .collect(toList());
+
+        assertThat(favoriteIds).hasSize(5);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
