@@ -311,8 +311,16 @@ vus_max........................: 1200   min=1200 max=1200
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 - 요구사항
     - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
-- Coding as a Hobby 와 같은 결과를 반환하세요.
+    
 
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+```mysql
+CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
+
+SELECT (((SELECT COUNT(CASE WHEN hobby = 'Yes' then 1 end)) / COUNT(*)) * 100) AS 'is_hobby',
+	(((SELECT COUNT(CASE WHEN hobby = 'No' then 1 end)) / COUNT(*)) * 100) AS 'is_not_hobby'
+FROM subway.programmer;
+```
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -320,7 +328,18 @@ vus_max........................: 1200   min=1200 max=1200
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-
+```mysql
+SELECT exercise, COUNT(A.id)
+FROM (SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) AS M
+INNER JOIN (SELECT id, hospital_id FROM subway.covid) AS C
+	ON C.id = M.id
+INNER JOIN (SELECT id, exercise FROM subway.programmer) AS A
+	ON C.id = A.id
+INNER JOIN (SELECT id FROM subway.hospital WHERE name = '서울대병원') AS B
+	ON C.hospital_id = B.id
+GROUP BY exercise
+ORDER BY NULL;
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
