@@ -16,19 +16,22 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
+
+    private static final String FIND_STATIONS = "'findAllStations'";
+
     private StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(value = "stations", allEntries = true)
+    @CacheEvict(value = "stations", key = FIND_STATIONS)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
-    @Cacheable(value = "stations")
+    @Cacheable(value = "stations", key = FIND_STATIONS)
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
@@ -38,7 +41,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "stations", allEntries = true)
+    @CacheEvict(value = "stations", key = FIND_STATIONS)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
