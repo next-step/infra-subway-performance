@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-@Table(indexes = @Index(name = "favorite_index01", columnList = "memberId, createdDate desc"))
+@Table(indexes = @Index(name = "favorite_index01", columnList = "memberId, id desc"))
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
