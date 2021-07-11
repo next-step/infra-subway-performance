@@ -112,7 +112,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성을_요청(사용자, 수지구청역, 성북동역);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 1, 5);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 0, 5);
         // then
         페이징된_즐겨찾기_목록_조회됨(findResponse);
 
