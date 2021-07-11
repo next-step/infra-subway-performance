@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,8 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", key = "")
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -45,12 +48,12 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
+    @Cacheable(value = "line", key = "#id")
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -67,6 +70,11 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "line", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -74,6 +82,11 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "line", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
