@@ -73,4 +73,6 @@ npm run dev
    * 작업 내용 : /indexPractice/practiceResult.MD
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   * **GET** /favorites
 
+3. 데이터베이스 이중화 → 완료
