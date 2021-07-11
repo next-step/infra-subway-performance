@@ -61,4 +61,5 @@ npm run dev
 * index/result 에 공유하였습니다!
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+* https://infra-subway.kro.kr/favorites
 
