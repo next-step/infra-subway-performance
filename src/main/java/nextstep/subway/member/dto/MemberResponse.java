@@ -1,34 +1,47 @@
 package nextstep.subway.member.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
+
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
-    private Long id;
-    private String email;
-    private Integer age;
+	private Long id;
 
-    public MemberResponse() {
-    }
+	@JsonDeserialize(using = StringDeserializer.class)
+    @JsonSerialize(using = StringSerializer.class)
+	private String email;
 
-    public MemberResponse(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
-    }
+	@JsonDeserialize(using = NumberDeserializers.IntegerDeserializer.class)
+	@JsonSerialize(using = NumberSerializers.IntegerSerializer.class)
+	private Integer age;
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
-    }
+	public MemberResponse() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public MemberResponse(Long id, String email, Integer age) {
+		this.id = id;
+		this.email = email;
+		this.age = age;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public static MemberResponse of(Member member) {
+		return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+	}
 
-    public Integer getAge() {
-        return age;
-    }
+	public Long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
 }
