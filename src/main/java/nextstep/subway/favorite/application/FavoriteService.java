@@ -11,6 +11,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
@@ -29,6 +31,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         Favorite savedFavorite = favoriteRepository.save(favorite);
@@ -64,6 +67,7 @@ public class FavoriteService {
         return new PageImpl<>(favoriteResponses, pageable, favorites.getTotalElements());
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
