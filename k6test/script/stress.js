@@ -3,11 +3,11 @@ import {check} from 'k6';
 
 export let options = {
     stages: [
-        {duration: "30s", target: 100},
-        {duration: "30s", target: 200},
-        {duration: "30s", target: 300},
-        {duration: "30s", target: 200},
-        {duration: "30s", target: 300},
+        {duration: "30s", target: 800},
+        {duration: "30s", target: 900},
+        {duration: "30s", target: 1000},
+        {duration: "30s", target: 1100},
+        {duration: "30s", target: 1200},
         {duration: "15s", target: 0},
     ],
     thresholds: {

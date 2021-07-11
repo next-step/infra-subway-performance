@@ -114,3 +114,33 @@ default ✓ [======================================] 000/300 VUs  2m45s
      vus............................: 1       min=1        max=300
      vus_max........................: 300     min=300      max=300
 ```
+###스트레스 테스트의 강도 ↑
+```shell
+
+running (2m45.0s), 0000/1200 VUs, 59636 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/1200 VUs  2m45s
+
+     ✗ Entered main screen successfully
+      ↳  96% — ✓ 57687 / ✗ 1949
+     ✗ Logged in successfully
+      ↳  96% — ✓ 57687 / ✗ 1949
+     ✓ Found shortest path successfully
+
+     checks.........................: 97.79% ✓ 173061      ✗ 3898
+     data_received..................: 117 MB 706 kB/s
+     data_sent......................: 21 MB  127 kB/s
+     http_req_blocked...............: avg=7.24ms   min=0s       med=2.8µs    max=3.21s p(90)=3.09µs   p(95)=4.2µs
+     http_req_connecting............: avg=2.41ms   min=0s       med=0s       max=1.7s  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=587.89ms min=0s       med=627.11ms max=3.12s p(90)=903.13ms p(95)=957.62ms
+       { expected_response:true }...: avg=601.13ms min=72.85µs  med=638.46ms max=3.12s p(90)=904.91ms p(95)=959.74ms
+     http_req_failed................: 2.20%  ✓ 3898        ✗ 173061
+     http_req_receiving.............: avg=4.26ms   min=0s       med=53.61µs  max=1.59s p(90)=488.55µs p(95)=1.69ms
+     http_req_sending...............: avg=5.39ms   min=0s       med=46.85µs  max=1.27s p(90)=476.12µs p(95)=1.41ms
+     http_req_tls_handshaking.......: avg=4.56ms   min=0s       med=0s       max=2.35s p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=578.24ms min=0s       med=618.93ms max=2.06s p(90)=895.4ms  p(95)=945.31ms
+     http_reqs......................: 176959 1072.416934/s
+     iteration_duration.............: avg=2.34s    min=323.62µs med=2.43s    max=9.24s p(90)=3.42s    p(95)=3.77s
+     iterations.....................: 59636  361.409458/s
+     vus............................: 1      min=1         max=1200
+     vus_max........................: 1200   min=1200      max=1200
+```
