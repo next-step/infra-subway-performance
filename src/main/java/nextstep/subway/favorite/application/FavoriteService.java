@@ -58,10 +58,10 @@ public class FavoriteService {
         Map<Long, Station> stations = extractStations(content);
 
         List<FavoriteResponse> favoriteResponses = content.stream()
-                .map(it -> FavoriteResponse.of(
-                        it,
-                        StationResponse.of(stations.get(it.getSourceStationId())),
-                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .map(favorite -> FavoriteResponse.of(
+                        favorite,
+                        StationResponse.of(stations.get(favorite.getSourceStationId())),
+                        StationResponse.of(stations.get(favorite.getTargetStationId()))))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(favoriteResponses, pageable, favorites.getTotalElements());
