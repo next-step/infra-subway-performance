@@ -29,3 +29,19 @@ Covid 테이블에서 Programmer_id값을 인덱스로 추가해 주었습니다
 
 소요시간 : 0.024 sec
 
+3. 쿼리 수정 및 리미트 추가
+
+```sql
+SELECT p.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         JOIN covid c on p.id = c.programmer_id
+         JOIN hospital h on h.id = c.hospital_id
+where 
+	p.hobby ='yes' and (p.student like 'yes%' or p.years_coding = '0-2 years')
+limit 0, 10;
+```
+
+fetch 시간이 오래걸려서 limit 옵션도 주어보았습니다.
+확실히 limit옵션을 주니 전제적인 소요시간도 줄어드네요.
+
+소요시간 : 0.0021 sec
