@@ -44,6 +44,20 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+- K6 개선 전 테스트 결과 
+    - Smoke 결과 
+        ![img.png](src/main/resources/images/before_smoke.png)
+    - Load 결과
+        ![img.png](src/main/resources/images/before_load.png)
+    - Stress 결과
+        ![img.png](src/main/resources/images/before_stress.png)
+      
+- K6 개선 후 테스트 결과
+    - Smoke 결과
+    - Load 결과
+    - Stress 결과
+
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - [ ] 리버스 Proxy 개선하기
 - [ ] WAS 성능 개선하기
