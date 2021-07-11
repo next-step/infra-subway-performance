@@ -138,5 +138,5 @@ npm run dev
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-   - Endpoint: https://우찬.웹.한국/favorites?page=0&size=5
-   - Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b290ZWNhbUBwcm8uMm5kIiwiaWF0IjoxNjI1OTIwNjg3LCJleHAiOjE2MjU5MjQyODd9.N4HcEJZ-GVYHcK7GgLzjQEiLFHajgb7Zih3wBUu0oVQ
+   - Endpoint: https://우찬.웹.한국/favorites?page=1&size=5
+   - Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b290ZWNhbUBwcm8uMm5kIiwiaWF0IjoxNjI1OTc4OTk2LCJleHAiOjE2MjU5ODI1OTZ9.HNT46B7kI-690kM1WRAi7344hG02h-u-Y3j3jjsjkY0
