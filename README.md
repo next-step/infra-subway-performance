@@ -150,6 +150,7 @@ http {
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
   - [Coding as a Hobby 와 같은 결과를 반환하세요.](training/step1/step1.md)
   - [프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)](training/step2/step2.md)
+  - [프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)](training/step3/step3.md)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
