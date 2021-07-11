@@ -31,12 +31,12 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Favorite createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+        return favoriteRepository.save(favorite);
     }
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+    public List<FavoriteResponse> findLatestFavorites(LoginMember loginMember, Pageable pageable) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 

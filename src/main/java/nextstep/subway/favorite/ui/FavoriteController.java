@@ -3,6 +3,7 @@ package nextstep.subway.favorite.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.data.domain.Pageable;
@@ -23,18 +24,18 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
-        favoriteService.createFavorite(loginMember, request);
+        Favorite favorite = favoriteService.createFavorite(loginMember, request);
         return ResponseEntity
-                .created(URI.create("/favorites/" + 1L))
+                .created(URI.create("/favorites/" + favorite.getId()))
                 .build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(
+    public ResponseEntity<List<FavoriteResponse>> getLatestFavorites(
             @AuthenticationPrincipal LoginMember loginMember,
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
+        List<FavoriteResponse> favorites = favoriteService.findLatestFavorites(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
 

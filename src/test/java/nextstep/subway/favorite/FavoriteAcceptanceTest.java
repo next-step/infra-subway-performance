@@ -10,6 +10,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_등록되어_있음;
@@ -103,18 +106,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void pagingFavorite() {
         // when
-        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
-        즐겨찾기_생성을_요청(사용자, 양재역, 판교역);
-        즐겨찾기_생성을_요청(사용자, 판교역, 정자역);
-        즐겨찾기_생성을_요청(사용자, 정자역, 미금역);
-        즐겨찾기_생성을_요청(사용자, 미금역, 동천역);
+        ExtractableResponse<Response> response0 = 즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        long location = Long.parseLong(response0.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response1 = 즐겨찾기_생성을_요청(사용자, 양재역, 판교역);
+        long location1 = Long.parseLong(response1.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response2 = 즐겨찾기_생성을_요청(사용자, 판교역, 정자역);
+        long location2 = Long.parseLong(response2.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response3 = 즐겨찾기_생성을_요청(사용자, 정자역, 미금역);
+        long location3 = Long.parseLong(response3.header("Location").split("/")[2]);
+        ExtractableResponse<Response> response4 = 즐겨찾기_생성을_요청(사용자, 미금역, 동천역);
+        long location4 = Long.parseLong(response4.header("Location").split("/")[2]);
         즐겨찾기_생성을_요청(사용자, 동천역, 수지구청역);
         즐겨찾기_생성을_요청(사용자, 수지구청역, 성북동역);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 0, 5);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 0, 5, "id,asc");
         // then
-        페이징된_즐겨찾기_목록_조회됨(findResponse);
+        페이징된_즐겨찾기_목록_조회됨(findResponse, Lists.list(location, location1, location2, location3, location4));
 
     }
 
@@ -146,12 +154,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_페이징_요청(TokenResponse tokenResponse, int page, int size) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_페이징_요청(TokenResponse tokenResponse, int page, int size, String sort) {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 queryParam("page", page).
                 queryParam("size", size).
+                queryParam("sort", sort).
                 when().
                 get("/favorites").
                 then().
@@ -179,9 +188,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 페이징된_즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+    public static void 페이징된_즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<Long> expectedIds) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", FavoriteResponse.class)).hasSize(5);
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favoriteResponses).hasSize(5);
+        List<Long> actualIds = favoriteResponses.stream().map(favoriteResponse -> favoriteResponse.getId()).collect(Collectors.toList());
+        assertThat(actualIds).isEqualTo(expectedIds);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
