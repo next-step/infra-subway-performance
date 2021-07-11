@@ -14,12 +14,6 @@ task configUsingEnvironmetVarible {
 	println("Running environment:	" + env);
 }
 
-processResources {
-	from ('config/') {
-		into '.'
-	}
-}
-
 repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/milestone' }
