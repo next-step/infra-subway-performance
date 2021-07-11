@@ -32,6 +32,7 @@ public class LoggingAspect {
         } catch (Exception e) {
             stopWatch.stop();
             loggingError(joinPoint, e, stopWatch.formatTime());
+            throw e;
         }
         return returnObject;
     }

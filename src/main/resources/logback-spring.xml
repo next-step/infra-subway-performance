@@ -37,6 +37,9 @@
     <logger name="org.springframework" level="INFO">
       <appender-ref ref="CONSOLE" />
     </logger>
+    <root ref="DEBUG">
+      <appender-ref ref="CONSOLE" />
+    </root>
   </springProfile>
 
 </configuration>
