@@ -113,6 +113,22 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    1. Coding as a Hobby
+        * 쿼리 작성 후 쿼리 실행 속도 : 300 ~ 320ms
+        * programmer table hobby column index 추가 후 90 ~ 100 ms 이하로 결과 조회
+    2. 프로그래머별로 해당하는 병원 이름을 반환 (covid.id, hospital.name)
+        * 쿼리 작성 후 쿼리 실행 속도 : 130 ~ 150ms
+        * covid table programmer_id column index 추가 후 10ms 이내로 결과 조회 - Unique Index Scan
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+        * 쿼리 작성 후 쿼리 실행 속도 : 2초 이상 - hospital, programmer full scan
+        * hospital table id index 추가 후 20ms 이하로 실행 - unique index scan
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+        * 쿼리 작성 후 쿼리 실행 속도 : 400ms 이상
+        * covid table hospital_id, member table age column index 추가 후 100ms 이내로 실행
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+        * 쿼리 작성 후 쿼리 실행 속도 : 4번 실습의 인덱스 결과로 100ms 이내로 실행
+        * 추가 작업 없음
+    
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
