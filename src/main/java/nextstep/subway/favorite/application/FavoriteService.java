@@ -47,10 +47,9 @@ public class FavoriteService {
                                                 .orElse(0L);
 
         List<Favorite> favorites =
-            favoriteRepository.findAllByMemberIdAndIdLessThanEqual(memberId,
-                                                                   lastFavoriteId,
-                                                                   PageRequest.of(0, SIZE_OF_PAGES, Sort.by("id").descending()))
-                              .getContent();
+            favoriteRepository.findByMemberIdAndIdLessThan(memberId,
+                                                           lastFavoriteId,
+                                                           PageRequest.of(0, SIZE_OF_PAGES, Sort.by("id").descending()));
 
         Map<Long, Station> stations = extractStations(favorites);
 
