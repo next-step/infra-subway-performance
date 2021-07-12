@@ -14,6 +14,8 @@ public class LineResponse {
     private String color;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime modifiedDate;
 
     public LineResponse() {
