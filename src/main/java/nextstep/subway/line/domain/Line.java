@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.BaseEntity;
+import nextstep.subway.common.entity.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -121,28 +121,28 @@ public class Line extends BaseEntity implements Serializable {
 
     private boolean isPresentPreSection(Station station) {
         return sections.stream()
-            .filter(Section::existDownStation)
-            .anyMatch(it -> it.equalDownStation(station));
+                .filter(Section::existDownStation)
+                .anyMatch(it -> it.equalDownStation(station));
     }
 
     private boolean isPresentNextSection(Station station) {
         return sections.stream()
-            .filter(Section::existUpStation)
-            .anyMatch(it -> it.equalUpStation(station));
+                .filter(Section::existUpStation)
+                .anyMatch(it -> it.equalUpStation(station));
     }
 
     private Section findPreSection(Station station) {
         return sections.stream()
-            .filter(it -> it.equalDownStation(station))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("이전 구간이 없습니다."));
+                .filter(it -> it.equalDownStation(station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("이전 구간이 없습니다."));
     }
 
     private Section findNextSection(Station down) {
         return sections.stream()
-            .filter(it -> it.equalUpStation(down))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
+                .filter(it -> it.equalUpStation(down))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
     }
 
     private void valid(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -157,16 +157,16 @@ public class Line extends BaseEntity implements Serializable {
 
     private void updateDownStation(Station upStation, Station downStation, int distance) {
         sections.stream()
-            .filter(it -> it.getDownStation() == downStation)
-            .findFirst()
-            .ifPresent(it -> it.updateDownStation(upStation, distance));
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
     private void updateUpStation(Station upStation, Station downStation, int distance) {
         sections.stream()
-            .filter(it -> it.getUpStation() == upStation)
-            .findFirst()
-            .ifPresent(it -> it.updateUpStation(downStation, distance));
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     private boolean isExisted(Station upStation) {
@@ -182,13 +182,13 @@ public class Line extends BaseEntity implements Serializable {
 
     private Optional<Section> findDownStation(Long stationId) {
         return sections.stream()
-            .filter(it -> it.equalDownStation(stationId))
-            .findFirst();
+                .filter(it -> it.equalDownStation(stationId))
+                .findFirst();
     }
 
     private Optional<Section> findUpstation(Long stationId) {
         return sections.stream()
-            .filter(it -> it.equalUpStation(stationId))
-            .findFirst();
+                .filter(it -> it.equalUpStation(stationId))
+                .findFirst();
     }
 }

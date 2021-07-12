@@ -4,12 +4,16 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 public class MemberService {
+    private static final String CACHE_KEY = "MEMBER";
+
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -21,6 +25,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Cacheable(value = CACHE_KEY, key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -31,6 +36,7 @@ public class MemberService {
         member.update(param.toMember());
     }
 
+    @CacheEvict(value = CACHE_KEY, key = "#id")
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
