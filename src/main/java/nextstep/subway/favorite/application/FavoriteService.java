@@ -17,6 +17,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +43,14 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findLatestFavorites(LoginMember loginMember) {
-        Pageable pageable = PageRequest.of(START_PAGE_NO, LATEST_FAVORITE_SIZE);
-        List<Favorite> favorites = favoriteRepository.findByMemberIdOrderByCreatedDateDesc(loginMember.getId(), pageable);
+        Pageable pageable = PageRequest.of(START_PAGE_NO, LATEST_FAVORITE_SIZE, Sort.by("id").descending());
+
+        Long lastFavoriteId = favoriteRepository.findFirstByMemberIdOrderByIdDesc(loginMember.getId())
+            .map(Favorite::getId)
+            .orElse(0L);
+
+        List<Favorite> favorites = favoriteRepository.findLatestByMemberId(lastFavoriteId, loginMember.getId(), pageable);
+
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
