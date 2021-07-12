@@ -43,9 +43,22 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+    `performance` 디렉토리 안에 결과 올렸습니다. 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+    1. `WebPageTest`, `Page Speed Insights`를 통해 성능 지표를 검토
+    2. `load`, `smoke`, `stress` 테스트를 통하여 지표 출력
+    3. 정적 파일 경량화
+        - 번들 크기 줄이기
+        - Code Splitting
+        - Dynamic import
+    4. Reverse Proxy 개선하기
+        - http 블록 수준에서 gzip 압축 활성화
+        - 캐시 설정
+        - http2 적용
+    5. WAS 성능 개선하기
+        - Redis 활용 : 사용자, 노선, 역에 적용
+        - 비동기 설정 추가 및 스레드 수 변경
+        
 ---
 
 ### 2단계 - 조회 성능 개선하기
