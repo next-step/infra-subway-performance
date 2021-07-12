@@ -1,10 +1,12 @@
 package nextstep.subway.station.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.station.domain.Station;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -12,10 +14,14 @@ public class StationResponse {
     private Long id;
     private String name;
 
+    @JsonIgnore
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdDate;
 
+    @JsonIgnore
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime modifiedDate;
