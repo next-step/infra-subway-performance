@@ -26,6 +26,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "path", key = "#source+'_'+#target")
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();

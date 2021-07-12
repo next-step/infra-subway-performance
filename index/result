@@ -1,0 +1,75 @@
+1. Coding as a Hobby 와 같은 결과를 반환하세요.(4.132sec -> 0.250sec)
+    * 쿼리 작성 - 4.132sec
+        SELECT (Count(id) / (SELECT COUNT(id) FROM subway.programmer) * 100) as 'HobbyCount'
+        FROM subway.programmer
+        GROUP BY hobby
+
+    * programmer id pk로 설정 - 2.066sec
+    * hobby 인덱스 설정 - 0.250sec
+    * 커버링 인덱스 적용(기존 쿼리에 이미 적용되어 있음)
+
+2. 프로그래머별로 해당하는 병원 이름을 반환하세요.(0.011sec)
+    * 쿼리 작성 - 0.011sec
+        SELECT C.id, hospital.name
+        FROM subway.covid AS C
+        JOIN subway.hospital
+        ON hospital.id = C.hospital_id
+        WHERE C.id >= 1000
+        LIMIT 0, 10
+        ;
+
+    * hospital id를 pk로 설정 - Full Table Scan -> Unique Key Lookup
+    * covid id를 pk로 설정 - Full Table Scan -> Index Range Scan
+
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 programmer.id 기준으로 정렬하세요.(0.183sec -> 0.011sec)
+    * 쿼리 작성 - 0.183sec
+        SELECT P.id, C.name
+        FROM (
+        	SELECT id
+        	FROM subway.programmer
+            WHERE Hobby = 'Yes' AND (student LIKE 'Yes%' OR years_coding = '0-2 years')) AS P
+        JOIN (
+        	SELECT covid.programmer_id, name FROM subway.covid
+        	JOIN (SELECT hospital.id, name FROM subway.hospital) AS H ON H.id = covid.hospital_id
+        ) AS C ON C.programmer_id = P.id
+        WHERE P.id >= 1000
+        LIMIT 0, 10
+
+    * hospital의 name 인덱스 설정 - 0.051sec
+    * covid의 programmer_id, hospital_id 인덱스 설정 - 0.011sec
+
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.(11.211sec -> 0.237sec)
+    * 쿼리 작성 - 11.211sec
+        SELECT
+        stay
+        , COUNT(P.member_id)
+        FROM (
+        	SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) AS M
+        JOIN (
+        	SELECT member_id FROM subway.programmer WHERE country = 'India') as P
+        ON M.id = P.member_id
+        JOIN (
+        	SELECT covid.id, covid.member_id, hospital_id, stay FROM subway.covid
+        		JOIN (SELECT id FROM subway.hospital WHERE name = '서울대병원') as H ON covid.hospital_id = H.id) as C
+        ON M.id = C.member_id
+        GROUP BY Stay
+
+    * programmer의 country, member_id 인덱스 설정 - 0.868sec
+    * covid의 3번에서 설정한 programmer_id, hospital_id 인덱스 -> hospital_id 만으로 변경 설정 - 0.237sec
+
+5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.(0.886sec)
+    * 쿼리 작성 - 0.886sec
+        SELECT
+        exercise
+        , COUNT(P.id)
+        FROM (SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) AS M
+        INNER JOIN (SELECT member_id, hospital_id, programmer_id FROM subway.covid) AS C
+        ON C.member_id = M.id
+        INNER JOIN (SELECT id, exercise FROM subway.programmer) AS P
+        ON C.programmer_id = P.id
+        INNER JOIN (SELECT id FROM subway.hospital WHERE name = '서울대병원') as H
+        ON C.hospital_id = H.id
+        GROUP BY exercise
+        ORDER BY null
+
+    * 1~4번을 진행하면서 변경한 인덱스 설정때문?인지 해당 쿼리의 실행계획에 튜님포인트를 찾지 못함.
