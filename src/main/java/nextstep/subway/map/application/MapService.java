@@ -30,6 +30,7 @@ public class MapService {
     }
 
     @Cacheable(value = MAP_REDIS_VALUE, key = MAP_REDIS_KEY)
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);

@@ -9,9 +9,14 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,9 +26,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
     private static final String FAVORITE_REDIS_VALUE = "favorites";
     private static final String FAVORITE_REDIS_KEY = "#loginMember.id";
+    private static final int FIRST_PAGE = 0;
+
+    @Value("${subway.favorite.size}")
+    private int pageSize;
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -39,8 +49,10 @@ public class FavoriteService {
     }
 
     @Cacheable(value = FAVORITE_REDIS_VALUE, key = FAVORITE_REDIS_KEY)
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+        Pageable page = PageRequest.of(FIRST_PAGE, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), page);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
