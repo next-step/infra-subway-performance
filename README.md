@@ -315,6 +315,7 @@ vus_max........................: 1200   min=1200 max=1200
 
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 ```mysql
+-- programmer의 hobby에 인덱스를 걸었습니다.
 CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
 
 SELECT (((SELECT COUNT(CASE WHEN hobby = 'Yes' then 1 end)) / COUNT(*)) * 100) AS 'is_hobby',
@@ -322,13 +323,44 @@ SELECT (((SELECT COUNT(CASE WHEN hobby = 'Yes' then 1 end)) / COUNT(*)) * 100) A
 FROM subway.programmer;
 ```
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-
+```mysql
+SELECT programmer_id, hospital_name
+FROM (SELECT id, programmer_id, hospital_id FROM subway.covid) AS covid_info
+INNER JOIN (SELECT id FROM subway.programmer) AS programmers
+	ON covid_info.id = programmers.id
+INNER JOIN (SELECT id, name as hospital_name FROM subway.hospital) AS hosp
+	ON covid_info.hospital_id = hosp.id;
+```
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-
+```mysql
+SELECT programmers_id, years_coding, hobby, hosp_name
+FROM
+  (SELECT id as programmers_id, hobby, years_coding FROM subway.programmer WHERE hobby = 'Yes') AS programmers
+    INNER JOIN (SELECT id, hospital_id, programmer_id FROM subway.covid) AS covid_info
+               ON covid_info.programmer_id = programmers.programmers_id
+    INNER JOIN (SELECT id, name as hosp_name FROM subway.hospital) AS hosp
+               ON covid_info.hospital_id = hosp.id;
+```
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-
+```mysql
+-- covid 의 hospital_id,  member 의 age, hospital 의 name 인덱스 걸었습니다. 
+SELECT stay, COUNT(indian_programmers.id)
+FROM 
+	(SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) AS twenties
+INNER JOIN (SELECT id, hospital_id, stay FROM subway.covid) AS covid_info
+	ON covid_info.id = twenties.id
+INNER JOIN (SELECT id, country FROM subway.programmer WHERE country = 'India') as indian_programmers
+	ON covid_info.id = indian_programmers.id
+INNER JOIN (SELECT id FROM subway.hospital WHERE name = '서울대병원') AS hosp
+	ON covid_info.hospital_id = hosp.id
+GROUP BY stay;
+```
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```mysql
+-- hospital, covid, programmer 의 id 를 pk 로 설정했습니다.
+-- hospital 의 name, programmer 의 exercise 데이터타입을 varchar(255)로 변경했습니다.
+-- covid 의 hospital_id, member 의 age, hospital 의 name 인덱스 걸었습니다.
+-- 정렬되지 않도록 변경했습니다.
 SELECT exercise, COUNT(A.id)
 FROM (SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) AS M
 INNER JOIN (SELECT id, hospital_id FROM subway.covid) AS C
