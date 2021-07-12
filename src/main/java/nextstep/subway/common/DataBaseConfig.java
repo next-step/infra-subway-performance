@@ -1,11 +1,6 @@
 package nextstep.subway.common;
 
-import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER;
-import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE;
-
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -18,6 +13,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+
+import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER;
+import static nextstep.subway.common.ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
@@ -40,7 +41,7 @@ class DataBaseConfig {
 
     @Bean
     public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
-                                        @Qualifier("slaveDataSource") DataSource slave) {
+        @Qualifier("slaveDataSource") DataSource slave) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
         HashMap<Object, Object> sources = new HashMap<>();
