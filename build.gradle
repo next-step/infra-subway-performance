@@ -36,7 +36,8 @@ dependencies {
 
     // db
     implementation ("mysql:mysql-connector-java")
-	runtimeOnly 'com.h2database:h2'
+    implementation ('org.springframework.boot:spring-boot-starter-data-redis')
+    runtimeOnly 'com.h2database:h2'
 }
 
 test {
