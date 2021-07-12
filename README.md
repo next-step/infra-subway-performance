@@ -74,5 +74,26 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+   - ./training 디렉토리에 단계별로 md파일로 저장하였습니다.
+
+   1. [Coding as a Hobby 와 같은 결과를 반환하세요.](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step1/Step1.md)
+
+   2. [프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step2/Step2.md)
+
+   3. [프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step3/Step3.md)
+
+   4. [서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step4/Step4.md)
+
+   5. [서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)](https://github.com/dacapolife87/infra-subway-performance/tree/step2/training/step5/Step5.md)
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+페이징 쿼리를 적용한 api입니다.
+기존 UI에서 5개만 보여 주도록 변경하였습니다.
+- https://dacapolife87-subway.n-e.kr/favorites
+
+만약 이후에 화면에서 게시판 역식으로 즐겨찾기의 목록을 보여주게되면 사용할수 있도록
+Page객체로 반환하여 현재페이지, 총 페이지수, 총 데이터수 등을 포함하여 내려주도록 api도 하나 추가하였습니다.
+
+- https://dacapolife87-subway.n-e.kr/favorites-v2
 
