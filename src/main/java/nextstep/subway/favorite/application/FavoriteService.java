@@ -9,7 +9,11 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,16 +37,17 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
+    @Transactional(readOnly = true)
+    public Page<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        Map<Long, Station> stations = extractStations(favorites.getContent());
 
-        return favorites.stream()
+        return new PageImpl<> (favorites.stream()
             .map(it -> FavoriteResponse.of(
                 it,
                 StationResponse.of(stations.get(it.getSourceStationId())),
                 StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
