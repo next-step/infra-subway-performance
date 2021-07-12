@@ -40,9 +40,16 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+
+        Long memberId = loginMember.getId();
+        Long lastFavoriteId = favoriteRepository.findFirstByMemberId(memberId)
+                                                .map(Favorite::getId)
+                                                .orElse(0L);
+
         List<Favorite> favorites =
-            favoriteRepository.findAllByMemberId(loginMember.getId(),
-                                                 PageRequest.of(0, SIZE_OF_PAGES, Sort.by("id").descending()))
+            favoriteRepository.findAllByMemberIdAndIdLessThanEqual(memberId,
+                                                                   lastFavoriteId,
+                                                                   PageRequest.of(0, SIZE_OF_PAGES, Sort.by("id").descending()))
                               .getContent();
 
         Map<Long, Station> stations = extractStations(favorites);
