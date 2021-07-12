@@ -19,22 +19,30 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
@@ -42,13 +50,26 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+	- [BEFORE_K6_TEST_REPORT](k6/BEFORE_K6_TEST.md)
+	- [AFTER_K6_TEST_REPORT](k6/AFTER_K6_TEST.md)
+	- 기타 테스트 실행 js 파일 위치 : [/k6](k6)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+	- nginx 설정 변경
+		+ 가용 Connection 10240로 셋팅
+		+ gzip 설정
+		+ Proxy 캐시 설정
+		+ 8080 포트와 8082 포트로 로드 벨런싱 설정
+		+ http2 설정
+	- Was 성능개선 설정
+		+ redis 적용 : Line 조회, 수정, 삭제 메소드에 캐싱 적용하여 반복, 동일한 값을 요청하는 내용을 메모리에 캐싱처리
+		+ Thread poll 수정 : 최대 사용 Thread 수와 대기 Queue 수를 셋팅
 
 ---
 
 ### 2단계 - 조회 성능 개선하기
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
