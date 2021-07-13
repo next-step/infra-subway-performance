@@ -30,10 +30,6 @@ import java.util.stream.Collectors;
 public class FavoriteService {
     private static final String FAVORITE_REDIS_VALUE = "favorites";
     private static final String FAVORITE_REDIS_KEY = "#loginMember.id";
-    private static final int FIRST_PAGE = 0;
-
-    @Value("${subway.favorite.size}")
-    private int pageSize;
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -51,8 +47,8 @@ public class FavoriteService {
     @Cacheable(value = FAVORITE_REDIS_VALUE, key = FAVORITE_REDIS_KEY)
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Pageable page = PageRequest.of(FIRST_PAGE, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), page);
+        Long lastIndex = Long.MAX_VALUE;
+        List<Favorite> favorites = favoriteRepository.findTop5ByMemberIdAndIdLessThanOrderByIdDesc(loginMember.getId(), lastIndex);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
