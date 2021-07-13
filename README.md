@@ -183,7 +183,7 @@ http {
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
- 
+
  실습해본 과정을 [여기](index_tuning_result.md)에 남겼습니다.
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
@@ -195,3 +195,6 @@ http {
 
 3. 데이터베이스 이중화
 
+![image-20210713122955871](https://tva1.sinaimg.cn/mw1024/008i3skNgy1gsf5wv8c8ej30i50ajdh4.jpg)
+
+테스트 완료.
