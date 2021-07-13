@@ -7,15 +7,19 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class LineService {
+    private static final String CACHE_VALUE = "line";
+
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -38,6 +42,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = CACHE_VALUE, key = "#id")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -46,17 +51,18 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @CachePut(value = CACHE_VALUE, key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @CacheEvict(value = CACHE_VALUE, key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }

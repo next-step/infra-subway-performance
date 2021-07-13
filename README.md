@@ -43,9 +43,28 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- smoke
+    - before
+    ![before](src/test/resources/k6/result/before/smoke.png)
+    
+    - after
+    ![after](src/test/resources/k6/result/after/smoke.png)
+- load
+    - before
+    ![before](src/test/resources/k6/result/before/load.png)
+    
+    - after
+    ![after](src/test/resources/k6/result/after/load.png)
+- stress
+    - before
+    ![before](src/test/resources/k6/result/before/stress.png)
+    
+    - after
+    ![after](src/test/resources/k6/result/after/stress.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- 리버스 프록시 개선 : 캐시설정 & HTTP/2 설정
+- WAS 성능 개선 : Redis 설정
 ---
 
 ### 2단계 - 조회 성능 개선하기
