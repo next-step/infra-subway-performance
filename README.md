@@ -135,7 +135,6 @@ npm run dev
         1000 row(s) returned	
         0.022 sec / 0.00082 sec
         ```
-        
         |covid_id|hospital_name|
         |---|---|
         |1|고려대병원   |
@@ -172,7 +171,7 @@ npm run dev
         ```
         
         |covid_id|hospital_name|hobby|dev_type|years_coding|
-              |---|---|---|---|---|
+        |---|---|---|---|---|
         |5 |우리들병원    |Yes|Data or business analyst;Desktop or enterprise applications developer;Game or graphics developer;QA or test developer;Student|6-8 years|
         |8 |강남성심병원   |Yes|Designer;Front-end developer;QA or test developer|0-2 years|
         |12|우리들병원    |Yes|Back-end developer;Front-end developer;Full-stack developer|0-2 years|
@@ -210,7 +209,7 @@ npm run dev
         0.066 sec / 0.000034 sec
         ```
         |stay|cnt|
-              |---|---|
+        |---|---|
         |0-10|3   |
         |11-20|25 |
         |21-30|30 |
@@ -248,7 +247,7 @@ npm run dev
         
         ```
         |exercise|cnt|
-              |---|---|
+        |---|---|
         |1 - 2 times per week|171|
         |3 - 4 times per week|113|
         |Daily or almost every day|91|
