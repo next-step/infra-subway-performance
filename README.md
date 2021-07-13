@@ -127,3 +127,5 @@ npm run dev
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+   yzzzzun.o-r.kr
+   id/pw : test@test.com / test
