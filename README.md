@@ -57,5 +57,75 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+   쿼리당 인덱스를 모두 초기화 한 후 다시 진행하는 방식으로 수행했습니다.
+
+   인덱스가 적용되지 않는 컬럼의 설정은 varchar(255) 로 수정
+
+   조건이 들어간 필드에 대해 index를 추가하고 결과를 확인했습니다.
+
+   - Codding as a Hobby 와 같은 결과 반환
+
+     ```mysql
+     CREATE INDEX `idx_programmer_hoby`  ON `subway`.`programmer` (hobby);
+     
+     select hobby, ROUND((count(id)/(select count(id) from `subway`.`programmer`) * 100),1) as 'HobbyCount' from `subway`.`programmer` Group By hobby;
+     ```
+
+   - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name
+
+     ```mysql
+     create index idx_covid_pid_hid on `subway`.`covid` (programmer_id, hospital_id);
+     
+     select p.id,h.name
+     from `subway`.`programmer` as p
+     inner join `subway`.`covid` as c on p.id = c.programmer_id
+     inner join `subway`.`hospital` as h on c.hospital_id = h.id;
+     ```
+
+   - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+     ```mysql
+     CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby);
+     CREATE INDEX `idx_programmer_hsy` ON `subway`.`programmer` (hobby,student,years_coding);
+     CREATE INDEX `idx_covid_programmerId` ON `subway`.`covid` (programmer_id);
+     
+     
+     select jp.id, h.name, jp.hobby, jp.dev_type, jp.years_coding 
+     from (select p.id, p.hobby, p.dev_type, p.years_coding from `subway`.`programmer` as p where p.hobby = 'Yes' and (p.student like 'Yes%' or p.years_coding like '0-2%')) as jp
+      inner join `subway`.`covid` as c on c.programmer_id = jp.id
+      inner join `subway`.`hospital` as h on c.hospital_id = h.id;
+     ```
+
+   - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+     ```mysql
+     CREATE INDEX `idx_member_age` ON `subway`.`member` (age);
+     CREATE INDEX `idx_programmer_cm` ON `subway`.`programmer` (country);
+     CREATE INDEX `idex_covid_hid` ON `subway`.`covid` (hospital_id,stay);
+     
+     select c.stay, count(*) from (select id from `subway`.`member` where age >= 20 and age <30) as mem
+     inner join (select id, member_id,country from `subway`.`programmer` as pr where pr.country = 'India') as p on p.member_id = mem.id
+     inner join `subway`.`covid` as c on c.programmer_id = p.id
+     inner join (select id from `subway`.`hospital` as h where h.name = '서울대병원') as h on h.id = c.hospital_id
+     group by stay;
+     ```
+
+   - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+     ```mysql
+     CREATE INDEX `idx_member_age` ON `subway`.`member` (age);
+     CREATE INDEX `idx_programmer_ex` ON `subway`.`programmer` (exercise);
+     CREATE INDEX `idex_covid_hid` ON `subway`.`covid` (hospital_id);
+      
+     select p.exercise, count(p.id) from (select id from `subway`.`member` where age >= 30 and age <40) as mem
+     inner join (select * from `subway`.`programmer` as pr) as p on p.member_id = mem.id
+     inner join `subway`.`covid` as c on c.programmer_id = p.id
+     inner join (select id from `subway`.`hospital` as h where h.name = '서울대병원') as h on h.id = c.hospital_id
+     group by exercise
+     order by null
+     ```
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+   yzzzzun.o-r.kr
+   id/pw : test@test.com / test
