@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 public class StationResponse {
     private Long id;
     private String name;
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-//    private LocalDateTime createdDate;
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-//    private LocalDateTime modifiedDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
@@ -28,8 +28,8 @@ public class StationResponse {
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
-        //this.createdDate = createdDate;
-        //this.modifiedDate = modifiedDate;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public Long getId() {
@@ -40,11 +40,11 @@ public class StationResponse {
         return name;
     }
 
-//    public LocalDateTime getCreatedDate() {
-//        return createdDate;
-//    }
-//
-//    public LocalDateTime getModifiedDate() {
-//        return modifiedDate;
-//    }
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
 }
