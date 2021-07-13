@@ -256,3 +256,4 @@ npm run dev
 	
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 	- https://woojang.n-e.kr/favorites
+    - [FINAL_K6_TEST_REPORT](k6/FINAL_K6_TEST.md)

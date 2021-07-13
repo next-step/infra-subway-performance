@@ -28,12 +28,13 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -41,16 +42,17 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "lineResponse", key = "#id")
+    @Cacheable(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);

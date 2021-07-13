@@ -27,11 +27,12 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    @Cacheable(value = "findPath", key = "#source + '-' + #target")
+    @Cacheable(value = "findPath", key = "#source + '_' + #target")
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
-        Station sourceStation = stationService.findById(source);
-        Station targetStation = stationService.findById(target);
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
         SubwayPath subwayPath = pathService.findPath(lines, sourceStation, targetStation);
 
         return PathResponseAssembler.assemble(subwayPath);
