@@ -50,16 +50,6 @@ npm run dev
 
 ---
 
-### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
-
----
-
-
-
 # 1단계 - 화면 응답 개선하기
 
 ### 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
@@ -188,4 +178,26 @@ http {
       2
      ```
    - [x] Async Thread pool 설정
+
+---
+
+### 2단계 - 조회 성능 개선하기
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+ 실습해본 과정을 [여기](index_tuning_result.md)에 남겼습니다.
+
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   
+   `/favorite?page=0&size=5`
+   
+   - 즐겨찾기 페이지에 페이징 쿼리를 적용
+      - 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+
+3. 데이터베이스 이중화
+
+![image-20210713122955871](https://tva1.sinaimg.cn/mw1024/008i3skNgy1gsf5wv8c8ej30i50ajdh4.jpg)
+
+![image-20210713124716304](https://tva1.sinaimg.cn/mw1024/008i3skNgy1gsf6exz1mkj30nx0fpt9z.jpg)
+
+테스트 완료.
 

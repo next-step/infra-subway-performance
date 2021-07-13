@@ -23,6 +23,8 @@ public class MemberService {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
+
+    @Transactional(readOnly = true)
     @Cacheable(value = "member", key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -30,9 +32,10 @@ public class MemberService {
     }
 
     @CachePut(value = "member", key = "#id")
-    public void updateMember(Long id, MemberRequest param) {
+    public Member updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
+        return member;
     }
 
     @CacheEvict(value = "member", key = "#id")
