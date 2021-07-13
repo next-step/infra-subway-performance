@@ -170,4 +170,5 @@ ii) 문제 : 이슈 없음
 ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+ - https://performance.honbabzone.com/favorites
+ - 1@1.com / 1
