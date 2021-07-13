@@ -44,7 +44,7 @@ public class FavoriteService {
     @Async("asyncThreadTaskExecutor")
     @Transactional(readOnly = true)
     public CompletableFuture<List<FavoriteResponse>> findFavorites(LoginMember loginMember) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "id");
 
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites.getContent());
