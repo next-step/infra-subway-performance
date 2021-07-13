@@ -76,5 +76,127 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+  - Coding as a Hobby 와 같은 결과를 반환하세요.
+    ```
+    CREATE INDEX idx_programmer_hobby ON subway.programmer(hobby);
+    ```
+    ```
+    select
+    hobby,
+    ((count(hobby)/(select count(hobby) from subway.programmer)) * 100) as percentage
+    from subway.programmer
+    group by hobby
+    order by hobby desc;
+    ```
 
+  - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - 조회
+    ```
+    CREATE INDEX idx_covidHobby_p ON subway.covid(programmer_id, hospital_id);
+    ```
+    - covid - pk 생성
+    ```
+    ALTER TABLE subway.covid ADD CONSTRAINT covid_PK PRIMARY KEY (id);
+    ```
+    - programmer - pk 생성
+    ```
+    ALTER TABLE subway.programmer ADD CONSTRAINT programmer_PK PRIMARY KEY (id);
+    ```
+    - hospital - pk 생성
+    ```
+    ALTER TABLE subway.hospital ADD CONSTRAINT hospital_PK PRIMARY KEY (id);
+    ```
+    - hospital_id 타입 변경
+    ```
+    ALTER TABLE subway.covid MODIFY COLUMN hospital_id bigint(11) NULL;
+    ```
+    - 인덱스(Non Clustered Index) 적용전 174ms에서 적용 후 14ms 개선, pk(Clustered Index) 적용 후 9ms로 개선
+    ```sql
+    SELECT
+    p.id as programer_id,
+    c.id as covid_id,
+    h.name as hospital_name
+    FROM
+    subway.programmer p
+    INNER JOIN  subway.covid c on p.id = c.programmer_id
+    INNER JOIN  subway.hospital h on h.id  = c.hospital_id
+    where
+    p.member_id = c.member_id
+    and c.hospital_id = h.id;
+    ```
+
+  - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+     ```sql
+    select
+    c.id as covid_id,
+    h.name as hospital_name,
+    u.hobby,
+    u.dev_type,
+    u.years_coding
+    from subway.covid c
+    INNER JOIN subway.hospital h ON c.hospital_id = h.id
+    INNER JOIN
+    (
+    select
+    p.id,
+    p.hobby,
+    p.dev_type,
+    p.years_coding
+    from subway.programmer p
+    INNER JOIN subway.member m ON p.member_id = m.id
+    where
+    (p.hobby = 'yes' or years_coding = '0-2 years') and p.member_id = m.id
+    ) u ON u.id = c.programmer_id
+    where c.hospital_id = h.id
+    and u.id = c.programmer_id;
+    ```
+
+  - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 인덱스 생성
+  ```
+  CREATE INDEX `idx_user_Country`  ON `subway`.`programmer` (Country);
+  CREATE INDEX `idx_user_Age`  ON `subway`.`member` (age);
+  ```
+  ```sql
+  select stay, count(p.id) cnt
+    from subway.hospital h
+    inner join subway.covid c on h.id = c.hospital_id
+    inner join subway.programmer p on c.programmer_id = p.id
+````
+CREATE INDEX idx_programmer_hobby ON subway.programmer(hobby);
+````
+- 기존 속도 475ms에서 93ms로 개선
+````
+select
+hobby,
+((count(hobby)/(select count(hobby) from subway.programmer)) * 100) as percentage
+from subway.programmer
+group by hobby
+order by hobby desc;
+````    inner join subway.member m on c.member_id = m.id
+    where h.name ='서울대병원' and p.country = 'India' AND m.age between 20 AND 29
+    group by c.stay;
+  ```
+
+  - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - 인덱스 생성
+    ```
+    CREATE INDEX `idx_user_Hospital_Id`  ON `subway`.`covid` (hospital_id);
+    ```
+    ```sql
+    select
+       p.exercise,
+       count(p.id) member_cnt
+    from
+       (select id from subway.member where age between 30 and 39) m,
+       (select member_id, hospital_id, programmer_id from subway.covid) c,
+       (select id from subway.hospital where name = '서울대병원') h,
+       (select id, exercise from subway.programmer) p
+    where m.id = c.member_id
+    and c.hospital_id = h.id
+    and c.programmer_id = p.id
+    group by
+       p.exercise;
+    ```
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- https://www.reversalspring.p-e.kr/favorites
