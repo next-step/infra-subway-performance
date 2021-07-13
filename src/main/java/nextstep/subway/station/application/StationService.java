@@ -17,7 +17,6 @@ import nextstep.subway.station.dto.StationResponse;
 public class StationService {
 
     private static final String REDIS_VALUE = "station";
-    private static final String REDIS_KEY = "#id";
 
     private StationRepository stationRepository;
 
@@ -39,7 +38,7 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = REDIS_VALUE, key = REDIS_KEY)
+    @CacheEvict(value = REDIS_VALUE, key = "#id")
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
