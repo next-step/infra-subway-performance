@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,21 +41,23 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
+    @Async("asyncThreadTaskExecutor")
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+    public CompletableFuture<List<FavoriteResponse>> findFavorites(LoginMember loginMember) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
 
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites.getContent());
 
-        return favorites.stream()
+        return new AsyncResult<>(favorites.stream()
             .map(it -> FavoriteResponse.of(
                 it,
                 StationResponse.of(stations.get(it.getSourceStationId())),
                 StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())).completable();
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {

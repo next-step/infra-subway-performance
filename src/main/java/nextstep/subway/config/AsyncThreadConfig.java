@@ -12,15 +12,15 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class AsyncThreadConfig {
 
-    @Bean
+    @Bean(name = "asyncThreadTaskExecutor")
     public Executor asyncThreadTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         /* MaxThread가 동작하는 경우 대기하는 Queue 사이즈 */
         executor.setQueueCapacity(100);
         /* 기본 Thread 사이즈 */
-        executor.setCorePoolSize(2);
+        executor.setCorePoolSize(5);
         /* 최대 Thread 사이즈 */
-        executor.setMaxPoolSize(4);
+        executor.setMaxPoolSize(10);
 
         executor.setAllowCoreThreadTimeOut(true);
 
