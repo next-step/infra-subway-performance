@@ -1,8 +1,3 @@
-create table account (
-    id bigint AUTO_INCREMENT not null,
-    name varchar(255) not null,
-    primary key (id)
-);
 CREATE TABLE favorite (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   created_date datetime(6) DEFAULT NULL,

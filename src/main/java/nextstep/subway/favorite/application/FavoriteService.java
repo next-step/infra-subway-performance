@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.auth.domain.LoginMember;
@@ -18,6 +16,7 @@ import nextstep.subway.favorite.domain.HasNotPermissionException;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
+import org.springframework.data.domain.Pageable;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -31,15 +30,13 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(value = "findFavorite", key = "#loginMember.id", allEntries = true)
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
     }
 
-    @Cacheable(value = "findFavorite", key = "#loginMember.id")
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
@@ -50,7 +47,6 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "findFavorite", key = "#loginMember.id", allEntries = true)
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
