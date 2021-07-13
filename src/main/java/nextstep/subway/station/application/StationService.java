@@ -24,14 +24,13 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    @CachePut(value = "stations")
+    @CachePut(value = "stations", key = "#result.id")
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "stations")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -41,7 +40,6 @@ public class StationService {
     }
 
     @CacheEvict(value = "station", key = "#id")
-    @CachePut(value = "stations")
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
