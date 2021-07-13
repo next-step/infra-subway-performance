@@ -84,6 +84,41 @@ HTTP2 도입은 각 시스템의 특성을 고려하여 적용 여부를 판단 
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### Coding as a Hobby 와 같은 결과를 반환하세요.
+- comment
+
+- sql
+```SQL
+
+```
+
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요.
+(covid.id, hospital.name)
+- comment
+
+- sql
+```SQL
+
+```
+
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. 
+(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- comment
+
+- sql
+```SQL
+
+```
+
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```SQL
+
+```
+
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```SQL
+
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
