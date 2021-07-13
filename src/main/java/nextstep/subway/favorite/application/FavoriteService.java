@@ -10,6 +10,9 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +40,10 @@ public class FavoriteService {
     }
 
     @Async
-    public CompletableFuture<List<FavoriteResponse>> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
+    public CompletableFuture<Page<FavoriteResponse>> findFavorites(LoginMember loginMember,
+        Pageable pageable) {
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        Map<Long, Station> stations = extractStations(favorites.getContent());
 
         final List<FavoriteResponse> favoriteResponses = favorites.stream()
             .map(it -> FavoriteResponse.of(
@@ -48,7 +52,10 @@ public class FavoriteService {
                 StationResponse.of(stations.get(it.getTargetStationId()))))
             .collect(Collectors.toList());
 
-        return CompletableFuture.completedFuture(favoriteResponses);
+        final Page<FavoriteResponse> page = new PageImpl<>(favoriteResponses, pageable,
+            favoriteResponses.size());
+
+        return CompletableFuture.completedFuture(page);
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
