@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - 지하철역 관련 기능</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>지하철역 관련 기능</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/nextstep.subway.station.html">nextstep.subway.station</a> &gt; StationAcceptanceTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">4</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.099s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Method name</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">지하철역을 생성한다.</td>
+<td class="success">createStation()</td>
+<td class="success">0.016s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.</td>
+<td class="success">createStationWithDuplicateName()</td>
+<td class="success">0.023s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">지하철역을 제거한다.</td>
+<td class="success">deleteStation()</td>
+<td class="success">0.024s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">지하철역을 조회한다.</td>
+<td class="success">getStations()</td>
+<td class="success">0.036s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2021-07-15 03:59:11.393  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [nextstep.subway.station.StationAcceptanceTest], using SpringBootContextLoader
+2021-07-15 03:59:11.393  INFO 60266 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [nextstep.subway.station.StationAcceptanceTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2021-07-15 03:59:11.393  INFO 60266 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [nextstep.subway.station.StationAcceptanceTest]: StationAcceptanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2021-07-15 03:59:11.397  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration nextstep.subway.SubwayApplication for test class nextstep.subway.station.StationAcceptanceTest
+2021-07-15 03:59:11.398  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+2021-07-15 03:59:11.398  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@4904ac4, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@3bdccfea, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@3069245a, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@51e47a86, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5724dc14, org.springframework.test.context.transaction.TransactionalTestExecutionListener@adaea85, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@73e85470, org.springframework.test.context.event.EventPublishingTestExecutionListener@1aa20c1, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@701f989c, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@2d4cdad8, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@1c3650d5, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@4ccac7ba, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@409d7dc7, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@bccf516]
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY FALSE
+Hibernate: 
+    TRUNCATE TABLE section
+Hibernate: 
+    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE line
+Hibernate: 
+    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE station
+Hibernate: 
+    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE member
+Hibernate: 
+    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE favorite
+Hibernate: 
+    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY TRUE
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;강남역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.412 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.411726]
+2021-07-15 03:59:11.412 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.411726]
+2021-07-15 03:59:11.412 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 201 Created
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Location: /stations/1
+Content-Type: application/json
+
+
+
+HTTP/1.1 201 
+Location: /stations/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;강남역&quot;,
+    &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.411726&quot;,
+    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.411726&quot;
+}
+Request method:	DELETE
+Request URI:	http://localhost:52504/stations/1
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:			&lt;none&gt;
+Hibernate: 
+    select
+        station0_.id as id1_4_0_,
+        station0_.created_date as created_2_4_0_,
+        station0_.modified_date as modified3_4_0_,
+        station0_.name as name4_4_0_ 
+    from
+        station station0_ 
+    where
+        station0_.id=?
+2021-07-15 03:59:11.419 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
+2021-07-15 03:59:11.420 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:11.411726]
+2021-07-15 03:59:11.420 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:11.411726]
+2021-07-15 03:59:11.420 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [강남역]
+Hibernate: 
+    delete 
+    from
+        station 
+    where
+        id=?
+2021-07-15 03:59:11.421 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
+DELETE /stations/1 HTTP/1.1
+accept: */*
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+
+
+
+HTTP/1.1 204 
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY FALSE
+Hibernate: 
+    TRUNCATE TABLE section
+Hibernate: 
+    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE line
+Hibernate: 
+    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE station
+Hibernate: 
+    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE member
+Hibernate: 
+    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE favorite
+Hibernate: 
+    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY TRUE
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;강남역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.436 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.436522]
+2021-07-15 03:59:11.437 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.436522]
+2021-07-15 03:59:11.437 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 201 Created
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Location: /stations/1
+Content-Type: application/json
+
+
+
+HTTP/1.1 201 
+Location: /stations/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;강남역&quot;,
+    &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.436522&quot;,
+    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.436522&quot;
+}
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;역삼역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.445 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.444907]
+2021-07-15 03:59:11.445 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.444907]
+2021-07-15 03:59:11.445 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [역삼역]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 201 Created
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Location: /stations/2
+Content-Type: application/json
+
+
+
+HTTP/1.1 201 
+Location: /stations/2
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;역삼역&quot;,
+    &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.444907&quot;,
+    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.444907&quot;
+}
+Request method:	GET
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:			&lt;none&gt;
+Hibernate: 
+    select
+        station0_.id as id1_4_,
+        station0_.created_date as created_2_4_,
+        station0_.modified_date as modified3_4_,
+        station0_.name as name4_4_ 
+    from
+        station station0_
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_] : [BIGINT]) - [1]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_] : [TIMESTAMP]) - [2021-07-15T03:59:11.436522]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_] : [TIMESTAMP]) - [2021-07-15T03:59:11.436522]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_] : [VARCHAR]) - [강남역]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_] : [BIGINT]) - [2]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_] : [TIMESTAMP]) - [2021-07-15T03:59:11.444907]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_] : [TIMESTAMP]) - [2021-07-15T03:59:11.444907]
+2021-07-15 03:59:11.453 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_] : [VARCHAR]) - [역삼역]
+GET /stations HTTP/1.1
+accept: */*
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Content-Type: application/json
+
+
+
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        &quot;id&quot;: 1,
+        &quot;name&quot;: &quot;강남역&quot;,
+        &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.436522&quot;,
+        &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.436522&quot;
+    },
+    {
+        &quot;id&quot;: 2,
+        &quot;name&quot;: &quot;역삼역&quot;,
+        &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.444907&quot;,
+        &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.444907&quot;
+    }
+]
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY FALSE
+Hibernate: 
+    TRUNCATE TABLE section
+Hibernate: 
+    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE line
+Hibernate: 
+    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE station
+Hibernate: 
+    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE member
+Hibernate: 
+    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE favorite
+Hibernate: 
+    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY TRUE
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;강남역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.474 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.474533]
+2021-07-15 03:59:11.474 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.474533]
+2021-07-15 03:59:11.475 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 201 Created
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Location: /stations/1
+Content-Type: application/json
+
+
+
+HTTP/1.1 201 
+Location: /stations/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;강남역&quot;,
+    &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.474533&quot;,
+    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.474533&quot;
+}
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY FALSE
+Hibernate: 
+    TRUNCATE TABLE section
+Hibernate: 
+    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE line
+Hibernate: 
+    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE station
+Hibernate: 
+    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE member
+Hibernate: 
+    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    TRUNCATE TABLE favorite
+Hibernate: 
+    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
+Hibernate: 
+    
+SET
+    REFERENTIAL_INTEGRITY TRUE
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;강남역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.490 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.490327]
+2021-07-15 03:59:11.490 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.490327]
+2021-07-15 03:59:11.490 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 201 Created
+Transfer-Encoding: chunked
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Location: /stations/1
+Content-Type: application/json
+
+
+
+HTTP/1.1 201 
+Location: /stations/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;강남역&quot;,
+    &quot;createdDate&quot;: &quot;2021-07-15T03:59:11.490327&quot;,
+    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:11.490327&quot;
+}
+Request method:	POST
+Request URI:	http://localhost:52504/stations
+Proxy:			&lt;none&gt;
+Request params:	&lt;none&gt;
+Query params:	&lt;none&gt;
+Form params:	&lt;none&gt;
+Path params:	&lt;none&gt;
+Headers:		Accept=*/*
+				Content-Type=application/json; charset=UTF-8
+Cookies:		&lt;none&gt;
+Multiparts:		&lt;none&gt;
+Body:
+{
+    &quot;name&quot;: &quot;강남역&quot;
+}
+Hibernate: 
+    insert 
+    into
+        station
+        (id, created_date, modified_date, name) 
+    values
+        (null, ?, ?, ?)
+2021-07-15 03:59:11.498 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:11.498416]
+2021-07-15 03:59:11.498 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:11.498416]
+2021-07-15 03:59:11.498 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
+2021-07-15 03:59:11.499  WARN 60266 --- [o-auto-1-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 23505, SQLState: 23505
+2021-07-15 03:59:11.499 ERROR 60266 --- [o-auto-1-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : Unique index or primary key violation: &quot;PUBLIC.UK_GNNEUC0PEQ2QI08YFTDJHY7OK_INDEX_B ON PUBLIC.STATION(NAME) VALUES 1&quot;; SQL statement:
+insert into station (id, created_date, modified_date, name) values (null, ?, ?, ?) [23505-200]
+POST /stations HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 20
+host: localhost:52504
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 400 Bad Request
+Connection: close
+Content-Length: 0
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+
+
+
+HTTP/1.1 400 
+Content-Length: 0
+Date: Wed, 14 Jul 2021 18:59:10 GMT
+Connection: close
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 6.6.1</a> at 2021. 7. 15. 오전 3:59:11</p>
+</div>
+</div>
+</body>
+</html>
