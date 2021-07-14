@@ -37,6 +37,9 @@ npm run dev
 ```
 <br>
 
+## 참고
+- [Pagination and Sorting using Spring Data JPA](https://www.baeldung.com/spring-data-jpa-pagination-sorting)
+
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
@@ -69,6 +72,7 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    - TODO
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+    > https://www.nextstep-hun.kro.kr/favorites?page=1
