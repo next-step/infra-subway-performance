@@ -56,11 +56,13 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @CachePut(value = CACHE_VALUE, key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @CacheEvict(value = CACHE_VALUE, key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
