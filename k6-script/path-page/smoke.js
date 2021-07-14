@@ -24,6 +24,8 @@ export default function ()  {
 
   let 경로탐색_요청_결과 = 경로탐색_요청(로그인_토큰,1,3)
   경로탐색_결과_확인(경로탐색_요청_결과);
+
+  sleep(1);
 };
 
 export function 메인페이지_요청() {
