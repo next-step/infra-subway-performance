@@ -56,3 +56,29 @@ iteration_duration.............: avg=1.29s    min=1.14ms med=1.18s   max=4.01s  
 iterations.....................: 22476  148.899891/s
 vus............................: 25     min=2        max=500
 vus_max........................: 500    min=500      max=500
+
+###개선 후 
+
+default ✓ [======================================] 000/500 VUs  2m30s
+
+     ✗ logged in successfully
+      ↳  97% — ✓ 21737 / ✗ 531
+     ✓ retrieved member
+
+     checks.........................: 98.79% ✓ 43474      ✗ 531  
+     data_received..................: 49 MB  326 kB/s
+     data_sent......................: 20 MB  132 kB/s
+     http_req_blocked...............: avg=8.6ms    min=0s       med=4.4µs   max=986.67ms p(90)=7.81µs   p(95)=77.95µs 
+     http_req_connecting............: avg=2.44ms   min=0s       med=0s      max=379.04ms p(90)=0s       p(95)=0s      
+✓ http_req_duration..............: avg=55.15ms  min=0s       med=25.47ms max=1.21s    p(90)=145.1ms  p(95)=194ms   
+{ expected_response:true }...: avg=51.17ms  min=975.02µs med=22.91ms max=1.21s    p(90)=132.88ms p(95)=176.78ms
+http_req_failed................: 60.20% ✓ 65742      ✗ 43461
+http_req_receiving.............: avg=669.38µs min=0s       med=36.2µs  max=308.89ms p(90)=119.73µs p(95)=503.2µs
+http_req_sending...............: avg=1.65ms   min=0s       med=13.88µs max=976.45ms p(90)=82.86µs  p(95)=1.37ms  
+http_req_tls_handshaking.......: avg=5.86ms   min=0s       med=0s      max=767.88ms p(90)=0s       p(95)=0s      
+http_req_waiting...............: avg=52.82ms  min=0s       med=24.72ms max=1.21s    p(90)=139.49ms p(95)=183.7ms
+http_reqs......................: 109203 723.564645/s
+iteration_duration.............: avg=1.3s     min=4.61ms   med=1.15s   max=3.96s    p(90)=1.85s    p(95)=2.18s   
+iterations.....................: 22268  147.544825/s
+vus............................: 28     min=2        max=500
+vus_max........................: 500    min=500      max=500

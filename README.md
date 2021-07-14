@@ -53,8 +53,8 @@ npm run dev
      - http1.1 -> http2 로 변경
     3. was 성능 개선하기
      -  redis cache 설정
-     -  비동기 처리
-     -  적절한 thread pool 설정
+     -  ~~비동기 처리~~
+     -  ~~적절한 thread pool 설정~~
     
 
 ---
