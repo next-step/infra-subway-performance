@@ -163,3 +163,10 @@ http {
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
   - FavoriteController GET /favorites
+
+
+3. 이중화 전/후의 부하테스트를 결과를 비교 및 master, slave db 중지 시켜보기 
+  - [이중화 후 부하테스트 진행](stress-test/replica/case1.md)
+  - [slaveDB만 사용](stress-test/replica/case2.md)
+  - [masterDB만 사용](stress-test/replica/case3.md)
+  - [slave, master db 모두 중지](stress-test/replica/case4.md)
