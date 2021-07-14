@@ -147,7 +147,26 @@ http {
 ---
 
 ### 2단계 - 조회 성능 개선하기
+## 요구사항
+- [X] 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [X] 즐겨찾기 페이지에 페이징 쿼리를 적용
+  - 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+- [X] 데이터베이스 이중화 
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+  - [Coding as a Hobby 와 같은 결과를 반환하세요.](training/step1/step1.md)
+  - [프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)](training/step2/step2.md)
+  - [프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)](training/step3/step3.md)
+  - [서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)](training/step4/step4.md)
+  - [서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)](training/step5/step5.md)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+  - FavoriteController GET /favorites
 
+
+3. 이중화 전/후의 부하테스트를 결과를 비교 및 master, slave db 중지 시켜보기 
+  - [이중화 후 부하테스트 진행](stress-test/replica/case1.md)
+  - [slaveDB만 사용](stress-test/replica/case2.md)
+  - [masterDB만 사용](stress-test/replica/case3.md)
+  - [slave, master db 모두 중지](stress-test/replica/case4.md)
