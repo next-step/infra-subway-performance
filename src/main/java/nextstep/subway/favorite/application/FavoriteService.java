@@ -39,7 +39,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
-        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
@@ -58,13 +58,13 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    private Map<Long, Station> extractStations(Page<Favorite> favorites) {
+    private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()
             .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
-    private Set<Long> extractStationIds(Page<Favorite> favorites) {
+    private Set<Long> extractStationIds(List<Favorite> favorites) {
         Set<Long> stationIds = new HashSet<>();
         for (Favorite favorite : favorites) {
             stationIds.add(favorite.getSourceStationId());

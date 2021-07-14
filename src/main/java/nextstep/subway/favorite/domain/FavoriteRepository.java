@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     List<Favorite> findByMemberId(Long memberId);
-    Page<Favorite> findByMemberId(Long memberId, Pageable pageable);
+    List<Favorite> findByMemberId(Long memberId, Pageable pageable);
 }

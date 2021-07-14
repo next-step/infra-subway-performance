@@ -236,4 +236,45 @@ GROUP   BY Programmer.exercise; # 0.044sec
 ~~~
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    -  https://dev.kwaktaemin-subway.kro.kr/favorites
+
+3. DATABASE 이중화 
+
+- Master Slave Mysql Docker로 뛰우기 
+~~~
+$ docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d brainbackdoor/data-subway:0.0.1
+$ docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d brainbackdoor/data-subway:0.0.1
+~~~
+
+- Mysql Master 설정
+~~~
+$ docker exec -it mysql-master /bin/bash
+$ mysql -u root -p  
+mysql> CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';  
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%'; 
+
+mysql> SHOW MASTER STATUS\G  
+*************************** 1. row ***************************
+             File: binlog.000002
+         Position: 683
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+1 row in set (0.00 sec)
+~~~
+
+- Mysql Slave 설정
+~~~
+$ docker exec -it mysql-slave /bin/bash
+$ mysql -u root -p
+
+mysql> SET GLOBAL server_id = 2;
+mysql> CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;
+
+mysql> START SLAVE;  
+mysql> SHOW SLAVE STATUS\G
+...
+Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+~~~
 
