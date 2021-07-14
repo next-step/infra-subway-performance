@@ -155,6 +155,70 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   
+   <br>
+   
+    #### Problem #1 Coding as a Hobby 와 같은 결과를 반환하세요.
+    * 개선 내용
+        * `programmer`.`id` 컬럼에 PK 적용
+        * `programmer`.`hobby` 컬럼을 갖는 인덱스 생성
+    
+    * 개선 전 실행 계획
+    ![problem1_before_explain](/step2/problem1_before_explain.png)
+      
+    * 개선 후 실행 계획
+    ![problem1_after_explain](/step2/problem1_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #2 
+    * 개선 내용
+        * `hospital`.`id` 컬럼에 PK 적용
+        * `hospital`.`name` 컬럼 타입을 VARCHAR(255)로 변경 후 UNIQUE 제약조건 추가
+        * `covid`.`id` 컬럼에 PK 적용
+        * `covid`.`hospital_id` 컬럼을 갖는 인덱스 생성
+
+    * 개선 전 실행 계획
+    ![problem2_before_explain](/step2/problem2_before_explain.png)
+
+    * 개선 후 실행 계획
+    ![problem2_after_explain](/step2/problem2_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #3
+    * 개선 내용
+        * 이전 내용 설정을 토대로 진행했습니다.
+        * `covid`.`programmer_id` 컬럼을 갖는 인덱스 생성
+        * `programmer`.`hobby`, `student`, `years_coding` 컬럼을 순서로 갖는 인덱스 생성
+
+    * 개선 전 실행 계획
+    ![problem3_before_explain](/step2/problem3_before_explain.png)
+
+    * 개선 후 실행 계획 ( 0.0017 sec )
+    ![problem3_after_explain](/step2/problem3_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #4
+    * 개선 내용
+        * 이전 내용 설정을 토대로 진행했습니다.
+        * `member`.`age` 컬럼을 갖는 인덱스 생성
+        * `programmer`.`member_id` 컬럼을 갖는 인덱스 생
+
+    * 개선 전 실행 계획 ( 1.766 sec )
+    ![problem4_before_explain](/step2/problem4_before_explain.png)
+
+    * 개선 후 실행 계획 ( 0.076 sec )
+    ![problem4_after_explain](/step2/problem4_after_explain.png)
+    
+    #### Problem #5
+    * 개선 내용
+        * 이전 내용 설정으로 더 추가한 내용은 없습니다.
+    
+    * 개선 후 실행 계획 ( 0.052 sec )
+      ![problem5_after_explain](/step2/problem5_after_explain.png)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
