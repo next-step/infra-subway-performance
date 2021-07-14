@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+    private static final String CACHE_VALUE = "line";
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -49,19 +50,17 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "line", key = "#id")
+    @Cacheable(value = CACHE_VALUE, key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
