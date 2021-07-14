@@ -40,6 +40,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+
+	// flyway
+	runtimeOnly 'org.flywaydb:flyway-core:5.2.0'
 }
 
 test {

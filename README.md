@@ -149,6 +149,126 @@ nginx worker 수를 조정해보고, 비동기로 처리하도록 수정하고 r
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+* Coding as a Hobby 와 같은 결과를 반환하세요.
+  * 개선: programmer.hobby 컬럼으로 인덱스 생성하여 성능 향상
+
+```sql
+-- 수정 전: 317ms
+-- 수정 후: 55ms
+SELECT hobby,
+       ROUND(COUNT(1) / b.total * 100, 1)
+  FROM programmer p
+       CROSS JOIN
+       (SELECT COUNT(1) AS total
+          FROM programmer p2) b
+ GROUP BY p.hobby, b.total;
+-- 인덱스
+CREATE INDEX idx_programmer_hobby ON programmer (hobby)
+```
+
+* 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  * 개선: join 조건으로 사용하는 컬럼으로 인덱스를 생성하여 성능 향상
+
+```sql
+-- 수정 전: timeout
+-- 수정 후: 11ms
+SELECT p.id,
+       h.name
+  FROM programmer p 
+       JOIN covid c
+       ON p.id = c.programmer_id
+          JOIN hospital h 
+          ON c.hospital_id = h.id;
+-- 인덱스
+CREATE INDEX idx_programmer_id ON programmer (id);
+CREATE INDEX idx_covid_p_id ON covid (programmer_id);
+```
+
+* 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  * 개선: join 조건으로 사용하는 hospital.id 와 covid.hospital_id 컬럼으로 인덱스 생성하고 programmer 테이블에 필터 조건으로 인덱스 생성하여 성능 향상
+
+```sql
+-- 수정 전: 352ms
+-- 수정 후: 11ms
+SELECT a.id AS programmer_id
+       , h.name AS hospital_name
+  FROM 
+       (SELECT p.*
+          FROM programmer p 
+         WHERE (student in ('Yes, full-time', 'Yes, part-time')
+               OR years_coding = '0-2 years')
+           AND hobby = 'Yes') a
+       JOIN covid c
+       ON a.id = c.programmer_id
+          JOIN hospital h 
+          ON c.hospital_id = h.id
+ ORDER BY a.id;
+-- 인덱스
+CREATE INDEX idx_hopital_id ON hospital (id);
+CREATE INDEX idx_programmer_hobby ON programmer (hobby);
+CREATE INDEX idx_covid_h_i ON covid (hospital_id);
+```
+
+* 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  * 개선: hospital.name 컬럼 조회 시 성능이 저하됐는데, 데이터 타입이라 길이 20 만큼만 잘라서 인덱스로 생성한 뒤 성능 향상
+ 
+```sql
+-- 수정 전: 479ms
+-- 수정 후: 69ms
+SELECT c.stay,
+       count(1) AS cnt
+  FROM 
+       (SELECT id
+          FROM `member` m
+         WHERE age BETWEEN 20 and 29) sa
+       JOIN
+            (SELECT id,
+                    member_id
+               FROM programmer p
+              WHERE country = 'India') sb
+       ON sa.id = sb.member_id
+          JOIN covid c
+          ON sb.id = c.programmer_id
+             JOIN
+                  (SELECT id,
+                          name
+                     FROM hospital h
+                    WHERE name = '서울대병원') sc
+             ON c.hospital_id = sc.id
+ GROUP BY c.stay;
+-- 인덱스
+CREATE INDEX idx_hospital_name ON hospital (name(20));
+```
+
+* 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  * 개선: 별도 개선 없이 성능 기준 만족
+
+```sql
+-- 수정 전: 49ms
+-- 수정 후: 
+SELECT sb.exercise,
+       count(1) AS cnt
+  FROM 
+       (SELECT id
+          FROM `member` m
+         WHERE age BETWEEN 30 and 39) sa
+       JOIN
+            (SELECT id,
+                    member_id,
+                    exercise
+               FROM programmer p) sb
+       ON sa.id = sb.member_id
+          JOIN covid c
+          ON sb.id = c.programmer_id
+             JOIN
+                  (SELECT id,
+                          name
+                     FROM hospital h
+                    WHERE name = '서울대병원') sc
+             ON c.hospital_id = sc.id
+ GROUP BY sb.exercise;
+-- 인덱스
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
