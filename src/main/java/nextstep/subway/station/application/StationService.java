@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
-    public static final String ALL_STATIONS_CACHE_KEY = "STATIONS";
-    public static final String STATIONS_CACHE_VALUE = "stations";
+    public static final String ALL_STATIONS_CACHE_KEY = "all-stations";
+    public static final String STATIONS_CACHE = "stations";
 
     private StationRepository stationRepository;
 
@@ -31,8 +31,8 @@ public class StationService {
 
     @Caching(
         evict = {
-            @CacheEvict(value = STATIONS_CACHE_VALUE, key = "#root.target.ALL_STATIONS_CACHE_KEY"),
-            @CacheEvict(value = PATH_CACHE_VALUE, allEntries = true),
+            @CacheEvict(value = STATIONS_CACHE, key = "#root.target.ALL_STATIONS_CACHE_KEY"),
+            @CacheEvict(value = PATH_CACHE, allEntries = true),
         }
     )
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -40,7 +40,7 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    @Cacheable(value = STATIONS_CACHE_VALUE, key = "#root.target.ALL_STATIONS_CACHE_KEY")
+    @Cacheable(value = STATIONS_CACHE, key = "#root.target.ALL_STATIONS_CACHE_KEY")
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
@@ -52,8 +52,8 @@ public class StationService {
 
     @Caching(
         evict = {
-            @CacheEvict(value = STATIONS_CACHE_VALUE, key = "#root.target.ALL_STATIONS_CACHE_KEY"),
-            @CacheEvict(value = PATH_CACHE_VALUE, allEntries = true),
+            @CacheEvict(value = STATIONS_CACHE, key = "#root.target.ALL_STATIONS_CACHE_KEY"),
+            @CacheEvict(value = PATH_CACHE, allEntries = true),
         }
     )
     public void deleteStationById(Long id) {

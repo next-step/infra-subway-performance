@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.map.application.MapService.*;
+
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -26,7 +28,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @CacheEvict(value = "path", allEntries = true)
+    @CacheEvict(value = PATH_CACHE, allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -60,12 +62,12 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "path", allEntries = true)
+    @CacheEvict(value = PATH_CACHE, allEntries = true)
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "path", allEntries = true)
+    @CacheEvict(value = PATH_CACHE, allEntries = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -73,7 +75,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CacheEvict(value = "path", allEntries = true)
+    @CacheEvict(value = PATH_CACHE, allEntries = true)
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
