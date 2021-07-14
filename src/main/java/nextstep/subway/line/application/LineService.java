@@ -42,11 +42,11 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = CACHE_VALUE, key = "#id")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
+    @Cacheable(value = CACHE_VALUE, key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
