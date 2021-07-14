@@ -14,9 +14,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 public class StationResponse {
     private Long id;
     private String name;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonIgnore
     private LocalDateTime createdDate;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonIgnore
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
