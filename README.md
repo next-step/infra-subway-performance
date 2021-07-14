@@ -93,10 +93,10 @@ npm run dev
             - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
             - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
     - 즐겨 찾기 페이징 요구사항
-        - [ ] 즐겨찾기 페이지에 페이징 쿼리 적용
-            - [ ] 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+        - [X] 즐겨찾기 페이지에 페이징 쿼리 적용
+            - [X] 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
     - 데이터 베이스 이중화 요구사항
-        - [ ] 데이터 베이스 이중화
+        - [X] 데이터 베이스 이중화
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
@@ -242,8 +242,10 @@ GROUP   BY Programmer.exercise; # 0.044sec
 
 - Master Slave Mysql Docker로 뛰우기 
 ~~~
-$ docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d brainbackdoor/data-subway:0.0.1
-$ docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d brainbackdoor/data-subway:0.0.1
+# 10.10.15.148 서버 
+$ docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d mysql
+# 10.10.15.154 서버
+$ docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
 ~~~
 
 - Mysql Master 설정
@@ -269,7 +271,7 @@ $ docker exec -it mysql-slave /bin/bash
 $ mysql -u root -p
 
 mysql> SET GLOBAL server_id = 2;
-mysql> CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;
+mysql> CHANGE MASTER TO MASTER_HOST='10.10.15.148', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;
 
 mysql> START SLAVE;  
 mysql> SHOW SLAVE STATUS\G
