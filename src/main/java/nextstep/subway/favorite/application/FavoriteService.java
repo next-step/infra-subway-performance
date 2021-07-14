@@ -17,8 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
@@ -33,6 +35,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
