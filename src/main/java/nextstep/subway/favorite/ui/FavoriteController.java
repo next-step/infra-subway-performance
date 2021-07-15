@@ -10,7 +10,6 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +18,9 @@ import java.net.URI;
 
 @RestController
 public class FavoriteController {
+    private static final String SORT_KEY = "id";
+    private static final int DEFAULT_SIZE = 5;
+
     private FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
@@ -35,7 +37,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<Slice<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember,
-        @PageableDefault(size = 5, sort = "id", direction = DESC) Pageable pageable) {
+        @PageableDefault(size = DEFAULT_SIZE, sort = SORT_KEY, direction = DESC) Pageable pageable) {
         Slice<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
