@@ -24,17 +24,16 @@ const BASE_URL = 'https://dohchoi91.kro.kr';
 export function index() {
 	return http.get(`${BASE_URL}`);
 }
-
-export function stations() {
-	return http.get(`${BASE_URL}/stations`);
+export function lines(id) {
+    return http.get(`${BASE_URL}/lines/` + id).json();
 }
-export function findPath(source, target) {
-  return http.get(`${BASE_URL}/paths/?source=` + source + `&target=` + target).json();
-};
+export function members(id) {
+    return http.get(`${BASE_URL}/members/` + id).json();
+}
 
 export default function() {
     check(index(), { "Index Check": (r) => r.status == 200 });
-    check(stations(), { "Stations Check": (r) => r.status == 200 });
-    check(findPath(1, 2), { "Path check": obj => obj.stations.length != 0 });
+    check(lines(1), { "Line Check": obj => obj.id == "1" });
+    check(members(1), { "Member Check": obj => obj.id == "1" });
     sleep(1);
 }
