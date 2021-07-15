@@ -189,4 +189,108 @@ group by exercise;
 지금까지 추가한 인덱스 때문에, 따로 걸어준 인덱스는 없음 만약 인덱스가 없는 상황이라면, 조인 조건들의 인덱스와, member.age 에 인덱스를 고려해 볼 것이다.
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+ https://nextstep.5minho.p-e.kr/favorites
+```json
+{
+  "content": [
+    {
+      "id": 7,
+      "source": {
+        "id": 6,
+        "name": "영등포",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      },
+      "target": {
+        "id": 1,
+        "name": "녹양",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      }
+    },
+    {
+      "id": 6,
+      "source": {
+        "id": 5,
+        "name": "대방",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      },
+      "target": {
+        "id": 1,
+        "name": "녹양",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      }
+    },
+    {
+      "id": 5,
+      "source": {
+        "id": 4,
+        "name": "노량진",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      },
+      "target": {
+        "id": 1,
+        "name": "녹양",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      }
+    },
+    {
+      "id": 4,
+      "source": {
+        "id": 3,
+        "name": "용산",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      },
+      "target": {
+        "id": 1,
+        "name": "녹양",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      }
+    },
+    {
+      "id": 3,
+      "source": {
+        "id": 2,
+        "name": "남영",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      },
+      "target": {
+        "id": 1,
+        "name": "녹양",
+        "createdDate": "2021-01-06T18:32:00.901126",
+        "modifiedDate": "2021-01-06T18:32:00.901126"
+      }
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "sorted": true,
+      "unsorted": false,
+      "empty": false
+    },
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 5,
+    "paged": true,
+    "unpaged": false
+  },
+  "size": 5,
+  "number": 0,
+  "sort": {
+    "sorted": true,
+    "unsorted": false,
+    "empty": false
+  },
+  "numberOfElements": 5,
+  "first": true,
+  "last": false,
+  "empty": false
+}
+```
