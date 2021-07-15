@@ -66,7 +66,6 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "subwayPath", allEntries = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -74,7 +73,6 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CacheEvict(value = "subwayPath", allEntries = true)
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
