@@ -37,7 +37,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate"));
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("createdDate").descending());
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
