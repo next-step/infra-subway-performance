@@ -38,10 +38,14 @@ npm run dev
 <br>
 
 ## 요구사항
-*[ ] 부하테스트 각 시나리오의 요청시간을 50ms 이하로 개선
+*[x] 부하테스트 각 시나리오의 요청시간을 50ms 이하로 개선
     * 개선 전 / 후를 직접 계측하여 확인
-*[ ] Redis를 이용해 부하가 많은 곳에 Caching 처리
-*[ ] 비동기 작업을 위한 Thread pool 설정 추가 ( 비동기로 처리할 작업은... 없어보임.. )
+*[x] Redis를 이용해 부하가 많은 곳에 Caching 처리
+*[x] 비동기 작업을 위한 Thread pool 설정 추가 ( 비동기로 처리할 작업은... 없어보임.. )
+*[ ] 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요 
+*[ ] 즐겨찾기 페이지에 페이징 쿼리를 적용
+   * 로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.
+*[ ] 데이터베이스 이중화
 
 
 ## 미션
@@ -151,6 +155,70 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   
+   <br>
+   
+    #### Problem #1 Coding as a Hobby 와 같은 결과를 반환하세요.
+    * 개선 내용
+        * `programmer`.`id` 컬럼에 PK 적용
+        * `programmer`.`hobby` 컬럼을 갖는 인덱스 생성
+    
+    * 개선 전 실행 계획
+    ![problem1_before_explain](/step2/problem1_before_explain.png)
+      
+    * 개선 후 실행 계획
+    ![problem1_after_explain](/step2/problem1_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #2 
+    * 개선 내용
+        * `hospital`.`id` 컬럼에 PK 적용
+        * `hospital`.`name` 컬럼 타입을 VARCHAR(255)로 변경 후 UNIQUE 제약조건 추가
+        * `covid`.`id` 컬럼에 PK 적용
+        * `covid`.`hospital_id` 컬럼을 갖는 인덱스 생성
+
+    * 개선 전 실행 계획
+    ![problem2_before_explain](/step2/problem2_before_explain.png)
+
+    * 개선 후 실행 계획
+    ![problem2_after_explain](/step2/problem2_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #3
+    * 개선 내용
+        * 이전 내용 설정을 토대로 진행했습니다.
+        * `covid`.`programmer_id` 컬럼을 갖는 인덱스 생성
+        * `programmer`.`hobby`, `student`, `years_coding` 컬럼을 순서로 갖는 인덱스 생성
+
+    * 개선 전 실행 계획
+    ![problem3_before_explain](/step2/problem3_before_explain.png)
+
+    * 개선 후 실행 계획 ( 0.0017 sec )
+    ![problem3_after_explain](/step2/problem3_after_explain.png)
+      
+    <br><br>
+
+    #### Problem #4
+    * 개선 내용
+        * 이전 내용 설정을 토대로 진행했습니다.
+        * `member`.`age` 컬럼을 갖는 인덱스 생성
+        * `programmer`.`member_id` 컬럼을 갖는 인덱스 생
+
+    * 개선 전 실행 계획 ( 1.766 sec )
+    ![problem4_before_explain](/step2/problem4_before_explain.png)
+
+    * 개선 후 실행 계획 ( 0.076 sec )
+    ![problem4_after_explain](/step2/problem4_after_explain.png)
+    
+    #### Problem #5
+    * 개선 내용
+        * 이전 내용 설정으로 더 추가한 내용은 없습니다.
+    
+    * 개선 후 실행 계획 ( 0.052 sec )
+      ![problem5_after_explain](/step2/problem5_after_explain.png)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+   * https://joojimin.kro.kr/favorites
