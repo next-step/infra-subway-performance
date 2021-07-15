@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.common;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;

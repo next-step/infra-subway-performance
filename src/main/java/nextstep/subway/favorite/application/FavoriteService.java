@@ -13,6 +13,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
+    @Transactional(readOnly = true)
     public Slice<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
         Slice<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites.getContent());
