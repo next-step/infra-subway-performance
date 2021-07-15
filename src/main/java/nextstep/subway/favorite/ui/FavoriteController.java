@@ -1,15 +1,21 @@
 package nextstep.subway.favorite.ui;
 
+import static org.springframework.data.domain.Sort.Direction.*;
+
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 public class FavoriteController {
@@ -28,8 +34,9 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+    public ResponseEntity<Slice<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember,
+        @PageableDefault(size = 5, sort = "id", direction = DESC) Pageable pageable) {
+        Slice<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
 
