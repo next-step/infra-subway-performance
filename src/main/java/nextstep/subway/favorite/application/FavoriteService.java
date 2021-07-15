@@ -12,6 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,9 +22,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
     private static final String FAVORITE_REDIS_VALUE = "favorites";
     private static final String FAVORITE_REDIS_KEY = "#loginMember.id";
+    private static final String FAVORITE_LIST_REDIS_KEY = "#loginMember.id+'-'+#lastIndex";
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -38,17 +41,23 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    @Cacheable(value = FAVORITE_REDIS_VALUE, key = FAVORITE_REDIS_KEY)
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+    @Cacheable(value = FAVORITE_REDIS_VALUE, key = FAVORITE_LIST_REDIS_KEY)
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Long lastIndex) {
+
+        if (lastIndex == null) {
+            lastIndex = Long.MAX_VALUE;
+        }
+
+        List<Favorite> favorites = favoriteRepository.findTop5ByMemberIdAndIdLessThanOrderByIdDesc(loginMember.getId(), lastIndex);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(
-                it,
-                StationResponse.of(stations.get(it.getSourceStationId())),
-                StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+                .map(it -> FavoriteResponse.of(
+                        it,
+                        StationResponse.of(stations.get(it.getSourceStationId())),
+                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                .collect(Collectors.toList());
     }
 
     @CacheEvict(value = FAVORITE_REDIS_VALUE, key = FAVORITE_REDIS_KEY, allEntries = true)
@@ -63,7 +72,7 @@ public class FavoriteService {
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     private Set<Long> extractStationIds(List<Favorite> favorites) {

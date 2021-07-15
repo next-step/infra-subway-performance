@@ -2,12 +2,10 @@ package nextstep.subway.favorite.domain;
 
 import nextstep.subway.common.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(indexes = @Index(name = "idx_favorite_memberId", columnList = "memberId"))
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

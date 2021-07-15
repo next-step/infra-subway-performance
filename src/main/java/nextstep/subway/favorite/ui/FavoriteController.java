@@ -7,6 +7,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.util.annotation.Nullable;
 
 import java.net.URI;
 import java.util.List;
@@ -28,8 +29,8 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember, @Nullable @RequestParam Long lastIndex) {
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, lastIndex);
         return ResponseEntity.ok().body(favorites);
     }
 
