@@ -21,7 +21,6 @@ import static nextstep.subway.common.ReplicationRoutingDataSource.*;
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"nextstep.subway"})
 public class DatabaseConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
