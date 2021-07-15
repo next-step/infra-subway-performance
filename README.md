@@ -45,10 +45,6 @@ npm run dev
 
 [바로가기](./markdown/step1.md)
 
----
-
 ### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+[바로가기](./markdown/step2.md)
