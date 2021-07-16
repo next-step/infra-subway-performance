@@ -9,6 +9,9 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -34,8 +37,9 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
+    	List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), PageRequest.of(0, 5,
+		Sort.Direction.DESC, "id"));
+         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
             .map(it -> FavoriteResponse.of(
