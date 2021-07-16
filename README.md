@@ -75,7 +75,7 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 #### 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
- - Coding as a Hobby 와 같은 결과를 반환하세요.
+ - 1. Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```
 SELECT (COUNT(*) / (SELECT COUNT(*) FROM subway.programmer) * 100) as 'HobbyCount' 
@@ -93,7 +93,7 @@ CREATE INDEX idx_programmer_hoddy ON subway.programmer (hobby);
 i) 개선 후 속도 0.031 sec
 
 ```
- - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+ - 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```
 SELECT covid.id , hospital.name
 FROM subway.programmer programmer
@@ -115,7 +115,7 @@ CREATE INDEX idx_covid_all ON subway.covid(programmer_id, hospital_id);
 i) 개선 후 속도 : 0.016 sec
 
 ```
- - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+ - 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 ```
 SELECT hospital.name
@@ -128,12 +128,48 @@ ORDER BY programmer.id;
 i) 속도 : 0.016 sec ( 이상없음 )
 ii) 문제 : 큰 이슈 없음
 ```
-위 쿼리 >> 개선이 필요하다고 리뷰받은 실행 계획
+###  개선이 필요하다고 리뷰받은 실행 계획
+
 ![3이슈.png](explain/3이슈.png)
 
 ![3이슈_plain.png](explain/3이슈_plain.png)
 
- - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```
+문제의도 다시 파악. programmer는 항상 hobby를 가지고 있어야 한다.
+
+SELECT hospital.name
+FROM subway.programmer programmer
+JOIN subway.covid covid ON covid.programmer_id = programmer.id
+JOIN  subway.hospital hospital ON covid.hospital_id = hospital.id
+WHERE  hobby = 'Yes' AND ( student LIKE 'Yes%' OR  years_coding = '0-2 years')
+ORDER BY programmer.id;
+
+```
+### 개선 후 실행 계획
+
+![3이슈_개선.png](explain/3이슈_개선.png)
+
+![3이슈_개선_plain.png](explain/3이슈_개선_plain.png)
+
+```
+해설 쿼리처럼 FROM절 모수 줄였을 때 전후 비교.
+SELECT programmer.id, covid.name
+FROM (
+    SELECT id
+    FROM subway.programmer
+    WHERE Hobby = 'Yes' AND (student LIKE 'Yes%' OR years_coding = '0-2 years')) AS programmer
+JOIN (
+    SELECT covid.programmer_id, name FROM subway.covid
+    JOIN (SELECT hospital.id, name FROM subway.hospital) AS hospital ON hospital.id = covid.hospital_id
+) AS covid ON covid.programmer_id = programmer.id
+
+```
+### FROM절 모수 줄였을 시 실행 계획2 
+
+![3이슈_개선2_plain.png](explain/3이슈_개선2_plain.png)
+
+
+ - 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 ```
 SELECT stay, count(programmer.id)
@@ -153,14 +189,42 @@ CREATE INDEX idx_covid_all ON subway.covid(hospital_id, programmer_id, member_id
 i) 속도 : 0.015 sec
 
 ```
+### 개선이 필요하다고 리뷰받은 실행 계획
 
-위 쿼리  >> 개선이 필요하다고 리뷰받은 실행 계획
 ![4이슈.png](explain/4이슈.png)
 
 ![4이슈_.plain.png](explain/4이슈_.plain.png)
 
+```
+SQL 신규 작성 - FROM절 모수 줄이기
 
- - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+SELECT stay, COUNT(programmer.member_id)
+FROM ( SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) AS member
+JOIN ( SELECT member_id FROM subway.programmer WHERE country = 'India') AS programmer
+ON member.id = programmer.member_id
+JOIN (
+    SELECT covid.id, covid.member_id, hospital_id, stay FROM subway.covid
+    JOIN ( SELECT id FROM subway.hospital WHERE hospital.id = 9 ) as hospital ON covid.hospital_id = hospital.id) AS covid 
+ON member.id = covid.member_id
+GROUP BY stay;
+
+모든 조건절 index 추가 
+
+CREATE INDEX idx_member_age ON subway.member(age);
+CREATE INDEX idx_programmer_all ON subway.programmer(country,member_id);
+CREATE INDEX idx_covid_stay ON subway.covid(stay);
+CREATE INDEX idx_covid_hospital ON subway.covid(hospital_id);
+
+```
+###  개선 후
+
+![4이슈_개선.png](explain/4이슈_개선.png)
+
+![4이슈_개선_.plain.png](explain/4이슈_개선_.plain.png)
+
+
+
+ - 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ```
 SELECT exercise, count(programmer.id)
