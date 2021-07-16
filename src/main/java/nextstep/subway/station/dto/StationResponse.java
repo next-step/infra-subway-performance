@@ -4,10 +4,19 @@ import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 public class StationResponse {
     private Long id;
     private String name;
+	@JsonIgnore
     private LocalDateTime createdDate;
+	@JsonIgnore
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
