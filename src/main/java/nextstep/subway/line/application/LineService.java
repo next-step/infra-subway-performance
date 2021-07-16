@@ -42,7 +42,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable("lines")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
