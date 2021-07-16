@@ -134,6 +134,8 @@ ii) 문제 : 큰 이슈 없음
 
 ![3이슈_plain.png](explain/3이슈_plain.png)
 
+### 문제 수정
+
 ```
 문제의도 다시 파악. programmer는 항상 hobby를 가지고 있어야 한다.
 
@@ -150,6 +152,8 @@ ORDER BY programmer.id;
 ![3이슈_개선.png](explain/3이슈_개선.png)
 
 ![3이슈_개선_plain.png](explain/3이슈_개선_plain.png)
+
+### 다른 방식 적용 전후비교 
 
 ```
 해설 쿼리처럼 FROM절 모수 줄였을 때 전후 비교.
@@ -195,6 +199,8 @@ i) 속도 : 0.015 sec
 
 ![4이슈_.plain.png](explain/4이슈_.plain.png)
 
+### 문제 수정
+
 ```
 SQL 신규 작성 - FROM절 모수 줄이기
 
@@ -221,8 +227,6 @@ CREATE INDEX idx_covid_hospital ON subway.covid(hospital_id);
 ![4이슈_개선.png](explain/4이슈_개선.png)
 
 ![4이슈_개선_.plain.png](explain/4이슈_개선_.plain.png)
-
-
 
  - 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
