@@ -13,7 +13,7 @@ from programmer -- 98855, 98855
 select count(*)
 from covid inner join programmer on covid.programmer_id = programmer.id
 -- 96180
--- 위의 세 수치의 값을 봤을 때 programmer에는 존재하지만, covid의 programmer_id에 존재하지 않는 값이 존재
+-- 위의 세 값을 봤을 때 programmer의 id에는 존재하지만, covid의 programmer_id에 존재하지 않는 값이 존재
 -- covid와 hospital만 inner join 할 경우 programmer의 특정 값들은 노출 불가
 -- 따라서 programmer 테이블 기준으로 left outer join 필요
 ;
