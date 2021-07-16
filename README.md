@@ -120,16 +120,18 @@ i) 개선 후 속도 : 0.016 sec
 ```
 SELECT hospital.name
 FROM subway.programmer programmer
-JOIN subway.covid covid
-ON covid.programmer_id = programmer.id
-JOIN  subway.hospital hospital
-ON covid.hospital_id = hospital.id
+JOIN subway.covid covid ON covid.programmer_id = programmer.id
+JOIN  subway.hospital hospital ON covid.hospital_id = hospital.id
 WHERE ( hobby = 'Yes' AND student LIKE 'Yes%' ) OR  years_coding = '0-2 years'
 ORDER BY programmer.id;
 
 i) 속도 : 0.016 sec ( 이상없음 )
 ii) 문제 : 큰 이슈 없음
 ```
+위 쿼리 >> 개선이 필요하다고 리뷰받은 실행 계획
+![3이슈.png](explain/3이슈.png)
+
+![3이슈_plain.png](explain/3이슈_plain.png)
 
  - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
@@ -148,10 +150,15 @@ ii) 해결 : covid index 순서 변경
 
 DROP INDEX idx_covid_all ON subway.covid;
 CREATE INDEX idx_covid_all ON subway.covid(hospital_id, programmer_id, member_id);
-
 i) 속도 : 0.015 sec
 
 ```
+
+위 쿼리  >> 개선이 필요하다고 리뷰받은 실행 계획
+![4이슈.png](explain/4이슈.png)
+
+![4이슈_.plain.png](explain/4이슈_.plain.png)
+
 
  - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
