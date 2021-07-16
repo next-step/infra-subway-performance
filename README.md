@@ -157,6 +157,8 @@ npm run dev
               ORDER BY null
             ```
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+* endpoint: https://mwkwon-service.kro.kr/favorites
+* user info: mwkwon@test.com / test
 
 #### 요구사항
 * 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
