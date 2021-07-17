@@ -5,6 +5,10 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 const clientPath = path.resolve(__dirname, 'src')
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+
 module.exports = {
   entry: {
     'js/vendors': ['vue', 'vue-router', 'vuex', 'vuetify', 'axios', 'vue-axios'],
@@ -28,6 +32,22 @@ module.exports = {
       }
     }
   },
+  minimizer: [
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      terserOptions: {
+        warnings: false,
+        compress: {
+          warnings: false
+        },
+        ecma: 6,
+        mangle: true
+      },
+      sourceMap: true
+    }),
+    new OptimizeCssAssetsPlugin()
+  ],
   module: {
     rules: [
       { test: /\.vue$/, loader: 'vue-loader' },
@@ -68,5 +88,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [new VuetifyLoaderPlugin(), new VueLoaderPlugin(), new CaseSensitivePathsPlugin()]
+  plugins: [new BundleAnalyzerPlugin(), new VuetifyLoaderPlugin(), new VueLoaderPlugin(), new CaseSensitivePathsPlugin()]
 }
