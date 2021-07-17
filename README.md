@@ -86,14 +86,14 @@ npm run dev
       select hobby, (count(hobby) / (select count(id) from subway.programmer)) * 100 as percent
       from subway.programmer group by hobby order by hobby desc;
       
-      ![image](https://user-images.githubusercontent.com/40865499/126044730-451a89e4-a28c-413f-8998-790493e08362.png)
+https://user-images.githubusercontent.com/40865499/126044730-451a89e4-a28c-413f-8998-790493e08362.png
 
 
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
     select covid.id, hospital.name from subway.covid join subway.hospital on covid.hospital_id = hospital_id;
-    ![image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
+[image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
 
 
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
