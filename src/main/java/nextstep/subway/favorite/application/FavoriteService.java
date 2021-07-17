@@ -11,6 +11,8 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -36,8 +38,8 @@ public class FavoriteService {
     }
 
     @Cacheable(key = "#loginMember.id", value = "favorites")
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
@@ -57,13 +59,13 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    private Map<Long, Station> extractStations(List<Favorite> favorites) {
+    private Map<Long, Station> extractStations(Page<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()
             .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
-    private Set<Long> extractStationIds(List<Favorite> favorites) {
+    private Set<Long> extractStationIds(Page<Favorite> favorites) {
         Set<Long> stationIds = new HashSet<>();
         for (Favorite favorite : favorites) {
             stationIds.add(favorite.getSourceStationId());
