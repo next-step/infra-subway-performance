@@ -1,7 +1,13 @@
 spring:
   datasource:
     hikari:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://10.10.0.132:3306/subway?characterEncoding=utf-8
-      username: root
-      password: masterpw
+      master:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://10.10.0.132:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=tru
+        username: root
+        password: masterpw
+      slave:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+          jdbc-url: jdbc:mysql://10.10.0.132:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=tru
+          username: root
+          password: slavepw

@@ -178,4 +178,4 @@ ERRO[0128] some thresholds have failed
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+ - GET - /favorites
