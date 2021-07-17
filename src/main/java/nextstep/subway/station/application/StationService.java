@@ -20,6 +20,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @CacheEvict("stations")
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
