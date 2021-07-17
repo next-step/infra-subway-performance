@@ -8,12 +8,16 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
+    @JsonIgnore
     @CreatedDate
     private LocalDateTime createdDate;
 
+    @JsonIgnore
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
