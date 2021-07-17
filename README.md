@@ -86,14 +86,15 @@ npm run dev
       select hobby, (count(hobby) / (select count(id) from subway.programmer)) * 100 as percent
       from subway.programmer group by hobby order by hobby desc;
       
-https://user-images.githubusercontent.com/40865499/126044730-451a89e4-a28c-413f-8998-790493e08362.png
+![image](https://user-images.githubusercontent.com/40865499/126044730-451a89e4-a28c-413f-8998-790493e08362.png)
 
 
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
     select covid.id, hospital.name from subway.covid join subway.hospital on covid.hospital_id = hospital_id;
-[image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
+
+![image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
 
 
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
@@ -136,7 +137,7 @@ user.YearsCoding)
     on m.id = d.member_id
     group by d.stay;
     
-    ![image](https://user-images.githubusercontent.com/40865499/126045045-6a1e391e-b64c-40a9-88b6-8625ba4fd736.png)
+![image](https://user-images.githubusercontent.com/40865499/126045045-6a1e391e-b64c-40a9-88b6-8625ba4fd736.png)
 
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -151,7 +152,7 @@ user.YearsCoding)
     (select id from member where age between 30 and 39) m on m.id = p.member_id
     group by exercise order by count ;
 
-	![image](https://user-images.githubusercontent.com/40865499/126045065-5a75404f-9f13-4c6a-b481-91d3383a9fdf.png)
+![image](https://user-images.githubusercontent.com/40865499/126045065-5a75404f-9f13-4c6a-b481-91d3383a9fdf.png)
 
 
 
