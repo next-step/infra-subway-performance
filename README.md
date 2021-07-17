@@ -43,9 +43,40 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- nginx 최적화
+- 개선전 PageSpeed 결과
+  ![image1](./k6/result/before_nginx.png)
+- 개선후 PageSpeed 결과
+  ![image2](./k6/result/after_nginx.png)
+
+- Smoke, Load, Stress 테스트 결과 요청시간 50ms 이하로 개선
+
+- 개선전 Smoke 테스트 결과 [바로가기](./k6/result/before_smoke.md)
+- 개선전 Load 테스트 결과 [바로가기](./k6/result/before_load.md)
+- 개선전 Stress 테스트 결과 [바로가기](./k6/result/before_stress.md)
+
+---
+
+- 개선후 Smoke 테스트 결과 [바로가기](../k6/after/smoke_test_result.md)
+- 개선후 Load 테스트 결과 [바로가기](../k6/after/load_test_result.md)
+- 개선후 Stress 테스트 결과 [바로가기](../k6/after/stress_test_result.md)
+
+
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
+1. 웹서버 개선하기
+    - nginx 최적화
+        - CPU Core에 맞는 적절한 Worker 프로세스를 할당
+        - Proxy 캐시
+        - 워커 커넥션 10240 설정
+        - gzip 압축 설정
+        - http2 적용
+    - 개선 후 크롬 개발자 도구 같은 환경에서 6.67초로 대략 3배 감소
+    2. WAS 개선하기
+        - redis 추가
+        - 경로 조회 cache 적용
+        - ttl 1일 설정
 ---
 
 ### 2단계 - 조회 성능 개선하기
