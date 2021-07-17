@@ -88,7 +88,7 @@ ii) 해결 : pk 생성 및 pk 유니크로 변경, 인덱스 생성
 
 ALTER TABLE subway.programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
 ALTER TABLE subway.programmer ADD UNIQUE id_unique (id);
-CREATE INDEX idx_programmer_hoddy ON subway.programmer (hobby);
+CREATE INDEX idx_programmer_h ON subway.programmer (hobby);
 
 i) 개선 후 속도 0.031 sec
 
@@ -110,7 +110,7 @@ ALTER TABLE subway.covid ADD UNIQUE covid_id_unique (id);
 ALTER TABLE subway.hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
 ALTER TABLE subway.hospital ADD UNIQUE hospital_id_unique (id);
 
-CREATE INDEX idx_covid_all ON subway.covid(programmer_id, hospital_id);
+CREATE INDEX idx_covid_ph ON subway.covid(programmer_id, hospital_id);
 
 i) 개선 후 속도 : 0.016 sec
 
@@ -137,26 +137,11 @@ ii) 문제 : 큰 이슈 없음
 ### 문제 수정
 
 ```
-문제의도 다시 파악. programmer는 항상 hobby를 가지고 있어야 한다.
+문제의도 다시 파악. 
+1. programmer는 항상 hobby를 가지고 있어야 한다. 
+2. FROM 절 서브쿼리를 통한 모수 줄이기
+3. WHERE 절에 대한 hobby, student, years_coding 순서의 신규 인덱스 추가
 
-SELECT hospital.name
-FROM subway.programmer programmer
-JOIN subway.covid covid ON covid.programmer_id = programmer.id
-JOIN  subway.hospital hospital ON covid.hospital_id = hospital.id
-WHERE  hobby = 'Yes' AND ( student LIKE 'Yes%' OR  years_coding = '0-2 years')
-ORDER BY programmer.id;
-
-```
-### 개선 후 실행 계획
-
-![3이슈_개선.png](explain/3이슈_개선.png)
-
-![3이슈_개선_plain.png](explain/3이슈_개선_plain.png)
-
-### 다른 방식 적용 전후비교 
-
-```
-해설 쿼리처럼 FROM절 모수 줄였을 때 전후 비교.
 SELECT programmer.id, covid.name
 FROM (
     SELECT id
@@ -167,11 +152,14 @@ JOIN (
     JOIN (SELECT hospital.id, name FROM subway.hospital) AS hospital ON hospital.id = covid.hospital_id
 ) AS covid ON covid.programmer_id = programmer.id
 
+
+CREATE INDEX idx_programmer_hsy ON subway.programmer(hobby, student, years_coding);
+
+
 ```
-### FROM절 모수 줄였을 시 실행 계획2 
+### 개선 후 실행 계획
 
-![3이슈_개선2_plain.png](explain/3이슈_개선2_plain.png)
-
+![3이슈_개선.png](explain/3이슈_개선.png)
 
  - 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
@@ -202,7 +190,9 @@ i) 속도 : 0.015 sec
 ### 문제 수정
 
 ```
-SQL 신규 작성 - FROM절 모수 줄이기
+1. idx_covid_all 과같은 재활용 불가능한 인덱스를 재활용하려는 시도 제거.( 네이밍 수정 )
+2. FROM 절 서브쿼리를 통한 모수 줄이기
+3. 개선을 위한 적절한 인덱스 추가 
 
 SELECT stay, COUNT(programmer.member_id)
 FROM ( SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) AS member
@@ -214,35 +204,37 @@ JOIN (
 ON member.id = covid.member_id
 GROUP BY stay;
 
-모든 조건절 index 추가 
+개선을 위한 인덱스 추가
 
 CREATE INDEX idx_member_age ON subway.member(age);
-CREATE INDEX idx_programmer_all ON subway.programmer(country,member_id);
-CREATE INDEX idx_covid_stay ON subway.covid(stay);
-CREATE INDEX idx_covid_hospital ON subway.covid(hospital_id);
+CREATE INDEX idx_programmer_cm ON subway.programmer(country,member_id);
+CREATE INDEX idx_covid_h ON subway.covid(hospital_id);
 
 ```
 ###  개선 후
 
 ![4이슈_개선.png](explain/4이슈_개선.png)
 
-![4이슈_개선_.plain.png](explain/4이슈_개선_.plain.png)
-
  - 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ```
-SELECT exercise, count(programmer.id)
-FROM subway.hospital hospital
-JOIN subway.covid covid ON covid.hospital_id = hospital.id
-JOIN subway.programmer programmer ON covid.programmer_id = programmer.id 
-JOIN subway.member member ON covid.member_id = member.id
-WHERE ( age BETWEEN 30 AND 39 ) AND hospital.id=9
+SELECT exercise, COUNT(programmer.member_id)
+FROM ( SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) AS member
+JOIN ( SELECT member_id FROM subway.programmer WHERE country = 'India') AS programmer
+ON member.id = programmer.member_id
+JOIN (
+    SELECT covid.id, covid.member_id, hospital_id, exercise FROM subway.covid
+    JOIN ( SELECT id FROM subway.hospital WHERE hospital.id = 9 ) as hospital ON covid.hospital_id = hospital.id) AS covid 
+ON member.id = covid.member_id
 GROUP BY exercise;
 
 i) 속도 : 0.031 sec
 ii) 문제 : 이슈 없음 
 
 ```
+
+![5이슈_개선.png](explain/5이슈_개선.png)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
  - https://performance.honbabzone.com/favorites
