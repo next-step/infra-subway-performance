@@ -137,34 +137,33 @@ default ✓ [======================================] 00/50 VUs  35s
      script: .\stress.js
      output: -
 
-  scenarios: (100.00%) 1 scenario, 100 max VUs, 2m10s max duration (incl. graceful stop):
-           * default: Up to 100 looping VUs for 1m40s over 7 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+running (2m03.7s), 00000/10000 VUs, 26749 complete and 0 interrupted iterations
+default ✓ [======================================] 00000/10000 VUs  1m40s
 
-
-running (1m40.9s), 000/100 VUs, 4976 complete and 0 interrupted iterations
-default ✓ [======================================] 000/100 VUs  1m40s
-
-     ✓ logged in successfully
+     ✗ logged in successfully
+      ↳  81% — ✓ 21823 / ✗ 4926
      ✓ retrieved member
      ✓ find path
 
-     checks.........................: 100.00% ✓ 14928     ✗ 0
-     data_received..................: 19 MB   189 kB/s
-     data_sent......................: 2.4 MB  23 kB/s
-     http_req_blocked...............: avg=103.85µs min=0s     med=0s       max=46.53ms p(90)=0s       p(95)=0s
-     http_req_connecting............: avg=25.41µs  min=0s     med=0s       max=6.33ms  p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=10.26ms  min=2.74ms med=8.71ms   max=90.84ms p(90)=16.38ms  p(95)=21.49ms
-       { expected_response:true }...: avg=10.26ms  min=2.74ms med=8.71ms   max=90.84ms p(90)=16.38ms  p(95)=21.49ms
-     http_req_failed................: 0.00%   ✓ 0         ✗ 14928
-     http_req_receiving.............: avg=338.54µs min=0s     med=252.75µs max=24.68ms p(90)=876.66µs p(95)=999.4µs
-     http_req_sending...............: avg=96.64µs  min=0s     med=0s       max=23.68ms p(90)=518.83µs p(95)=568.46µs
-     http_req_tls_handshaking.......: avg=73.38µs  min=0s     med=0s       max=40.94ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=9.82ms   min=0s     med=8.24ms   max=90.47ms p(90)=15.99ms  p(95)=21.19ms
-     http_reqs......................: 14928   147.9829/s
-     iteration_duration.............: avg=1.03s    min=1.01s  med=1.03s    max=1.11s   p(90)=1.04s    p(95)=1.05s
-     iterations.....................: 4976    49.327633/s
-     vus............................: 6       min=2       max=100
-     vus_max........................: 100     min=100     max=100
+     checks.........................: 92.91% ✓ 64583      ✗ 4926
+     data_received..................: 116 MB 933 kB/s
+     data_sent......................: 15 MB  118 kB/s
+     http_req_blocked...............: avg=115.48ms min=0s     med=0s     max=15.57s  p(90)=16.07ms  p(95)=61.02ms
+     http_req_connecting............: avg=31.4ms   min=0s     med=0s     max=15.55s  p(90)=3.06ms   p(95)=6.42ms
+   ✗ http_req_duration..............: avg=6.09s    min=0s     med=4.24s  max=1m0s    p(90)=14.94s   p(95)=20.17s
+       { expected_response:true }...: avg=6.29s    min=3.73ms med=4.66s  max=28.07s  p(90)=14.79s   p(95)=19.63s
+     http_req_failed................: 7.67%  ✓ 5372       ✗ 64581
+     http_req_receiving.............: avg=254.47µs min=0s     med=0s     max=351.4ms p(90)=648.16µs p(95)=998.5µs
+     http_req_sending...............: avg=281.43µs min=0s     med=0s     max=1.08s   p(90)=528µs    p(95)=997µs
+     http_req_tls_handshaking.......: avg=83.84ms  min=0s     med=0s     max=7.49s   p(90)=11.32ms  p(95)=46.32ms
+     http_req_waiting...............: avg=6.09s    min=0s     med=4.24s  max=1m0s    p(90)=14.94s   p(95)=20.17s
+     http_reqs......................: 69953  565.475573/s
+     iteration_duration.............: avg=20.8s    min=1.02s  med=21.29s max=1m20s   p(90)=42.04s   p(95)=44.4s
+     iterations.....................: 26749  216.229556/s
+     vus............................: 1      min=1        max=10000
+     vus_max........................: 10000  min=10000    max=10000
+
+ERRO[0128] some thresholds have failed
 ```
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
