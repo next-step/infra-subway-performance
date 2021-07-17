@@ -91,7 +91,8 @@ npm run dev
     inner join hospital 
        on hospital.id = c.hospital_id
     ```
-    > hospital.name의 데이터 타입을 varchar(8) 로 변경하고, 유니크와 인덱스 설정
+    > covid.hospital_id의 null 비허용과 인덱스 설정.
+      hospital.name의 데이터 타입을 varchar(8) 로 변경하고, 유니크와 인덱스 설정
     
     - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
     ```sql
@@ -107,7 +108,7 @@ npm run dev
     ) as c on c.programmer_id = p.id
     order by user.id
     ```
-    > member.age 인덱스 설정 / programmer.country 데이터 타입을 varchar(45) 로 변경하고, 인덱스 설정
+    > covid.programmer_id에 인덱스 설정.member.age 인덱스 설정. programmer.country 데이터 타입을 varchar(45) 로 변경하고, 인덱스 설정     
     
     - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
     ```sql
@@ -125,10 +126,12 @@ npm run dev
     on m.id = c.member_id
     group by stay
     ```
+    > covid.member_id / programmer.member_id 인덱스 설정.
+     covid.stay 데이터타입을 varchar(18)으로 변경
     
     - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
     ```sql
-    Select 
+    select 
         exercise
         , count(p.id)
     from (select id from member where age between 30 and 39) as m
@@ -140,6 +143,7 @@ npm run dev
        on c.hospital_id = h.id
     group by exercise
     ```
+    > programmer.exercise의 데이터 타입을 varchar(26)으로 변경
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
     > https://www.nextstep-hun.kro.kr/favorites?page=1

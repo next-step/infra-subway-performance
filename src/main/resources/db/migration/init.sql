@@ -2,7 +2,7 @@
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE=''NO_AUTO_VALUE_ON_ZERO'' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
@@ -12,8 +12,8 @@ USE `subway`;
 
 -- 테이블 subway.covid 구조 내보내기
 CREATE TABLE IF NOT EXISTS `covid` (
-  `id` bigint(20) DEFAULT NULL,
-  `hospital_id` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hospital_id` bigint(20) NOT NULL,
   `member_id` bigint(20) DEFAULT NULL,
   `programmer_id` bigint(20) DEFAULT NULL,
   `hospital_type_code` varchar(255) DEFAULT NULL,
@@ -30,16 +30,23 @@ CREATE TABLE IF NOT EXISTS `covid` (
   `severity_of_Illness` varchar(255) DEFAULT NULL,
   `visitors_with_patient` int(11) DEFAULT NULL,
   `admission_deposit` double DEFAULT NULL,
-  `stay` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `stay` varchar(18) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_covid_hospital_id` (`hospital_id`),
+  KEY `index_covid_programmer_id` (`programmer_id`),
+  KEY `index_covid_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
 -- 테이블 subway.hospital 구조 내보내기
 CREATE TABLE IF NOT EXISTS `hospital` (
-  `id` int(11) DEFAULT NULL,
-  `name` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `index_hospital_name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
@@ -51,18 +58,19 @@ CREATE TABLE IF NOT EXISTS `member` (
   `age` int(11) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=98856 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`),
+  KEY `index_member_age` (`age`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
 -- 테이블 subway.programmer 구조 내보내기
 CREATE TABLE IF NOT EXISTS `programmer` (
-  `id` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `member_id` bigint(20) DEFAULT NULL,
-  `hobby` varchar(64) DEFAULT NULL,
+  `hobby` varchar(3) DEFAULT NULL,
   `open_source` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
+  `country` varchar(45) DEFAULT NULL,
   `student` varchar(64) DEFAULT NULL,
   `employment` varchar(255) DEFAULT NULL,
   `formal_education` varchar(255) DEFAULT NULL,
@@ -178,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `programmer` (
   `hours_outside` text,
   `skip_meals` text,
   `ergonomic_devices` text,
-  `exercise` text,
+  `exercise` varchar(26) DEFAULT NULL,
   `gender` text,
   `sexual_orientation` text,
   `education_parents` text,
@@ -186,12 +194,16 @@ CREATE TABLE IF NOT EXISTS `programmer` (
   `dependents` text,
   `military_US` text,
   `survey_too_long` text,
-  `survey_easy` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `survey_easy` text,
+  PRIMARY KEY (`id`),
+  KEY `index_programmer_hobby` (`hobby`),
+  KEY `index_programmer_country` (`country`),
+  KEY `index_programmer_member_id` (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '''') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
