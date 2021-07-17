@@ -74,7 +74,178 @@ npm run dev
 ---
 
 ### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+ - 1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```
+SELECT (COUNT(*) / (SELECT COUNT(*) FROM subway.programmer) * 100) as 'HobbyCount' 
+FROM subway.programmer
+GROUP BY hobby;
+
+i) 속도 : 0.469 sec
+ii) 문제 : FULL TABLE SCAN
+ii) 해결 : pk 생성 및 pk 유니크로 변경, 인덱스 생성 
+
+ALTER TABLE subway.programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+ALTER TABLE subway.programmer ADD UNIQUE id_unique (id);
+CREATE INDEX idx_programmer_h ON subway.programmer (hobby);
+
+i) 개선 후 속도 0.031 sec
+
+```
+
+### 개선 후 실행 계획
+![1이슈_개선.png](explain/1이슈_개선.png)
+
+
+ - 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```
+SELECT covid.id , hospital.name
+FROM subway.programmer programmer
+JOIN subway.covid covid ON covid.programmer_id = programmer.id
+JOIN subway.hospital hospital ON covid.hospital_id = hospital.id;
+
+i) 속도 : 0.016 sec ( 이상없음 )
+ii) 문제 : FULL TABLE SCAN
+ii) 해결 : pk 생성 및 pk 유니크로 변경 
+
+ALTER TABLE subway.covid ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+ALTER TABLE subway.covid ADD UNIQUE covid_id_unique (id);
+
+ALTER TABLE subway.hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+ALTER TABLE subway.hospital ADD UNIQUE hospital_id_unique (id);
+
+CREATE INDEX idx_covid_ph ON subway.covid(programmer_id, hospital_id);
+
+i) 개선 후 속도 : 0.016 sec
+
+```
+
+### 개선 후 실행 계획
+![2이슈_개선.png](explain/2이슈_개선.png)
+
+ - 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```
+SELECT hospital.name
+FROM subway.programmer programmer
+JOIN subway.covid covid ON covid.programmer_id = programmer.id
+JOIN  subway.hospital hospital ON covid.hospital_id = hospital.id
+WHERE ( hobby = 'Yes' AND student LIKE 'Yes%' ) OR  years_coding = '0-2 years'
+ORDER BY programmer.id;
+
+i) 속도 : 0.016 sec ( 이상없음 )
+ii) 문제 : 큰 이슈 없음
+```
+###  개선이 필요하다고 리뷰받은 실행 계획
+
+![3이슈.png](explain/3이슈.png)
+
+![3이슈_plain.png](explain/3이슈_plain.png)
+
+### 문제 수정
+
+```
+문제의도 다시 파악. 
+1. programmer는 항상 hobby를 가지고 있어야 한다. 
+2. FROM 절 서브쿼리를 통한 모수 줄이기
+3. WHERE 절에 대한 hobby, student, years_coding 순서의 신규 인덱스 추가
+
+SELECT programmer.id, covid.name
+FROM (
+    SELECT id
+    FROM subway.programmer
+    WHERE Hobby = 'Yes' AND (student LIKE 'Yes%' OR years_coding = '0-2 years')) AS programmer
+JOIN (
+    SELECT covid.programmer_id, name FROM subway.covid
+    JOIN (SELECT hospital.id, name FROM subway.hospital) AS hospital ON hospital.id = covid.hospital_id
+) AS covid ON covid.programmer_id = programmer.id
+
+
+CREATE INDEX idx_programmer_hsy ON subway.programmer(hobby, student, years_coding);
+
+
+```
+### 개선 후 실행 계획
+
+![3이슈_개선.png](explain/3이슈_개선.png)
+
+ - 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```
+SELECT stay, count(programmer.id)
+FROM subway.hospital hospital
+JOIN subway.covid covid ON covid.hospital_id = hospital.id 
+JOIN subway.programmer programmer ON covid.programmer_id = programmer.id 
+JOIN subway.member member ON covid.member_id = member.id
+WHERE ( age BETWEEN 20 AND 29 ) AND country = "India" AND hospital.id=9
+GROUP BY stay;
+
+i) 속도 : 0.188 sec
+ii) 문제 : FULL TABLE SCAN
+ii) 해결 : covid index 순서 변경
+
+DROP INDEX idx_covid_all ON subway.covid;
+CREATE INDEX idx_covid_all ON subway.covid(hospital_id, programmer_id, member_id);
+i) 속도 : 0.015 sec
+
+```
+### 개선이 필요하다고 리뷰받은 실행 계획
+
+![4이슈.png](explain/4이슈.png)
+
+![4이슈_.plain.png](explain/4이슈_.plain.png)
+
+### 문제 수정
+
+```
+1. idx_covid_all 과같은 재활용 불가능한 인덱스를 재활용하려는 시도 제거.( 네이밍 수정 )
+2. FROM 절 서브쿼리를 통한 모수 줄이기
+3. 개선을 위한 적절한 인덱스 추가 
+
+SELECT stay, COUNT(programmer.member_id)
+FROM ( SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) AS member
+JOIN ( SELECT member_id FROM subway.programmer WHERE country = 'India') AS programmer
+ON member.id = programmer.member_id
+JOIN (
+    SELECT covid.id, covid.member_id, hospital_id, stay FROM subway.covid
+    JOIN ( SELECT id FROM subway.hospital WHERE hospital.id = 9 ) as hospital ON covid.hospital_id = hospital.id) AS covid 
+ON member.id = covid.member_id
+GROUP BY stay;
+
+개선을 위한 인덱스 추가
+
+CREATE INDEX idx_member_age ON subway.member(age);
+CREATE INDEX idx_programmer_cm ON subway.programmer(country,member_id);
+CREATE INDEX idx_covid_h ON subway.covid(hospital_id);
+
+```
+###  개선 후
+
+![4이슈_개선.png](explain/4이슈_개선.png)
+
+ - 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```
+SELECT exercise, COUNT(programmer.member_id)
+FROM ( SELECT id FROM subway.member WHERE age BETWEEN 30 AND 39) AS member
+JOIN ( SELECT member_id FROM subway.programmer WHERE country = 'India') AS programmer
+ON member.id = programmer.member_id
+JOIN (
+    SELECT covid.id, covid.member_id, hospital_id, exercise FROM subway.covid
+    JOIN ( SELECT id FROM subway.hospital WHERE hospital.id = 9 ) as hospital ON covid.hospital_id = hospital.id) AS covid 
+ON member.id = covid.member_id
+GROUP BY exercise;
+
+i) 속도 : 0.031 sec
+ii) 문제 : 이슈 없음 
+
+```
+### 개선 후 실행 계획
+
+![5이슈_개선.png](explain/5이슈_개선.png)
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+ - https://performance.honbabzone.com/favorites
+ - 1@1.com / 1

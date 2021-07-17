@@ -15,7 +15,6 @@ import nextstep.subway.member.dto.MemberResponse;
 @Transactional
 public class MemberService {
     private static final String REDIS_VALUE = "member";
-    private static final String REDIS_KEY = "#id";
 
     private MemberRepository memberRepository;
 
@@ -28,19 +27,19 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @Cacheable(value = REDIS_VALUE, key = REDIS_KEY)
+    @Cacheable(value = REDIS_VALUE, key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    @CachePut(value = REDIS_VALUE, key = REDIS_KEY)
+    @CachePut(value = REDIS_VALUE, key = "#id")
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
-    @CacheEvict(value = REDIS_VALUE, key = REDIS_KEY)
+    @CacheEvict(value = REDIS_VALUE, key = "#id")
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }

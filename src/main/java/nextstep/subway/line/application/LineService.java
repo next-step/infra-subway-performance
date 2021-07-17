@@ -21,7 +21,6 @@ import nextstep.subway.station.domain.Station;
 @Transactional
 public class LineService {
     private static final String REDIS_VALUE = "line";
-    private static final String REDIS_KEY = "#id";
 
     private LineRepository lineRepository;
     private StationService stationService;
@@ -50,7 +49,7 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = REDIS_VALUE, key = REDIS_KEY)
+    @Cacheable(value = REDIS_VALUE, key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
@@ -60,13 +59,13 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @CachePut(value = REDIS_VALUE, key = REDIS_KEY)
+    @CachePut(value = REDIS_VALUE, key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = REDIS_VALUE, key = REDIS_KEY)
+    @CacheEvict(value = REDIS_VALUE, key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
