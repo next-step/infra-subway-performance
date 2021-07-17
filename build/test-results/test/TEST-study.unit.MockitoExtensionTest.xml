@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-07-14T18:59:10" hostname="kyle.local" time="0.017">
+<testsuite name="단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-07-17T16:51:53" hostname="kyle.local" time="0.017">
   <properties/>
   <testcase name="findAllLines()" classname="study.unit.MockitoExtensionTest" time="0.017"/>
   <system-out><![CDATA[]]></system-out>

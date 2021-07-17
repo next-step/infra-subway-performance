@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">0</div>
+<div class="counter">1</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.152s</div>
+<div class="counter">0.010s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
+<div class="infoBox failures" id="successRate">
+<div class="percent">0%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,13 +61,159 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Tests</a>
+<a href="#tab0">Failed tests</a>
 </li>
 <li>
-<a href="#tab1">Standard output</a>
+<a href="#tab1">Tests</a>
+</li>
+<li>
+<a href="#tab2">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<div class="test">
+<a name="findPathByDistance()"></a>
+<h3 class="failures">두 역의 최단 거리 경로를 조회한다.</h3>
+<span class="code">
+<pre>javax.persistence.PersistenceException: org.hibernate.exception.SQLGrammarException: could not execute statement
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:154)
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:181)
+	at org.hibernate.query.internal.AbstractProducedQuery.executeUpdate(AbstractProducedQuery.java:1621)
+	at nextstep.subway.utils.DatabaseCleanup.execute(DatabaseCleanup.java:34)
+	at nextstep.subway.utils.DatabaseCleanup$$FastClassBySpringCGLIB$$9fa78c9c.invoke(&lt;generated&gt;)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:134)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
+	at nextstep.subway.utils.DatabaseCleanup$$EnhancerBySpringCGLIB$$d5e71d4d.execute(&lt;generated&gt;)
+	at nextstep.subway.AcceptanceTest.setUp(AcceptanceTest.java:26)
+	at nextstep.subway.path.PathAcceptanceTest.setUp(PathAcceptanceTest.java:47)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:126)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptBeforeEachMethod(TimeoutExtension.java:76)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeMethodInExtensionContext(ClassBasedTestDescriptor.java:490)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$synthesizeBeforeEachMethodAdapter$19(ClassBasedTestDescriptor.java:475)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeEachMethods$2(TestMethodTestDescriptor.java:167)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeMethodsOrCallbacksUntilExceptionOccurs$5(TestMethodTestDescriptor.java:195)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeMethodsOrCallbacksUntilExceptionOccurs(TestMethodTestDescriptor.java:195)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeEachMethods(TestMethodTestDescriptor.java:164)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:127)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:65)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:248)
+	at org.junit.platform.launcher.core.DefaultLauncher.lambda$execute$5(DefaultLauncher.java:211)
+	at org.junit.platform.launcher.core.DefaultLauncher.withInterceptedStreams(DefaultLauncher.java:226)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:199)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:132)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at com.sun.proxy.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.stop(TestWorker.java:133)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:182)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:164)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:414)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.hibernate.exception.SQLGrammarException: could not execute statement
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:63)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:42)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:200)
+	at org.hibernate.engine.query.spi.NativeSQLQueryPlan.performExecuteUpdate(NativeSQLQueryPlan.java:107)
+	at org.hibernate.internal.SessionImpl.executeNativeUpdate(SessionImpl.java:1509)
+	at org.hibernate.query.internal.NativeQueryImpl.doExecuteUpdate(NativeQueryImpl.java:295)
+	at org.hibernate.query.internal.AbstractProducedQuery.executeUpdate(AbstractProducedQuery.java:1612)
+	... 106 more
+Caused by: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FALSE' at line 1
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1348)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	... 110 more
+</pre>
+</span>
+</div>
+</div>
+<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -79,1035 +225,28 @@
 </tr>
 </thead>
 <tr>
-<td class="success">두 역의 최단 거리 경로를 조회한다.</td>
-<td class="success">findPathByDistance()</td>
-<td class="success">0.152s</td>
-<td class="success">passed</td>
+<td class="failures">두 역의 최단 거리 경로를 조회한다.</td>
+<td class="failures">findPathByDistance()</td>
+<td class="failures">0.010s</td>
+<td class="failures">failed</td>
 </tr>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>2021-07-15 03:59:10.590  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [nextstep.subway.path.PathAcceptanceTest], using SpringBootContextLoader
-2021-07-15 03:59:10.591  INFO 60266 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [nextstep.subway.path.PathAcceptanceTest]: no resource found for suffixes {-context.xml, Context.groovy}.
-2021-07-15 03:59:10.591  INFO 60266 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [nextstep.subway.path.PathAcceptanceTest]: PathAcceptanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2021-07-15 03:59:10.594  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration nextstep.subway.SubwayApplication for test class nextstep.subway.path.PathAcceptanceTest
-2021-07-15 03:59:10.595  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-2021-07-15 03:59:10.595  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@580abc7d, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@78ffeb4b, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@3c0049b2, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@5a71aa1a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@57951c7d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@50b70077, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6ec48e0a, org.springframework.test.context.event.EventPublishingTestExecutionListener@3932c8b2, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@46bb4d1d, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@2e675905, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@6419261d, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@4bc10574, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@570e6ab4, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@4335ae21]
+<pre>2021-07-18 01:51:52.685  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [nextstep.subway.path.PathAcceptanceTest], using SpringBootContextLoader
+2021-07-18 01:51:52.685  INFO 10623 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [nextstep.subway.path.PathAcceptanceTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2021-07-18 01:51:52.685  INFO 10623 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [nextstep.subway.path.PathAcceptanceTest]: PathAcceptanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2021-07-18 01:51:52.690  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration nextstep.subway.SubwayApplication for test class nextstep.subway.path.PathAcceptanceTest
+2021-07-18 01:51:52.692  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+2021-07-18 01:51:52.692  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@188df783, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@1c75afb4, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@706fe230, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@243da51f, org.springframework.test.context.support.DirtiesContextTestExecutionListener@53fb6ff4, org.springframework.test.context.transaction.TransactionalTestExecutionListener@62c26230, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6db3723a, org.springframework.test.context.event.EventPublishingTestExecutionListener@24ef37ce, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@2ce37868, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@5d415c26, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@2b95c716, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@7699d4ed, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@410ec26e, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@16791605]
 Hibernate: 
     
 SET
     REFERENTIAL_INTEGRITY FALSE
-Hibernate: 
-    TRUNCATE TABLE section
-Hibernate: 
-    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE line
-Hibernate: 
-    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE station
-Hibernate: 
-    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE member
-Hibernate: 
-    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE favorite
-Hibernate: 
-    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    
-SET
-    REFERENTIAL_INTEGRITY TRUE
-Request method:	POST
-Request URI:	http://localhost:52504/stations
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;name&quot;: &quot;강남역&quot;
-}
-Hibernate: 
-    insert 
-    into
-        station
-        (id, created_date, modified_date, name) 
-    values
-        (null, ?, ?, ?)
-2021-07-15 03:59:10.609 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.610 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.610 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [강남역]
-POST /stations HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 20
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /stations/1
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /stations/1
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 1,
-    &quot;name&quot;: &quot;강남역&quot;,
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/stations
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;name&quot;: &quot;양재역&quot;
-}
-Hibernate: 
-    insert 
-    into
-        station
-        (id, created_date, modified_date, name) 
-    values
-        (null, ?, ?, ?)
-2021-07-15 03:59:10.621 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.621 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.621 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [양재역]
-POST /stations HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 20
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /stations/2
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /stations/2
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 2,
-    &quot;name&quot;: &quot;양재역&quot;,
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/stations
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;name&quot;: &quot;교대역&quot;
-}
-Hibernate: 
-    insert 
-    into
-        station
-        (id, created_date, modified_date, name) 
-    values
-        (null, ?, ?, ?)
-2021-07-15 03:59:10.631 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.632 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.632 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [교대역]
-POST /stations HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 20
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /stations/3
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /stations/3
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 3,
-    &quot;name&quot;: &quot;교대역&quot;,
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/stations
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;name&quot;: &quot;남부터미널역&quot;
-}
-Hibernate: 
-    insert 
-    into
-        station
-        (id, created_date, modified_date, name) 
-    values
-        (null, ?, ?, ?)
-2021-07-15 03:59:10.643 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.643 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.643 TRACE 60266 --- [o-auto-1-exec-7] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [남부터미널역]
-POST /stations HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 29
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /stations/4
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /stations/4
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 4,
-    &quot;name&quot;: &quot;남부터미널역&quot;,
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.643208&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.643208&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/lines
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;distance&quot;: &quot;10&quot;,
-    &quot;name&quot;: &quot;신분당선&quot;,
-    &quot;downStationId&quot;: &quot;2&quot;,
-    &quot;upStationId&quot;: &quot;1&quot;
-}
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.655 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.655 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.655 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.655 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [강남역]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.656 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [2]
-2021-07-15 03:59:10.656 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.656 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.656 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [양재역]
-Hibernate: 
-    insert 
-    into
-        line
-        (id, created_date, modified_date, color, name) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.658 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.658030]
-2021-07-15 03:59:10.658 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.658030]
-2021-07-15 03:59:10.658 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [bg-red-600]
-2021-07-15 03:59:10.658 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [VARCHAR] - [신분당선]
-Hibernate: 
-    insert 
-    into
-        section
-        (id, distance, down_station_id, line_id, up_station_id) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.659 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [INTEGER] - [10]
-2021-07-15 03:59:10.659 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [2]
-2021-07-15 03:59:10.659 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [1]
-2021-07-15 03:59:10.659 TRACE 60266 --- [-auto-1-exec-10] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [1]
-POST /lines HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 98
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /lines/1
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /lines/1
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 1,
-    &quot;name&quot;: &quot;신분당선&quot;,
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;stations&quot;: [
-        {
-            &quot;id&quot;: 1,
-            &quot;name&quot;: &quot;강남역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;
-        },
-        {
-            &quot;id&quot;: 2,
-            &quot;name&quot;: &quot;양재역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;
-        }
-    ],
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.65803&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.65803&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/lines
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;distance&quot;: &quot;10&quot;,
-    &quot;name&quot;: &quot;이호선&quot;,
-    &quot;downStationId&quot;: &quot;1&quot;,
-    &quot;upStationId&quot;: &quot;3&quot;
-}
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.672 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.672 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.672 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.672 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [교대역]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.673 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.673 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.673 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.673 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [강남역]
-Hibernate: 
-    insert 
-    into
-        line
-        (id, created_date, modified_date, color, name) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.673706]
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.673706]
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [bg-red-600]
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [VARCHAR] - [이호선]
-Hibernate: 
-    insert 
-    into
-        section
-        (id, distance, down_station_id, line_id, up_station_id) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [INTEGER] - [10]
-2021-07-15 03:59:10.674 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [1]
-2021-07-15 03:59:10.675 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [2]
-2021-07-15 03:59:10.675 TRACE 60266 --- [o-auto-1-exec-9] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [3]
-POST /lines HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 95
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /lines/2
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /lines/2
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 2,
-    &quot;name&quot;: &quot;이호선&quot;,
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;stations&quot;: [
-        {
-            &quot;id&quot;: 3,
-            &quot;name&quot;: &quot;교대역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;
-        },
-        {
-            &quot;id&quot;: 1,
-            &quot;name&quot;: &quot;강남역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.609468&quot;
-        }
-    ],
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.673706&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.673706&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/lines
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;distance&quot;: &quot;5&quot;,
-    &quot;name&quot;: &quot;삼호선&quot;,
-    &quot;downStationId&quot;: &quot;2&quot;,
-    &quot;upStationId&quot;: &quot;3&quot;
-}
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.687 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [교대역]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [2]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.688 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [양재역]
-Hibernate: 
-    insert 
-    into
-        line
-        (id, created_date, modified_date, color, name) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.689 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.689 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.689 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [VARCHAR] - [bg-red-600]
-2021-07-15 03:59:10.689 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [VARCHAR] - [삼호선]
-Hibernate: 
-    insert 
-    into
-        section
-        (id, distance, down_station_id, line_id, up_station_id) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.690 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [INTEGER] - [5]
-2021-07-15 03:59:10.690 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [2]
-2021-07-15 03:59:10.690 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [3]
-2021-07-15 03:59:10.690 TRACE 60266 --- [o-auto-1-exec-1] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [3]
-POST /lines HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 94
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /lines/3
-Content-Type: application/json
-
-
-
-HTTP/1.1 201 
-Location: /lines/3
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;id&quot;: 3,
-    &quot;name&quot;: &quot;삼호선&quot;,
-    &quot;color&quot;: &quot;bg-red-600&quot;,
-    &quot;stations&quot;: [
-        {
-            &quot;id&quot;: 3,
-            &quot;name&quot;: &quot;교대역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;
-        },
-        {
-            &quot;id&quot;: 2,
-            &quot;name&quot;: &quot;양재역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;
-        }
-    ],
-    &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.689289&quot;,
-    &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.689289&quot;
-}
-Request method:	POST
-Request URI:	http://localhost:52504/lines/3/sections
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:
-{
-    &quot;distance&quot;: &quot;3&quot;,
-    &quot;downStationId&quot;: &quot;4&quot;,
-    &quot;upStationId&quot;: &quot;3&quot;
-}
-Hibernate: 
-    select
-        line0_.id as id1_1_0_,
-        line0_.created_date as created_2_1_0_,
-        line0_.modified_date as modified3_1_0_,
-        line0_.color as color4_1_0_,
-        line0_.name as name5_1_0_ 
-    from
-        line line0_ 
-    where
-        line0_.id=?
-2021-07-15 03:59:10.702 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_1_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_1_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([color4_1_0_] : [VARCHAR]) - [bg-red-600]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name5_1_0_] : [VARCHAR]) - [삼호선]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.703 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.704 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [교대역]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.704 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [4]
-2021-07-15 03:59:10.704 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.704 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.704 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [남부터미널역]
-Hibernate: 
-    select
-        sections0_.line_id as line_id4_3_0_,
-        sections0_.id as id1_3_0_,
-        sections0_.id as id1_3_1_,
-        sections0_.distance as distance2_3_1_,
-        sections0_.down_station_id as down_sta3_3_1_,
-        sections0_.line_id as line_id4_3_1_,
-        sections0_.up_station_id as up_stati5_3_1_,
-        station1_.id as id1_4_2_,
-        station1_.created_date as created_2_4_2_,
-        station1_.modified_date as modified3_4_2_,
-        station1_.name as name4_4_2_,
-        station2_.id as id1_4_3_,
-        station2_.created_date as created_2_4_3_,
-        station2_.modified_date as modified3_4_3_,
-        station2_.name as name4_4_3_ 
-    from
-        section sections0_ 
-    left outer join
-        station station1_ 
-            on sections0_.down_station_id=station1_.id 
-    left outer join
-        station station2_ 
-            on sections0_.up_station_id=station2_.id 
-    where
-        sections0_.line_id=?
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_2_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_3_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([distance2_3_1_] : [INTEGER]) - [5]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([down_sta3_3_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.705 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([up_stati5_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.706 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_2_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.706 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_2_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.706 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_2_] : [VARCHAR]) - [양재역]
-2021-07-15 03:59:10.706 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_0_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.706 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_0_] : [BIGINT]) - [3]
-Hibernate: 
-    insert 
-    into
-        section
-        (id, distance, down_station_id, line_id, up_station_id) 
-    values
-        (null, ?, ?, ?, ?)
-2021-07-15 03:59:10.707 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [INTEGER] - [3]
-2021-07-15 03:59:10.707 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [4]
-2021-07-15 03:59:10.708 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [3]
-2021-07-15 03:59:10.708 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [3]
-Hibernate: 
-    update
-        section 
-    set
-        distance=?,
-        down_station_id=?,
-        line_id=?,
-        up_station_id=? 
-    where
-        id=?
-2021-07-15 03:59:10.709 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [INTEGER] - [2]
-2021-07-15 03:59:10.709 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [2]
-2021-07-15 03:59:10.709 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [3]
-2021-07-15 03:59:10.709 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [4]
-2021-07-15 03:59:10.709 TRACE 60266 --- [o-auto-1-exec-8] o.h.type.descriptor.sql.BasicBinder      : binding parameter [5] as [BIGINT] - [3]
-POST /lines/3/sections HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 54
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 200 OK
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-
-
-
-HTTP/1.1 200 
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-Request method:	GET
-Request URI:	http://localhost:52504/paths?source=3&amp;target=2
-Proxy:			&lt;none&gt;
-Request params:	&lt;none&gt;
-Query params:	&lt;none&gt;
-Form params:	&lt;none&gt;
-Path params:	&lt;none&gt;
-Headers:		Accept=application/json
-Cookies:		&lt;none&gt;
-Multiparts:		&lt;none&gt;
-Body:			&lt;none&gt;
-Hibernate: 
-    select
-        line0_.id as id1_1_,
-        line0_.created_date as created_2_1_,
-        line0_.modified_date as modified3_1_,
-        line0_.color as color4_1_,
-        line0_.name as name5_1_ 
-    from
-        line line0_
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_1_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.658030]
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.658030]
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([color4_1_] : [VARCHAR]) - [bg-red-600]
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name5_1_] : [VARCHAR]) - [신분당선]
-2021-07-15 03:59:10.725 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.673706]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.673706]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([color4_1_] : [VARCHAR]) - [bg-red-600]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name5_1_] : [VARCHAR]) - [이호선]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_1_] : [TIMESTAMP]) - [2021-07-15T03:59:10.689289]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([color4_1_] : [VARCHAR]) - [bg-red-600]
-2021-07-15 03:59:10.726 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name5_1_] : [VARCHAR]) - [삼호선]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.727 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.727 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.727 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.631474]
-2021-07-15 03:59:10.727 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [교대역]
-Hibernate: 
-    select
-        station0_.id as id1_4_0_,
-        station0_.created_date as created_2_4_0_,
-        station0_.modified_date as modified3_4_0_,
-        station0_.name as name4_4_0_ 
-    from
-        station station0_ 
-    where
-        station0_.id=?
-2021-07-15 03:59:10.728 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [2]
-2021-07-15 03:59:10.728 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.728 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.620826]
-2021-07-15 03:59:10.728 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_0_] : [VARCHAR]) - [양재역]
-Hibernate: 
-    select
-        sections0_.line_id as line_id4_3_0_,
-        sections0_.id as id1_3_0_,
-        sections0_.id as id1_3_1_,
-        sections0_.distance as distance2_3_1_,
-        sections0_.down_station_id as down_sta3_3_1_,
-        sections0_.line_id as line_id4_3_1_,
-        sections0_.up_station_id as up_stati5_3_1_,
-        station1_.id as id1_4_2_,
-        station1_.created_date as created_2_4_2_,
-        station1_.modified_date as modified3_4_2_,
-        station1_.name as name4_4_2_,
-        station2_.id as id1_4_3_,
-        station2_.created_date as created_2_4_3_,
-        station2_.modified_date as modified3_4_3_,
-        station2_.name as name4_4_3_ 
-    from
-        section sections0_ 
-    left outer join
-        station station1_ 
-            on sections0_.down_station_id=station1_.id 
-    left outer join
-        station station2_ 
-            on sections0_.up_station_id=station2_.id 
-    where
-        sections0_.line_id=?
-2021-07-15 03:59:10.730 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.730 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_1_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.730 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_2_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.730 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_3_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([distance2_3_1_] : [INTEGER]) - [10]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([down_sta3_3_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_1_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([up_stati5_3_1_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_3_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_3_] : [TIMESTAMP]) - [2021-07-15T03:59:10.609468]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_3_] : [VARCHAR]) - [강남역]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_0_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.731 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_0_] : [BIGINT]) - [1]
-Hibernate: 
-    select
-        sections0_.line_id as line_id4_3_0_,
-        sections0_.id as id1_3_0_,
-        sections0_.id as id1_3_1_,
-        sections0_.distance as distance2_3_1_,
-        sections0_.down_station_id as down_sta3_3_1_,
-        sections0_.line_id as line_id4_3_1_,
-        sections0_.up_station_id as up_stati5_3_1_,
-        station1_.id as id1_4_2_,
-        station1_.created_date as created_2_4_2_,
-        station1_.modified_date as modified3_4_2_,
-        station1_.name as name4_4_2_,
-        station2_.id as id1_4_3_,
-        station2_.created_date as created_2_4_3_,
-        station2_.modified_date as modified3_4_3_,
-        station2_.name as name4_4_3_ 
-    from
-        section sections0_ 
-    left outer join
-        station station1_ 
-            on sections0_.down_station_id=station1_.id 
-    left outer join
-        station station2_ 
-            on sections0_.up_station_id=station2_.id 
-    where
-        sections0_.line_id=?
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [2]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_2_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_3_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([distance2_3_1_] : [INTEGER]) - [10]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([down_sta3_3_1_] : [BIGINT]) - [1]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([up_stati5_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_0_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.732 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_0_] : [BIGINT]) - [2]
-Hibernate: 
-    select
-        sections0_.line_id as line_id4_3_0_,
-        sections0_.id as id1_3_0_,
-        sections0_.id as id1_3_1_,
-        sections0_.distance as distance2_3_1_,
-        sections0_.down_station_id as down_sta3_3_1_,
-        sections0_.line_id as line_id4_3_1_,
-        sections0_.up_station_id as up_stati5_3_1_,
-        station1_.id as id1_4_2_,
-        station1_.created_date as created_2_4_2_,
-        station1_.modified_date as modified3_4_2_,
-        station1_.name as name4_4_2_,
-        station2_.id as id1_4_3_,
-        station2_.created_date as created_2_4_3_,
-        station2_.modified_date as modified3_4_3_,
-        station2_.name as name4_4_3_ 
-    from
-        section sections0_ 
-    left outer join
-        station station1_ 
-            on sections0_.down_station_id=station1_.id 
-    left outer join
-        station station2_ 
-            on sections0_.up_station_id=station2_.id 
-    where
-        sections0_.line_id=?
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_2_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_3_] : [BIGINT]) - [4]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([distance2_3_1_] : [INTEGER]) - [2]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([down_sta3_3_1_] : [BIGINT]) - [2]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([up_stati5_3_1_] : [BIGINT]) - [4]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_4_3_] : [TIMESTAMP]) - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_4_3_] : [TIMESTAMP]) - [2021-07-15T03:59:10.643208]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name4_4_3_] : [VARCHAR]) - [남부터미널역]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_0_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_0_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.733 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_1_] : [BIGINT]) - [4]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_2_] : [BIGINT]) - [4]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_4_3_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([distance2_3_1_] : [INTEGER]) - [3]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([down_sta3_3_1_] : [BIGINT]) - [4]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([up_stati5_3_1_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line_id4_3_0_] : [BIGINT]) - [3]
-2021-07-15 03:59:10.734 TRACE 60266 --- [o-auto-1-exec-2] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_3_0_] : [BIGINT]) - [4]
-GET /paths?source=3&amp;target=2 HTTP/1.1
-accept: application/json
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 200 OK
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Content-Type: application/json
-
-
-
-HTTP/1.1 200 
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    &quot;stations&quot;: [
-        {
-            &quot;id&quot;: 3,
-            &quot;name&quot;: &quot;교대역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.631474&quot;
-        },
-        {
-            &quot;id&quot;: 4,
-            &quot;name&quot;: &quot;남부터미널역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.643208&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.643208&quot;
-        },
-        {
-            &quot;id&quot;: 2,
-            &quot;name&quot;: &quot;양재역&quot;,
-            &quot;createdDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;,
-            &quot;modifiedDate&quot;: &quot;2021-07-15T03:59:10.620826&quot;
-        }
-    ],
-    &quot;distance&quot;: 5
-}
+2021-07-18 01:51:52.701  WARN 10623 --- [    Test worker] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1064, SQLState: 42000
+2021-07-18 01:51:52.701 ERROR 10623 --- [    Test worker] o.h.engine.jdbc.spi.SqlExceptionHelper   : You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FALSE' at line 1
 </pre>
 </span>
 </div>
@@ -1119,7 +258,7 @@ Connection: keep-alive
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 6.6.1</a> at 2021. 7. 15. 오전 3:59:11</p>
+<a href="http://www.gradle.org">Gradle 6.6.1</a> at 2021. 7. 18. 오전 1:51:53</p>
 </div>
 </div>
 </body>

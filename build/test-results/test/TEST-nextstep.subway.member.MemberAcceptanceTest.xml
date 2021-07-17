@@ -1,287 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="nextstep.subway.member.MemberAcceptanceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-07-14T18:59:10" hostname="kyle.local" time="0.051">
+<testsuite name="nextstep.subway.member.MemberAcceptanceTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2021-07-17T16:51:52" hostname="kyle.local" time="0.01">
   <properties/>
-  <testcase name="회원 정보를 관리한다." classname="nextstep.subway.member.MemberAcceptanceTest" time="0.051"/>
-  <system-out><![CDATA[2021-07-15 03:59:10.750  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [nextstep.subway.member.MemberAcceptanceTest], using SpringBootContextLoader
-2021-07-15 03:59:10.750  INFO 60266 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [nextstep.subway.member.MemberAcceptanceTest]: no resource found for suffixes {-context.xml, Context.groovy}.
-2021-07-15 03:59:10.750  INFO 60266 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [nextstep.subway.member.MemberAcceptanceTest]: MemberAcceptanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2021-07-15 03:59:10.755  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration nextstep.subway.SubwayApplication for test class nextstep.subway.member.MemberAcceptanceTest
-2021-07-15 03:59:10.756  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-2021-07-15 03:59:10.757  INFO 60266 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@6d380e15, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@511365b7, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@16359b37, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@5cc2608a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@71a795a1, org.springframework.test.context.transaction.TransactionalTestExecutionListener@3b5368ff, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@105a081, org.springframework.test.context.event.EventPublishingTestExecutionListener@4e0c461b, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@3cbd8e6, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@237f4cf0, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@fd2e1b6, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@23c252c9, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@7e13a2bf, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@27d27941]
+  <testcase name="회원 정보를 관리한다." classname="nextstep.subway.member.MemberAcceptanceTest" time="0.01">
+    <failure message="javax.persistence.PersistenceException: org.hibernate.exception.SQLGrammarException: could not execute statement" type="javax.persistence.PersistenceException">javax.persistence.PersistenceException: org.hibernate.exception.SQLGrammarException: could not execute statement
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:154)
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:181)
+	at org.hibernate.query.internal.AbstractProducedQuery.executeUpdate(AbstractProducedQuery.java:1621)
+	at nextstep.subway.utils.DatabaseCleanup.execute(DatabaseCleanup.java:34)
+	at nextstep.subway.utils.DatabaseCleanup$$FastClassBySpringCGLIB$$9fa78c9c.invoke(&lt;generated&gt;)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:134)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
+	at nextstep.subway.utils.DatabaseCleanup$$EnhancerBySpringCGLIB$$d5e71d4d.execute(&lt;generated&gt;)
+	at nextstep.subway.AcceptanceTest.setUp(AcceptanceTest.java:26)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:126)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptBeforeEachMethod(TimeoutExtension.java:76)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeMethodInExtensionContext(ClassBasedTestDescriptor.java:490)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$synthesizeBeforeEachMethodAdapter$19(ClassBasedTestDescriptor.java:475)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeEachMethods$2(TestMethodTestDescriptor.java:167)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeMethodsOrCallbacksUntilExceptionOccurs$5(TestMethodTestDescriptor.java:195)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeMethodsOrCallbacksUntilExceptionOccurs(TestMethodTestDescriptor.java:195)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeEachMethods(TestMethodTestDescriptor.java:164)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:127)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:65)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:248)
+	at org.junit.platform.launcher.core.DefaultLauncher.lambda$execute$5(DefaultLauncher.java:211)
+	at org.junit.platform.launcher.core.DefaultLauncher.withInterceptedStreams(DefaultLauncher.java:226)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:199)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:132)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)
+	at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
+	at com.sun.proxy.$Proxy2.stop(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.stop(TestWorker.java:133)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:182)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:164)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:414)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Caused by: org.hibernate.exception.SQLGrammarException: could not execute statement
+	at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:63)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:42)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:200)
+	at org.hibernate.engine.query.spi.NativeSQLQueryPlan.performExecuteUpdate(NativeSQLQueryPlan.java:107)
+	at org.hibernate.internal.SessionImpl.executeNativeUpdate(SessionImpl.java:1509)
+	at org.hibernate.query.internal.NativeQueryImpl.doExecuteUpdate(NativeQueryImpl.java:295)
+	at org.hibernate.query.internal.AbstractProducedQuery.executeUpdate(AbstractProducedQuery.java:1612)
+	... 105 more
+Caused by: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FALSE' at line 1
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1348)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+	... 109 more
+</failure>
+  </testcase>
+  <system-out><![CDATA[2021-07-18 01:51:52.708  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [nextstep.subway.member.MemberAcceptanceTest], using SpringBootContextLoader
+2021-07-18 01:51:52.708  INFO 10623 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [nextstep.subway.member.MemberAcceptanceTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2021-07-18 01:51:52.709  INFO 10623 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [nextstep.subway.member.MemberAcceptanceTest]: MemberAcceptanceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2021-07-18 01:51:52.712  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration nextstep.subway.SubwayApplication for test class nextstep.subway.member.MemberAcceptanceTest
+2021-07-18 01:51:52.713  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+2021-07-18 01:51:52.713  INFO 10623 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@4ee15c56, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@3d4eddf8, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@2fb224d3, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@6d740fed, org.springframework.test.context.support.DirtiesContextTestExecutionListener@29b3edf9, org.springframework.test.context.transaction.TransactionalTestExecutionListener@62d9442a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@5c73601e, org.springframework.test.context.event.EventPublishingTestExecutionListener@11b5071a, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@275fecf0, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@f0f1425, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@48bbf64a, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@710fb590, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@296fff2d, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@5eb67819]
 Hibernate: 
     
 SET
     REFERENTIAL_INTEGRITY FALSE
-Hibernate: 
-    TRUNCATE TABLE section
-Hibernate: 
-    ALTER TABLE section ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE line
-Hibernate: 
-    ALTER TABLE line ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE station
-Hibernate: 
-    ALTER TABLE station ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE member
-Hibernate: 
-    ALTER TABLE member ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    TRUNCATE TABLE favorite
-Hibernate: 
-    ALTER TABLE favorite ALTER COLUMN ID RESTART WITH 1
-Hibernate: 
-    
-SET
-    REFERENTIAL_INTEGRITY TRUE
-Request method:	POST
-Request URI:	http://localhost:52504/members
-Proxy:			<none>
-Request params:	<none>
-Query params:	<none>
-Form params:	<none>
-Path params:	<none>
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		<none>
-Multiparts:		<none>
-Body:
-{
-    "password": "password",
-    "email": "email@email.com",
-    "age": "20"
-}
-Hibernate: 
-    insert 
-    into
-        member
-        (id, created_date, modified_date, age, email, password) 
-    values
-        (null, ?, ?, ?, ?, ?)
-2021-07-15 03:59:10.771 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.772 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.772 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [INTEGER] - [20]
-2021-07-15 03:59:10.772 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [VARCHAR] - [email@email.com]
-2021-07-15 03:59:10.772 TRACE 60266 --- [o-auto-1-exec-3] o.h.type.descriptor.sql.BasicBinder      : binding parameter [5] as [VARCHAR] - [password]
-POST /members HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 60
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 201 Created
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Location: /members/1
-
-
-
-HTTP/1.1 201 
-Location: /members/1
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-Request method:	GET
-Request URI:	http://localhost:52504/members/1
-Proxy:			<none>
-Request params:	<none>
-Query params:	<none>
-Form params:	<none>
-Path params:	<none>
-Headers:		Accept=application/json
-Cookies:		<none>
-Multiparts:		<none>
-Body:			<none>
-Hibernate: 
-    select
-        member0_.id as id1_2_0_,
-        member0_.created_date as created_2_2_0_,
-        member0_.modified_date as modified3_2_0_,
-        member0_.age as age4_2_0_,
-        member0_.email as email5_2_0_,
-        member0_.password as password6_2_0_ 
-    from
-        member member0_ 
-    where
-        member0_.id=?
-2021-07-15 03:59:10.780 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.781 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.781 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.781 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([age4_2_0_] : [INTEGER]) - [20]
-2021-07-15 03:59:10.781 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([email5_2_0_] : [VARCHAR]) - [email@email.com]
-2021-07-15 03:59:10.781 TRACE 60266 --- [o-auto-1-exec-4] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([password6_2_0_] : [VARCHAR]) - [password]
-GET /members/1 HTTP/1.1
-accept: application/json
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 200 OK
-Transfer-Encoding: chunked
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Content-Type: application/json
-
-
-
-HTTP/1.1 200 
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-
-{
-    "id": 1,
-    "email": "email@email.com",
-    "age": 20
-}
-Request method:	PUT
-Request URI:	http://localhost:52504/members/1
-Proxy:			<none>
-Request params:	<none>
-Query params:	<none>
-Form params:	<none>
-Path params:	<none>
-Headers:		Accept=*/*
-				Content-Type=application/json; charset=UTF-8
-Cookies:		<none>
-Multiparts:		<none>
-Body:
-{
-    "password": "newpassword",
-    "email": "newemail@email.com",
-    "age": "22"
-}
-Hibernate: 
-    select
-        member0_.id as id1_2_0_,
-        member0_.created_date as created_2_2_0_,
-        member0_.modified_date as modified3_2_0_,
-        member0_.age as age4_2_0_,
-        member0_.email as email5_2_0_,
-        member0_.password as password6_2_0_ 
-    from
-        member member0_ 
-    where
-        member0_.id=?
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([age4_2_0_] : [INTEGER]) - [20]
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([email5_2_0_] : [VARCHAR]) - [email@email.com]
-2021-07-15 03:59:10.795 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([password6_2_0_] : [VARCHAR]) - [password]
-Hibernate: 
-    update
-        member 
-    set
-        created_date=?,
-        modified_date=?,
-        age=?,
-        email=?,
-        password=? 
-    where
-        id=?
-2021-07-15 03:59:10.796 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.796 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [TIMESTAMP] - [2021-07-15T03:59:10.796236]
-2021-07-15 03:59:10.797 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [INTEGER] - [22]
-2021-07-15 03:59:10.797 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [VARCHAR] - [newemail@email.com]
-2021-07-15 03:59:10.797 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [5] as [VARCHAR] - [newpassword]
-2021-07-15 03:59:10.797 TRACE 60266 --- [o-auto-1-exec-5] o.h.type.descriptor.sql.BasicBinder      : binding parameter [6] as [BIGINT] - [1]
-PUT /members/1 HTTP/1.1
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 66
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 200 OK
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-
-
-
-HTTP/1.1 200 
-Content-Length: 0
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
-Request method:	DELETE
-Request URI:	http://localhost:52504/members/1
-Proxy:			<none>
-Request params:	<none>
-Query params:	<none>
-Form params:	<none>
-Path params:	<none>
-Headers:		Accept=*/*
-Cookies:		<none>
-Multiparts:		<none>
-Body:			<none>
-Hibernate: 
-    select
-        member0_.id as id1_2_0_,
-        member0_.created_date as created_2_2_0_,
-        member0_.modified_date as modified3_2_0_,
-        member0_.age as age4_2_0_,
-        member0_.email as email5_2_0_,
-        member0_.password as password6_2_0_ 
-    from
-        member member0_ 
-    where
-        member0_.id=?
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.771477]
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([modified3_2_0_] : [TIMESTAMP]) - [2021-07-15T03:59:10.796236]
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([age4_2_0_] : [INTEGER]) - [22]
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([email5_2_0_] : [VARCHAR]) - [newemail@email.com]
-2021-07-15 03:59:10.805 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([password6_2_0_] : [VARCHAR]) - [newpassword]
-Hibernate: 
-    delete 
-    from
-        member 
-    where
-        id=?
-2021-07-15 03:59:10.807 TRACE 60266 --- [o-auto-1-exec-6] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [1]
-DELETE /members/1 HTTP/1.1
-accept: */*
-host: localhost:52504
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/11.0.9.1)
-accept-encoding: gzip,deflate
-
-
-
-HTTP/1.1 204 No Content
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-
-
-
-HTTP/1.1 204 
-Date: Wed, 14 Jul 2021 18:59:09 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
+2021-07-18 01:51:52.721  WARN 10623 --- [    Test worker] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1064, SQLState: 42000
+2021-07-18 01:51:52.721 ERROR 10623 --- [    Test worker] o.h.engine.jdbc.spi.SqlExceptionHelper   : You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FALSE' at line 1
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
