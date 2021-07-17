@@ -176,6 +176,58 @@ ERRO[0128] some thresholds have failed
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```sql
+SELECT 
+    hobby,
+    COUNT(id) / (SELECT COUNT(id) FROM subway.programmer) * 100 AS percent
+FROM subway.programmer
+GROUP BY hobby;
+```
+ - programmer id, hobby pk, index 추가
+
+```sql
+SELECT covid.id, hospital.name
+FROM subway.covid covid
+JOIN subway.hospital hospital ON covid.hospital_id = hospital.id;
+```
+ - covid, hospital pk 추가, covid.hospital_id index 추가
+
+```sql
+SELECT programmer.id, hospital.name
+FROM subway.covid covid
+JOIN (SELECT id
+      FROM subway.programmer
+      WHERE hobby = 'Yes' AND (student like 'Yes%' OR years_coding like '0-2%')) programmer
+      ON programmer.id = covid.programmer_id
+JOIN subway.hospital hospital ON covid.hospital_id = hospital.id
+ORDER BY programmer.id;
+```
+ - covid.programmer_id index 추가
+
+```sql
+SELECT
+    stay, COUNT(member.id)
+FROM subway.covid
+JOIN subway.hospital ON covid.hospital_id = hospital.id
+JOIN subway.member ON covid.member_id = member.id
+JOIN subway.programmer ON programmer.member_id = member.id
+WHERE
+    hospital.name = '서울대병원'
+        AND age BETWEEN 20 AND 29
+        AND country = 'India'
+GROUP BY stay;
+```
+ - covid.hospital_id index 추가
+
+```sql
+SELECT exercise, COUNT(member.id)
+FROM subway.programmer AS user
+JOIN subway.covid ON user.id = covid.programmer_id
+JOIN subway.hospital ON covid.hospital_id = hospital.id
+JOIN subway.member ON user.member_id = member.id
+WHERE hospital.name = '서울대병원' AND member.age BETWEEN 30 AND 39
+GROUP BY exercise;
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
- - GET - /favorites
+ - https://sanola2.kro.kr/favorites
