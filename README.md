@@ -93,6 +93,11 @@ CREATE INDEX idx_programmer_h ON subway.programmer (hobby);
 i) 개선 후 속도 0.031 sec
 
 ```
+
+### 개선 후 실행 계획
+![1이슈_개선.png](explain/1이슈_개선.png)
+
+
  - 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```
 SELECT covid.id , hospital.name
@@ -115,6 +120,10 @@ CREATE INDEX idx_covid_ph ON subway.covid(programmer_id, hospital_id);
 i) 개선 후 속도 : 0.016 sec
 
 ```
+
+### 개선 후 실행 계획
+![2이슈_개선.png](explain/2이슈_개선.png)
+
  - 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 ```
@@ -232,6 +241,7 @@ i) 속도 : 0.031 sec
 ii) 문제 : 이슈 없음 
 
 ```
+### 개선 후 실행 계획
 
 ![5이슈_개선.png](explain/5이슈_개선.png)
 
