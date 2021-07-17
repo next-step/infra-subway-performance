@@ -310,5 +310,54 @@ default ✗ [======================================] 000/300 VUs  1m5s
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+##### 1. Coding as a Hobby와 같은 결과 반환하기
+
+##### 기존 600~700ms -> 개선 후 50~70ms
+
+##### 1) id를 Primary Key로 추가(400~500ms로 개선)
+##### 2) Hobby 칼럼에 인덱스 설정 (Primary key 없이 복합 인덱스(id, hobby) 설정만으로 150ms 근처 why?)
+
+##### 2. 프로그래머별로 해당하는 병원 이름 반환
+
+##### 기존 20ms -> 개선 후 20ms
+
+##### 1) hospital 테이블의 id를 Primary Key로 설정
+
+##### 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 programmer.id 기준으로 정렬
+
+##### 기존 2500ms -> 개선 후 16ms
+
+##### 1) programmer의 id를 Primary Key로 설정
+##### 2) programmer의 hobby 칼럼에 인덱스 설정
+##### 3) hospital 테이블의 id를 Primary Key로 설정
+##### 4) covid 테이블의 id를 Primary Key로 설정
+
+##### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+
+##### 기존 5000ms -> 개선 후 47ms(Wow)
+
+##### 1) programmer의 id를 Primary Key로 설정
+##### 2) programmer의 country 칼럼에 인덱스 설정
+##### 3) programmer의 hobby 칼럼에 인덱스 설정
+##### 4) member의 age 칼럼에 인덱스 설정
+##### 5) hospital 테이블의 id를 Primary Key로 설정
+##### 6) covid 테이블의 id를 Primary Key로 설정
+##### 7) covid 테이블의 hospital_id를 인덱스 설정
+##### 8) covid 테이블의 stay를 인덱스 설정
+
+##### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+
+##### 기존 17000ms -> 개선 후 47ms
+
+##### 1) programmer의 id를 Primary Key로 설정
+##### 2) programmer의 country 칼럼에 인덱스 설정
+##### 3) programmer의 hobby 칼럼에 인덱스 설정
+##### 4) member의 age 칼럼에 인덱스 설정
+##### 5) hospital 테이블의 id를 Primary Key로 설정
+##### 6) covid 테이블의 id를 Primary Key로 설정
+##### 7) covid 테이블의 hospital_id를 인덱스 설정
+##### 8) covid 테이블의 programmer_id를 인덱스 설정
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+##### https://insup.kro.kr/favorites
 
