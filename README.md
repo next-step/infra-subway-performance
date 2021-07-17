@@ -115,7 +115,7 @@ user.YearsCoding)
     on a.hospital_id = c.id
     order by b.id;
     
-    ![image](https://user-images.githubusercontent.com/40865499/126045013-288d7523-7aad-4293-9246-13df51920732.png)
+ ![image](https://user-images.githubusercontent.com/40865499/126045013-288d7523-7aad-4293-9246-13df51920732.png)
 
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
