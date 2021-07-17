@@ -38,6 +38,9 @@ dependencies {
 
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 	implementation ("mysql:mysql-connector-java")
+
+	// flyway
+	runtimeOnly 'org.flywaydb:flyway-core:5.2.0'
 }
 
 test {
