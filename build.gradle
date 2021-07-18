@@ -30,7 +30,6 @@ dependencies {
 
 	//redis
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.0'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
