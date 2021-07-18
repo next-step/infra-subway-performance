@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -12,9 +13,10 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +82,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("즐겨찾기를 페이징해서 조회해본다.")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4})
+    void sortManageMember(int size) {
+        // when
+        즐겨찾기_생성됨(즐겨찾기_생성을_요청(사용자, 강남역, 정자역));
+        즐겨찾기_생성됨(즐겨찾기_생성을_요청(사용자, 강남역, 양재역));
+        즐겨찾기_생성됨(즐겨찾기_생성을_요청(사용자, 양재역, 정자역));
+        즐겨찾기_생성됨(즐겨찾기_생성을_요청(사용자, 강남역, 광교역));
+        즐겨찾기_생성됨(즐겨찾기_생성을_요청(사용자, 양재역, 광교역));
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, size);
+
+        // then
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(findResponse.jsonPath().getList(".", FavoriteResponse.class).size()).isEqualTo(size);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source.getId() + "");
@@ -100,6 +121,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/favorites").
+                then().
+                log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_페이징_요청(TokenResponse tokenResponse, int size) {
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                queryParams("size", size).queryParams("page", 0).
                 when().
                 get("/favorites").
                 then().
