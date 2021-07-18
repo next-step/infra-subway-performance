@@ -94,7 +94,7 @@ npm run dev
     join subway.hospital
     on hospital.id = c.hospital_id;
 
-![image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
+![image](https://user-images.githubusercontent.com/40865499/126058309-fd0cd7bb-8b23-4900-90e2-6527138a5214.png)
 
 
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
