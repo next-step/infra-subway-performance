@@ -90,11 +90,13 @@ npm run dev
 
       alter table covid change column id id bigint(20) not null,add primary key (id);
       create index idx_hospital on covid (hospital_id);
-      create index idx_name on hospital (name);
+    create index idx_name on hospital (name);
 	
-      select covid.id, hospital.name from covid join hospital on covid.hospital_id = hospital_id;
+    select c.id, hospital.name from subway.covid as c
+    join subway.hospital
+    on hospital.id = c.hospital_id;
 
-![image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
+![image](https://user-images.githubusercontent.com/40865499/126058309-fd0cd7bb-8b23-4900-90e2-6527138a5214.png)
 
 
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
@@ -105,22 +107,26 @@ user.YearsCoding)
     create index idx_programmer on covid (programmer_id);
     create index idx_name on hospital (name);
     
-    select b.id, c.name
-    from covid a   
-    join (
+    select a.id, b.name
+    from (
     select id
     from programmer where hobby = 'yes' and (student != 'no' or years_coding <= 2)
-    ) b
-    on b.id = a.programmer_id
-    join hospital c
-    on a.hospital_id = c.id
-    order by b.id;
+    ) a
+    join (
+    SELECT covid.programmer_id, name FROM subway.covid
+	JOIN (SELECT hospital.id, name FROM subway.hospital) AS H ON H.id = covid.hospital_id   
+    ) as b on b.programmer_id = a.id;
     
- ![image](https://user-images.githubusercontent.com/40865499/126045013-288d7523-7aad-4293-9246-13df51920732.png)
+ ![image](https://user-images.githubusercontent.com/40865499/126058071-632ea2fb-16f8-44d7-ab78-b16b1306f6f5.png)
+   
+ 
+    
+
 
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
+    alter table hospital add index idx_name (name);	
     create index idx_age on member (age);
     create index idx_country on programmer (country);
     create index idx_stay on covid (stay);
@@ -136,8 +142,9 @@ user.YearsCoding)
     join (select id from hospital where name = '서울대병원') h on c.hospital_id = h.id) d
     on m.id = d.member_id
     group by d.stay;
-    
-![image](https://user-images.githubusercontent.com/40865499/126045045-6a1e391e-b64c-40a9-88b6-8625ba4fd736.png)
+
+![image](https://user-images.githubusercontent.com/40865499/126058330-2e89e254-bcde-4dc1-af02-8f146ef4e21d.png)
+
 
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -150,11 +157,9 @@ user.YearsCoding)
     (select id, name from hospital where name = '서울대병원') h on h.id = c.hospital_id
     join
     (select id from member where age between 30 and 39) m on m.id = p.member_id
-    group by exercise order by count ;
+    group by exercise order by null ;
 
-![image](https://user-images.githubusercontent.com/40865499/126045065-5a75404f-9f13-4c6a-b481-91d3383a9fdf.png)
-
-
+![image](https://user-images.githubusercontent.com/40865499/126058339-7c2e9c67-c7f9-43b7-a125-326d25c72812.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
