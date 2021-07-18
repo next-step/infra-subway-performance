@@ -5,6 +5,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,8 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageRequest);
         return ResponseEntity.ok().body(favorites);
     }
 
