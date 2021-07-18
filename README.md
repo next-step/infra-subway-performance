@@ -88,7 +88,11 @@ npm run dev
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
-    select covid.id, hospital.name from subway.covid join subway.hospital on covid.hospital_id = hospital_id;
+    create index idx_name on hospital (name);
+	
+    select c.id, hospital.name from subway.covid as c
+    join subway.hospital
+    on hospital.id = c.hospital_id;
 
 ![image](https://user-images.githubusercontent.com/40865499/126044748-6ce85f82-19b0-4bde-85b6-c12a1f78dcad.png)
 
