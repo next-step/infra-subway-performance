@@ -141,7 +141,7 @@ user.YearsCoding)
     on m.id = d.member_id
     group by d.stay;
 
-![image](https://user-images.githubusercontent.com/40865499/126058093-ae88caa2-9c65-42c0-b43b-d3126c28214a.png)
+![image](https://user-images.githubusercontent.com/40865499/126058330-2e89e254-bcde-4dc1-af02-8f146ef4e21d.png)
 
 
 
@@ -157,7 +157,7 @@ user.YearsCoding)
     (select id from member where age between 30 and 39) m on m.id = p.member_id
     group by exercise order by null ;
 
-![image](https://user-images.githubusercontent.com/40865499/126057581-873cda2f-fdf5-4a22-a9f2-faf1287750be.png)
+![image](https://user-images.githubusercontent.com/40865499/126058339-7c2e9c67-c7f9-43b7-a125-326d25c72812.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
