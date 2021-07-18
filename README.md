@@ -132,4 +132,13 @@ npm run dev
    ![1-5](./doc_img/1-5.png)
    
 #### 페이징 쿼리를 적용한 API endpoint를 알려주세요
+##### 즐겨찾기 페이지에 페이징 쿼리를 적용
+다음 페이지에서 확인 가능하십니다.
+https://dohchoi91.kro.kr/favorites
+
+```
+접속 계정
+email : test@test.com   
+password : 1234 
+```
 
