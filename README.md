@@ -101,18 +101,21 @@ user.YearsCoding)
     create index idx_programmer on covid (programmer_id);
     create index idx_name on hospital (name);
     
-    select b.id, c.name
-    from covid a   
-    join (
+    select a.id, b.name
+    from (
     select id
     from programmer where hobby = 'yes' and (student != 'no' or years_coding <= 2)
-    ) b
-    on b.id = a.programmer_id
-    join hospital c
-    on a.hospital_id = c.id
-    order by b.id;
+    ) a
+    join (
+    SELECT covid.programmer_id, name FROM subway.covid
+	JOIN (SELECT hospital.id, name FROM subway.hospital) AS H ON H.id = covid.hospital_id   
+    ) as b on b.programmer_id = a.id;
     
- ![image](https://user-images.githubusercontent.com/40865499/126057447-6a0b9965-f6f2-4ceb-8e02-e3d8c55ef80a.png)
+ ![image](https://user-images.githubusercontent.com/40865499/126058071-632ea2fb-16f8-44d7-ab78-b16b1306f6f5.png)
+   
+ 
+    
+
 
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
@@ -133,8 +136,8 @@ user.YearsCoding)
     join (select id from hospital where name = '서울대병원') h on c.hospital_id = h.id) d
     on m.id = d.member_id
     group by d.stay;
-    
-![image](https://user-images.githubusercontent.com/40865499/126057766-02a1ef5e-fc2d-429e-b261-9f3ca45d7c01.png)
+
+![image](https://user-images.githubusercontent.com/40865499/126058093-ae88caa2-9c65-42c0-b43b-d3126c28214a.png)
 
 
 
