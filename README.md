@@ -43,8 +43,19 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   Smoke.md, Load.md, Stress.md 에 작성
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+   - 인터넷 구간 성능 개선을 위한 작업을 했습니다.
+    1. 프론트쪽 정적 파일 경량화 작업
+    2. Rerverse Proxy 개선
+     - http 블록 수준에서 gzip 압축 활성화
+     - proxy 캐시 설정
+     - http1.1 -> http2 로 변경
+    3. was 성능 개선하기
+     -  redis cache 설정
+     -  ~~비동기 처리~~
+     -  ~~적절한 thread pool 설정~~
+    
 
 ---
 
