@@ -19,22 +19,30 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
@@ -42,25 +50,123 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
    Smoke.md, Load.md, Stress.md 에 작성
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-   - 인터넷 구간 성능 개선을 위한 작업을 했습니다.
+    - 인터넷 구간 성능 개선을 위한 작업을 했습니다.
     1. 프론트쪽 정적 파일 경량화 작업
     2. Rerverse Proxy 개선
-     - http 블록 수준에서 gzip 압축 활성화
-     - proxy 캐시 설정
-     - http1.1 -> http2 로 변경
+    - http 블록 수준에서 gzip 압축 활성화
+    - proxy 캐시 설정
+    - http1.1 -> http2 로 변경
     3. was 성능 개선하기
-     -  redis cache 설정
-     -  ~~비동기 처리~~
-     -  ~~적절한 thread pool 설정~~
-    
+    -  redis cache 설정
+    -  ~~비동기 처리~~
+    -  ~~적절한 thread pool 설정~~
 
 ---
 
 ### 2단계 - 조회 성능 개선하기
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+* 요구사항 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+      use subway;
+
+  Coding as a Hobby 와 같은 결과를 반환하세요.
+
+      create index idx_hobby on programmer (hobby);
+      alter table programmer change column id id bigint(20) not null,add primary key (id);
+      select hobby, (count(hobby) / (select count(id) from subway.programmer)) * 100 as percent
+      from subway.programmer group by hobby order by hobby desc;
+      
+![image](https://user-images.githubusercontent.com/40865499/126044730-451a89e4-a28c-413f-8998-790493e08362.png)
+
+
+
+프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+      alter table covid change column id id bigint(20) not null,add primary key (id);
+      create index idx_hospital on covid (hospital_id);
+    create index idx_name on hospital (name);
+	
+    select c.id, hospital.name from subway.covid as c
+    join subway.hospital
+    on hospital.id = c.hospital_id;
+
+![image](https://user-images.githubusercontent.com/40865499/126058309-fd0cd7bb-8b23-4900-90e2-6527138a5214.png)
+
+
+프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
+user.YearsCoding)
+
+  
+    create index idx_hospital on covid (hospital_id);  
+    create index idx_programmer on covid (programmer_id);
+    create index idx_name on hospital (name);
+    
+    select a.id, b.name
+    from (
+    select id
+    from programmer where hobby = 'yes' and (student != 'no' or years_coding <= 2)
+    ) a
+    join (
+    SELECT covid.programmer_id, name FROM subway.covid
+	JOIN (SELECT hospital.id, name FROM subway.hospital) AS H ON H.id = covid.hospital_id   
+    ) as b on b.programmer_id = a.id;
+    
+ ![image](https://user-images.githubusercontent.com/40865499/126058071-632ea2fb-16f8-44d7-ab78-b16b1306f6f5.png)
+   
+ 
+    
+
+
+
+서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+    alter table hospital add index idx_name (name);	
+    create index idx_age on member (age);
+    create index idx_country on programmer (country);
+    create index idx_stay on covid (stay);
+
+    select d.stay, count(p.member_id)
+    from (
+    select id from member where age between 20 and 29) m
+    join (
+    select member_id from programmer where country ='India') p
+    on m.id = p.member_id
+    join (
+    select c.member_id, c.hospital_id, c.stay from covid c
+    join (select id from hospital where name = '서울대병원') h on c.hospital_id = h.id) d
+    on m.id = d.member_id
+    group by d.stay;
+
+![image](https://user-images.githubusercontent.com/40865499/126058330-2e89e254-bcde-4dc1-af02-8f146ef4e21d.png)
+
+
+
+서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+    select p.exercise, count(p.member_id) as count
+	from programmer p 
+    join 
+    (select hospital_id, programmer_id from covid) c on p.id = c.programmer_id
+    join
+    (select id, name from hospital where name = '서울대병원') h on h.id = c.hospital_id
+    join
+    (select id from member where age between 30 and 39) m on m.id = p.member_id
+    group by exercise order by null ;
+
+![image](https://user-images.githubusercontent.com/40865499/126058339-7c2e9c67-c7f9-43b7-a125-326d25c72812.png)
+
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+
+    /favorites/pages
+
+
+
 
