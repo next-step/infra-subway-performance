@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -25,18 +24,21 @@ public class MemberService {
     }
 
     @Cacheable(key = "#id", value = "member")
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
     @CachePut(key = "#id", value = "member")
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
     @CacheEvict(key = "#id", value = "member")
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
