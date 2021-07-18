@@ -112,11 +112,12 @@ user.YearsCoding)
     on a.hospital_id = c.id
     order by b.id;
     
- ![image](https://user-images.githubusercontent.com/40865499/126045013-288d7523-7aad-4293-9246-13df51920732.png)
+ ![image](https://user-images.githubusercontent.com/40865499/126057447-6a0b9965-f6f2-4ceb-8e02-e3d8c55ef80a.png)
 
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
+    alter table hospital add index idx_name (name);	
     create index idx_age on member (age);
     create index idx_country on programmer (country);
     create index idx_stay on covid (stay);
@@ -133,7 +134,8 @@ user.YearsCoding)
     on m.id = d.member_id
     group by d.stay;
     
-![image](https://user-images.githubusercontent.com/40865499/126045045-6a1e391e-b64c-40a9-88b6-8625ba4fd736.png)
+![image](https://user-images.githubusercontent.com/40865499/126057766-02a1ef5e-fc2d-429e-b261-9f3ca45d7c01.png)
+
 
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -146,11 +148,9 @@ user.YearsCoding)
     (select id, name from hospital where name = '서울대병원') h on h.id = c.hospital_id
     join
     (select id from member where age between 30 and 39) m on m.id = p.member_id
-    group by exercise order by count ;
+    group by exercise order by null ;
 
-![image](https://user-images.githubusercontent.com/40865499/126045065-5a75404f-9f13-4c6a-b481-91d3383a9fdf.png)
-
-
+![image](https://user-images.githubusercontent.com/40865499/126057581-873cda2f-fdf5-4a22-a9f2-faf1287750be.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
