@@ -70,7 +70,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavoritesWithPaging(LoginMember loginMember, Pageable pageable) {
-        List<Favorite> favorites = favoriteRepository.findByMemberIdOrderById(loginMember.getId(), pageable);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
