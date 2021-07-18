@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="study.jgraph.JgraphTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-07-14T18:59:10" hostname="kyle.local" time="0.022">
-  <properties/>
-  <testcase name="getKShortestPaths()" classname="study.jgraph.JgraphTest" time="0.017"/>
-  <testcase name="getDijkstraShortestPath()" classname="study.jgraph.JgraphTest" time="0.004"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

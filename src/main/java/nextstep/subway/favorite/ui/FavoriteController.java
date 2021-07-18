@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,12 @@ public class FavoriteController {
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+        return ResponseEntity.ok().body(favorites);
+    }
+
+    @GetMapping("/favorites/pages")
+    public ResponseEntity<List<FavoriteResponse>> getFavoritesWithPaging(@AuthenticationPrincipal LoginMember loginMember, @PageableDefault(value = 5) Pageable pageable) {
+        List<FavoriteResponse> favorites = favoriteService.findFavoritesWithPaging(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
 
