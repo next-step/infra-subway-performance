@@ -24,11 +24,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member persistMember = findMemberById(id);
         return MemberResponse.of(persistMember);
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "member", key = "#id")
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(RuntimeException::new);

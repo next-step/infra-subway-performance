@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -16,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_등록되어_있음;
@@ -80,6 +83,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("로그인한 사용자는 최근에 추가한 즐겨찾기만 관심이 있기에 한번에 5개의 즐겨찾기만 보고 싶다.")
+    @Test
+    void findFavoritesWithPage() {
+        // given
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 광교역);
+        즐겨찾기_생성을_요청(사용자, 정자역, 광교역);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        즐겨찾기_목록_조회됨(findResponse);
+        즐겨찾기_목록_페이징_처리됨(findResponse);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source.getId() + "");
@@ -129,5 +150,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_목록_페이징_처리됨(ExtractableResponse<Response> response) {
+        List<FavoriteResponse> favorites = response.jsonPath().getList(".", FavoriteResponse.class);
+        List<Long> favoriteIds = favorites.stream().map(FavoriteResponse::getId).collect(Collectors.toList());
+
+        assertThat(favorites.size()).isEqualTo(5);
+        assertThat(favoriteIds).contains(2L, 3L, 4L, 5L, 6L);
     }
 }
