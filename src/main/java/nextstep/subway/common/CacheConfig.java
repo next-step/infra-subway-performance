@@ -18,7 +18,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class CacheConfig extends CachingConfigurerSupport {
 
     @Autowired
-    RedisConnectionFactory connectionFactory;
+    private final RedisConnectionFactory connectionFactory;
+
+    public CacheConfig(RedisConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     @Bean
     public CacheManager redisCacheManager() {
