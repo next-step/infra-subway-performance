@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import {check} from 'k6';
+import {check, sleep} from 'k6';
 import {BASE_URL, USERNAME, PASSWORD} from '../config/TestInfo.js';
 
 export let options = {
@@ -24,6 +24,8 @@ export default function ()  {
 
   let 경로탐색_요청_결과 = 경로탐색_요청(150, 250)
   경로탐색_결과_확인(경로탐색_요청_결과);
+
+  sleep(1);
 };
 
 export function 메인페이지_요청() {

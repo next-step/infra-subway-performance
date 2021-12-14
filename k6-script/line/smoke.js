@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import {check} from 'k6';
+import {check, sleep} from 'k6';
 import {BASE_URL} from '../config/TestInfo.js';
 
 export let options = {
@@ -17,6 +17,8 @@ export default function ()  {
 
   let 지하철역관리_조회요청_결과 = 지하철역관리_조회요청()
   지하철역관리_조회요청_결과_확인(지하철역관리_조회요청_결과);
+
+  sleep(1);
 };
 
 export function 메인페이지_요청() {
