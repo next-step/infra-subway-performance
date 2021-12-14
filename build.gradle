@@ -36,6 +36,12 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 	implementation 'mysql:mysql-connector-java'
+
+    //embedded-redis
+    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+    
+    // cache
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 test {
