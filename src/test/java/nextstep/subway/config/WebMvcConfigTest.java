@@ -3,13 +3,12 @@ package nextstep.subway.config;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebMvcConfigTest {
 
-    String STATIC_PATH_BEFORE_CONFIG = "/js/main.js";
+    String STATIC_PATH_BEFORE_CONFIG = "/resources/js/main.js";
 
     @Autowired
     private WebTestClient client;
