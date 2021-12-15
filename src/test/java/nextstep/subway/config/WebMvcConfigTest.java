@@ -8,6 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.concurrent.TimeUnit;
+
+import static nextstep.subway.config.WebMvcConfig.CACHE_MAX_AGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,7 +27,7 @@ class WebMvcConfigTest {
                 .uri(STATIC_PATH)
                 .exchange()
                 .expectStatus().isOk()
-                .expectHeader().cacheControl(CacheControl.noCache().cachePrivate())
+                .expectHeader().cacheControl(CacheControl.maxAge(CACHE_MAX_AGE, TimeUnit.SECONDS))
                 .expectBody(String.class)
                 .returnResult();
 
