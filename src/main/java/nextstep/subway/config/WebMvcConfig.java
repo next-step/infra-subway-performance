@@ -1,18 +1,31 @@
 package nextstep.subway.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.Filter;
+
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    public static int CACHE_MAX_AGE = 60 * 60 * 24 * 365;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**")
                 .addResourceLocations("classpath:/static/")
-                .setCacheControl(CacheControl.noCache().cachePrivate());}
+                .setCacheControl(CacheControl.noCache().cachePrivate());
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean() {
+        final FilterRegistrationBean registration = new FilterRegistrationBean();
+        final Filter etgHeaderFilter = new ShallowEtagHeaderFilter();
+        registration.setFilter(etgHeaderFilter);
+        registration.addUrlPatterns("/resources/*");
+        return registration;
+    }
 }
