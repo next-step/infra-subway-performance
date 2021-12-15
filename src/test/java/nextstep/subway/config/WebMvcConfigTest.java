@@ -3,6 +3,7 @@ package nextstep.subway.config;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -19,6 +20,7 @@ class WebMvcConfigTest {
                 .uri(STATIC_PATH_BEFORE_CONFIG)
                 .exchange()
                 .expectStatus().isOk()
+                .expectHeader().cacheControl(CacheControl.noCache().cachePrivate())
                 .expectBody(String.class)
                 .returnResult();
     }
