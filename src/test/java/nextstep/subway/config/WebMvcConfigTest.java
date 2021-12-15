@@ -19,12 +19,9 @@ class WebMvcConfigTest {
     @Autowired
     private WebTestClient client;
 
-    @Autowired
-    private ResourceVersion version;
-
     @Test
     void 정적_리소스를_요청한다() {
-        final String uri = "/resources/" + version.getVersion() + "/js/main.js";
+        final String uri = "/js/main.js";
         final EntityExchangeResult<String> response = client.get()
                 .uri(uri)
                 .exchange()

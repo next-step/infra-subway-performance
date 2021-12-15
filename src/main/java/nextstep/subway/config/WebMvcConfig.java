@@ -14,15 +14,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     public static final int CACHE_MAX_AGE = 60 * 60 * 24 * 365;
 
-    private final ResourceVersion version;
-
-    public WebMvcConfig(ResourceVersion version) {
-        this.version = version;
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/" + version.getVersion() + "/**")
+        registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(CACHE_MAX_AGE);
     }
@@ -32,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         final FilterRegistrationBean registration = new FilterRegistrationBean();
         final Filter etgHeaderFilter = new ShallowEtagHeaderFilter();
         registration.setFilter(etgHeaderFilter);
-        registration.addUrlPatterns("/resources/*");
+        registration.addUrlPatterns("/*");
         return registration;
     }
 }
