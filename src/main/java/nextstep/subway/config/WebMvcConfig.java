@@ -14,9 +14,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     public static final int CACHE_MAX_AGE = 60 * 60 * 24 * 365;
 
+    private final ResourceVersion version;
+
+    public WebMvcConfig(ResourceVersion version) {
+        this.version = version;
+    }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**")
+        registry.addResourceHandler("/resources/" + version.getVersion() + "/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(CACHE_MAX_AGE);
     }

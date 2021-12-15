@@ -16,25 +16,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebMvcConfigTest {
 
-    String STATIC_PATH = "/resources/js/main.js";
-
     @Autowired
     private WebTestClient client;
 
+    @Autowired
+    private ResourceVersion version;
+
     @Test
     void 정적_리소스를_요청한다() {
-        EntityExchangeResult<String> response = client.get()
-                .uri(STATIC_PATH)
+        final String uri = "/resources/" + version.getVersion() + "/js/main.js";
+        final EntityExchangeResult<String> response = client.get()
+                .uri(uri)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().cacheControl(CacheControl.maxAge(CACHE_MAX_AGE, TimeUnit.SECONDS))
                 .expectBody(String.class)
                 .returnResult();
 
-        String eTag = response.getResponseHeaders().getETag();
+        final String eTag = response.getResponseHeaders().getETag();
         assertThat(eTag).isNotNull();
 
-        client.get().uri(STATIC_PATH)
+        client.get().uri(uri)
                 .header(HttpHeaders.IF_NONE_MATCH, eTag)
                 .exchange()
                 .expectStatus().isNotModified()
