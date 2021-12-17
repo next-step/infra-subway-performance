@@ -47,5 +47,104 @@
   ![afterExplain](./tuning/after/after_explain.png)
 
 ##B. 인덱스 설계
+[ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+B-1) [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
+    
+마지막 소수점 첫째자리는 일부러 표시 하지 않았습니다. 반올림처리 되면 어차피 x.0으로 되버리기 때문입니다.
+
+```sql
+ SELECT hobby, ROUND((Count(1) / (SELECT COUNT(1) FROM programmer) * 100),0) as 'percent'
+ FROM programmer
+ GROUP BY hobby;
+
+```
+
+![codingResult2](./index/coding_result.png)
+
+B-2) [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+
+SELECT c.id,h.name
+FROM  covid c
+          JOIN hospital h
+               ON c.hospital_id = h.id
+    LIMIT 0, 10;
+
+```
+
+Index 추가 및 페이징 처리 10개씩 조회
+```sql
+CREATE INDEX hospital_id_name ON hospital(id);
+CREATE INDEX covid_id ON covid(id);
+```
+
+
+B-3) [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+
+(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+1) 페이징 추가 및 programmer memberId index 추가 
+2) covid, programmer, hospital PK설정
+
+```sql
+SELECT c.id, h.name, p.hobby ,p.dev_type ,p.years_coding 
+FROM programmer p 
+    JOIN covid c 
+    ON p.member_id  = c.programmer_id 
+    AND p.hobby ='YES'
+    AND p.years_coding ='0-2 years'    
+    JOIN hospital h 
+    ON h.id  = c.hospital_id 
+ORDER BY p.id
+LIMIT 0, 10
+;
+```
+
+![codingResult3](./index/B_3_result.png)
+
+B-4) [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+1) member age 컬럼, programmer country 추가
+
+
+```sql
+SELECT c.stay ,COUNT(1)
+FROM member m
+JOIN programmer p
+ON p.member_id = m.id 
+AND p.country = 'India'
+AND m.age BETWEEN 20 AND 29
+JOIN covid c 
+ON c.member_id = m.id
+JOIN hospital h 
+ON c.hospital_id  = h.id 
+AND h.name ='서울대병원'
+GROUP BY c.stay;
+```
+* result
+![codingResult5](./index/B_4_result.png)
+
+
+B-5 [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```sql
+SELECT p.exercise , COUNT(1) as execiseCount
+FROM member m
+JOIN programmer p
+ON p.member_id = m.id 
+AND m.age BETWEEN 30 AND 39
+JOIN covid c 
+ON c.member_id = m.id
+JOIN hospital h 
+ON c.hospital_id  = h.id 
+AND h.name ='서울대병원'
+GROUP BY p.exercise ;
+```
+
+* result
+  ![B_5_Result](./index/B_5_result.png)
+
 ---
 ####2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
