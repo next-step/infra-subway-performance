@@ -29,10 +29,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
 
     private LineResponse 신분당선;
+    private LineResponse 구호선;
+    private LineResponse 일호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
+    private StationResponse 당산역;
+    private StationResponse 선유도역;
+    private StationResponse 영등포역;
+    private StationResponse 시청역;
 
     private TokenResponse 사용자;
 
@@ -44,6 +50,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        당산역 = StationAcceptanceTest.지하철역_등록되어_있음("당산역").as(StationResponse.class);
+        선유도역 = StationAcceptanceTest.지하철역_등록되어_있음("선유도역").as(StationResponse.class);
+        영등포역 = StationAcceptanceTest.지하철역_등록되어_있음("영등포역").as(StationResponse.class);
+        시청역 = StationAcceptanceTest.지하철역_등록되어_있음("시청역").as(StationResponse.class);
 
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
@@ -53,6 +63,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("downStationId", 광교역.getId() + "");
         lineCreateParams.put("distance", 10 + "");
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
+
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", "구호선");
+        lineCreateParams.put("color", "bg-red-601");
+        lineCreateParams.put("upStationId", 당산역.getId() + "");
+        lineCreateParams.put("downStationId", 선유도역.getId() + "");
+        lineCreateParams.put("distance", 20 + "");
+        구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
+
+        lineCreateParams = new HashMap<>();
+        lineCreateParams.put("name", "일호선");
+        lineCreateParams.put("color", "bg-red-602");
+        lineCreateParams.put("upStationId", 시청역.getId() + "");
+        lineCreateParams.put("downStationId", 영등포역.getId() + "");
+        lineCreateParams.put("distance", 30 + "");
+        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 3);
@@ -68,6 +94,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
         // then
         즐겨찾기_생성됨(createResponse);
+
+        즐겨찾기_생성을_요청(사용자, 당산역, 선유도역);
+        즐겨찾기_생성을_요청(사용자, 시청역, 영등포역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
 
         // when
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);

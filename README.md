@@ -148,3 +148,109 @@ GROUP BY p.exercise ;
 
 ---
 ####2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+https://nhs0912-subway-infra.kro.kr/favorites
+
+```json
+
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 17 Dec 2021 12:39:19 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "content": [
+        {
+            "id": 6,
+            "source": {
+                "id": 1,
+                "name": "강남역",
+                "createdDate": "2021-12-17T21:39:18.548733",
+                "modifiedDate": "2021-12-17T21:39:18.548733"
+            },
+            "target": {
+                "id": 4,
+                "name": "광교역",
+                "createdDate": "2021-12-17T21:39:18.738149",
+                "modifiedDate": "2021-12-17T21:39:18.738149"
+            }
+        },
+        {
+            "id": 5,
+            "source": {
+                "id": 1,
+                "name": "강남역",
+                "createdDate": "2021-12-17T21:39:18.548733",
+                "modifiedDate": "2021-12-17T21:39:18.548733"
+            },
+            "target": {
+                "id": 2,
+                "name": "양재역",
+                "createdDate": "2021-12-17T21:39:18.691745",
+                "modifiedDate": "2021-12-17T21:39:18.691745"
+            }
+        },
+        {
+            "id": 4,
+            "source": {
+                "id": 2,
+                "name": "양재역",
+                "createdDate": "2021-12-17T21:39:18.691745",
+                "modifiedDate": "2021-12-17T21:39:18.691745"
+            },
+            "target": {
+                "id": 3,
+                "name": "정자역",
+                "createdDate": "2021-12-17T21:39:18.717666",
+                "modifiedDate": "2021-12-17T21:39:18.717666"
+            }
+        },
+        {
+            "id": 3,
+            "source": {
+                "id": 8,
+                "name": "시청역",
+                "createdDate": "2021-12-17T21:39:18.813837",
+                "modifiedDate": "2021-12-17T21:39:18.813837"
+            },
+            "target": {
+                "id": 7,
+                "name": "영등포역",
+                "createdDate": "2021-12-17T21:39:18.793482",
+                "modifiedDate": "2021-12-17T21:39:18.793482"
+            }
+        },
+        {
+            "id": 2,
+            "source": {
+                "id": 5,
+                "name": "당산역",
+                "createdDate": "2021-12-17T21:39:18.755904",
+                "modifiedDate": "2021-12-17T21:39:18.755904"
+            },
+            "target": {
+                "id": 6,
+                "name": "선유도역",
+                "createdDate": "2021-12-17T21:39:18.77439",
+                "modifiedDate": "2021-12-17T21:39:18.77439"
+            }
+        }
+    ],
+    "pageable": "INSTANCE",
+    "totalPages": 1,
+    "totalElements": 5,
+    "last": true,
+    "numberOfElements": 5,
+    "size": 5,
+    "number": 0,
+    "first": true,
+    "sort": {
+        "sorted": false,
+        "unsorted": true,
+        "empty": true
+    },
+    "empty": false
+}
+```
