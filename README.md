@@ -963,5 +963,6 @@ group by user.Exercise;
 
 
 ### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+https://lunechaser.testchaser.site/favorites
 
 ### 4. MySQL Replication With JPA 진행 과정 공유
