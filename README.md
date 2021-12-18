@@ -966,3 +966,8 @@ group by user.Exercise;
 https://lunechaser.testchaser.site/favorites
 
 ### 4. MySQL Replication With JPA 진행 과정 공유
+- 강의 내용을 참고하여 private 서버에 master/slave DB 서버를 구축 (Slave에서 사용하는 hostDB 서버는 private ip를 사용)
+- 강의 내용을 참고하여 spring Application의 application.properties내용 추가/ Database Config 파일 추가
+- SubwayApplication.java의 EnableJpaRepositories 설정은 Database Config파일에 있어 삭제
+- Master DB서버의 subway database 생성 
+- Master DB서버의 subway application에서 사용하는 Table 생성 
