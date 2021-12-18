@@ -607,6 +607,91 @@ default ✓ [======================================] 000/300 VUs  55s
 
 ## 2단계 - 조회 성능 개선하기
 1. 쿼리 쿼적화진행 과정 공유
+<details><summary>조회 쿼리</summary>
+
+```sql
+select 연봉_top5_사원.사원번호, 연봉_top5_사원.이름, 연봉_top5_사원.연봉, 직급.직급명, 사원출입기록.입출입시간,사원출입기록.지역, 사원출입기록.입출입구분
+from
+(
+	select 
+	사원.사원번호, 사원.이름, 급여.연봉
+	from 
+		(
+			select 사원번호, 이름
+			from 사원
+		) 사원,
+		(
+			select 부서번호
+			from 부서
+			where 비고 = 'active'
+		) 부서,
+		(
+		select 사원번호, 부서번호
+		from 부서관리자
+		where 
+		now() BETWEEN  시작일자 and 종료일자
+		) 부서관리자,
+		(
+			select 사원번호, 연봉
+			from 급여
+			where now() BETWEEN 시작일자 and 종료일자
+		) 급여,
+		(
+			select 사원번호, 부서번호
+			from 부서사원_매핑
+			where now() BETWEEN 시작일자 and 종료일자
+		) 부서사원_매핑	
+	WHERE 사원.사원번호 = 부서사원_매핑.사원번호
+	and 사원.사원번호 = 부서관리자.사원번호
+	and 사원.사원번호 = 급여.사원번호
+	and 부서사원_매핑.부서번호 = 부서.부서번호
+	order by 급여.연봉 desc limit 5
+) 연봉_top5_사원,
+(
+	select 사원번호, 직급명
+	from 직급
+	where now() BETWEEN 시작일자 and 종료일자
+) 직급,
+(
+	select 사원번호, 입출입시간, 지역, 입출입구분
+	from 사원출입기록
+	where 입출입구분 = 'O'
+) 사원출입기록
+WHERE 연봉_top5_사원.사원번호 = 직급.사원번호
+	and 연봉_top5_사원.사원번호 = 사원출입기록.사원번호
+order by 연봉 desc, 지역
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
+</details>
+
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planBeforeTurning.JPG)
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/addIndex.JPG)
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultAfterTurning.JPG)
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planAfterTurning.JPG)
+</details>
+
+위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
 
 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
