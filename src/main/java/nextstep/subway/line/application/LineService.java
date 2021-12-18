@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,11 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "lines", allEntries = true),
+        @CacheEvict(value = "line", allEntries = true),
+        @CacheEvict(value = "path", allEntries = true)
+    })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -34,6 +40,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", key = "")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -67,6 +74,11 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "lines", allEntries = true),
+        @CacheEvict(value = "line", allEntries = true),
+        @CacheEvict(value = "path", allEntries = true)
+    })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -74,9 +86,13 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "lines", allEntries = true),
+        @CacheEvict(value = "line", allEntries = true),
+        @CacheEvict(value = "path", allEntries = true)
+    })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
-
 }
