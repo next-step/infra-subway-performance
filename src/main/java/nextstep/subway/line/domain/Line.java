@@ -25,6 +25,13 @@ public class Line extends BaseEntity implements Serializable {
     public Line() {
     }
 
+    public Line(Long id, String name, String color, List<Section> sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+    }
+
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
