@@ -699,6 +699,7 @@ order by 연봉 desc, 지역;
 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
 
 ### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요(조회 결과를 100ms 이하로 반환)
+
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 
 <details><summary>조회 쿼리</summary>
@@ -714,19 +715,19 @@ order by hobby desc;
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/queryResultBeforeTurning.JPG)
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/queryResultBeforeTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimizCodingHobbyation/planBeforeTurning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/planBeforeTuning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/addIndex.JPG)
 
 </details>
 
@@ -734,13 +735,13 @@ order by hobby desc;
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/queryResultAfterTurning.JPG)
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/queryResultAfterTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/planAfterTurning.JPG)
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/planAfterTuning.JPG)
 
 </details>
 
@@ -759,19 +760,19 @@ where covid.hospital_id = hospital.id
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/queryResultBeforeTurning.JPG)
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/queryResultBeforeTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/planBeforeTurning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/planBeforeTuning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/addIndex.JPG)
 
 </details>
 
@@ -779,13 +780,13 @@ where covid.hospital_id = hospital.id
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/queryResultAfterTurning.JPG)
+튜닝 전 속도가 100ms이하로 조건을 만족하여 미캡처
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/planAfterTurning.JPG)
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/planAfterTuning.JPG)
 
 </details>
 
@@ -810,19 +811,25 @@ order by user.id
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/queryResultBeforeTurning.JPG)
+조회 시간이 10초 이상으로 미캡처
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameFohospitalNameForHobbyProgrammingrProgrammer/planBeforeTurning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameFohospitalNameForHobbyProgrammingrProgrammer/planBeforeTuning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/addIndex.JPG)
+
+</details>
+
+<details><summary>PK 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/programmerAddingPK.JPG)
 
 </details>
 
@@ -830,13 +837,13 @@ order by user.id
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/queryResultAfterTurning.JPG)
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/queryResultAfterTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/planAfterTurning.JPG)
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/planAfterTuning.JPG)
 
 </details>
 
@@ -863,19 +870,19 @@ group by covid.stay;
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/queryResultBeforeTurning.JPG)
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/queryResultBeforeTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/planBeforeTurning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/planBeforeTuning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/addIndex.JPG)
 
 </details>
 
@@ -883,13 +890,13 @@ group by covid.stay;
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/queryResultAfterTurning.JPG)
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/queryResultAfterTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/planAfterTurning.JPG)
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/planAfterTuning.JPG)
 
 </details>
 
@@ -916,19 +923,19 @@ group by user.Exercise;
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/queryResultBeforeTurning.JPG)
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/queryResultBeforeTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/planBeforeTurning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/planBeforeTuning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/addIndex.JPG)
 
 </details>
 
@@ -936,16 +943,15 @@ group by user.Exercise;
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/queryResultAfterTurning.JPG)
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/queryResultAfterTuning.JPG)
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/planAfterTurning.JPG)
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/planAfterTuning.JPG)
 
 </details>
-
 
 
 ### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
