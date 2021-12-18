@@ -659,7 +659,7 @@ from
 ) 사원출입기록
 WHERE 연봉_top5_사원.사원번호 = 직급.사원번호
 	and 연봉_top5_사원.사원번호 = 사원출입기록.사원번호
-order by 연봉 desc, 지역
+order by 연봉 desc, 지역;
 ```
 
 </details>
@@ -698,12 +698,254 @@ order by 연봉 desc, 지역
 
 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
 
-### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요(조회 결과를 100ms 이하로 반환)
 - Coding as a Hobby 와 같은 결과를 반환하세요.
+
+<details><summary>조회 쿼리</summary>
+
+```sql
+select hobby, ROUND(count(1)*100 / (select count(1) from subway.programmer), 1) as Response
+from subway.programmer
+group by hobby
+order by hobby desc;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimizCodingHobbyation/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/CodingHobby/planAfterTurning.JPG)
+
+</details>
+
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.id, hospital.name
+from subway.covid,
+  subway.hospital
+where covid.hospital_id = hospital.id
+  and covid.programmer_id is not null 
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForProgrammer/planAfterTurning.JPG)
+
+</details>
+
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding 
+from subway.programmer user,
+  subway.covid,
+  subway.hospital
+where (user.student like 'Yes%' OR user.years_coding like '0-2%') 
+  and user.id = covid.programmer_id
+  and user.hobby = 'Yes'
+  and covid.hospital_id = hospital.id
+  and covid.programmer_id is not null
+order by user.id
+;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameFohospitalNameForHobbyProgrammingrProgrammer/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/hospitalNameForHobbyProgramming/planAfterTurning.JPG)
+
+</details>
+
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.stay, count(1)
+from subway.covid,
+  subway.member,
+  subway.programmer,
+  subway.hospital
+where covid.member_id = member.id 
+  and covid.programmer_id = programmer.id 
+  and covid.hospital_id = hospital.id
+  and member.age between 20 and 29
+  and hospital.name = '서울대병원'
+  and programmer.country = 'India'
+group by covid.stay;
+;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/stayStatistics/planAfterTurning.JPG)
+
+</details>
+
+
+
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select user.Exercise, count(1)
+from subway.covid,
+  subway.member,
+  subway.programmer user,
+  subway.hospital
+where covid.member_id = member.id 
+  and covid.programmer_id = user.id
+  and covid.hospital_id = hospital.id
+  and member.age between 30 and 39
+  and hospital.name = '서울대병원'
+group by user.Exercise;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/exerciseStatistics/planAfterTurning.JPG)
+
+</details>
+
 
 
 ### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
