@@ -606,7 +606,7 @@ default ✓ [======================================] 000/300 VUs  55s
 ---
 
 ## 2단계 - 조회 성능 개선하기
-1. 쿼리 쿼적화진행 과정 공유
+1. 쿼리 최적화진행 과정 공유
 <details><summary>조회 쿼리</summary>
 
 ```sql
@@ -665,30 +665,35 @@ order by 연봉 desc, 지역
 </details>
 
 <details><summary>튜닝 전 쿼리 조회</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
-</details>
 
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
 
-<details><summary>튜닝 전 쿼리 조회</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planBeforeTurning.JPG)
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planBeforeTurning.JPG)
+
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/addIndex.JPG)
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/addIndex.JPG)
+
 </details>
 
 </details>
 
 <details><summary>튜닝 후 쿼리 조회</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultAfterTurning.JPG)
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultAfterTurning.JPG)
+
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
-![s](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planAfterTurning.JPG)
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planAfterTurning.JPG)
+
 </details>
 
 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
