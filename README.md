@@ -606,7 +606,7 @@ default ✓ [======================================] 000/300 VUs  55s
 ---
 
 ## 2단계 - 조회 성능 개선하기
-1. 쿼리 최적화진행 과정 공유
+### 1. 쿼리 최적화진행 과정 공유
 <details><summary>조회 쿼리</summary>
 
 ```sql
@@ -666,19 +666,19 @@ order by 연봉 desc, 지역
 
 <details><summary>튜닝 전 쿼리 조회</summary>
 
-![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultBeforeTurning.JPG)
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/queryResultBeforeTurning.JPG)
 
 </details>
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planBeforeTurning.JPG)
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/planBeforeTurning.JPG)
 
 </details>
 
 <details><summary>Index 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/addIndex.JPG)
 
 </details>
 
@@ -686,20 +686,26 @@ order by 연봉 desc, 지역
 
 <details><summary>튜닝 후 쿼리 조회</summary>
 
-![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryResultAfterTurning.JPG)
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/queryResultAfterTurning.JPG)
 
 </details>
 
 <details><summary>튜닝 후 Plan</summary>
 
-![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/planAfterTurning.JPG)
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/planAfterTurning.JPG)
 
 </details>
 
 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
 
-2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
-3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
-4. MySQL Replication With JPA 진행 과정 공유
+### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+### 4. MySQL Replication With JPA 진행 과정 공유
