@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
 
@@ -55,6 +57,7 @@ public class FavoriteService {
         return page.getContent();
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
@@ -63,6 +66,7 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
         return stationRepository.findAllById(stationIds).stream()

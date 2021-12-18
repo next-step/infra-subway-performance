@@ -23,6 +23,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     @Caching(evict = {
         @CacheEvict(value = "station", allEntries = true),
         @CacheEvict(value = "stations", allEntries = true)
@@ -42,6 +43,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Caching(evict = {
         @CacheEvict(value = "station", key = "#id"),
         @CacheEvict(value = "stations", allEntries = true)
@@ -50,11 +52,13 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "station", key = "#id")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "station", key = "#id")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
