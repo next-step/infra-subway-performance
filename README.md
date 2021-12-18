@@ -696,7 +696,7 @@ order by 연봉 desc, 지역;
 
 </details>
 
-위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
+> 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
 
 ### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요(조회 결과를 100ms 이하로 반환)
 
@@ -745,6 +745,8 @@ order by hobby desc;
 
 </details>
 
+> 위 과정으로 튜닝전 `198ms => 41ms`으로 쿼리 조회 성능을 최적화함
+
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 <details><summary>조회 쿼리</summary>
 
@@ -770,9 +772,9 @@ where covid.hospital_id = hospital.id
 
 </details>
 
-<details><summary>Index 추가로 튜닝</summary>
+<details><summary>PK 추가로 튜닝</summary>
 
-![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/addIndex.JPG)
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/hospitalAddingPK.JPG)
 
 </details>
 
@@ -789,6 +791,8 @@ where covid.hospital_id = hospital.id
 ![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/planAfterTuning.JPG)
 
 </details>
+
+> 위 과정으로 튜닝전 `1ms` 쿼리 조회 성능은 문제 없으며 PK 추가로 Select Cost가 `1,826,580 => 406,689` 로 감소
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 <details><summary>조회 쿼리</summary>
@@ -817,7 +821,7 @@ order by user.id
 
 <details><summary>튜닝 전 Plan</summary>
 
-![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameFohospitalNameForHobbyProgrammingrProgrammer/planBeforeTuning.JPG)
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/planBeforeTuning.JPG)
 
 </details>
 
@@ -846,6 +850,8 @@ order by user.id
 ![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/planAfterTuning.JPG)
 
 </details>
+
+> 위 과정으로 튜닝전 `10s Over => 3ms`으로 쿼리 조회 성능을 최적화함
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 <details><summary>조회 쿼리</summary>
@@ -900,7 +906,7 @@ group by covid.stay;
 
 </details>
 
-
+> 위 과정으로 튜닝전 `127ms => 34ms`으로 쿼리 조회 성능을 최적화함
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 <details><summary>조회 쿼리</summary>
@@ -952,6 +958,8 @@ group by user.Exercise;
 ![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/planAfterTuning.JPG)
 
 </details>
+
+> 위 과정으로 튜닝전 `69ms` 쿼리 조회 성능은 문제 없으며 Index 추가로 Grouping Cost가 `66,084 => 48,156` 로 감소
 
 
 ### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
