@@ -613,6 +613,78 @@ CPU당 물리 코어 수 : 2
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### A. 쿼리 최적화
+```
+CREATE INDEX 사원출입기록_사원번호_IDX USING BTREE ON tuning.사원출입기록 (사원번호);
+```
+```
+CREATE INDEX 급여_사원번호_IDX USING BTREE ON tuning.급여 (사원번호,시작일자,종료일자);```
+```
+
+```
+CREATE INDEX 직급_사원번호_IDX USING BTREE ON tuning.직급 (사원번호,시작일자,종료일자);
+```
+
+![화면 캡처 2021-12-19 134719](https://user-images.githubusercontent.com/72685070/146664742-534e1090-b9eb-4f42-9587-4538deb03a49.png)
+
+![화면 캡처 2021-12-19 135833](https://user-images.githubusercontent.com/72685070/146664763-e78b0de2-0209-4809-91b7-12e07421246d.png)
+
+
+#### B. 인덱스 설계
+
+- [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```
+CREATE INDEX programmer_hobby_IDX USING BTREE ON subway.programmer (hobby);
+```
+
+![화면 캡처 2021-12-19 150335](https://user-images.githubusercontent.com/72685070/146666578-b55a9bf5-af9a-4067-883f-7283f8cc53c5.png)
+
+- [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```
+CREATE INDEX programmer_id_IDX USING BTREE ON subway.programmer (id);
+```
+```
+CREATE INDEX hospital_id_IDX USING BTREE ON subway.hospital (id);
+```
+
+![화면 캡처 2021-12-19 151204](https://user-images.githubusercontent.com/72685070/146666585-629c25ac-9deb-4d99-b3c4-3051b5dd3dbd.png)
+
+
+- [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+실행계획 결과 b -> a -> c 테이블 순서로 조인되고 있음을 알게되었습니다. b 테이블에 인덱스가 설정되지 않아서 데이터가 많은 테이블임에도 최초에 FULL SCAN을 했고,
+상대적으로 데이터가 적은 a 테이블 먼저 SCAN을 하는 것이 좋을 것이라 판단했습니다.
+따라서 다음과 같이 인덱스를 설정하였고, 비용을 좀 더 줄일 수 있었습니다.
+
+```
+CREATE INDEX covid_programmer_id_IDX USING BTREE ON subway.covid (programmer_id,hospital_id);
+```
+
+![화면 캡처 2021-12-19 153059](https://user-images.githubusercontent.com/72685070/146666607-0cef1f13-de43-4a4b-8715-0c11edeb7b75.png)
+
+
+- [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+실행계획 확인 결과, d -> a 테이블간 드라이빙 시에 FULL SCAN을 타고 있어 a 테이블의 인덱스를 설정
+
+```
+CREATE INDEX covid_hospital_id_IDX USING BTREE ON subway.covid (hospital_id);
+```
+
+![화면 캡처 2021-12-19 154819](https://user-images.githubusercontent.com/72685070/146666618-f90b3eac-4b77-4a60-8acf-b061e03673e0.png)
+
+
+- [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+실행계획 결과를 봤을 때, 더 개선할 사항이 없다고 판단하였습니다.
+
+![image](https://user-images.githubusercontent.com/72685070/146666798-a88dfea3-1ab3-4754-abb8-141340d1da72.png)
+
+
+![image](https://user-images.githubusercontent.com/72685070/146666707-66b3edad-f56c-4f92-9058-cf772f64bc5f.png)
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+/favorites?
