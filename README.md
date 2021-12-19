@@ -606,7 +606,368 @@ default ✓ [======================================] 000/300 VUs  55s
 ---
 
 ## 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+### 1. 쿼리 최적화진행 과정 공유
+<details><summary>조회 쿼리</summary>
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+```sql
+select 연봉_top5_사원.사원번호, 연봉_top5_사원.이름, 연봉_top5_사원.연봉, 직급.직급명, 사원출입기록.입출입시간,사원출입기록.지역, 사원출입기록.입출입구분
+from
+(
+	select 
+	사원.사원번호, 사원.이름, 급여.연봉
+	from 
+		(
+			select 사원번호, 이름
+			from 사원
+		) 사원,
+		(
+			select 부서번호
+			from 부서
+			where 비고 = 'active'
+		) 부서,
+		(
+		select 사원번호, 부서번호
+		from 부서관리자
+		where 
+		now() BETWEEN  시작일자 and 종료일자
+		) 부서관리자,
+		(
+			select 사원번호, 연봉
+			from 급여
+			where now() BETWEEN 시작일자 and 종료일자
+		) 급여,
+		(
+			select 사원번호, 부서번호
+			from 부서사원_매핑
+			where now() BETWEEN 시작일자 and 종료일자
+		) 부서사원_매핑	
+	WHERE 사원.사원번호 = 부서사원_매핑.사원번호
+	and 사원.사원번호 = 부서관리자.사원번호
+	and 사원.사원번호 = 급여.사원번호
+	and 부서사원_매핑.부서번호 = 부서.부서번호
+	order by 급여.연봉 desc limit 5
+) 연봉_top5_사원,
+(
+	select 사원번호, 직급명
+	from 직급
+	where now() BETWEEN 시작일자 and 종료일자
+) 직급,
+(
+	select 사원번호, 입출입시간, 지역, 입출입구분
+	from 사원출입기록
+	where 입출입구분 = 'O'
+) 사원출입기록
+WHERE 연봉_top5_사원.사원번호 = 직급.사원번호
+	and 연봉_top5_사원.사원번호 = 사원출입기록.사원번호
+order by 연봉 desc, 지역;
+```
 
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/queryResultBeforeTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/planBeforeTurning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/queryResultAfterTurning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTurning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/queryOptimization/planAfterTurning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `181ms => 3ms`으로 쿼리 조회 성능을 최적화함
+
+### 2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요(조회 결과를 100ms 이하로 반환)
+
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+
+<details><summary>조회 쿼리</summary>
+
+```sql
+select hobby, ROUND(count(1)*100 / (select count(1) from subway.programmer), 1) as Response
+from subway.programmer
+group by hobby
+order by hobby desc;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/queryResultBeforeTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/planBeforeTuning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/queryResultAfterTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/CodingHobby/planAfterTuning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `198ms => 41ms`으로 쿼리 조회 성능을 최적화함
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.id, hospital.name
+from subway.covid,
+  subway.hospital
+where covid.hospital_id = hospital.id
+  and covid.programmer_id is not null 
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/queryResultBeforeTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/planBeforeTuning.JPG)
+
+</details>
+
+<details><summary>PK 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/hospitalAddingPK.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+튜닝 전 속도가 100ms이하로 조건을 만족하여 미캡처
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForProgrammer/planAfterTuning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `1ms` 쿼리 조회 성능은 문제 없으며 PK 추가로 Select Cost가 `1,826,580 => 406,689` 로 감소
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding 
+from subway.programmer user,
+  subway.covid,
+  subway.hospital
+where (user.student like 'Yes%' OR user.years_coding like '0-2%') 
+  and user.id = covid.programmer_id
+  and user.hobby = 'Yes'
+  and covid.hospital_id = hospital.id
+  and covid.programmer_id is not null
+order by user.id
+;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+조회 시간이 10초 이상으로 미캡처
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/planBeforeTuning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/addIndex.JPG)
+
+</details>
+
+<details><summary>PK 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/programmerAddingPK.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/queryResultAfterTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/hospitalNameForHobbyProgramming/planAfterTuning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `10s Over => 3ms`으로 쿼리 조회 성능을 최적화함
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select covid.stay, count(1)
+from subway.covid,
+  subway.member,
+  subway.programmer,
+  subway.hospital
+where covid.member_id = member.id 
+  and covid.programmer_id = programmer.id 
+  and covid.hospital_id = hospital.id
+  and member.age between 20 and 29
+  and hospital.name = '서울대병원'
+  and programmer.country = 'India'
+group by covid.stay;
+;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/queryResultBeforeTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/planBeforeTuning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/queryResultAfterTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/stayStatistics/planAfterTuning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `127ms => 34ms`으로 쿼리 조회 성능을 최적화함
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+<details><summary>조회 쿼리</summary>
+
+```sql
+select user.Exercise, count(1)
+from subway.covid,
+  subway.member,
+  subway.programmer user,
+  subway.hospital
+where covid.member_id = member.id 
+  and covid.programmer_id = user.id
+  and covid.hospital_id = hospital.id
+  and member.age between 30 and 39
+  and hospital.name = '서울대병원'
+group by user.Exercise;
+```
+
+</details>
+
+<details><summary>튜닝 전 쿼리 조회</summary>
+
+![queryResultBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/queryResultBeforeTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 전 Plan</summary>
+
+![planBeforeTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/planBeforeTuning.JPG)
+
+</details>
+
+<details><summary>Index 추가로 튜닝</summary>
+
+![addIndex](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/addIndex.JPG)
+
+</details>
+
+</details>
+
+<details><summary>튜닝 후 쿼리 조회</summary>
+
+![queryResultAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/queryResultAfterTuning.JPG)
+
+</details>
+
+<details><summary>튜닝 후 Plan</summary>
+
+![planAfterTuning](https://raw.githubusercontent.com/LuneChaser/infra-subway-performance/step2/step2Docs/acceptIndex/exerciseStatistics/planAfterTuning.JPG)
+
+</details>
+
+> 위 과정으로 튜닝전 `69ms` 쿼리 조회 성능은 문제 없으며 Index 추가로 Grouping Cost가 `66,084 => 48,156` 로 감소
+
+
+### 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+https://lunechaser.testchaser.site/favorites
+
+### 4. MySQL Replication With JPA 진행 과정 공유
+- 강의 내용을 참고하여 private 서버에 master/slave DB 서버를 구축 (Slave에서 사용하는 hostDB 서버는 private ip를 사용)
+- 강의 내용을 참고하여 spring Application의 application.properties내용 추가/ Database Config 파일 추가
+- SubwayApplication.java의 EnableJpaRepositories 설정은 Database Config파일에 있어 삭제
+- Master DB서버의 subway database 생성 
+- Master DB서버의 subway application에서 사용하는 Table 생성 
