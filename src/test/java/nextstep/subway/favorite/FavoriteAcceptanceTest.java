@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -31,6 +32,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
+    private StationResponse 양재시민의숲역;
+    private StationResponse 청계산입구역;
+    private StationResponse 판교역;
     private StationResponse 정자역;
     private StationResponse 광교역;
 
@@ -42,6 +46,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        양재시민의숲역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
+        청계산입구역 = StationAcceptanceTest.지하철역_등록되어_있음("청계산입구역").as(StationResponse.class);
+        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
@@ -51,11 +58,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("color", "bg-red-600");
         lineCreateParams.put("upStationId", 강남역.getId() + "");
         lineCreateParams.put("downStationId", 광교역.getId() + "");
-        lineCreateParams.put("distance", 10 + "");
+        lineCreateParams.put("distance", 20 + "");
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineCreateParams).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재시민의숲역, 청계산입구역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 청계산입구역, 판교역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 판교역, 정자역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 광교역, 3);
 
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
         사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
@@ -80,10 +91,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("즐겨찾기를 페이징으로 조회가능하다.")
+    @Test
+    void pagingFavorite() {
+        // when
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 양재시민의숲역);
+        즐겨찾기_생성을_요청(사용자, 양재시민의숲역, 청계산입구역);
+        즐겨찾기_생성을_요청(사용자, 청계산입구역, 판교역);
+        즐겨찾기_생성을_요청(사용자, 판교역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 정자역, 광교역);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 0, 5, "id,desc");
+        // then
+        페이징된_즐겨찾기_목록_조회됨(findResponse);
+
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source.getId() + "");
-        params.put("target", target.getId() + "");
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", source.getId());
+        params.put("target", target.getId());
 
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
@@ -119,6 +148,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_페이징_요청(TokenResponse tokenResponse, int page, int size, String sort) {
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                queryParam("page", page).
+                queryParam("size", size).
+                queryParam("sort", sort).
+                when().
+                get("/favorites").
+                then().
+                log().all().
+                extract();
+    }
+
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -129,5 +173,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 페이징된_즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", FavoriteResponse.class)).hasSize(5);
     }
 }
