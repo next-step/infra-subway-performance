@@ -33,7 +33,7 @@ public class LineService {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
-
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -41,24 +41,29 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
+
     @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
+
     @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
