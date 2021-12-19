@@ -32,7 +32,7 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<Page<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember
-            , @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            , @PageableDefault(size = 3, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
