@@ -69,6 +69,7 @@ npm run dev
 총 요청 시간인 것 같습니다.
 
 - 평균값 지표
+
 |http_지표|reqs|blocked|connecting|tls_handshaking|sending|waiting|receiving|duration|
 |:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
 |캐시 미적용|6170|413ps|345ps|0ps|76ps|1.5s|90ps|2.5s|
