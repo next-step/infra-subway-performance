@@ -419,5 +419,164 @@ public PathResponse findPath(Long source, Long target) {
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+### 1. Coding as a Hobby 와 같은 결과를 반환하세요.
+```sql
+SELECT hobby, ROUND((COUNT(1)/(SELECT COUNT(1) FROM programmer)) * 100, 1) AS percentage
+FROM programmer
+GROUP BY hobby;
+```
+개선전
+- 실행시간 : 4.224초
+
+![](images/1-1.png)
+
+
+개선작업
+- ID에 PK와 조건을 추가하여 서브쿼리에서 인덱스를 사용하도록 추가. 
+- 하지만 조건절이 없기 때문에 전체 테이블 스캔과 인덱스 스캔이 성능상 동일하여 옵티마이저가 여전히 full table scan을 하고 있는 것으로 추정
+```sql
+alter table subway.programmer add constraint programmer_pk primary key (id);
+```
+- hobby에 인덱스를 추가
+- GROUP BY 절에서 임시로 테이블을 생성하는 대신 인덱스에서 처리. 
+- 앞서 id를 인덱스 테이블에서 처리했기 때문에 인덱스 테이블 내에서 정렬된 hobby 테이블을 참조했다고 추정.
+```sql
+create index idx_programmer_hobby using btree on subway.programmer (hobby);
+```
+
+개선 후
+- 실행시간 : 4.224초 -> 0.283초
+
+![](images/1-2.png)
+
+### 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+SELECT c.id, h.name
+FROM covid c
+JOIN hospital h
+ON c.hospital_id = h.id;
+```
+개선 전
+- 실행시간 : 52ms
+
+![](images/2-1.png)
+
+개선 작업
+- 이미 50ms이므로 추가 개선작업이 필요없지만 optimizer를 개선하는 작업 추가
+- covid, hospital 테이블에서 full table scan을 하고 있음
+```sql
+create index idx_hospital_id using btree on subway.covid (hospital_id);
+```
+- covid 테이블의 hospital_id에 인덱스를 추가하여 non unique key lookup을 사용하도록 변경
+```sql
+create index idx_hospital_name using btree on subway.hospital (name);
+```
+
+개선 후 
+- 실행시간 : 20ms
+
+![](images/2-2.png)
+
+### 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+SELECT p.id, h.name, p.student, p.hobby, p.dev_type, p.years_coding
+FROM programmer p, covid c, hospital h
+WHERE p.id = c.programmer_id
+AND c.hospital_id = h.id
+AND p.hobby = 'Yes' 
+AND (p.student LIKE 'Yes%' OR p.years_coding = '0-2 years')
+ORDER BY p.id
+```
+개선 전
+- 실행시간 : 19.243s
+
+![](images/3-1.png)
+
+개선 작업 
+- order by절에서 tmp table과 filter sort 중
+- 인덱스에서 바로 조회할 수 있도록 수정 
+```sql
+create index idx_covid_programmer_id_hospital_id using btree on subway.covid (programmer_id, hospital_id);
+```
+- covid 테이블의 programmer_id와 hospital_id를 인덱스로 설정
+- 여러 인덱스를 테스트하던 중 가장 성능이 좋은 인덱스였지만 어떤 인과관계로 성능이 좋아진지는 모르겠음 
+
+개선 후
+- 실행시간 : 20ms
+
+![](images/3-2.png)
+
+### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+select c.stay, count(1)
+from subway.covid c,
+     subway.member m,
+     subway.programmer p,
+     subway.hospital h
+where c.member_id = m.id
+  and c.programmer_id = p.id
+  and c.hospital_id = h.id
+  and h.name = '서울대병원'
+  and p.country = 'india'
+  and m.age between 20 and 29
+group by c.stay
+```
+
+개선 전 
+- 실행시간 : 156ms
+
+![](images/4-1.png)
+
+개선작업
+- order by에 tmp table과 file sort 중
+- hospital 테이블에서 full table scan 사용 중
+```sql
+create index idx_hospital_name using btree on subway.hospital (name);
+```
+- hospital 테이블의 name 컬럼에 인덱스를 지정하여 non unique key lookup 사용
+```sql
+order by null
+```
+- order by null로 file sort 제거
+
+개선 후
+- 실행시간 : 140ms
+
+![](images/4-2.png)
+
+### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```sql
+SELECT p.exercise, count(1)
+FROM subway.covid c,
+     subway.member m,
+     subway.programmer p,
+     subway.hospital h
+WHERE c.member_id = m.id
+  AND c.programmer_id = p.id
+  AND c.hospital_id = h.id
+  AND h.name = '서울대병원'
+  AND m.age between 30 and 39
+GROUP BY p.exercise;
+```
+
+개선 전
+- 실행시간 : 187ms
+
+![](images/5-1.png)
+
+
+개선작업
+- order by에 tmp table과 file sort 중
+```sql
+order by null
+```
+- order by null로 file sort 제거
+
+개선 후
+- 실행시간 : 152ms;
+
+![](images/5-2.png)
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
