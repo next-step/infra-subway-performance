@@ -93,5 +93,71 @@ create index idx_사원출입기록_사원번호 on tuning.사원출입기록 (�
 create index idx_부서관리자_사원번호_시작일자_종료일자 on tuning.부서관리자 (사원번호, 시작일자, 종료일자);
 ```
 
+B. 인텍스 설계
+
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```sql
+select hobby, count(hobby) / (select count(hobby) from programmer) * 100 as rate
+from programmer
+group by hobby;
+
+create index idx_programmer_hobby ON subway.programmer (hobby);
+```
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요.
+
+```sql
+select p.id, h.name
+from covid c
+         inner join hospital h on c.hospital_id = h.id
+         inner join programmer p on c.programmer_id = p.id;
+
+create index idx_hospital_id ON subway.hospital (id);
+create index idx_programmer_id ON subway.programmer (id);
+```
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+
+```sql
+select p.id, h.name
+from programmer p
+         inner join covid c on p.id = c.programmer_id
+         inner join hospital h on c.hospital_id = h.id
+where (hobby = 'Yes' and student like 'Yes%')
+   or years_coding = '0-2 years';
+
+
+create index idx_programmer_hobby_student ON subway.programmer (hobby, student);
+drop index idx_programmer_hobby ON subway.programmer;
+
+create index idx_programmer_years_coding ON subway.programmer (years_coding);
+```
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+
+```sql
+select c.stay, count(p.id) as count
+from programmer p
+         inner join covid c on p.id = c.programmer_id and c.hospital_id = 9
+         inner join member m on c.member_id = m.id and m.age between 20 and 29
+where p.country = 'India'
+group by c.stay;
+
+create index idx_covid_hospital_id_stay ON subway.covid (hospital_id, stay);
+```
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+
+```sql
+select p.exercise, count(p.id) as count
+from programmer p
+         inner join covid c on p.id = c.programmer_id and c.hospital_id = 9
+         inner join member m on c.member_id = m.id and m.age between 30 and 39
+group by p.exercise;
+
+create index idx_member_age on subway.member (age);
+```
+
 #### 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
