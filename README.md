@@ -161,3 +161,6 @@ create index idx_member_age on subway.member (age);
 
 #### 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- 지하철역 목록 조회: /stations
+- 노선 목록 조회: /lines
+- 즐겨찾기 목록 조회: /favorites
