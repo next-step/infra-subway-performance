@@ -43,7 +43,7 @@ public class DataBaseProperty {
 
     @Bean
     public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
-                                        @Qualifier("slaveDataSource") DataSource slave){
+                                        @Qualifier("slaveDataSource") DataSource slave) {
         ReplicationDataSource replicationDataSource = new ReplicationDataSource();
 
         Map<Object, Object> sources = new HashMap<>();
