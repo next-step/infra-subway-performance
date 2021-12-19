@@ -1,0 +1,41 @@
+version: '3'
+services:
+  mysql_master:
+    image: mysql:8.0.21
+    volumes:
+      - ./mysql_db/master:/mysql
+      - ./subway:/subway
+      - ./db/conf/master:/etc/mysql/conf.d
+      - ./logs:/var/log/mysql
+    environment:
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_USER=repl
+      - MYSQL_PASSWORD=1234
+    ports:
+      - "3307:3306"
+    networks:
+      - net-mysql
+
+  mysql_slave:
+    image: mysql:8.0.21
+    volumes:
+      - ./mysql_db/slave:/mysql
+      - ./subway:/subway
+      - ./db/conf/slave:/etc/mysql/conf.d
+      - ./logs:/var/log/mysql
+    depends_on:
+      - mysql_master
+    environment:
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_USER=repl
+      - MYSQL_PASSWORD=1234
+    ports:
+      - "3309:3306"
+    networks:
+      - net-mysql
+
+networks:
+  net-mysql:
+    driver: bridge
