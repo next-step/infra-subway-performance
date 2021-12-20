@@ -9,8 +9,6 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
-
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -42,6 +39,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public Page<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+        checkOverPageSize(pageable.getPageSize());
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites);
 
@@ -74,5 +72,11 @@ public class FavoriteService {
             stationIds.add(favorite.getTargetStationId());
         }
         return stationIds;
+    }
+
+    private void checkOverPageSize(int pageSize) {
+        if(pageSize > 10){
+            throw new RuntimeException("한페이지당 조회할수 있는 페이지 수를 넘었습니다.");
+        }
     }
 }

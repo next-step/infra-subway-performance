@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -99,7 +98,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             "(id: 1 , 강남역, 정자역)"
     )
     @Test
-    void pageSeelctTest() {
+    void pageSelectTest() {
         // when
         즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
         즐겨찾기_생성을_요청(사용자, 당산역, 선유도역);
@@ -110,9 +109,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_페이징_조회_요청(사용자, 1);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_페이징_조회_요청(사용자, 1,3);
         // then
         즐겨찾기_목록_조회됨(findResponse);
+    }
+
+
+    @DisplayName("페이징 사이즈 10개가 넘었을 경우 예외처리")
+    @Test
+    void pageTenOverSelectTest() {
+        // when
+        즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 당산역, 선유도역);
+        즐겨찾기_생성을_요청(사용자, 시청역, 영등포역);
+
+        즐겨찾기_생성을_요청(사용자, 양재역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_페이징_조회_요청(사용자, 1,11);
+        // then
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -143,16 +161,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_목록_페이징_조회_요청(TokenResponse tokenResponse, int pageNumber) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록_페이징_조회_요청(TokenResponse tokenResponse, int pageNumber, int pageSize) {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/favorites?page={pageNumber}", pageNumber).
+                get("/favorites?page={pageNumber}&size={pageSize}", pageNumber, pageSize).
                 then().
                 log().all().
                 extract();
-        ///paths?source={sourceId}&target={targetId}", source, target).
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response) {
