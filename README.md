@@ -417,7 +417,50 @@ public PathResponse findPath(Long source, Long target) {
 ---
 
 ### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. 쿼리 최적화
+
+### 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+   (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```sql
+SELECT 사원.사원번호, 사원.이름, 사원.연봉, 직급.직급명, 사원출입기록.입출입시간, 사원출입기록.지역, 사원출입기록.입출입구분
+FROM (
+       SELECT 사원.사원번호, 사원.이름, 급여.연봉
+       FROM 사원, 부서, 부서관리자, 급여, 부서사원_매핑
+       WHERE 사원.사원번호 = 부서사원_매핑.사원번호
+         AND 사원.사원번호 = 부서관리자.사원번호
+         AND 사원.사원번호 = 급여.사원번호
+         AND 부서사원_매핑.부서번호 = 부서.부서번호
+         AND 부서.비고 = 'active'
+         AND now() BETWEEN 부서사원_매핑.시작일자 and 부서사원_매핑.종료일자
+         AND now() BETWEEN 급여.시작일자 and 급여.종료일자
+         AND now() BETWEEN 부서관리자.시작일자 and 부서관리자.종료일자
+       ORDER BY 급여.연봉 DESC LIMIT 5
+     ) 사원, 직급, 사원출입기록
+WHERE 사원.사원번호 = 직급.사원번호
+  AND 사원.사원번호 = 사원출입기록.사원번호
+  AND 사원출입기록.입출입구분 = 'O'
+  AND now() BETWEEN 직급.시작일자 AND 직급.종료일자
+ORDER BY 사원.연봉 DESC, 사원출입기록.지역;
+```
+개선전
+- 실행시간 : 920ms
+
+![](images/0-1.png)
+
+개선작업
+- 사원출입기록 테이블에서 full table scan을 사용 
+- 사원출입기록 테이블의 사원번호에 인덱스 추가
+```sql
+CREATE INDEX idx_사원출입기록_사원번호 on tuning.사원출입기록 (사원번호);
+```
+
+개선후
+- 실행시간 : 15ms
+
+![](images/0-2.png)
+
+2. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 ### 1. Coding as a Hobby 와 같은 결과를 반환하세요.
 ```sql
@@ -577,6 +620,6 @@ order by null
 
 ![](images/5-2.png)
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
 https://bgpark82.p-e.kr/favorites
