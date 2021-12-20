@@ -13,11 +13,17 @@ import javax.servlet.Filter;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
-    public static final int CACHE_MAX = 60 * 60 * 24 * 30;
+    public static final int CACHE_MAX = 10;
+
+    private CacheVersion cacheVersion;
+
+    public WebMvcConfig(CacheVersion cacheVersion) {
+        this.cacheVersion = cacheVersion;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/**")
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + cacheVersion.getVersion() + "/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(CACHE_MAX);
     }
