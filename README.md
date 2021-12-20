@@ -450,7 +450,7 @@ default ✓ [======================================] 000/150 VUs  1m20s
   - [X] Redis Cache 적용
     - 성능 이슈가 발생 가능한 Station, Line, Favorite, Map Service 에 캐싱 적용
     - @CachePut 은 사용하지 않았는데, 관련 데이터가 수정되면 캐시 데이터를 수정하기보다 깔끔하게 관련 캐시를 삭제하고 새로운 데이터로 캐싱하는 것이 더 안전하다고 판단함 
-  - [ ] Thread pool 설정 적용
+  - [X] Thread pool 설정 적용
   
 - Nginx 성능 개선 관련 설정 추가
   - [ ] gzip 설정 추가 : text/plain, text/css, text/js, text/xml 등 적용
