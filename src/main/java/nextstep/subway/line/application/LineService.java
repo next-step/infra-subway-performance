@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.PageRequestPerform;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -7,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +34,10 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses(Pageable pageable) {
+        PageRequestPerform pageRequestPerform = PageRequestPerform.of(pageable.getPageSize());
+        Long lastIdx = pageRequestPerform.getLastIdx(pageable.getPageNumber(), pageable.getPageSize());
+        List<Line> persistLines = lineRepository.findLineAll(pageRequestPerform, lastIdx);
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
