@@ -7,13 +7,11 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
-
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
-    public static final int CACHE_MAX = 10;
+    public static final int CACHE_MAX = 60 * 60 * 24 * 365;
 
     private CacheVersion cacheVersion;
 
@@ -31,8 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         final FilterRegistrationBean registration = new FilterRegistrationBean();
-        final Filter etgHeaderFilter = new ShallowEtagHeaderFilter();
-        registration.setFilter(etgHeaderFilter);
+        registration.setFilter(new ShallowEtagHeaderFilter());
         registration.addUrlPatterns("/*");
         return registration;
     }
