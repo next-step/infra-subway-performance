@@ -54,6 +54,7 @@ npm run dev
 - join이 되는 부분은  `커버링 index` 처리를 관련된 부분을 서브쿼리 형식으로 진행했습니다.
   - `커버링 index`와 별반 차이가 없는 경우에는 바로 `Join` 하는 방식으로 처리했습니다. 
 - 데이터의 조회 경우 가장 작은 건수가 생길 대상을 먼저 join 처리하여 진행했습니다.
+  - 현재 쿼리에서 조인 순서를 변경해도 문제되지 않는 경우에는 가독성을 신경써 보았습니다.
 - 병원같은 경우는 `이름`까지 index 처리했습니다. 
 - `using filesort`인 경우에는 `order by 대상컬럼 null` 처리해서 정렬이 불필요하여 삭제하였습니다.
 
@@ -183,11 +184,11 @@ FROM
          INNER JOIN
        (
             SELECT
-                   C.member_id,
-                   C.stay
-             FROM (SELECT H.id, H.name FROM hospital H WHERE name ='서울대병원') H
-            INNER JOIN covid C 
-               ON H.id = C.hospital_id
+              코비드.member_id,
+                   코비드.stay
+             FROM (SELECT H.id, H.name FROM hospital H WHERE name ='서울대병원') 병원
+            INNER JOIN covid 코비드 
+               ON 병원.id = 코비드.hospital_id
        ) T2
   ON T1.id = T2.member_id
 
