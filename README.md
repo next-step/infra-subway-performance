@@ -870,6 +870,80 @@ default ✗ [======================================] 000/150 VUs  1m20s
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 1.1 조회 쿼리
+  - 쿼리 실행 시간 : 0.547 s
+  - 인텍스 추가 전 Plan 
+  ![](file/인덱스%20추가%20전%20Plan.png)
+  
+<details><summary>쿼리 최적화 조회 쿼리</summary>
+      
+```bash
+SELECT 연봉_TOP_5_관리자.사원번호, 연봉_TOP_5_관리자.이름, 연봉_TOP_5_관리자.연봉, 직급.직급명, 출입기록.입출입시간, 출입기록.지역, 출입기록.입출입구분
+FROM (
+    (
+        SELECT 사원.사원번호, 사원.이름, 급여.연봉
+        FROM (
+            (
+                SELECT 부서번호 
+                FROM 부서 
+                WHERE 비고 LIKE 'active'
+            ) AS 부서,
+            (
+                SELECT 사원번호, 이름 
+                FROM 사원
+            ) AS 사원,
+            (
+                SELECT 사원번호, 부서번호
+                FROM 부서관리자
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 부서관리자,
+            (
+                SELECT 사원번호, 연봉
+                FROM 급여
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 급여,
+            (
+                SELECT 사원번호, 부서번호
+                FROM 부서사원_매핑
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 부서사원_매핑
+        )
+        WHERE
+            부서.부서번호 = 부서사원_매핑.부서번호
+            AND 사원.사원번호 = 부서사원_매핑.사원번호
+            AND 사원.사원번호 = 부서관리자.사원번호
+            AND 사원.사원번호 = 급여.사원번호
+        ORDER BY 급여.연봉 DESC
+        LIMIT 5
+    ) AS 연봉_TOP_5_관리자,
+    (
+        SELECT 사원번호, 입출입시간, 지역, 입출입구분
+        FROM 사원출입기록
+        WHERE 입출입구분 = 'O'
+    ) AS 출입기록,
+    (
+        SELECT 사원번호, 직급명
+        FROM 직급
+        WHERE now() BETWEEN 시작일자 AND 종료일자
+    ) AS 직급
+)
+WHERE
+    연봉_TOP_5_관리자.사원번호 = 출입기록.사원번호
+    AND 연봉_TOP_5_관리자.사원번호 = 직급.사원번호
+ORDER BY 연봉_TOP_5_관리자.연봉 DESC, 출입기록.지역 ASC
+```
+</details>
+
+- 1.2 인덱스 설정 추가
+  - 인덱스 설정 후 쿼리 실행 시간 : 14.80 ms
+  - 인덱스 설정 후 Plan
+  ![](file/인덱스%20추가%20후%20Plan.png)
+<details><summary>인덱스 설정 추가</summary>
+
+```bash
+CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입기록(사원번호);
+```
+</details>
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
