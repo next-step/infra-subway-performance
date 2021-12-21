@@ -1,0 +1,36 @@
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: k6/stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 400 max VUs, 1m50s max duration (incl. graceful stop):
+           * default: Up to 400 looping VUs for 1m20s over 10 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (1m20.8s), 000/400 VUs, 7858 complete and 0 interrupted iterations
+default ✓ [======================================] 000/400 VUs  1m20s
+
+     ✓ found path
+
+     checks.........................: 100.00% ✓ 7858     ✗ 0
+     data_received..................: 3.6 MB  45 kB/s
+     data_sent......................: 817 kB  10 kB/s
+     http_req_blocked...............: avg=39.35µs  min=2µs     med=5µs   max=28ms    p(90)=16µs    p(95)=311.74µs
+     http_req_connecting............: avg=18.09µs  min=0s      med=0s    max=1.97ms  p(90)=0s      p(95)=205.44µs
+   ✗ http_req_duration..............: avg=1.13s    min=18.22ms med=1.16s max=6.75s   p(90)=2.37s   p(95)=3.1s
+       { expected_response:true }...: avg=1.13s    min=18.22ms med=1.16s max=6.75s   p(90)=2.37s   p(95)=3.1s
+     http_req_failed................: 0.00%   ✓ 0        ✗ 7858
+     http_req_receiving.............: avg=148.83µs min=21µs    med=107µs max=10.09ms p(90)=200.3µs p(95)=293µs
+     http_req_sending...............: avg=55.92µs  min=6µs     med=23µs  max=24.32ms p(90)=60µs    p(95)=89µs
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s    max=0s      p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=1.13s    min=18.07ms med=1.16s max=6.75s   p(90)=2.37s   p(95)=3.1s
+     http_reqs......................: 7858    97.29661/s
+     iteration_duration.............: avg=2.13s    min=1.01s   med=2.17s max=7.75s   p(90)=3.37s   p(95)=4.1s
+     iterations.....................: 7858    97.29661/s
+     vus............................: 14      min=10     max=400
+     vus_max........................: 400     min=400    max=400
