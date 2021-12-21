@@ -193,4 +193,8 @@ group by user.exercise;
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- 노선 조회 /lines
+- 역 조회 /stations
 
+3. master/slave 적용해보기
+- [slave 데이터 정상 확인](/images/slave.PNG)
