@@ -165,3 +165,9 @@ create index idx_member_age on subway.member (age);
 - 지하철역 목록 조회: /stations
 - 노선 목록 조회: /lines
 - 즐겨찾기 목록 조회: /favorites
+
+#### 부하테스트 결과
+
+- 테스트 스크립트: [stress.js](k6/stress.js)
+- 설정 전: [stress_before.log](k6/stress_before.log)
+- 설정 후: [stress_after.log](k6/stress_after.log)
