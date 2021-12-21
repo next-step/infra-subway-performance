@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
-    @Query("select l from Line l" )
+    @Query("select l from Line l where l.id >= ?1" )
     List<Line> findAll();
 }
