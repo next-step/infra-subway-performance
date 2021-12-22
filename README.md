@@ -90,7 +90,13 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-[실행결과 결과](/images/sql.PNG)
+[전체 실행 시간 결과](/images/sql.PNG)
+
+[Coding as a Hobby](/images/sql/1.PNG)
+[프로그래머별로 해당하는 병원 이름을 반환하세요.](/images/sql/2.PNG)
+[프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.](/images/sql/3.PNG)
+[서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요](/images/sql/4.PNG)
+[서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.](/images/sql/5.PNG)
 
 ``` mysql
 -- Coding as a Hobby 와 같은 결과를 반환하세요.
