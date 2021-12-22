@@ -961,7 +961,7 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
     ```
   - Before 실행시간 : 0.563s
   - ![](file/b1-before.png)
-  - After 실행시간 : 68ms
+  - After 실행시간 : 97ms
   - ![](file/b1-after.png)
 - B.2 프로그래머별로 해당하는 병원 이름을 반환하세요.
   - 조회쿼리 
@@ -972,10 +972,10 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
     hospital.id = covid.hospital_id
     AND covid.programmer_id IS NOT NULL;
     ```
-  - PK 추가
+  - PK, 인덱스 추가
     ```bash
-    ALTER TABLE covid ADD PRIMARY KEY (id);
     ALTER TABLE hospital ADD PRIMARY KEY (id);
+    CREATE INDEX INDEX_COVID_HOSPITAL_ID USING BTREE ON covid(hospital_id);
     ```
   - Before 실행시간 : 1ms (Query cost : 1827984.17)
   - ![](file/b2-before.png)
@@ -986,27 +986,26 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
     ```bash
     SELECT covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding 
     FROM (
-    programmer AS user,
-    covid,
-    hospital
+      programmer AS user,
+      covid,
+      hospital
     )
     WHERE
-    (user.student like 'Yes%' OR user.years_coding LIKE '0-2%')
-    AND user.hobby = 'Yes'
-    AND covid.hospital_id = hospital.id
-    AND covid.programmer_id = user.id
-    AND covid.programmer_id is not null
+      (user.student like 'Yes%' OR user.years_coding LIKE '0-2%')
+      AND user.hobby = 'Yes'
+      AND covid.hospital_id = hospital.id
+      AND covid.programmer_id = user.id
+      AND covid.programmer_id is not null
     ORDER BY user.id ASC;
     ```
   - PK, 인덱스 추가
     ```bash
     ALTER TABLE programmer ADD PRIMARY KEY (id);
     CREATE INDEX INDEX_COVID_HOSPITAL_PROGRAMMER USING BTREE ON covid(programmer_id, hospital_id);
-    CREATE INDEX INDEX_PROGRAMMER USING BTREE ON programmer(hobby, student, years_coding);
     ``` 
-  - Before 실행시간 : 20s 이상
+  - Before 실행시간 : 1.2s 
   - ![](file/b3-before.png)
-  - After 실행시간 : 100ms
+  - After 실행시간 : 20ms
   - ![](file/b3-after.png)
 - B.4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
   - 조회쿼리
@@ -1028,14 +1027,11 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
     ```
   - 인덱스 추가
     ```bash
-    ALTER TABLE covid ADD PRIMARY KEY (id);
-    ALTER TABLE programmer ADD PRIMARY KEY (id);
     CREATE INDEX INDEX_PROGRAMMER_COUNTRY USING BTREE ON programmer(country);
-    CREATE INDEX INDEX_COVID_HOSPITAL_PROGRAMMER USING BTREE ON covid(programmer_id, hospital_id);
     ``` 
   - Before 실행시간 : 5.15s
   - ![](file/b4-before.png)
-  - After 실행시간 : 78ms
+  - After 실행시간 : 94ms
   - ![](file/b4-after.png)
 - B.5 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
   - 조회쿼리
@@ -1054,14 +1050,14 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
       AND hospital.name = '서울대병원'
     GROUP BY user.Exercise;
     ```
-  - 인덱스 추가
+  - PK, 인덱스 추가
     ```bash
-    CREATE INDEX INDEX_HOSPITAL_IDBTREE ON covid(programmer_id, hospital_id, member_id);
-    CREATE INDEX INDEX_MEMBER USING BTREE ON member(age);
+    ALTER TABLE member ADD PRIMARY KEY (id);
+    CREATE INDEX INDEX_COVID_MEMBER_PROGRAMMER_HOSPITAL_ID USING BTREE ON covid(member_id, programmer_id, hospital_id);
     ```
   - Before 실행시간 : 2.1s
   - ![](file/b5-before.png)
-  - After 실행시간 : 94ms
+  - After 실행시간 : 62ms
   - ![](file/b5-after.png)
 ---
 
