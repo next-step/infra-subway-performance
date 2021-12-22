@@ -12,6 +12,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -38,16 +41,18 @@ public class FavoriteService {
     }
 
     @Cacheable(value = "favorites", key = "#loginMember.id")
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
+        Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        Map<Long, Station> stations = extractStations(favorites.getContent());
 
-        return favorites.stream()
-            .map(it -> FavoriteResponse.of(
-                it,
-                StationResponse.of(stations.get(it.getSourceStationId())),
-                StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+        List<FavoriteResponse> favoriteResponses = favorites.stream()
+                                                            .map(it -> FavoriteResponse.of(
+                                                                it,
+                                                                StationResponse.of(stations.get(it.getSourceStationId())),
+                                                                StationResponse.of(stations.get(it.getTargetStationId()))))
+                                                            .collect(Collectors.toList());
+        Page<FavoriteResponse> page = new PageImpl<>(favoriteResponses, pageable, favoriteResponses.size());
+        return page.getContent();
     }
 
     @CacheEvict(value = "favorites", key = "#loginMember.id")
