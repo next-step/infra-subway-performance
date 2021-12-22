@@ -204,3 +204,10 @@ group by user.exercise;
 
 3. master/slave 적용해보기
 - [slave 데이터 정상 확인](/images/slave.PNG)
+
+4. 페이징 후 부하테스트 해보기
+> 부하 테스트를 진행해봤는데 제 생각에는 페이징 처리 했으니 성능이 잘 나올거라고 너무나 당연하게 생각했는데   
+> stress 테스트는 1단계에서 아무것도 적용 안한 stress 테스트 와 성능이 거의 유사하게 나와서 
+> 많이 당황했던것 같습니다. 그래서 캐싱 적용을 시도했고, 성능이 완벽하게 개선된 모습을 보았습니다.   
+- [load 테스트](/images/page/page_load.PNG)
+- [stress 테스트](/images/page/page_stress.PNG)
