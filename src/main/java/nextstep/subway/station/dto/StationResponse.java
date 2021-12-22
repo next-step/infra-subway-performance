@@ -1,5 +1,6 @@
 package nextstep.subway.station.dto;
 
+import nextstep.subway.common.annotation.CustomLocalDateTimeJson;
 import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
@@ -7,7 +8,10 @@ import java.time.LocalDateTime;
 public class StationResponse {
     private Long id;
     private String name;
+
+    @CustomLocalDateTimeJson
     private LocalDateTime createdDate;
+    @CustomLocalDateTimeJson
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
@@ -32,11 +36,4 @@ public class StationResponse {
         return name;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
 }
