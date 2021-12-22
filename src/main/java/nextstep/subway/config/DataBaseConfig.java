@@ -24,7 +24,6 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"nextstep.subway"})
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @Profile("prod")
 public class DataBaseConfig {
 
