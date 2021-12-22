@@ -1062,4 +1062,5 @@ CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입�
 ---
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- https://tyranotyrano-subway.p-e.kr/favorites
 
