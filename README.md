@@ -176,6 +176,7 @@ ALTER TABLE programmer ADD INDEX p_country_index(country);
 ALTER TABLE member ADD INDEX m_age_index(age);
 ALTER TABLE covid ADD INDEX c_member_index(member_idx);
 ALTER TABLE hospital ADD INDEX h_id_nmae_index(id, name);
+ALTER TABLE hospital ADD INDEX h_nmae(name);
 SELECT
       stay,
       count(1)
