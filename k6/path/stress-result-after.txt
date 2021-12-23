@@ -1,0 +1,58 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 2000 max VUs, 9m40s max duration (incl. graceful stop):
+           * default: Up to 2000 looping VUs for 9m10s over 11 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/stations\": lookup hidy.kro.kr: no such host"
+WARN[0549] Request Failed                                error="Get \"https://hidy.kro.kr/paths/?source=1&target=3\": lookup hidy.kro.kr: no such host"
+
+running (9m10.9s), 0000/2000 VUs, 408222 complete and 0 interrupted iterations
+default ✓ [======================================] 0000/2000 VUs  9m10s
+
+     ✗ retrieved stations
+      ↳  23% — ✓ 96943 / ✗ 311279
+     ✗ find path
+      ↳  23% — ✓ 96944 / ✗ 311278
+
+     checks.........................: 23.74% ✓ 193887      ✗ 622557
+     data_received..................: 7.4 GB 13 MB/s
+     data_sent......................: 58 MB  105 kB/s
+     http_req_blocked...............: avg=11.14µs min=0s     med=0s      max=942.14ms p(90)=1µs     p(95)=1µs
+     http_req_connecting............: avg=4.95µs  min=0s     med=0s      max=724.95ms p(90)=0s      p(95)=0s
+     http_req_duration..............: avg=18.43ms min=0s     med=0s      max=1.86s    p(90)=49.36ms p(95)=102.47ms
+       { expected_response:true }...: avg=77.63ms min=6.57ms med=38.54ms max=1.86s    p(90)=169ms   p(95)=254.75ms
+     http_req_failed................: 76.25% ✓ 622557      ✗ 193887
+     http_req_receiving.............: avg=1.07ms  min=0s     med=0s      max=1.14s    p(90)=2.24ms  p(95)=5.64ms
+     http_req_sending...............: avg=12.46µs min=0s     med=0s      max=2.17ms   p(90)=48µs    p(95)=62µs
+     http_req_tls_handshaking.......: avg=6µs     min=0s     med=0s      max=216.99ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=17.34ms min=0s     med=0s      max=1.85s    p(90)=44.6ms  p(95)=95.79ms
+     http_reqs......................: 816444 1481.905725/s
+     iteration_duration.............: avg=1.03s   min=1s     med=1s      max=3.13s    p(90)=1.11s   p(95)=1.2s
+     iterations.....................: 408222 740.952862/s
+     vus............................: 129    min=2         max=2000
+     vus_max........................: 2000   min=2000      max=2000

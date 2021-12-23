@@ -1,0 +1,62 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./k6/myinfo-update/stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 4000 max VUs, 11m10s max duration (incl. graceful stop):
+           * default: Up to 4000 looping VUs for 10m40s over 13 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+...
+
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0642] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+
+running (21m45.4s), 0000/4000 VUs, 2035741 complete and 0 interrupted iterations
+default ↓ [======================================] 2782/4000 VUs  10m40s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✗ updated member
+      ↳  99% — ✓ 111414 / ✗ 3
+
+     checks.........................: 99.99%  ✓ 334250      ✗ 3
+     data_received..................: 197 MB  151 kB/s
+     data_sent......................: 118 MB  90 kB/s
+     http_req_blocked...............: avg=2.8µs    min=0s      med=0s      max=218.59ms p(90)=0s       p(95)=1µs
+     http_req_connecting............: avg=853ns    min=0s      med=0s      max=116.05ms p(90)=0s       p(95)=0s
+     http_req_duration..............: avg=5.59ms   min=0s      med=0s      max=11m7s    p(90)=14.44ms  p(95)=18.68ms
+       { expected_response:true }...: avg=37.64ms  min=8.09ms  med=16.24ms max=11m7s    p(90)=33.28ms  p(95)=48.93ms
+     http_req_failed................: 85.20%  ✓ 1924327     ✗ 334250
+     http_req_receiving.............: avg=321.25µs min=0s      med=0s      max=11m7s    p(90)=31µs     p(95)=44µs
+     http_req_sending...............: avg=11.94µs  min=0s      med=0s      max=7.13ms   p(90)=65µs     p(95)=83µs
+     http_req_tls_handshaking.......: avg=1.82µs   min=0s      med=0s      max=152.35ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=5.26ms   min=0s      med=0s      max=11m7s    p(90)=14.22ms  p(95)=18.45ms
+     http_reqs......................: 2258577 1730.131119/s
+     iteration_duration.............: avg=228.31ms min=60.72µs med=99.15ms max=8.25s    p(90)=438.41ms p(95)=1.04s
+     iterations.....................: 2035741 1559.432712/s
+     vus............................: 3       min=2         max=4000
+     vus_max........................: 4000    min=4000      max=4000
