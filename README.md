@@ -102,8 +102,115 @@ npm run dev
     CREATE INDEX 사원출입기록_사원번호_index ON 사원출입기록 (사원번호);
   ```
 
+##### B. 인덱스 설계
 
+> 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
+- Coding as a Hobby 와 같은 결과를 반환하세요.  
+  - 추가 ddl
+    ```sql 
+    CREATE INDEX programmer_hobby_index ON programmer (hobby);
+    ```
+  - dml  
+    ```sql 
+    SELECT round(((SUM(IF(hobby = 'Yes', 1, 0))) / count(id)) * 100, 1) as 'Yes',
+           round(((SUM(IF(hobby = 'No', 1, 0))) / count(id)) * 100, 1)  as 'No'
+    FROM programmer;
+    ```
+  - execute (실행시간: 63ms)   
+    ![coding-hobby-explain](images/index-design/coding-hobby-explain.png)
+    ![coding-hobby-execute](images/index-design/coding-hobby-execute.png)
+    
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  
+  - 추가 ddl
+    ```sql 
+    ALTER TABLE programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+    ALTER TABLE hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+    ALTER TABLE covid ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+    
+    CREATE INDEX covid_hospital_id_index ON covid (hospital_id);
+    CREATE INDEX covid_programmer_id_index ON covid (programmer_id);
+    
+    ALTER TABLE hospital MODIFY name VARCHAR(255) NOT NULL;
+    CREATE UNIQUE INDEX hospital_name_uindex ON hospital (name);
+    ```
+  - dml
+    ```sql
+    SELECT c.id, h.name
+    FROM (SELECT id, name FROM hospital) h
+             INNER JOIN (SELECT id, hospital_id, programmer_id FROM covid) c ON h.id = c.hospital_id
+             INNER JOIN (SELECT id FROM programmer) p ON c.programmer_id = p.id;
+    ```
+  - execute (실행시간: 5.1ms)   
+    ![hospital-name-explain](images/index-design/hospital-name-explain.png)
+    ![hospital-name-execute](images/index-design/hospital-name-execute.png)
+    
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+  - dml
+    ```sql
+    SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding 
+    FROM (SELECT id, name FROM hospital) h 
+             INNER JOIN (SELECT id, programmer_id, hospital_id FROM covid) c ON c.hospital_id = h.id 
+             INNER JOIN (SELECT id, hobby, dev_type, years_coding 
+                         FROM programmer 
+                         WHERE hobby = 'Yes' 
+                           AND (student LIKE 'Yes%' OR years_coding = '0-2 years')) p ON p.id = c.programmer_id 
+    ORDER BY p.id; 
+    ```
+  - execute (실행시간: 4.9ms)   
+    ![student-junior-explain](images/index-design/student-junior-explain.png)  
+    ![student-junior-execute](images/index-design/student-junior-execute.png)
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+  - 추가 ddl
+    ```sql 
+    CREATE INDEX programmer_member_id_index ON programmer (member_id);
+    CREATE INDEX programmer_country_index ON programmer (country);
+    
+    CREATE INDEX member_age_index ON member (age);
+    
+    CREATE INDEX covid_stay_index ON covid (stay);
+    ```
+  - dml
+    ```sql
+    SELECT c.stay, count(c.programmer_id)
+    FROM (SELECT id FROM hospital WHERE name = '서울대병원') h
+             INNER JOIN (SELECT stay, hospital_id, programmer_id FROM covid) c ON c.hospital_id = h.id
+             INNER JOIN (SELECT id, member_id FROM programmer WHERE country = 'India') p ON p.id = c.programmer_id
+             INNER JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) m ON p.member_id = m.id
+    GROUP BY c.stay
+    ORDER BY NULL;
+    ```
+  - execute (실행시간: 43ms)   
+    ![india-explain](images/index-design/india-explain.png)  
+    ![india-execute](images/index-design/india-execute.png)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+  - 추가 ddl
+    ```sql 
+    ALTER TABLE programmer MODIFY exercise VARCHAR(255) NOT NULL;
+    CREATE INDEX programmer_exercise_index ON programmer (exercise);
+    
+    CREATE INDEX covid_hospital_id_programmer_id_index ON covid (hospital_id, programmer_id);
+    ```
+  - dml
+    ```sql
+     SELECT p.exercise, count(p.id)
+     FROM (SELECT id FROM hospital WHERE name = '서울대병원') h
+              INNER JOIN (SELECT hospital_id, programmer_id FROM covid) c ON c.hospital_id = h.id
+              INNER JOIN (SELECT id, member_id, exercise FROM programmer) p ON p.id = c.programmer_id
+              INNER JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) m ON p.member_id = m.id
+     GROUP BY p.exercise
+     ORDER BY NULL;
+    ```
+  - execute (실행시간: 27ms)
+    ![exercise-explain](images/index-design/exercise-explain.png)  
+    ![exercise-execute](images/index-design/exercise-execute.png)
 
 #### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
