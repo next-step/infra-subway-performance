@@ -52,7 +52,6 @@ npm run dev
 - 페이지에 대한 성능은 별로 차이가 없음을 볼 수 있습니다..
 - k6로 다시 테스트 했을 때 paths 조회에서 http_req_duration이 4~5배 가량 좋아진 것을 볼 수 있습니다.
 - [paths stress test](/k6/path/stress_path_result.md), [paths load test](/k6/path/load_path_result.md)
-- 
 ---
 
 ### 2단계 - 조회 성능 개선하기
