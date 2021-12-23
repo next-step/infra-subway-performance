@@ -1,0 +1,38 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 300 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: Up to 300 looping VUs for 30s over 4 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0000] error getting terminal size                   error="The handle is invalid."
+
+running (0m43.5s), 000/300 VUs, 683 complete and 0 interrupted iterations
+default ✓ [======================================] 000/300 VUs  30s
+
+     ✓ find path
+
+     checks.........................: 100.00% ✓ 683       ✗ 0
+     data_received..................: 2.3 MB  54 kB/s
+     data_sent......................: 100 kB  2.3 kB/s
+     http_req_blocked...............: avg=1.84ms  min=0s       med=0s       max=10.56ms p(90)=4.71ms  p(95)=5.1ms
+     http_req_connecting............: avg=1.66ms  min=0s       med=0s       max=6.63ms  p(90)=4.34ms  p(95)=4.64ms
+   ✗ http_req_duration..............: avg=10.7s   min=780.59ms med=11.82s   max=27.68s  p(90)=15.75s  p(95)=15.92s
+       { expected_response:true }...: avg=10.7s   min=780.59ms med=11.82s   max=27.68s  p(90)=15.75s  p(95)=15.92s
+     http_req_failed................: 0.00%   ✓ 0         ✗ 683
+     http_req_receiving.............: avg=1.64ms  min=0s       med=774.59µs max=38.58ms p(90)=4.35ms  p(95)=7.49ms
+     http_req_sending...............: avg=143.8µs min=0s       med=0s       max=1.18ms  p(90)=579.1µs p(95)=826.15µs
+     http_req_tls_handshaking.......: avg=0s      min=0s       med=0s       max=0s      p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=10.7s   min=779.21ms med=11.82s   max=27.68s  p(90)=15.75s  p(95)=15.92s
+     http_reqs......................: 683     15.693092/s
+     iteration_duration.............: avg=11.71s  min=1.78s    med=12.83s   max=28.69s  p(90)=16.76s  p(95)=16.93s
+     iterations.....................: 683     15.693092/s
+     vus............................: 13      min=10      max=300
+     vus_max........................: 300     min=300     max=300
