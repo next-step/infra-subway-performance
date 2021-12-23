@@ -43,109 +43,6 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-   - Smoke 테스트(로그인, 나의 정보 찾기, 라인 찾기, 최소경로 찾기)
-     - <details>
-         <summary>성능개선 전</summary>
-         <div markdown="1">
-         
-         ```text
-         
-                      /\      |‾‾| /‾‾/   /‾‾/   
-                 /\  /  \     |  |/  /   /  /    
-                /  \/    \    |     (   /   ‾‾\  
-               /          \   |  |\  \ |  (‾)  |
-              / __________ \  |__| \__\ \_____/ .io
-         
-         execution: local
-         script: smoke.js
-         output: -
-         
-         scenarios: (100.00%) 1 scenario, 2 max VUs, 1m0s max duration (incl. graceful stop):
-         * default: 2 looping VUs for 30s (gracefulStop: 30s)
-         
-         
-         running (0m31.1s), 0/2 VUs, 55 complete and 0 interrupted iterations
-         default ✓ [======================================] 2 VUs  30s
-         
-              ✓ logged in successfully
-              ✓ found member
-              ✓ found line
-              ✓ found path
-         
-              checks.........................: 100.00% ✓ 220      ✗ 0  
-              data_received..................: 636 kB  21 kB/s
-              data_sent......................: 59 kB   1.9 kB/s
-              http_req_blocked...............: avg=306.46µs min=3.74µs  med=4.99µs  max=28.95ms  p(90)=7.59µs   p(95)=8.54µs  
-              http_req_connecting............: avg=9.09µs   min=0s      med=0s      max=623.44µs p(90)=0s       p(95)=0s      
-            ✓ http_req_duration..............: avg=26.85ms  min=6.46ms  med=12.72ms max=220.92ms p(90)=66.21ms  p(95)=89.39ms
-                  { expected_response:true }...: avg=26.85ms  min=6.46ms  med=12.72ms max=220.92ms p(90)=66.21ms  p(95)=89.39ms
-              http_req_failed................: 0.00%   ✓ 0        ✗ 220
-              http_req_receiving.............: avg=68.45µs  min=28.14µs med=60.37µs max=243.34µs p(90)=105.76µs p(95)=127.28µs
-              http_req_sending...............: avg=19.58µs  min=11.1µs  med=15.69µs max=193.58µs p(90)=27.47µs  p(95)=30.15µs
-              http_req_tls_handshaking.......: avg=175.93µs min=0s      med=0s      max=15.81ms  p(90)=0s       p(95)=0s      
-              http_req_waiting...............: avg=26.76ms  min=6.41ms  med=12.62ms max=220.82ms p(90)=66.11ms  p(95)=89.34ms
-              http_reqs......................: 220     7.082426/s
-              iteration_duration.............: avg=1.11s    min=1.06s   med=1.08s   max=1.48s    p(90)=1.14s    p(95)=1.16s   
-              iterations.....................: 55      1.770606/s
-              vus............................: 1       min=1      max=2
-              vus_max........................: 2       min=2      max=2
-         
-         ```
-         
-         </div>
-       </details>
-
-     - <details>
-         <summary>성능개선 후</summary>
-         <div markdown="1">
-       
-         ```text
-         
-                      /\      |‾‾| /‾‾/   /‾‾/   
-                 /\  /  \     |  |/  /   /  /    
-                /  \/    \    |     (   /   ‾‾\  
-               /          \   |  |\  \ |  (‾)  |
-              / __________ \  |__| \__\ \_____/ .io
-         
-         execution: local
-         script: smoke.js
-         output: -
-         
-         scenarios: (100.00%) 1 scenario, 2 max VUs, 1m0s max duration (incl. graceful stop):
-         * default: 2 looping VUs for 30s (gracefulStop: 30s)
-         
-         
-         running (0m30.6s), 0/2 VUs, 60 complete and 0 interrupted iterations
-         default ✓ [======================================] 2 VUs  30s
-         
-              ✓ logged in successfully
-              ✓ found member
-              ✓ found line
-              ✓ found path
-         
-              checks.........................: 100.00% ✓ 240      ✗ 0  
-              data_received..................: 666 kB  22 kB/s
-              data_sent......................: 25 kB   826 B/s
-              http_req_blocked...............: avg=146.08µs min=2.58µs  med=2.77µs  max=17.24ms  p(90)=2.96µs   p(95)=3.08µs  
-              http_req_connecting............: avg=3.74µs   min=0s      med=0s      max=460.03µs p(90)=0s       p(95)=0s      
-            ✓ http_req_duration..............: avg=4.09ms   min=2.07ms  med=4.4ms   max=9.2ms    p(90)=5.67ms   p(95)=5.86ms  
-                  { expected_response:true }...: avg=4.09ms   min=2.07ms  med=4.4ms   max=9.2ms    p(90)=5.67ms   p(95)=5.86ms  
-              http_req_failed................: 0.00%   ✓ 0        ✗ 240
-              http_req_receiving.............: avg=103.77µs min=22.43µs med=55.63µs max=801.45µs p(90)=230.17µs p(95)=360.57µs
-              http_req_sending...............: avg=71.34µs  min=36.95µs med=52.55µs max=888.04µs p(90)=99.02µs  p(95)=112.36µs
-              http_req_tls_handshaking.......: avg=134.9µs  min=0s      med=0s      max=16.3ms   p(90)=0s       p(95)=0s      
-              http_req_waiting...............: avg=3.91ms   min=1.97ms  med=4.25ms  max=9.09ms   p(90)=5.5ms    p(95)=5.77ms  
-              http_reqs......................: 240     7.853187/s
-              iteration_duration.............: avg=1.01s    min=1.01s   med=1.01s   max=1.03s    p(90)=1.01s    p(95)=1.02s   
-              iterations.....................: 60      1.963297/s
-              vus............................: 2       min=2      max=2
-              vus_max........................: 2       min=2      max=2
-         
-         ```
-       
-         </div>
-       </details>
-
    - Load 테스트(로그인, 나의 정보 찾기, 라인 찾기, 최소경로 찾기)
      - <details>
          <summary>성능개선 전</summary>
@@ -353,6 +250,206 @@ npm run dev
          </div>
        </details>
 
+   - Load 테스트(멤버추가, 멤버나이변경, 멤버삭제)
+     - <details>
+         <summary>캐쉬 적용 전</summary>
+         <div markdown="1">
+
+         ```text
+         
+                      /\      |‾‾| /‾‾/   /‾‾/   
+                 /\  /  \     |  |/  /   /  /    
+                /  \/    \    |     (   /   ‾‾\  
+               /          \   |  |\  \ |  (‾)  |
+              / __________ \  |__| \__\ \_____/ .io
+         
+         execution: local
+         script: add-update-delete-load.js
+         output: -
+         
+         scenarios: (100.00%) 1 scenario, 300 max VUs, 45s max duration (incl. graceful stop):
+         * default: Up to 300 looping VUs for 15s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+         
+         
+         running (16.0s), 000/300 VUs, 2442 complete and 0 interrupted iterations
+         default ✓ [======================================] 000/300 VUs  15s
+         
+              ✓ add result status is 201
+              ✓ update result status is 200
+              ✓ delete result status is 204
+         
+         ✓ checks.........................: 100.00% ✓ 7326       ✗ 0    
+           data_received..................: 2.5 MB  156 kB/s
+           data_sent......................: 905 kB  57 kB/s
+           http_req_blocked...............: avg=369.74µs min=1.42µs  med=2.73µs  max=83.07ms  p(90)=2.93µs   p(95)=89.35µs
+           http_req_connecting............: avg=75.53µs  min=0s      med=0s      max=51.4ms   p(90)=0s       p(95)=0s     
+         ✓ http_req_duration..............: avg=32.06ms  min=17.64µs med=18.58ms max=293.62ms p(90)=77.39ms  p(95)=96.44ms
+             { expected_response:true }...: avg=32.06ms  min=17.64µs med=18.58ms max=293.62ms p(90)=77.39ms  p(95)=96.44ms
+           http_req_failed................: 0.00%   ✓ 0          ✗ 7326
+           http_req_receiving.............: avg=1.15ms   min=17.28µs med=42.94µs max=67.21ms  p(90)=2.83ms   p(95)=6.41ms
+           http_req_sending...............: avg=431.98µs min=0s      med=58.87µs max=66.86ms  p(90)=368.88µs p(95)=1.33ms
+           http_req_tls_handshaking.......: avg=269.07µs min=0s      med=0s      max=52.67ms  p(90)=0s       p(95)=0s     
+           http_req_waiting...............: avg=30.47ms  min=0s      med=16.9ms  max=286.39ms p(90)=74.62ms  p(95)=94.14ms
+           http_reqs......................: 7326    458.426294/s
+           iteration_duration.............: avg=1.1s     min=1.01s   med=1.06s   max=1.45s    p(90)=1.23s    p(95)=1.27s  
+           iterations.....................: 2442    152.808765/s
+           vus............................: 30      min=30       max=299
+           vus_max........................: 300     min=300      max=300
+                       
+         ```
+         </div>
+       </details>
+
+     - <details>
+         <summary>캐쉬 적용 후</summary>
+         <div markdown="1">
+
+         ```text
+         
+                      /\      |‾‾| /‾‾/   /‾‾/   
+                 /\  /  \     |  |/  /   /  /    
+                /  \/    \    |     (   /   ‾‾\  
+               /          \   |  |\  \ |  (‾)  |
+              / __________ \  |__| \__\ \_____/ .io
+         
+         execution: local
+         script: add-update-delete-load.js
+         output: -
+         
+         scenarios: (100.00%) 1 scenario, 300 max VUs, 45s max duration (incl. graceful stop):
+         * default: Up to 300 looping VUs for 15s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+         
+         
+         running (15.8s), 000/300 VUs, 2548 complete and 0 interrupted iterations
+         default ✓ [======================================] 000/300 VUs  15s
+         
+              ✓ add result status is 201
+              ✓ update result status is 200
+              ✓ delete result status is 204
+         
+            ✓ checks.........................: 100.00% ✓ 7644       ✗ 0    
+              data_received..................: 2.5 MB  161 kB/s
+              data_sent......................: 935 kB  59 kB/s
+              http_req_blocked...............: avg=344.82µs min=1.4µs   med=2.72µs  max=55.73ms  p(90)=3.03µs   p(95)=253.39µs
+              http_req_connecting............: avg=60.39µs  min=0s      med=0s      max=21.28ms  p(90)=0s       p(95)=0s      
+            ✓ http_req_duration..............: avg=15.4ms   min=28.66µs med=11.06ms max=112.41ms p(90)=30.45ms  p(95)=37.82ms
+                { expected_response:true }...: avg=15.4ms   min=28.66µs med=11.06ms max=112.41ms p(90)=30.45ms  p(95)=37.82ms
+              http_req_failed................: 0.00%   ✓ 0          ✗ 7644
+              http_req_receiving.............: avg=921.34µs min=15.28µs med=66.08µs max=40.2ms   p(90)=2.59ms   p(95)=4.9ms   
+              http_req_sending...............: avg=367.07µs min=0s      med=62.09µs max=36.79ms  p(90)=536.45µs p(95)=1.35ms  
+              http_req_tls_handshaking.......: avg=248.19µs min=0s      med=0s      max=54.49ms  p(90)=0s       p(95)=0s      
+              http_req_waiting...............: avg=14.12ms  min=0s      med=10.28ms max=112.32ms p(90)=27.2ms   p(95)=34.24ms
+              http_reqs......................: 7644    483.866819/s
+              iteration_duration.............: avg=1.05s    min=1.01s   med=1.03s   max=1.19s    p(90)=1.09s    p(95)=1.1s    
+              iterations.....................: 2548    161.28894/s
+              vus............................: 27      min=27       max=300
+              vus_max........................: 300     min=300      max=300                
+
+         ```
+         </div>
+       </details>
+  
+   - Stress 테스트(멤버추가, 멤버나이변경, 멤버삭제) 
+     - <details>
+         <summary>캐쉬 적용 전</summary>
+         <div markdown="1">
+
+         ```text
+         
+                   /\      |‾‾| /‾‾/   /‾‾/   
+              /\  /  \     |  |/  /   /  /    
+              /  \/    \    |     (   /   ‾‾\  
+              /          \   |  |\  \ |  (‾)  |
+              / __________ \  |__| \__\ \_____/ .io
+         
+         execution: local
+         script: add-update-delete-stress.js
+         output: -
+         
+         scenarios: (100.00%) 1 scenario, 400 max VUs, 2m50s max duration (incl. graceful stop):
+         * default: Up to 400 looping VUs for 2m20s over 8 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+         
+         
+         running (2m20.6s), 000/400 VUs, 27614 complete and 0 interrupted iterations
+         default ✓ [======================================] 000/400 VUs  2m20s
+         
+              ✓ add result status is 201
+              ✓ update result status is 200
+              ✓ delete result status is 204
+         
+            ✓ checks.........................: 100.00% ✓ 82842      ✗ 0    
+              data_received..................: 14 MB   103 kB/s
+              data_sent......................: 8.5 MB  61 kB/s
+              http_req_blocked...............: avg=96.2µs   min=1.34µs  med=2.71µs   max=265.64ms p(90)=2.91µs   p(95)=8.27µs  
+              http_req_connecting............: avg=19.1µs   min=0s      med=0s       max=109.26ms p(90)=0s       p(95)=0s      
+            ✓ http_req_duration..............: avg=29.85ms  min=13.95µs med=16.14ms  max=616.5ms  p(90)=70.49ms  p(95)=104.32ms
+                { expected_response:true }...: avg=29.85ms  min=13.95µs med=16.14ms  max=616.5ms  p(90)=70.49ms  p(95)=104.32ms
+              http_req_failed................: 0.00%   ✓ 0          ✗ 82842
+              http_req_receiving.............: avg=1.84ms   min=13.81µs med=151.13µs max=119.25ms p(90)=4.84ms   p(95)=9.27ms  
+              http_req_sending...............: avg=527.89µs min=0s      med=62.66µs  max=137.36ms p(90)=642.33µs p(95)=1.73ms  
+              http_req_tls_handshaking.......: avg=53.61µs  min=0s      med=0s       max=156.21ms p(90)=0s       p(95)=0s      
+              http_req_waiting...............: avg=27.47ms  min=0s      med=14.79ms  max=611.59ms p(90)=63.5ms   p(95)=96.85ms
+              http_reqs......................: 82842   589.227654/s
+              iteration_duration.............: avg=1.09s    min=1.01s   med=1.05s    max=2.04s    p(90)=1.22s    p(95)=1.31s   
+              iterations.....................: 27614   196.409218/s
+              vus............................: 4       min=4        max=400
+              vus_max........................: 400     min=400      max=400
+
+         ```
+         </div>
+       </details>
+  
+     - <details>
+         <summary>캐쉬 적용 후</summary>
+         <div markdown="1">
+  
+         ```text
+
+                   /\      |‾‾| /‾‾/   /‾‾/   
+              /\  /  \     |  |/  /   /  /    
+              /  \/    \    |     (   /   ‾‾\  
+              /          \   |  |\  \ |  (‾)  |
+              / __________ \  |__| \__\ \_____/ .io
+         
+         execution: local
+         script: add-update-delete-stress.js
+         output: -
+         
+         scenarios: (100.00%) 1 scenario, 400 max VUs, 2m50s max duration (incl. graceful stop):
+         * default: Up to 400 looping VUs for 2m20s over 8 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+         
+         
+         running (2m21.0s), 000/400 VUs, 28037 complete and 0 interrupted iterations
+         default ✓ [======================================] 000/400 VUs  2m20s
+         
+              ✓ add result status is 201
+              ✓ update result status is 200
+              ✓ delete result status is 204
+         
+              ✓ checks.........................: 100.00% ✓ 84111      ✗ 0    
+                data_received..................: 15 MB   104 kB/s
+                data_sent......................: 8.7 MB  61 kB/s
+                http_req_blocked...............: avg=84.98µs  min=1.39µs  med=2.72µs  max=202.96ms p(90)=2.91µs   p(95)=6.97µs
+                http_req_connecting............: avg=17.21µs  min=0s      med=0s      max=101.75ms p(90)=0s       p(95)=0s     
+              ✓ http_req_duration..............: avg=24.12ms  min=12.89µs med=14.45ms max=1.05s    p(90)=54.52ms  p(95)=76.16ms
+                  { expected_response:true }...: avg=24.12ms  min=12.89µs med=14.45ms max=1.05s    p(90)=54.52ms  p(95)=76.16ms
+                http_req_failed................: 0.00%   ✓ 0          ✗ 84111
+                http_req_receiving.............: avg=2.08ms   min=12.89µs med=138.6µs max=137.71ms p(90)=5.35ms   p(95)=9.96ms
+                http_req_sending...............: avg=619.34µs min=0s      med=62.49µs max=222.37ms p(90)=708.98µs p(95)=1.97ms
+                http_req_tls_handshaking.......: avg=45.44µs  min=0s      med=0s      max=129.38ms p(90)=0s       p(95)=0s     
+                http_req_waiting...............: avg=21.42ms  min=0s      med=12.94ms max=1.05s    p(90)=47.86ms  p(95)=66.07ms
+                http_reqs......................: 84111   596.602789/s
+                iteration_duration.............: avg=1.07s    min=1.01s   med=1.05s   max=2.22s    p(90)=1.16s    p(95)=1.22s  
+                iterations.....................: 28037   198.867596/s
+                vus............................: 6       min=6        max=399
+                vus_max........................: 400     min=400      max=400       
+       
+         ```
+       
+         </div>
+       </details>  
+  
+  
   
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - Reverse Proxy 개선하기   
@@ -375,14 +472,23 @@ npm run dev
        - DTO중 캐쉬처리를 위해 (역)직렬화 안되는 LocalDateTime 필드에 관련 어노테이션 추가
          - https://www.tutorialspoint.com/jackson_annotations/jackson_annotations_jsonserialize.htm
          - https://www.tutorialspoint.com/jackson_annotations/jackson_annotations_jsondeserialize.htm
+     - 정적 리소스(js, img)에 대한 캐시처리 진행하기
+       - application-prod.properties에 spring.web.resources.cache.cachecontrol.max-age=365d를 추가하였음
+       - Reverse Proxy에 설정이 되어 있다면 그것을 우선하게 됨
      - 결론
        - 가장 쉽고 명확하게 응답시간의 감소를 확인할 수 있었음
        - http_req_duration기준 전/후 결과 값을 다음과 같이 확인 할 수 있었음
          - 다음 결과는 `테스트 유형(전 -> 후)`의 형태로 작성하였음 
-         - Smoke(26ms -> 4.09ms)
          - Load(333.72ms -> 60.82ms)
          - Stress(345.62ms -> 71.85ms)
----
+       - `멤버추가, 멤버나이변경, 멤버삭제`에 대한 Load, Stress 테스트 진행에 대한 진단리뷰
+         - http_req_duration기준 avg값을 기반으로 함 
+         - 다음 결과는 `테스트 유형(전 -> 후)`의 형태로 작성하였음
+         - Load(32.06ms -> 15.4ms)
+         - Stress(29.85ms -> 24.12ms)
+         - 테스트 결과를 볼 때, 성능 개선이 되었다고 보기 어려움
+         - 데이터를 추가/삭제가 빈번할 때는 캐쉬의 영향이 크게 작용하지 않을 수도 있다는 생각을 해봄
+--- 
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
