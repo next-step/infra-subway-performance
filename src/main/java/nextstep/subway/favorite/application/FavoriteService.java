@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -35,6 +37,7 @@ public class FavoriteService {
     }
 
     @CacheEvict(value = "favorites", key = "#loginMember.id")
+    @Transactional
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
@@ -56,6 +59,7 @@ public class FavoriteService {
     }
 
     @CacheEvict(value = "favorites", key = "#loginMember.id")
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {

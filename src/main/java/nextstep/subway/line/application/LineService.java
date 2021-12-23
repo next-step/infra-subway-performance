@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -32,6 +32,7 @@ public class LineService {
         @CacheEvict(value = "line", key = "#id"),
         @CacheEvict(value = "lines")
     })
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -65,6 +66,7 @@ public class LineService {
         @CacheEvict(value = "line", key = "#id"),
         @CacheEvict(value = "lines")
     })
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -74,6 +76,7 @@ public class LineService {
         @CacheEvict(value = "line", key = "#id"),
         @CacheEvict(value = "lines")
     })
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
@@ -82,6 +85,7 @@ public class LineService {
         @CacheEvict(value = "line", key = "#id"),
         @CacheEvict(value = "lines")
     })
+    @Transactional
     public void addLineStation(Long id, SectionRequest request) {
         Line line = findLineById(id);
         Station upStation = stationService.findById(request.getUpStationId());
@@ -93,6 +97,7 @@ public class LineService {
         @CacheEvict(value = "line", key = "#id"),
         @CacheEvict(value = "lines")
     })
+    @Transactional
     public void removeLineStation(Long id, Long stationId) {
         Line line = findLineById(id);
         line.removeStation(stationId);
