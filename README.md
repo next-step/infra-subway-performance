@@ -100,6 +100,8 @@ npm run dev
 ![img.png](src/main/resources/images/1-2.png)
 
 
+![img.png](src/main/resources/images/1-1-1.png)
+
 ## 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
 
@@ -112,11 +114,11 @@ ALTER TABLE covid ADD INDEX c_hospital_id(hospital_id);
     FROM hospital H
    INNER JOIN covid C
       ON H.id = C.hospital_id
-   INNER JOIN programmer P
-      ON P.id = C.programmer_id ;
+   INNER JOIN (SELECT P.id FROM programmer P WHERE member_id IS NOT NULL) 프로그래머
+      ON C.member_id = 프로그래머.id;
 ```
 
-
+![img.png](src/main/resources/images/img.png)
 
 ## 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
 
@@ -143,6 +145,7 @@ FROM (
         FROM covid C
         INNER JOIN programmer P
            ON P.id = C.programmer_id
+          AND P.member_id IS NOT NULL
           AND P.member_id = C.id  
         INNER JOIN member M
            ON M.id = P.member_id
@@ -157,6 +160,8 @@ INNER JOIN hospital H
 
 ```
 ![img.png](src/main/resources/images/2-2.png)
+
+![img.png](src/main/resources/images/2-2-1.png)
 
 --------------
 
@@ -186,12 +191,11 @@ FROM
             SELECT
               코비드.member_id,
                    코비드.stay
-             FROM (SELECT H.id, H.name FROM hospital H WHERE name ='서울대병원') 병원
-            INNER JOIN covid 코비드 
-               ON 병원.id = 코비드.hospital_id
+             FROM covid 코비드 
        ) T2
   ON T1.id = T2.member_id
-
+INNER JOIN hospital 병원
+WHERE 병원.name ='서울대병원'
 GROUP BY stay
 ORDER BY null;
 
@@ -199,6 +203,9 @@ ORDER BY null;
 ```
 
 ![img.png](src/main/resources/images/2-3.png)
+
+
+![img.png](src/main/resources/images/2-3-1.png)
 
 ---
 ## 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -231,7 +238,7 @@ ORDER BY NULL;
 ```
 ![img.png](src/main/resources/images/2-4.png)
 
-
+![img.png](src/main/resources/images/2-4-1.png)
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-/stations
-/lines
+/stations   
+/lines   
