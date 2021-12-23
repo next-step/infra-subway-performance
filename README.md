@@ -90,5 +90,124 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+[전체 실행 시간 결과](/images/sql.PNG)
 
+[Coding as a Hobby](/images/sql/1.PNG)
+[프로그래머별로 해당하는 병원 이름을 반환하세요.](/images/sql/2.PNG)
+[프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.](/images/sql/3.PNG)
+[서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요](/images/sql/4.PNG)
+[서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.](/images/sql/5.PNG)
+
+``` mysql
+-- Coding as a Hobby 와 같은 결과를 반환하세요.
+-- hobby 설정
+select 
+	  (sum(case when hobby = 'Yes' then 1 else 0 end) / count(*)) * 100 as '네'
+    , (sum(case when hobby = 'No' then 1 else 0 end) / count(*)) * 100 as '아니오'
+from  programmer;
+
+-- 프로그래머별로 해당하는 병원 이름을 반환하세요.
+-- covid, hospital pk 설정
+select 
+	   cv.id
+     , hp.name
+from   programmer pg
+join   covid cv
+on     pg.id = cv.programmer_id
+join   hospital hp
+on     hp.id = cv.hospital_id;
+
+-- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+select 
+	   programmer.covid_id
+	 , hospital.name
+     , programmer.hobby
+     , programmer.dev_type
+     , programmer.years_coding
+from (
+		select 
+			   c.id as covid_id
+			 , c.hospital_id
+             , m.id as member_id
+			 , hobby
+             , dev_type
+             , years_coding
+        from   covid c
+        join   programmer p
+        on     p.id = c.programmer_id
+        join   member m
+        on     m.id = p.member_id
+        where  hobby = 'Yes'
+		and    ( student = 'Yes' or years_coding = '0-2 years' )
+        order  by m.id
+) programmer
+join hospital hospital
+on   hospital.id = programmer.hospital_id
+;
+
+-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요
+select 
+	   covid.stay
+	 , count(*)
+from (
+		select 
+			   m.id as member_id
+		from   member m
+		join   programmer p
+		on     m.id = p.member_id
+        where  p.country = 'India'
+		and    m.age between 20 and 30
+) user
+join (
+		select 
+			   c.member_id
+             , c.stay
+		from   covid c
+		join   hospital h
+		on     c.hospital_id = h.id
+        and    h.id = '9'
+) covid
+on    user.member_id = covid.member_id
+group by covid.stay;
+
+-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+select 
+	   user.exercise
+	 , count(*)
+from (
+		select 
+			   p.id as programmer_id
+			 , p.exercise
+		from   member m
+		join   programmer p
+		on     m.id = p.member_id
+        where  p.country = 'India'
+		and    m.age between 20 and 30
+) user
+join (
+		select 
+			   c.programmer_id
+             , c.stay
+		from   covid c
+		join   hospital h
+		on     c.hospital_id = h.id
+        and    h.id = '9'
+) covid
+on    user.programmer_id = covid.programmer_id
+group by user.exercise;
+```
+
+
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- 노선 조회 /lines
+- 역 조회 /stations
+
+3. master/slave 적용해보기
+- [slave 데이터 정상 확인](/images/slave.PNG)
+
+4. 페이징 후 부하테스트 해보기
+> 부하 테스트를 진행해봤는데 제 생각에는 페이징 처리 했으니 성능이 잘 나올거라고 너무나 당연하게 생각했는데   
+> stress 테스트는 1단계에서 아무것도 적용 안한 stress 테스트 와 성능이 거의 유사하게 나와서 
+> 많이 당황했던것 같습니다. 그래서 캐싱 적용을 시도했고, 성능이 완벽하게 개선된 모습을 보았습니다.   
+- [load 테스트](/images/page/page_load.PNG)
+- [stress 테스트](/images/page/page_stress.PNG)

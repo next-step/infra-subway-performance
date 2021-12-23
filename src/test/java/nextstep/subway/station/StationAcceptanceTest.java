@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static final String 판교역 = "판교역";
+    private static final String 양재역 = "판교역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -61,6 +63,23 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @DisplayName("지하철역을 조회한다.(페이징)")
+    @Test
+    void getPageStations() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음(판교역);
+        ExtractableResponse<Response> createResponse4 = 지하철역_등록되어_있음(양재역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_페이징_조회_요청(0, 2);
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_페이징됨(response, 2);
+    }
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -95,6 +114,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured.given().log().all().
                 when().
+                get("/stations").
+                then().
+                log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_목록_페이징_조회_요청(int page, int size) {
+        return RestAssured.given().log().all().
+                when().
+                params("size", size, "page", page).
                 get("/stations").
                 then().
                 log().all().
@@ -139,5 +168,13 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_목록_페이징됨(ExtractableResponse<Response> response, int size) {
+        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds.size()).isEqualTo(size);
     }
 }
