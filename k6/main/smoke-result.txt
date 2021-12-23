@@ -1,0 +1,37 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./k6/main/smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m30s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+running (1m00.4s), 0/1 VUs, 59 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
+
+     ✓ load main page
+
+     checks.........................: 100.00% ✓ 59       ✗ 0
+     data_received..................: 98 kB   1.6 kB/s
+     data_sent......................: 3.1 kB  52 B/s
+     http_req_blocked...............: avg=3.14ms   min=0s     med=1µs     max=185.3ms  p(90)=1µs     p(95)=1µs
+     http_req_connecting............: avg=100.96µs min=0s     med=0s      max=5.95ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=13.5ms   min=7.04ms med=14.25ms max=21.44ms  p(90)=17.44ms p(95)=18.92ms
+       { expected_response:true }...: avg=13.5ms   min=7.04ms med=14.25ms max=21.44ms  p(90)=17.44ms p(95)=18.92ms
+   ✓ http_req_failed................: 0.00%   ✓ 0        ✗ 59
+     http_req_receiving.............: avg=80.38µs  min=33µs   med=63µs    max=925µs    p(90)=89µs    p(95)=92.1µs
+     http_req_sending...............: avg=95.69µs  min=59µs   med=91µs    max=134µs    p(90)=126.2µs p(95)=129.1µs
+     http_req_tls_handshaking.......: avg=2.47ms   min=0s     med=0s      max=145.93ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=13.33ms  min=6.91ms med=14.1ms  max=21.32ms  p(90)=17.19ms p(95)=18.79ms
+     http_reqs......................: 59      0.977566/s
+     iteration_duration.............: avg=1.01s    min=1s     med=1.01s   max=1.2s     p(90)=1.02s   p(95)=1.02s
+     iterations.....................: 59      0.977566/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1

@@ -19,7 +19,6 @@ export const options = {
     ],
 };
 
-
 const BASE_URL = 'https://hidy.kro.kr';
 const email = 't@t.com';
 const password = 't';
@@ -28,7 +27,7 @@ const loginPayload = JSON.stringify({email, password});
 
 export default function () {
     // 로그인 시도
-    const loginResponse = http.post(`${BASE_UclRL}/login/token`,
+    const loginResponse = http.post(`${BASE_URL}/login/token`,
         loginPayload, params).json();
     check(loginResponse, {
         'logged in successfully': response => response.accessToken !== '',
