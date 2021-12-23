@@ -44,8 +44,50 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- 조회 로직이 많이 일어나는 경로찾기를 기준으로 하여 성능 측정 및 개선을 하였음
 
+- 경로 찾기
+    - **개선 전**
+      - [smoke](./k6/result/before/smoke.md)
+        -    ✓ http_req_duration : p(95)=130.28ms
+      - [load](./k6/result/before/load.md)
+        -    ✓ http_req_duration : p(95)=138.16ms
+      - [stress](./k6/result/before/stress.md)
+        -    ✓ http_req_duration : p(95)=114.43ms
+    - **개선 후**
+      ####- Revere Proxy 개선
+        - [smoke](./k6/result/nginx/smoke.md)
+          -    ✓ http_req_duration : p(95)=152.24ms
+        - [load](./k6/result/nginx/load.md)
+            -   ✓ http_req_duration :p(95)=100.95ms
+        - [stress](./k6/result/nginx/stress.md)
+            -    ✓ http_req_duration : p(95)=122.16ms
+          
+        ####- Redis Cache 추가
+        - [smoke](./k6/result/redis/smoke.md)
+          -    ✓ http_req_duration :  p(95)=17.06ms
+        - [load](./k6/result/redis/load.md)
+          -    ✓ http_req_duration :  p(95)=14.08ms
+        - [stress](./k6/result/redis/stress.md)
+          -    ✓ http_req_duration :  p(95)=14.8ms
+         ####- Thread Pool Config 추가
+        - [smoke](./k6/result/threadpool/smoke.md)
+          -    ✓ http_req_duration :  p(95)=15.3ms
+        - [load](./k6/result/threadpool/load.md)
+          -    ✓ http_req_duration :  p(95)=14.52ms
+        - [stress](./k6/result/threadpool/stress.md)    
+          -    ✓ http_req_duration : p(95)=13.78ms
+
+
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+    
+    -  Reverse Proxy 정적 파일 경량화 및 http2 적용
+        -    성능 향상을 기대했으나, 성능 향상이 이루어지지 않고 결과에 따라 성능이 낮아진 결과도 보임
+    -   Redis 캐시 적용
+        -   DB 커넥션이 발생시키지 않고 메모리에 저장된 캐시를 사용하여, 테스트의 횟수가 늘어날 수록 압도적인 성능 향상을 보여주 었음
+    -   Thread Pool 설정 적용
+        - 많은 조회가 일어나는 경로 찾기에 비동기로 적용 하였으나, Redis 캐시에 비해 성능 향상면에서 큰 효과는 없었음
+    
 ---
 
 ### 2단계 - 조회 성능 개선하기

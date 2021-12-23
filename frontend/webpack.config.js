@@ -6,3 +6,11 @@ module.exports = () => {
   const envConfig = require(`./webpack.${argv.env}.js`)
   return webpackMerge(commonConfig, envConfig)
 }
+
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+module.exports = {
+  plugins : [
+    new BundleAnalyzerPlugin()
+  ]
+}
