@@ -37,7 +37,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	implementation("mysql:mysql-connector-java")
 
-    implementation('org.springframework.boot:spring-boot-starter-data-redis')
+	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+	runtimeOnly "org.flywaydb:flyway-core:5.2.0"
 }
 
 test {

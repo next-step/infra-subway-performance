@@ -870,6 +870,272 @@ default ✗ [======================================] 000/150 VUs  1m20s
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### A. 쿼리 최적화
+- A.1 조회 쿼리
+  - 쿼리 실행 시간 : 0.547 s
+  - 인텍스 추가 전 Plan 
+  ![](file/인덱스%20추가%20전%20Plan.png)
+  
+<details><summary>쿼리 최적화 조회 쿼리</summary>
+      
+```bash
+SELECT 연봉_TOP_5_관리자.사원번호, 연봉_TOP_5_관리자.이름, 연봉_TOP_5_관리자.연봉, 직급.직급명, 출입기록.입출입시간, 출입기록.지역, 출입기록.입출입구분
+FROM (
+    (
+        SELECT 사원.사원번호, 사원.이름, 급여.연봉
+        FROM (
+            (
+                SELECT 부서번호 
+                FROM 부서 
+                WHERE 비고 LIKE 'active'
+            ) AS 부서,
+            (
+                SELECT 사원번호, 이름 
+                FROM 사원
+            ) AS 사원,
+            (
+                SELECT 사원번호, 부서번호
+                FROM 부서관리자
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 부서관리자,
+            (
+                SELECT 사원번호, 연봉
+                FROM 급여
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 급여,
+            (
+                SELECT 사원번호, 부서번호
+                FROM 부서사원_매핑
+                WHERE now() BETWEEN 시작일자 AND 종료일자
+            ) AS 부서사원_매핑
+        )
+        WHERE
+            부서.부서번호 = 부서사원_매핑.부서번호
+            AND 사원.사원번호 = 부서사원_매핑.사원번호
+            AND 사원.사원번호 = 부서관리자.사원번호
+            AND 사원.사원번호 = 급여.사원번호
+        ORDER BY 급여.연봉 DESC
+        LIMIT 5
+    ) AS 연봉_TOP_5_관리자,
+    (
+        SELECT 사원번호, 입출입시간, 지역, 입출입구분
+        FROM 사원출입기록
+        WHERE 입출입구분 = 'O'
+    ) AS 출입기록,
+    (
+        SELECT 사원번호, 직급명
+        FROM 직급
+        WHERE now() BETWEEN 시작일자 AND 종료일자
+    ) AS 직급
+)
+WHERE
+    연봉_TOP_5_관리자.사원번호 = 출입기록.사원번호
+    AND 연봉_TOP_5_관리자.사원번호 = 직급.사원번호
+ORDER BY 연봉_TOP_5_관리자.연봉 DESC, 출입기록.지역 ASC
+```
+</details>
+
+- A.2 인덱스 설정 추가
+  - 인덱스 설정 후 쿼리 실행 시간 : 14.80 ms
+  - 인덱스 설정 후 Plan
+  ![](file/인덱스%20추가%20후%20Plan.png)
+<details><summary>인덱스 설정 추가</summary>
+
+```bash
+CREATE INDEX INDEX_사원출입기록_사원번호 USING BTREE ON 사원출입기록(사원번호);
+```
+</details>
+
+#### B. 인덱스 설계
+- B.1 Coding as a Hobby 와 같은 결과를 반환하세요.
+  - 조회쿼리
+    ```bash
+    SELECT hobby, ROUND(count(1)*100 / (select count(1) from subway.programmer), 1) as Response
+    FROM programmer
+    GROUP BY hobby
+    ORDER BY hobby DESC;
+    ```
+  - 인덱스 추가
+    ```bash
+    CREATE INDEX INDEX_PROGRAMMER_HOBBY USING BTREE ON programmer(hobby);
+    ```
+  - Before 실행시간 : 0.563s
+  - ![](file/b1-before.png)
+  - After 실행시간 : 97ms
+  - ![](file/b1-after.png)
+- B.2 프로그래머별로 해당하는 병원 이름을 반환하세요.
+  - 조회쿼리 
+    ```bash
+    SELECT covid.id, hospital.name
+    FROM hospital, covid
+    WHERE
+    hospital.id = covid.hospital_id
+    AND covid.programmer_id IS NOT NULL;
+    ```
+  - PK, 인덱스 추가
+    ```bash
+    ALTER TABLE hospital ADD PRIMARY KEY (id);
+    CREATE INDEX INDEX_COVID_HOSPITAL_ID USING BTREE ON covid(hospital_id);
+    ```
+  - Before 실행시간 : 1ms (Query cost : 1827984.17)
+  - ![](file/b2-before.png)
+  - After 실행시간 : 1ms, (Query cost : 406436.99) 
+  - ![](file/b2-after.png)
+- B.3 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+  - 조회쿼리
+    ```bash
+    SELECT covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding 
+    FROM (
+      programmer AS user,
+      covid,
+      hospital
+    )
+    WHERE
+      (user.student like 'Yes%' OR user.years_coding LIKE '0-2%')
+      AND user.hobby = 'Yes'
+      AND covid.hospital_id = hospital.id
+      AND covid.programmer_id = user.id
+      AND covid.programmer_id is not null
+    ORDER BY user.id ASC;
+    ```
+  - PK, 인덱스 추가
+    ```bash
+    ALTER TABLE programmer ADD PRIMARY KEY (id);
+    CREATE INDEX INDEX_COVID_HOSPITAL_PROGRAMMER USING BTREE ON covid(programmer_id, hospital_id);
+    ``` 
+  - Before 실행시간 : 1.2s 
+  - ![](file/b3-before.png)
+  - After 실행시간 : 20ms
+  - ![](file/b3-after.png)
+- B.4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+  - 조회쿼리
+    ```bash
+    SELECT covid.stay, count(covid.id)
+    FROM
+      covid,
+      member,
+      programmer,
+      hospital
+    WHERE
+      covid.member_id = member.id
+      AND covid.programmer_id = programmer.id
+      AND covid.hospital_id = hospital.id
+      AND member.age between 20 and 29
+      AND hospital.name = '서울대병원'
+      AND programmer.country = 'India'
+    GROUP BY covid.stay;
+    ```
+  - 인덱스 추가
+    ```bash
+    CREATE INDEX INDEX_PROGRAMMER_COUNTRY USING BTREE ON programmer(country);
+    ``` 
+  - Before 실행시간 : 5.15s
+  - ![](file/b4-before.png)
+  - After 실행시간 : 94ms
+  - ![](file/b4-after.png)
+- B.5 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+  - 조회쿼리
+    ```bash
+    SELECT user.Exercise, count(user.Exercise)
+    FROM
+      covid,
+      member,
+      programmer AS user,
+      hospital
+    WHERE
+      member.id = covid.member_id
+      AND user.id = covid.programmer_id
+      AND covid.hospital_id = hospital.id
+      AND member.age between 30 and 39
+      AND hospital.name = '서울대병원'
+    GROUP BY user.Exercise;
+    ```
+  - PK, 인덱스 추가
+    ```bash
+    ALTER TABLE member ADD PRIMARY KEY (id);
+    CREATE INDEX INDEX_COVID_MEMBER_PROGRAMMER_HOSPITAL_ID USING BTREE ON covid(member_id, programmer_id, hospital_id);
+    ```
+  - Before 실행시간 : 2.1s
+  - ![](file/b5-before.png)
+  - After 실행시간 : 62ms
+  - ![](file/b5-after.png)
+---
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- https://tyranotyrano-subway.p-e.kr/favorites
 
+3. MySQL Replication with JPA 적용
+  - [X] flyway 적용
+    - [X] init, insert sql 반영
+  - [x] AWS 보안그룹 -> public ec2 에 대해 13306, 13307 port open
+  - [x] Application 설정 추가
+  - [x] master, slave DB 구동 확인
+
+<details><summary>master/slave DB 정상동작 확인</summary>
+
+```bash
+mysql> SHOW SLAVE STATUS \G
+*************************** 1. row ***************************
+Slave_IO_State: Waiting for source to send event
+Master_Host: 198.168.100.138
+Master_User: replication_user
+Master_Port: 13306
+Connect_Retry: 60
+Master_Log_File: binlog.000002
+Read_Master_Log_Pos: 43199
+Relay_Log_File: 4792508349d1-relay-bin.000002
+Relay_Log_Pos: 42837
+Relay_Master_Log_File: binlog.000002
+Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+Replicate_Do_DB:
+Replicate_Ignore_DB:
+Replicate_Do_Table:
+Replicate_Ignore_Table:
+Replicate_Wild_Do_Table:
+Replicate_Wild_Ignore_Table:
+Last_Errno: 0
+Last_Error:
+Skip_Counter: 0
+Exec_Master_Log_Pos: 43199
+Relay_Log_Space: 43053
+Until_Condition: None
+Until_Log_File:
+Until_Log_Pos: 0
+Master_SSL_Allowed: No
+Master_SSL_CA_File:
+Master_SSL_CA_Path:
+Master_SSL_Cert:
+Master_SSL_Cipher:
+Master_SSL_Key:
+Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+Last_IO_Errno: 0
+Last_IO_Error:
+Last_SQL_Errno: 0
+Last_SQL_Error:
+Replicate_Ignore_Server_Ids:
+Master_Server_Id: 1
+Master_UUID: b88285c3-634a-11ec-8679-0242ac110002
+Master_Info_File: mysql.slave_master_info
+SQL_Delay: 0
+SQL_Remaining_Delay: NULL
+Slave_SQL_Running_State: Replica has read all relay log; waiting for more updates
+Master_Retry_Count: 86400
+Master_Bind:
+Last_IO_Error_Timestamp:
+Last_SQL_Error_Timestamp:
+Master_SSL_Crl:
+Master_SSL_Crlpath:
+Retrieved_Gtid_Set:
+Executed_Gtid_Set:
+Auto_Position: 0
+Replicate_Rewrite_DB:
+Channel_Name:
+Master_TLS_Version:
+Master_public_key_path:
+Get_master_public_key: 0
+Network_Namespace:
+1 row in set, 1 warning (0.01 sec)
+```
+</details>
