@@ -28,6 +28,7 @@ public class LineService {
     }
 
     @Caching(evict = {
+            @CacheEvict(value = "line", allEntries = true),
             @CacheEvict(value = "lines", key = "'lineAllList'")
     })
     public LineResponse saveLine(LineRequest request) {
