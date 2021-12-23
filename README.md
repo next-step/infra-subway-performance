@@ -187,16 +187,16 @@ FROM
           INNER JOIN (SELECT P.id FROM programmer P WHERE P.country = 'india') 프로그래머
              ON 회원.id = 프로그래머.id
        ) T1
-         INNER JOIN
-       (
-            SELECT
-              코비드.member_id,
-                   코비드.stay
-             FROM covid 코비드 
-       ) T2
-  ON T1.id = T2.member_id
-INNER JOIN hospital 병원
-WHERE 병원.name ='서울대병원'
+    INNER JOIN   
+        (SELECT
+               C.member_id,
+               C.stay
+        FROM covid C
+        INNER JOIN hospital H
+           ON H.id = C.hospital_id
+        WHERE name = '서울대병원'
+        ) T2
+ON T1.id = T2.member_id )
 GROUP BY stay
 ORDER BY null;
 
