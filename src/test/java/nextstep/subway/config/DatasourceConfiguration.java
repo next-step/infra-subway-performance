@@ -23,6 +23,8 @@ public class DatasourceConfiguration {
 
     public static final String MASTER_DATASOURCE = "masterDatasource";
     public static final String SLAVE_DATASOURCE = "slaveDatasource";
+    public static final String MASTER = "master";
+    public static final String SLAVE = "slave";
 
     @Bean(MASTER_DATASOURCE)
     @ConfigurationProperties(prefix = "spring.datasource.master.hikari")
@@ -52,8 +54,8 @@ public class DatasourceConfiguration {
 
         Map<Object, Object> datasourceMap = new HashMap<>();
 
-        datasourceMap.put("master", masterDataSource);
-        datasourceMap.put("slave", slaveDataSource);
+        datasourceMap.put(MASTER, masterDataSource);
+        datasourceMap.put(SLAVE, slaveDataSource);
 
         routingDataSource.setTargetDataSources(datasourceMap);
         routingDataSource.setDefaultTargetDataSource(masterDataSource);
