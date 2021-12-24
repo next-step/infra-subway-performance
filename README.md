@@ -60,7 +60,6 @@ npm run dev
 
                 > 실행 결과: 973ms
                 > * 조인 대상이 적은 순부터 `INNER JOIN`
-
                 ```sql
                 SELECT
                     admin.사원번호
@@ -92,24 +91,99 @@ npm run dev
 
             * 인덱스 설정을 추가하여 50ms 이하로 반환한다.
                 > 실행 결과: 2.5ms
-                > * `사원입출입기록` 테이블이 Full Table Scan을 타는 것을 확인
-                > * `사원입출입기록` INNER JOIN 조건인 `사원입출입기록.사원번호`, `사원입출입기록.입출입구분` 복합 인덱스 추가
+                > * `사원입출입기록.사원번호`, `사원입출입기록.입출입구분` 복합 인덱스 추가
 
                 ![img.png](result/A-2.png)
 
     * 인덱스 설계
 
-        - [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+        - [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
         
-            - [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
-        
-            - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-        
-            - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-        
-            - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-        
-            - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+            - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+                > 실행 결과: 90ms
+                > * `programmer.hobby` 인덱스 추가
+                ```sql
+                SELECT hobby, CONCAT(ROUND(COUNT(hobby) / (SELECT COUNT(*) FROM programmer) * 100, 1), '%') percent
+                FROM programmer
+                GROUP BY hobby;
+                ```
+              ![img.png](result/B-1.png)
+
+            - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+                > 실행 결과: 5ms
+                > * `covid.hospital_id`, `programmer.id` 인덱스 추가
+                ```sql
+                SELECT c.id, h.name
+                FROM hospital h
+                INNER JOIN covid c
+                    ON c.hospital_id = h.id
+                INNER JOIN programmer p
+                    ON p.id = c.programmer_id;
+                ```
+                ![img.png](result/B-2.png)
+
+            - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+                > 실행 결과: 10ms
+                > * `programmer.id` 인덱스 추가
+                > * 조회 조건에 해당하지만 카디널리티가 낮은 컬럼은 인덱스 추가 안함
+                ```sql
+                SELECT sub.covid_id, h.name, sub.hobby, sub.dev_type, sub.years_coding
+                FROM
+                    (
+                        SELECT c.id covid_id, c.hospital_id, p.hobby, p.dev_type, p.years_coding
+                        FROM covid c
+                        INNER JOIN programmer p
+                            ON p.id = c.programmer_id
+                        WHERE (p.hobby = 'Yes' AND p.student like 'Yes%') OR p.years_coding = '0-2 years'
+                        ORDER BY p.id
+                    ) sub
+                INNER JOIN hospital h
+                    ON h.id = sub.hospital_id;
+                ```
+                ![img.png](result/B-3.png)
+
+            - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+                > 실행 결과: 67ms
+                > * `covid.hospital_id`, `programmer.id` 인덱스 추가
+                > * 조회 조건에 해당하지만 카디널리티가 낮은 컬럼은 인덱스 추가 안함
+                ```sql
+                SELECT h.name, p.country, c.stay, count(p.id) cnt
+                FROM covid c
+                INNER JOIN programmer p
+                    ON p.id = c.programmer_id
+                INNER JOIN member m
+                    ON m.id = c.member_id
+                INNER JOIN hospital h
+                    ON h.id = c.hospital_id
+                WHERE
+                    h.name = '서울대병원'
+                    AND p.country = 'India'
+                    AND m.age BETWEEN 20 AND 29
+                GROUP BY
+                    c.stay;
+                ```
+                ![img.png](result/B-4.png)
+
+            - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+                > 실행 결과: 79ms
+                > * `covid.hospital_id`, `programmer.id` 인덱스 추가
+                > * 조회 조건에 해당하지만 카디널리티가 낮은 컬럼은 인덱스 추가 안함
+                ```sql
+                SELECT h.name, p.exercise, count(p.id) cnt
+                FROM covid c
+                INNER JOIN programmer p
+                    ON p.id = c.programmer_id
+                INNER JOIN member m
+                    ON m.id = c.member_id
+                INNER JOIN hospital h
+                    ON h.id = c.hospital_id
+                WHERE
+                    h.name = '서울대병원'
+                    AND m.age BETWEEN 30 AND 39
+                GROUP BY
+                    p.exercise;
+                ```
+                ![img.png](result/B-5.png)
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
