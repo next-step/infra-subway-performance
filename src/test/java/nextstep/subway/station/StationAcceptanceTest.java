@@ -95,6 +95,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured.given().log().all().
                 when().
+                param("page",0).
+                param("size", 10).
                 get("/stations").
                 then().
                 log().all().

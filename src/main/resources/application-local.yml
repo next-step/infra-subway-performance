@@ -1,0 +1,47 @@
+spring:
+  profile:
+    active: local
+  datasource:
+    master:
+      hikari:
+        username: repl
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&
+    slave:
+      hikari:
+        username: root
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3309/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        dialect:
+          storage_engine: innodb
+    show-sql: true
+
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: INFO
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: TRACE
+
+security:
+  jwt:
+    token:
+      secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno
+      expire-length: 3600000
+
+handlebars:
+  suffix: .html
+  enabled: true
