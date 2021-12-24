@@ -53,13 +53,50 @@ npm run dev
 
     * 쿼리 최적화
     
-        - [ ] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+        - [x] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
               (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
             * 쿼리 작성만으로 1s 이하로 반환한다.
 
+                > 실행 결과: 973ms
+                > * 조인 대상이 적은 순부터 `INNER JOIN`
+
+                ```sql
+                SELECT
+                    admin.사원번호
+                    , employee.이름
+                    , pay.연봉
+                    , position.직급명
+                    , access.입출입시간
+                    , access.지역
+                    , access.입출입구분
+                FROM 부서 dept
+                INNER JOIN 부서관리자 as admin
+                    ON admin.부서번호 = dept.부서번호
+                    AND admin.종료일자 = '9999-01-01'
+                INNER JOIN 사원 as employee 
+                    ON employee.사원번호 = admin.사원번호
+                INNER JOIN 직급 as position 
+                    ON position.사원번호 = admin.사원번호
+                    AND position.종료일자 = '9999-01-01'
+                INNER JOIN 사원출입기록 as access 
+                    ON access.사원번호 = admin.사원번호
+                    AND access.입출입구분 = 'O'
+                INNER JOIN 급여 as pay 
+                    ON pay.사원번호 = admin.사원번호
+                    AND pay.종료일자 = '9999-01-01'
+                WHERE dept.비고 = 'active'
+                ORDER BY pay.연봉 desc, access.지역;
+                ```
+                ![img.png](result/A-1.png)
+
             * 인덱스 설정을 추가하여 50ms 이하로 반환한다.
-                
+                > 실행 결과: 2.5ms
+                > * `사원입출입기록` 테이블이 Full Table Scan을 타는 것을 확인
+                > * `사원입출입기록` INNER JOIN 조건인 `사원입출입기록.사원번호`, `사원입출입기록.입출입구분` 복합 인덱스 추가
+
+                ![img.png](result/A-2.png)
+
     * 인덱스 설계
 
         - [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
