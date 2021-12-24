@@ -29,6 +29,7 @@ public class MapService {
 
     @Async
     @Cacheable(value = "paths", key = "#source+'_'+#target")
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
