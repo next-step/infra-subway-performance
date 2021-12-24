@@ -30,7 +30,7 @@ export default function () {
   check(stationsRes, { 'retrieved stations': (resp) => resp.status === 200 })
   sleep(1)
 
-  let paths = http.get(`${BASE_URL}/paths?source=1&target=10`, params)
+  let paths = http.get(`${BASE_URL}/paths?source=1&target=78`, params)
   check(paths, { 'retrieved paths': (resp) => resp.status === 200 })
   sleep(1)
 }
