@@ -25,7 +25,7 @@ export let options = {
   },
 }
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'https://shinmj-nextstep.n-e.kr'
 
 export default function () {
   var params = {
@@ -33,17 +33,13 @@ export default function () {
       'Content-Type': 'application/json',
     },
   }
-
-  let stations = http.get(`${BASE_URL}/stations`, params).json()
-  check(stations, { 'retrieved stations': (resp) => resp.length > 0 })
+  let stationsRes = http.get(`${BASE_URL}/stations`, params)
+  check(stationsRes, { 'retrieved stations': (resp) => resp.status === 200 })
   sleep(1)
 
-  let paths = http
-    .get(
-      `${BASE_URL}/paths?source=${stations[0].id}&target=${stations[10].id}`,
-      params
-    )
-    .json()
-  check(paths, { 'retrieved paths': (resp) => resp.distance >= 0 })
+  let paths = http.get(`${BASE_URL}/paths?source=1&target=10`, params)
+  check(paths, { 'retrieved paths': (resp) => resp.status === 200 })
   sleep(1)
 }
+
+

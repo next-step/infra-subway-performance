@@ -23,14 +23,20 @@ export let options = {
     { duration: '10s', target: 100 },
     { duration: '10s', target: 200 },
     { duration: '10s', target: 300 },
-    { duration: '5s', target: 0 },
+    { duration: '10s', target: 400 },
+    { duration: '10s', target: 500 },
+    { duration: '10s', target: 600 },
+    { duration: '10s', target: 700 },
+    { duration: '10s', target: 800 },
+    { duration: '10s', target: 900 },
+    { duration: '10s', target: 1000 },
   ],
   thresholds: {
     http_req_duration: ['p(99)<100'], // 99% of requests must complete below 100ms
   },
 }
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'https://shinmj-nextstep.n-e.kr'
 
 export default function () {
   var params = {
@@ -43,12 +49,7 @@ export default function () {
   check(stationsRes, { 'retrieved stations': (resp) => resp.status === 200 })
   sleep(1)
 
-  const stations = stationsRes.json()
-  let paths = http
-    .get(
-      `${BASE_URL}/paths?source=${stations[0].id}&target=${stations[10].id}`,
-      params
-    )
+  let paths = http.get(`${BASE_URL}/paths?source=1&target=10`, params)
   check(paths, { 'retrieved paths': (resp) => resp.status === 200 })
   sleep(1)
 }
