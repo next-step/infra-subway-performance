@@ -1,6 +1,5 @@
 package nextstep.subway.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.jcache.config.JCacheConfigurerSupport;
@@ -23,38 +22,25 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 @Configuration
 public class CacheConfig extends JCacheConfigurerSupport {
-//    private final RedisConnectionFactory redisConnectionFactory;
-//
-//    public CacheConfig(RedisConnectionFactory redisConnectionFactory) {
-//        this.redisConnectionFactory = redisConnectionFactory;
-//    }
-//
-//    @Bean
-//    public CacheManager redisCacheManager() {
-//        final RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//
-//        final RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
-//                .fromConnectionFactory(redisConnectionFactory)
-//                .cacheDefaults(redisCacheConfiguration).build();
-//
-//        return redisCacheManager;
-//    }
+    private final RedisConnectionFactory redisConnectionFactory;
 
-
-    @Autowired
-    RedisConnectionFactory connectionFactory;
-
+    public CacheConfig(RedisConnectionFactory redisConnectionFactory) {
+        this.redisConnectionFactory = redisConnectionFactory;
+    }
 
     @Bean
     public CacheManager redisCacheManager() {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+        final RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+                );
 
-        RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
-                fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
+        final RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
+                .fromConnectionFactory(redisConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration).build();
+
         return redisCacheManager;
     }
+
+
 }

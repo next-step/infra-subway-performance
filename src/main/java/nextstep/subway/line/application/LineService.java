@@ -52,28 +52,25 @@ public class LineService {
 
     @Cacheable(value="line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
-        System.out.println("캐시가없음!!!!!!!!!!!!!");
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
     @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        System.out.println("캐시업데이트!!!!!!!!!!!!!!");
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
-        System.out.println("캐시삭제!!!!!!!!!!!!!!!!!!!!!!!!!");
         lineRepository.deleteById(id);
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
