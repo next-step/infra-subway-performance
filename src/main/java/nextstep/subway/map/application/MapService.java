@@ -1,5 +1,6 @@
 package nextstep.subway.map.application;
 
+import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.map.domain.SubwayPath;
@@ -10,14 +11,13 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class MapService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathService pathService;
+
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathService pathService;
 
     public MapService(LineService lineService, StationService stationService, PathService pathService) {
         this.lineService = lineService;
