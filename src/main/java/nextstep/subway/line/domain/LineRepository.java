@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import nextstep.subway.common.OptimizationPageJpaRepository;
 
-public interface LineRepository extends JpaRepository<Line, Long> {
+public interface LineRepository extends OptimizationPageJpaRepository<Line, Long> {
+
 }
