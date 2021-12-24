@@ -3,10 +3,9 @@ import {check, group, sleep, fail} from 'k6';
 import {randomIntBetween} from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 
 
-//"3.36.209.24"
 const HOST = {
     PROTOCOL : "http",
-    URL : "3.36.209.24",
+    URL : "3.36.233.76",
     PORT : "8080",
     USERNAME : "haedoang@gmail.com",
     PASSWORD : "11"
@@ -23,26 +22,26 @@ const HOST = {
 // };
 
 // load options
-// export let options = {
-//   stages: [
-//     { duration: '30s', target: 8 },
-//     { duration: '30s', target: 88 },
-//     { duration: '15s', target: 100 },
-//   ],
-//   thresholds: {
-//     http_req_duration: ['p(99)<100'],
-//   },
-// };
+export let options = {
+  stages: [
+    { duration: '30s', target: 8 },
+    { duration: '30s', target: 88 },
+    { duration: '15s', target: 100 },
+  ],
+  thresholds: {
+    http_req_duration: ['p(99)<100'],
+  },
+};
 
 
 // stress
-export let options = {
-    vus: 150, // 1 user looping for 1 minute
-    duration: '10s',
-    thresholds: {
-        http_req_duration: ['p(99)<200'], // 99% of requests must complete below 1.5s
-    },
-};
+// export let options = {
+//     vus: 150, // 1 user looping for 1 minute
+//     duration: '10s',
+//     thresholds: {
+//         http_req_duration: ['p(99)<200'], // 99% of requests must complete below 1.5s
+//     },
+// };
 
 const BASE_URL = `${HOST.PROTOCOL}://${HOST.URL}:${HOST.PORT}`;
 
