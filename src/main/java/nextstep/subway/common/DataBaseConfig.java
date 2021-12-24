@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"nextstep.subway"})
 class DataBaseConfig {
 
     @Bean
@@ -40,7 +38,7 @@ class DataBaseConfig {
 
     @Bean
     public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
-                                        @Qualifier("slaveDataSource") DataSource slave) {
+        @Qualifier("slaveDataSource") DataSource slave) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
 
         HashMap<Object, Object> sources = new HashMap<>();
