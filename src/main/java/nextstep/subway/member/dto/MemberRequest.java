@@ -1,6 +1,7 @@
 package nextstep.subway.member.dto;
 
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.monitor.MaskingUtils;
 
 public class MemberRequest {
     private String email;
@@ -30,5 +31,13 @@ public class MemberRequest {
 
     public Member toMember() {
         return new Member(email, password, age);
+    }
+
+    @Override
+    public String toString() {
+        return "MemberRequest{" +
+                "email='" + MaskingUtils.masking(email) + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

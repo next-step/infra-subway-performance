@@ -1,0 +1,39 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./k6/myinfo-update/load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 42 max VUs, 6m40s max duration (incl. graceful stop):
+           * default: Up to 42 looping VUs for 6m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (6m10.2s), 00/42 VUs, 6728 complete and 0 interrupted iterations
+default ✓ [======================================] 00/42 VUs  6m10s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ updated member
+
+     checks.........................: 100.00% ✓ 20184     ✗ 0
+     data_received..................: 12 MB   33 kB/s
+     data_sent......................: 7.1 MB  19 kB/s
+     http_req_blocked...............: avg=56.03µs  min=0s     med=1µs     max=148.88ms p(90)=1µs     p(95)=1µs
+     http_req_connecting............: avg=15.69µs  min=0s     med=0s      max=15.05ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=18.11ms  min=9.21ms med=16.41ms max=338.95ms p(90)=22.23ms p(95)=25.54ms
+       { expected_response:true }...: avg=18.11ms  min=9.21ms med=16.41ms max=338.95ms p(90)=22.23ms p(95)=25.54ms
+   ✓ http_req_failed................: 0.00%   ✓ 0         ✗ 20184
+     http_req_receiving.............: avg=137.57µs min=13µs   med=63µs    max=9.06ms   p(90)=89µs    p(95)=778µs
+     http_req_sending...............: avg=115.61µs min=29µs   med=118µs   max=810µs    p(90)=157µs   p(95)=166µs
+     http_req_tls_handshaking.......: avg=36.86µs  min=0s     med=0s      max=129.32ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=17.86ms  min=9.05ms med=16.17ms max=338.78ms p(90)=21.97ms p(95)=25.28ms
+     http_reqs......................: 20184   54.518961/s
+     iteration_duration.............: avg=1.05s    min=1.03s  med=1.05s   max=1.38s    p(90)=1.06s   p(95)=1.07s
+     iterations.....................: 6728    18.172987/s
+     vus............................: 3       min=1       max=41
+     vus_max........................: 42      min=42      max=42

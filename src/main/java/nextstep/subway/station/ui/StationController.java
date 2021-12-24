@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.monitor.Monitor;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Monitor
 @RestController
 public class StationController {
     private StationService stationService;

@@ -1,0 +1,106 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./k6/myinfo-update/stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 4000 max VUs, 11m10s max duration (incl. graceful stop):
+           * default: Up to 4000 looping VUs for 10m40s over 13 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:43:49(48)  executor=ramping-vus scenario=default source=stacktrace
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+WARN[0632] Request Failed                                error="Get \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+WARN[0632] Request Failed                                error="Get \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Get \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:43:49(48)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:43:49(48)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0632] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+WARN[0632] Request Failed                                error="Get \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": unexpected EOF"
+WARN[0632] Request Failed                                error="Get \"https://hidy.kro.kr/members/me\": unexpected EOF"
+WARN[0632] Request Failed                                error="Put \"https://hidy.kro.kr/members/me\": unexpected EOF"
+
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+WARN[0662] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": read tcp 192.168.219.100:59746->3.36.29.124:443: read: connection reset by peer"
+WARN[0662] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": read tcp 192.168.219.100:57991->3.36.29.124:443: read: connection reset by peer"
+ERRO[0662] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0662] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+WARN[0662] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": read tcp 192.168.219.100:55874->3.36.29.124:443: read: connection reset by peer"
+WARN[0662] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": read tcp 192.168.219.100:57048->3.36.29.124:443: read: connection reset by peer"
+ERRO[0662] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+WARN[0662] Request Failed                                error="Post \"https://hidy.kro.kr/login/token\": read tcp 192.168.219.100:57376->3.36.29.124:443: read: connection reset by peer"
+ERRO[0662] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+ERRO[0662] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at file:///Users/doyoung/work-space/nextstep/infra-subway-performance/k6/myinfo-update/stress.js:30:46(13)  executor=ramping-vus scenario=default source=stacktrace
+...
+
+running (11m01.2s), 0000/4000 VUs, 197185 complete and 6 interrupted iterations
+default ✓ [======================================] 0000/4000 VUs  10m40s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✗ updated member
+      ↳  98% — ✓ 187605 / ✗ 2409
+
+     checks.........................: 99.57% ✓ 570070     ✗ 2409
+     data_received..................: 394 MB 596 kB/s
+     data_sent......................: 209 MB 315 kB/s
+     http_req_blocked...............: avg=26.48ms  min=0s     med=0s       max=59.99s  p(90)=1µs   p(95)=1µs
+     http_req_connecting............: avg=6.52ms   min=0s     med=0s       max=23.77s  p(90)=0s    p(95)=0s
+     http_req_duration..............: avg=934.07ms min=0s     med=232.73ms max=59.99s  p(90)=1.57s p(95)=2.13s
+       { expected_response:true }...: avg=559.6ms  min=81µs   med=224.39ms max=21.22s  p(90)=1.46s p(95)=1.92s
+     http_req_failed................: 1.65%  ✓ 9582       ✗ 570068
+     http_req_receiving.............: avg=549.51µs min=0s     med=31µs     max=37.61s  p(90)=831µs p(95)=1.34ms
+     http_req_sending...............: avg=66.35µs  min=0s     med=57µs     max=16.17ms p(90)=95µs  p(95)=116µs
+     http_req_tls_handshaking.......: avg=19.95ms  min=0s     med=0s       max=59.98s  p(90)=0s    p(95)=0s
+     http_req_waiting...............: avg=933.46ms min=0s     med=231.91ms max=59.99s  p(90)=1.57s p(95)=2.13s
+     http_reqs......................: 579650 876.598854/s
+     iteration_duration.............: avg=3.96s    min=4.59ms med=2.03s    max=1m12s   p(90)=6.15s p(95)=8.97s
+     iterations.....................: 197185 298.200889/s
+     vus............................: 18     min=2        max=4000
+     vus_max........................: 4000   min=4000     max=4000
