@@ -7,6 +7,9 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +41,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -46,18 +50,23 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
+    @Cacheable(value="line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
+        System.out.println("캐시가없음!!!!!!!!!!!!!");
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        System.out.println("캐시업데이트!!!!!!!!!!!!!!");
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
+        System.out.println("캐시삭제!!!!!!!!!!!!!!!!!!!!!!!!!");
         lineRepository.deleteById(id);
     }
 
@@ -72,5 +81,4 @@ public class LineService {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
-
 }

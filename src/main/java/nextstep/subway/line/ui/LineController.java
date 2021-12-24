@@ -64,4 +64,5 @@ public class LineController {
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
     }
+
 }
