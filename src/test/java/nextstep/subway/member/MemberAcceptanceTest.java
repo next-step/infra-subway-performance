@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,17 +42,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
         회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("회원 정보 목록을 페이지를 나눠서 볼 수 있다.")
-    @Test
-    void findAllMembers() throws JsonProcessingException {
-        IntStream.range(1, 20).forEach(i ->
-                회원_생성을_요청("test"+i+"@test.com", PASSWORD, AGE));
-
-        ExtractableResponse<Response> findAllResponse = 회원_목록_페이지_조회_요청(1, 10, "DESC");
-
-        회원_목록_페이지_조회됨_(findAllResponse, 1, 10);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -113,19 +100,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 회원_목록_페이지_조회_요청(final int page, final int size, final String order) {
-        return RestAssured.given().log().all().
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                queryParam("page", page).
-                queryParam("size", size).
-                queryParam("sort", "id,"+order).
-                when().
-                get("/members").
-                then().
-                log().all().
-                extract();
-    }
-
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -143,10 +117,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 회원_목록_페이지_조회됨_(ExtractableResponse<Response> response, final int page, final int size) throws JsonProcessingException {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
     }
 }
