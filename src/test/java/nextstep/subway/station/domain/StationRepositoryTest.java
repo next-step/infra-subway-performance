@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * packageName : nextstep.subway.station
@@ -89,7 +90,12 @@ public class StationRepositoryTest {
         );
 
         // then
-        assertThat(stationResponses).hasSize(10);
+        assertAll(
+                () -> assertThat(stationResponses).hasSize(10),
+                () -> assertThat(stationResponses.getPageable().getPageNumber()).isEqualTo(pageRequest.getPageNumber()),
+                () -> assertThat(stationResponses.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize()),
+                () -> assertThat(stationResponses.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
+        );
 
     }
 }

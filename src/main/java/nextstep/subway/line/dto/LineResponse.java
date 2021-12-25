@@ -1,17 +1,16 @@
 package nextstep.subway.line.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.common.BaseResponse;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class LineResponse extends BaseResponse {
     private Long id;
@@ -32,7 +31,7 @@ public class LineResponse extends BaseResponse {
     }
 
     public static LineResponse of(Line line) {
-        if(isEmpty(line)) {
+        if (isEmpty(line)) {
             return new LineResponse(line.getId(), line.getName(), line.getColor(), new ArrayList(), line.getCreatedDate(), line.getModifiedDate());
         }
         return new LineResponse(line.getId(), line.getName(), line.getColor(), assembleStations(line), line.getCreatedDate(), line.getModifiedDate());
@@ -44,8 +43,17 @@ public class LineResponse extends BaseResponse {
 
     private static List<StationResponse> assembleStations(Line line) {
         return line.getStations().stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
+                .map(StationResponse::of)
+                .collect(toList());
+    }
+
+    public static PageImpl<LineResponse> ofList(Page<Line> lines) {
+        return new PageImpl<>(
+                lines.stream()
+                        .map(LineResponse::of)
+                        .collect(toList()),
+                lines.getPageable(),
+                lines.getTotalElements());
     }
 
     public Long getId() {

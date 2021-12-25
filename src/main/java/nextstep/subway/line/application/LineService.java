@@ -10,6 +10,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +70,11 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    public PageImpl<LineResponse> findLineResponsesPage(Pageable pageable) {
+        Page<Line> lines = lineRepository.findAll(pageable);
+        return LineResponse.ofList(lines);
+    }
+
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findById(request.getUpStationId());
@@ -78,4 +86,6 @@ public class LineService {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
+
+
 }
