@@ -60,38 +60,51 @@ npm run dev
 A. 쿼리 최적화
    - [x] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
    (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
-``` sql
-SELECT 대상관리자.사원번호, 대상관리자.이름, 대상관리자.연봉, 대상관리자.직급명, 사원출입기록.입출입시간, 사원출입기록.지역, 사원출입기록.입출입구분
-FROM (
-    SELECT 사원.사원번호, 사원.이름, 급여.연봉, 직급.직급명
-    FROM 사원, 부서관리자, 급여, 직급, 부서
-    WHERE 부서관리자.사원번호 = 사원.사원번호
-    AND CURRENT_DATE BETWEEN 부서관리자.시작일자 AND 부서관리자.종료일자
-    AND 부서관리자.부서번호 = 부서.부서번호
-    AND 부서.비고 = 'ACTIVE'
-    AND 직급.사원번호 = 사원.사원번호
-    AND CURRENT_DATE BETWEEN 직급.시작일자 AND 직급.종료일자
-    AND 급여.사원번호 = 사원.사원번호
-    AND CURRENT_DATE BETWEEN 급여.시작일자 AND 급여.종료일자
-    ORDER BY 급여.연봉 DESC
-    LIMIT 5
-) 대상관리자, 사원출입기록
-WHERE 사원출입기록.사원번호 = 대상관리자.사원번호
-AND 사원출입기록.입출입구분 = 'O'
-ORDER BY 대상관리자.연봉 DESC, 사원출입기록.지역;
-```
+  ``` sql
+  SELECT 대상관리자.사원번호, 대상관리자.이름, 대상관리자.연봉, 대상관리자.직급명, 사원출입기록.입출입시간, 사원출입기록.지역, 사원출입기록.입출입구분
+  FROM (
+      SELECT 사원.사원번호, 사원.이름, 급여.연봉, 직급.직급명
+      FROM 사원, 부서관리자, 급여, 직급, 부서
+      WHERE 부서관리자.사원번호 = 사원.사원번호
+      AND CURRENT_DATE BETWEEN 부서관리자.시작일자 AND 부서관리자.종료일자
+      AND 부서관리자.부서번호 = 부서.부서번호
+      AND 부서.비고 = 'ACTIVE'
+      AND 직급.사원번호 = 사원.사원번호
+      AND CURRENT_DATE BETWEEN 직급.시작일자 AND 직급.종료일자
+      AND 급여.사원번호 = 사원.사원번호
+      AND CURRENT_DATE BETWEEN 급여.시작일자 AND 급여.종료일자
+      ORDER BY 급여.연봉 DESC
+      LIMIT 5
+  ) 대상관리자, 사원출입기록
+  WHERE 사원출입기록.사원번호 = 대상관리자.사원번호
+  AND 사원출입기록.입출입구분 = 'O'
+  ORDER BY 대상관리자.연봉 DESC, 사원출입기록.지역;
+  ```
 * 인덱스 설정 이전 (0.434 sec, 434 ms)
-![](image/A.쿼리최적화/쿼리최적화-인덱스-설정하기전.png)
+  * ![](image/A.쿼리최적화/쿼리최적화-인덱스-설정하기전.png)
 
 * 인덱스 설정 이후 (0.0022 sec, 2 ms)
-``` sql
-create index 사원출입기록_사원번호_index on 사원출입기록 (사원번호);
-```
-
-![](image/A.쿼리최적화/쿼리최적화-인덱스-설정후.png)
+  ``` sql
+  create index 사원출입기록_사원번호_index on 사원출입기록 (사원번호);
+  ```
+  ![](image/A.쿼리최적화/쿼리최적화-인덱스-설정후.png)
 
 B. 인덱스 설계
+* 아래의 조회 결과를 100 ms 이하로 반환 
+- [x] Coding as a Hobby
+  ``` sql
+  SELECT hobby, ROUND(COUNT(hobby) / (SELECT COUNT(hobby) from programmer) * 100, 1) as percentage
+  from programmer
+  group by hobby
+  order by hobby desc;
+  ```
+  * 인덱스 설정 이전 (0.517 sec, 517 ms)
+  * ![](image/B.인덱스설계/1-1_Coding-as-a-Hobby.png)
+  * 인덱스 설정 이후 (0.093 sec, 93 ms)
+  ``` sql
+  create index programmer_hobby_index on programmer (hobby);
+  ```
+  * ![](image/B.인덱스설계/1-2_Coding-as-a-Hobby.png)
 
 ##### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
