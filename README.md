@@ -106,5 +106,22 @@ B. 인덱스 설계
   ```
   * ![](image/B.인덱스설계/1-2_Coding-as-a-Hobby.png)
 
+- [x] 프로그래머 별로 해당하는 병원 이름을 반환하세요
+  ```sql
+  SELECT covid.id, hospital.name
+  FROM covid, hospital, programmer
+  WHERE covid.programmer_id = programmer.id
+  AND covid.hospital_id = hospital.id;
+  ```
+  * 인덱스 설정 이전 (1.271 sec, 1271 ms)
+  * ![](image/B.인덱스설계/2-1_프로그래머별_병원이름.png)
+  * 인덱스 설정 이후 (0.0062 sec, 6 ms)
+  ```sql
+  create index covid_programmer_id_index on covid (programmer_id);
+  create index hospital_id_index on hospital (id);
+  create index programmer_id_index on programmer (id);
+  ```
+  * ![](image/B.인덱스설계/2-2_프로그래머별_병원이름.png)
+
 ##### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
