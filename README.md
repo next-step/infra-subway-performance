@@ -145,6 +145,32 @@ B. 인덱스 설계
   alter table programmer add constraint programmer_pk primary key (id)
   ```
   * ![](image/B.인덱스설계/3-2_프로그래밍_취미인_학생이나_주니어_병원이름.png)
+
+- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  ``` sql
+  SELECT covid.stay, count(covid.stay)
+  FROM covid, hospital, member, programmer
+  WHERE covid.member_id = member.id
+  AND covid.programmer_id = programmer.id
+  AND covid.hospital_id = hospital.id
+  AND hospital.name = '서울대병원'
+  AND member.age BETWEEN 20 AND 29
+  AND programmer.country = 'india'
+  GROUP BY covid.stay;
+  ```
+  * 인덱스 설정 이전 (4.028 sec, 4028 ms)
+  * ![](image/B.인덱스설계/4-1_서울대병원_20대_india_환자_집계.png)
+  * 인덱스 설정 이후 (0.047 sec, 47 ms)
+  ``` sql
+  alter table programmer add constraint programmer_pk primary key (id)
+  create index programmer_id_index on programmer (id)
+  create index covid_hospital_id_index on covid (hospital_id)
   
+  # index 설정을 위해 hospital.name을 text -> varchar(255)로 변경
+  alter table hospital modify name varchar(255) null
+  create index hospital_name_index on hospital (name)
+  ```
+  * ![](image/B.인덱스설계/4-2_서울대병원_20대_india_환자_집계.png)
+
 ##### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
