@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysql-master:
+    image: mysql:8.0.25
+    container_name: mysql-master
+    restart: always
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: masterpw
+    volumes:
+      - ./db/mysql/master/config:/etc/mysql/conf.d
+      - ./db/mysql/master/init:/docker-entrypoint-initdb.d
+  mysql-slave:
+    image: mysql:8.0.25
+    container_name: mysql-slave
+    restart: always
+    ports:
+      - 13307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: slavepw
+    volumes:
+      - ./db/mysql/slave/config:/etc/mysql/conf.d
+      - ./db/mysql/slave/init:/docker-entrypoint-initdb.d
