@@ -78,7 +78,7 @@ npm run dev
 
 #### B. 인덱스 설계
  * 요구사항
-- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
    - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
    - result 
      - ![image info](./images/b/image1.png)
@@ -113,6 +113,10 @@ npm run dev
       - 추가 설정 없음.
 
 #### C. 페이징 쿼리
+ - [x] 페이징 쿼리 구현
+    - /lines/page
+    - /stations/page
+   
  - 웹 애플리케이션에서는 테이블의 내용을 1~20건 단위로 나눠서 보여주는 것이 일반적입니다. 테이블의 레코드를 일정 단위로 잘라서 조회하는 것을 페이징 쿼리라고 합니다. 
  - 일반적으로는 아래와 같이 작성합니다.
 ```sql
@@ -133,6 +137,7 @@ List<User> findAll(Pageable pg);
 ``` 
 
 #### D. MySQL Replication with JPA
+ - [x] replication 설정 
  - MySQL Replication의 master/slave는 1:n관계입니다.
  - master는 갱신쿼리를 바이너리 로그파일로 기록하고, 이 로그파일의 내용이 slave로 전송되어 순차적으로 실행함으로써 복제됩니다.
  - 따라서 MySQL Replication은 준동시성입니다. I/O 스레드가 비동기로 동작하기에 마스터에서 생성한 바이너리 로그가 슬레이브에 수신되기 전에 장애가 날 경우 손실이 발생할 수 있습니다.
