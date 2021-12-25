@@ -97,12 +97,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
         PageRequest pageRequest = PageRequest.of(5, 8); // 41~ 48
 
+
         // when
         ExtractableResponse<Response> response = 노선_페이지_요청함(pageRequest);
 
+        // then
         노선_페이지_응답됨(pageRequest, response);
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 PK 기준으로 페이징 목록을 조회한다.")
+    public void getLinesPageWithPk() throws Exception {
+        // given
+        지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
+        PageRequest pageRequest = PageRequest.of(0, 10); //25 ~ 34
+        Long id = 25L;
+
+        // when
+        ExtractableResponse<Response> response = 노선_페이지_요청함(id, pageRequest);
 
         // then
+        노선_페이지_응답됨(pageRequest, response);
     }
 
 
@@ -205,6 +220,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 노선_페이지_요청함(PageRequest pageRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", pageRequest.getPageNumber())
+                .param("size", pageRequest.getPageSize())
+                .when()
+                .get("/lines/page")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 노선_페이지_요청함(Long id, PageRequest pageRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .params("id", id)
                 .param("page", pageRequest.getPageNumber())
                 .param("size", pageRequest.getPageSize())
                 .when()

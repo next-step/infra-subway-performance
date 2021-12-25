@@ -37,8 +37,8 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public PageImpl<StationResponse> findAllStations(Pageable pageable) {
-        Page<Station> stations = stationRepository.findAll(pageable);
+    public PageImpl<StationResponse> findAllStations(Long id, Pageable pageable) {
+        Page<Station> stations = stationRepository.findStationsPage(id, pageable);
 
         return StationResponse.ofList(stations);
     }

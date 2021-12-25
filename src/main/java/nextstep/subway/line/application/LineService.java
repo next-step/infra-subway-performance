@@ -70,8 +70,8 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public PageImpl<LineResponse> findLineResponsesPage(Pageable pageable) {
-        Page<Line> lines = lineRepository.findAll(pageable);
+    public PageImpl<LineResponse> findLineResponsesPage(Long id, Pageable pageable) {
+        Page<Line> lines = lineRepository.findLinesPage(id, pageable);
         return LineResponse.ofList(lines);
     }
 

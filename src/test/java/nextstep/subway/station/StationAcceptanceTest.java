@@ -77,26 +77,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         페이지_응답됨(response, request);
     }
 
-    private void 페이지_응답됨(ExtractableResponse<Response> response, PageRequest pageRequest) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<StationResponse> content = response.jsonPath().getList("content", StationResponse.class);
-        Map<Object, Object> pageable = response.jsonPath().getMap("pageable");
-        int totalElements = (int) response.jsonPath().get("totalElements");
+    @Test
+    @DisplayName("지하철 노선의 PK 기준으로 페이징 목록을 조회한다.")
+    void getLinesPageWithPk() {
+        // given
+        지하철역들이_등록되어있음(STATIONS_COUNT);
 
-        assertThat(content).hasSize(pageRequest.getPageSize());
-        assertThat((int) pageable.get("pageNumber")).isEqualTo(pageRequest.getPageNumber());
-        assertThat(totalElements).isEqualTo(STATIONS_COUNT);
-    }
+        PageRequest pageRequest = PageRequest.of(0, 10); //5 ~ 14 기준이 pk
+        Long id = 5L;
 
-    private ExtractableResponse<Response> 지하철_페이지요청함(PageRequest pageRequest) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("page", pageRequest.getPageNumber())
-                .param("size", pageRequest.getPageSize())
-                .when()
-                .get("/stations/page")
-                .then().log().all()
-                .extract();
+        // when
+        ExtractableResponse<Response> response = 지하철_페이지요청함(id, pageRequest);
+
+        // then
+        페이지_응답됨(response, pageRequest);
     }
 
 
@@ -186,4 +180,39 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
+
+    private void 페이지_응답됨(ExtractableResponse<Response> response, PageRequest pageRequest) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<StationResponse> content = response.jsonPath().getList("content", StationResponse.class);
+        Map<Object, Object> pageable = response.jsonPath().getMap("pageable");
+        int totalElements = (int) response.jsonPath().get("totalElements");
+
+        assertThat(content).hasSize(pageRequest.getPageSize());
+        assertThat((int) pageable.get("pageNumber")).isEqualTo(pageRequest.getPageNumber());
+        assertThat(totalElements).isEqualTo(STATIONS_COUNT);
+    }
+
+    private ExtractableResponse<Response> 지하철_페이지요청함(PageRequest pageRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", pageRequest.getPageNumber())
+                .param("size", pageRequest.getPageSize())
+                .when()
+                .get("/stations/page")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 지하철_페이지요청함(Long id, PageRequest pageRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("id", id)
+                .param("page", pageRequest.getPageNumber())
+                .param("size", pageRequest.getPageSize())
+                .when()
+                .get("/stations/page")
+                .then().log().all()
+                .extract();
+    }
+
 }

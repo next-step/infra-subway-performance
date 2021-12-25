@@ -70,5 +70,22 @@ public class LineRepositoryTest {
                 () -> assertThat(lineResponse.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
         );
     }
+
+    @Test
+    @DisplayName("page를 pk를 받아서 성능을 개선한다.")
+    public void pageAdvance() throws Exception {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Long id = 20L;
+
+        // when
+        Page<Line> pageLine = lineRepository.findLinesPage(id, pageRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(pageLine.getTotalElements()).isEqualTo(TOTAL_ELEMENTS),
+                () -> assertThat(pageLine.getContent()).hasSize(pageRequest.getPageSize())
+        );
+    }
 }
 

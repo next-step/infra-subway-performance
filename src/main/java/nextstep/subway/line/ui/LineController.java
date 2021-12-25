@@ -37,9 +37,10 @@ public class LineController {
 
     @GetMapping("/page")
     public ResponseEntity<PageImpl<LineResponse>> findLinesPage(
-            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(value = "id", required = false, defaultValue = "0") Long id
     ) {
-        return ResponseEntity.ok(lineService.findLineResponsesPage(pageable));
+        return ResponseEntity.ok(lineService.findLineResponsesPage(id, pageable));
     }
 
     @GetMapping("/{id}")

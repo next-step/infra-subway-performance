@@ -6,7 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +98,23 @@ public class StationRepositoryTest {
                 () -> assertThat(stationResponses.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize()),
                 () -> assertThat(stationResponses.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
         );
+    }
 
+
+    @Test
+    @DisplayName("page를 pk를 받아서 성능을 개선한다.")
+    public void pageAdvance() throws Exception {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Long id = 20L;
+
+        // when
+        Page<Station> pageStation = stationRepository.findStationsPage(id, pageRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(pageStation.getTotalElements()).isEqualTo(TOTAL_ELEMENTS),
+                () -> assertThat(pageStation.getContent()).hasSize(pageRequest.getPageSize())
+        );
     }
 }
