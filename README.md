@@ -146,7 +146,7 @@ B. 인덱스 설계
   ```
   * ![](image/B.인덱스설계/3-2_프로그래밍_취미인_학생이나_주니어_병원이름.png)
 
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   ``` sql
   SELECT covid.stay, count(covid.stay)
   FROM covid, hospital, member, programmer
@@ -171,6 +171,30 @@ B. 인덱스 설계
   create index hospital_name_index on hospital (name)
   ```
   * ![](image/B.인덱스설계/4-2_서울대병원_20대_india_환자_집계.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+  ``` sql
+  SELECT programmer.exercise, count(programmer.exercise)
+  FROM covid, hospital, member, programmer
+  WHERE covid.programmer_id = programmer.id
+  AND covid.member_id = member.id
+  AND covid.hospital_id = hospital.id
+  AND hospital.name = '서울대병원'
+  AND member.age BETWEEN 30 AND 39
+  GROUP BY programmer.exercise;
+  ```
+  * 인덱스 설정 이전 (15.718 sec, 15718 ms)
+  * ![](image/B.인덱스설계/5-1_서울대병원_30대_운동횟수_집계.png)
+  * 인덱스 설정 이후 (0.030 sec, 30 ms)
+  ``` sql
+  alter table programmer add constraint programmer_pk primary key (id)
+  create index covid_hospital_id_member_id_programmer_id_index on covid (hospital_id, member_id, programmer_id)
+  
+  # index 설정을 위해 hospital.name을 text -> varchar(255)로 변경
+  alter table hospital modify name varchar(255) null
+  create index hospital_name_index on hospital (name)
+  ```
+  * ![](image/B.인덱스설계/5-2_서울대병원_30대_운동횟수_집계.png)
 
 ##### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
