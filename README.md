@@ -52,10 +52,14 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    1) 쿼리를 작성한다.
+    2) mysql `explain` 과 workbench 에서 제공하는 `explain ui` 기능으로 쿼리 성능 및 cost를 검증한다.
+    3) full scan 에 대한 부분에 인덱스를 사용한다.
+    4) 조인 순서를 변경하여 성능을 개선한다.
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
-
+    1) `/lines/page`
+    2) `/stations/page`
 
 --- 
 
