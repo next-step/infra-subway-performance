@@ -51,5 +51,22 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+### A. 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+
+### B. 인덱스 설계
+
+[X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+[X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+[X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+[X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+
+----
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+### C. 페이징 쿼리
+
+### D. MySQL Replication with JPA
