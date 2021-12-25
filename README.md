@@ -86,7 +86,7 @@ npm run dev
      - `programmer.hobby` 인덱스 설정
      - `programmer.id` pk 설정 
    
-   - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+   - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
    - result
      - ![image info](./images/b/image2.png)
     
@@ -94,10 +94,23 @@ npm run dev
      - `hospital.name` not null, varchar 타입으로 변경
      - `covid.programmer_id` 인덱스 설정
      
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+   - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+   - result
+      - ![image info](./images/b/image3.png)
+            
+      - `programmer.hobby&student&years_coding` 인덱스 설정  
 
+   - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+   - result 
+      - ![image info](./images/b/image3.png)
+
+      - `member.age`  인덱스 설정 
+     
+   - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+   - result
+      - ![image info](./images/b/image3.png)
+     
+      - 추가 설정 없음.
 
 #### C. 페이징 쿼리
  - 웹 애플리케이션에서는 테이블의 내용을 1~20건 단위로 나눠서 보여주는 것이 일반적입니다. 테이블의 레코드를 일정 단위로 잘라서 조회하는 것을 페이징 쿼리라고 합니다. 
