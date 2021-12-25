@@ -43,8 +43,21 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+### before stress
+![before-stress.png](./k6-scripts/result/before-stress.png)
 
+### after stress
+![after-stress.png](./k6-scripts/result/after-stress.png)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+### WAS 성능 개선하기 -> 경로 조회 
+1. redis cache 적용 
+   - 경로 조회 서비스에 spring data cache를 설정했습니다. 
+2. 비동기 처리
+   - 경로 조회 서비스에 `@Async` 어노테이션을 통해 비동기로 처리되도록 해보았습니다!!
+    
+### 결과
+http_req_duration : 3.9s -> 814.72ms 
+http_reqs : 13926 -> 34628
 
 ---
 
