@@ -123,5 +123,28 @@ B. 인덱스 설계
   ```
   * ![](image/B.인덱스설계/2-2_프로그래머별_병원이름.png)
 
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
+  ``` sql
+  SELECT programmer.id, hospital.name, programmer.hobby, programmer.dev_type, programmer.years_coding
+  FROM covid, hospital, programmer
+  WHERE programmer.id = covid.programmer_id
+  AND hospital.id = covid.hospital_id
+  AND programmer.hobby = 'Yes'
+  AND (programmer.student like 'Yes%' OR programmer.years_coding = '0-2 years')
+  ORDER BY programmer.id;
+  ```
+  * 인덱스 설정 이전 (모든 인덱스 제거시 쿼리로 확인 불가능한 수준)
+  * ![](image/B.인덱스설계/3-1_프로그래밍_취미인_학생이나_주니어_병원이름.png)
+  * 인덱스 설정 이후 (0.0063 sec, 6 ms)
+  ```
+  create index programmer_hobby_index on programmer (hobby);
+  create index hospital_id_index on hospital (id);
+  create index covid_programmer_id_hospital_id_index on covid (programmer_id, hospital_id);
+  
+  # programmer.id를 primary key로 설정
+  alter table programmer add constraint programmer_pk primary key (id)
+  ```
+  * ![](image/B.인덱스설계/3-2_프로그래밍_취미인_학생이나_주니어_병원이름.png)
+  
 ##### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
