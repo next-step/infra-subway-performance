@@ -450,7 +450,6 @@ npm run dev
        </details>  
   
   
-  
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - Reverse Proxy 개선하기   
      - nginx를 컨테이너 방식이 아닌 직접 설치(apt install nginx)
@@ -491,7 +490,362 @@ npm run dev
 --- 
 
 ### 2단계 - 조회 성능 개선하기
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. 쿼리 최적화
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   - [X] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+     (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+       
+         ```mysql-sql
+         SELECT I.사원번호, I.이름, I.연봉, I.직급명, J.입출입시간, J.지역, J.입출입구분
+           FROM ( SELECT G.사원번호, G.이름, H.연봉, G.직급명
+                    FROM ( SELECT E.사원번호, E.이름, F.직급명
+                             FROM ( SELECT C.사원번호, D.이름
+                                      FROM ( SELECT B.사원번호
+                                               FROM ( SELECT 부서번호
+                                                        FROM 부서
+                                                       WHERE 비고 = 'ACTIVE'
+                                                    ) A INNER JOIN 부서관리자 B
+                                                 ON A.부서번호 = B.부서번호
+                                                AND B.종료일자 >= NOW()
+                                           ) C INNER JOIN 사원 D
+                                        ON C.사원번호 = D.사원번호
+                                  ) E INNER JOIN 직급 F
+                               ON E.사원번호 = F.사원번호
+                              AND F.종료일자 >= NOW()
+                         ) G INNER JOIN 급여 H
+                      ON G.사원번호 = H.사원번호
+                     AND H.종료일자 >= NOW()
+                   ORDER BY H.연봉 DESC LIMIT 5
+                ) I INNER JOIN 사원출입기록 J
+             ON I.사원번호 = J.사원번호
+            AND J.입출입구분 = 'O';
+         ```
+       
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - 실행계획
+         ![img.png](images/img.png)
+  
+         - 조회시간
+         ![img_1.png](images/img_1.png)
+
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - `사원출입기록` 테이블에 `사원번호`를 컬럼으로 하는 인덱스(`I_사원번호`) 추가
+         ![img_2.png](images/img_2.png)
+
+         - 실행계획
+         ![img_3.png](images/img_3.png)
+  
+         - 조회시간
+         ![img_4.png](images/img_4.png)
+
+         </div>
+       </details>
+
+  
+2. 인덱스 설계
+  
+   - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+
+         ```mysql-sql
+         SELECT HOBBY, CONCAT(ROUND(COUNT(1) / (SELECT COUNT(*) FROM PROGRAMMER) * 100, 1), '%')  PERCENT
+           FROM PROGRAMMER
+          GROUP BY HOBBY
+          ORDER BY HOBBY DESC;
+         ```
+
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - 실행계획       
+         ![img_5.png](images/img_5.png)
+
+         - 조회시간    
+         ![img_6.png](images/img_6.png)
+         
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - `programmer` 테이블에 `hobby`를 컬럼으로 하는 인덱스(`I_hobby`) 추가       
+         ![img_7.png](images/img_7.png)
+
+         - 실행계획    
+         ![img_8.png](images/img_8.png)
+
+         - 조회시간    
+         ![img_9.png](images/img_9.png)
+  
+         </div>
+       </details>   
+     
+   - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)   
+ 
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+ 
+         ```mysql-sql
+         select b.id covid_id, c.name hospital_name
+           from programmer a, covid b, hospital c
+          where a.id = b.programmer_id
+            and b.hospital_id = c.id;
+         ```
+       
+         </div>
+       </details>
+ 
+     - <details>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+ 
+         - 실행계획       
+         ![img_10.png](images/img_10.png)
+ 
+         - 조회시간    
+         ![img_11.png](images/img_11.png)
+ 
+         </div>
+       </details>
+ 
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+ 
+         - `programmer` 테이블에 `id`를 컬럼으로 하는 인덱스(`I_id`) 추가       
+         ![img_12.png](images/img_12.png)
+ 
+         - 실행계획    
+         ![img_13.png](images/img_13.png)  
+ 
+         - 조회시간    
+         ![img_14.png](images/img_14.png)  
+ 
+         </div>
+       </details>  
+     
+   - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+ 
+         ```mysql-sql
+         select b.id covid_id, c.name hospital_name, user.hobby, user.dev_type, user.years_coding
+           from programmer user, covid b, hospital c
+          where user.id = b.programmer_id
+            and b.hospital_id = c.id
+            and ((user.student = 'yes' and user.hobby = 'yes') or user.years_coding = '0-2 years')
+          order by user.id;
+         ```
+ 
+         </div>
+       </details>      
+
+     - <details>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - 실행계획       
+         ![img_15.png](images/img_15.png)
+
+         - 조회시간    
+         ![img_16.png](images/img_16.png) 
+
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - `hospital` 테이블에 `id`를 컬럼으로 하는 인덱스(`I_id`) 추가       
+         ![img_17.png](images/img_17.png)         
+
+         - `covid` 테이블에 `programmer_id`, `hospital_id`를 컬럼으로 하는 인덱스(`I_programmer_id_n_hospital_id`) 추가
+         ![img_18.png](images/img_18.png)
+
+         - 실행계획    
+         ![img_19.png](images/img_19.png)        
+
+         - 조회시간    
+         ![img_20.png](images/img_20.png)
+
+         </div>
+       </details>  
+
+   - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+
+         ```mysql-sql
+         select b.stay, count(*) count
+           from programmer a, covid b, hospital c
+          where a.id = b.programmer_id
+            and b.hospital_id = c.id
+            and a.country = 'India'
+            and c.name = '서울대병원'
+          group by b.stay
+          order by b.stay;
+         ```
+
+         </div>
+       </details>      
+
+     - <details>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - 실행계획       
+         ![img_21.png](images/img_21.png)
+
+         - 조회시간    
+         ![img_22.png](images/img_22.png)
+
+         </div>
+       </details>
+
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - `covid` 테이블에 `hospital_id`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가
+         ![img_23.png](images/img_23.png)
+
+         - 실행계획    
+         ![img_24.png](images/img_24.png)
+
+         - 조회시간    
+         ![img_25.png](images/img_25.png) 
+
+         </div>
+       </details>  
+  
+   - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+ 
+     - <details>
+         <summary>조회 쿼리문</summary>
+         <div markdown="1">
+ 
+         ```mysql-sql
+         select a.Exercise 'user.Exercise', count(*)
+           from programmer a, covid b, hospital c
+          where a.id = b.programmer_id
+            and b.hospital_id = c.id
+            and c.name = '서울대병원'
+          group by a.Exercise
+          order by a.Exercise;      
+         ```
+ 
+         </div>
+       </details>      
+
+     - <details>
+         <summary>튜닝 필요 없음 - 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - 실행계획       
+         ![img_26.png](images/img_26.png)
+
+         - 조회시간    
+         ![img_27.png](images/img_27.png)
+
+         </div>
+       </details>  
+
+  
+3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   - https://changsubkwak.kro.kr/stations   
+     - id를 정렬기준으로 하여 8개씩 페이지 처리하였습니다.
+     - <details>
+         <summary>결과 화면</summary>
+         <div markdown="1">
+       
+         ![img_28.png](images/img_28.png)
+
+         </div>
+       </details>
+   - https://changsubkwak.kro.kr/stations/{page}
+     - page에 숫자를 넣으면 페이지 단위의 데이터를 볼 수 있습니다.
+     - 단, FrontEnd 작업이 되어 있지 않아 텍스트 JSON 데이터를 볼 수 있습니다.
+     - <details>
+         <summary> 페이지 0 결과 화면</summary>
+         <div markdown="1">
+
+         ![img_29.png](images/img_29.png)
+
+         </div>
+       </details>
+     - <details>
+         <summary> 페이지 1 결과 화면</summary>
+         <div markdown="1">
+
+         ![img_30.png](images/img_30.png)
+
+         </div>
+       </details>  
+
+
+4. MySQL Replication with JPA
+   - 가이드에 따른 설정을 진행   
+     1. DATABASE(EC2 인스턴스 이름 : changsubkwak-ec2-database)서버에 master(PORT : 13306) / slave(PORT : 13307)로 세팅하였음   
+     2. 애플리케이션에 application.properties에 localhost를 DATABASE서버 IP로 변경한 master/slave DB접속 설정을 추가하였음   
+     3. nextstep.subway 패키지에 ReplicationRoutingDataSource와 DataBaseConfig를 추가하였음   
+   - 빌드 / 테스트 과정
+     1. 빌드하였으나 ` A bean with that name has already been defined in nextstep.subway.favorite.domain.FavoriteRepository defined in @EnableJpaRepositories declared on DataBaseConfig and overriding is disabled.` 에러 발생
+        - 정확히 이유는 모르겠으나 @EnableJpaRepositories로 두번 등록하려는 것 때문에 생기는 것으로 추정
+        - SubwayApplication클래스에서 @EnableJpaRepositories 어노테이션 제거
+     2. 빌드는 잘되나 테스트에서 실패하여, 테스트를 스킵(./gradlew clean build -x test)하여 빌드후 정상 구동 확인
+        - master / slave 테스트에 중점을 두었기에 테스트에 의미를 크게 생각하지 않았음
+     3. 구동하였으나, DB에 subway 스키마가 없는 것을 확인
+        - master/slave에 `create database subway;` DB스키마 생성
+        - `brainbackdoor/data-subway:0.0.1`에 있는 데이터를 mysqldump를 이용하여 스크립트를 가져옴
+        - 가져온 스크립트를 master/slaver DB에 생성하였음
+     4. 이후 구동한 결과 정상임을 확인
+
+   - 테스트 결과
+     - <details>
+         <summary>slave서버 중지후 @Transactional이 붙은 메서드인 `findAllStations()`가 호출되는 `경로 검색` 기능 수행이 안되는 현상</summary>
+         <div markdown="1">
+
+         ![img_31.png](images/img_31.png)             
+    
+         </div>
+       </details>  
+
+     - <details>
+         <summary>master서버 중지후 `findLines()`가 호출되는 `노선 관리` 클릭 시, 노선 조회 안되는 현상</summary>
+         <div markdown="1">
+
+         ![img_32.png](images/img_32.png)
+
+         </div>
+       </details>
