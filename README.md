@@ -164,4 +164,5 @@ npm run dev
     ```sql
       create index i_programmer_exercise on programmer (exercise);
     ```
-- [ ] 페이징 쿼리 적용해보기
+- [X] 페이징 쿼리 적용해보기
+- http://keepbang-alb-975163363.ap-northeast-2.elb.amazonaws.com/stations
