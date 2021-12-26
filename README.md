@@ -156,10 +156,12 @@ FROM covid 코비드
 user.Hobby, user.DevType, user.YearsCoding)
 
 - 개선전 속도 : 3.5s ~
-- 개선후 속도 : 50ms ~
+- 개선후 속도 : 35ms ~
 - 개선 내용
 - `covid` 테이블의 `programmer_id` 인덱스 생성
 - `create index covid_programmer_id_index  on covid (programmer_id)`
+- `create index programmer_student_index on programmer (student)`
+- `create index programmer_years_coding_index on programmer (years_coding)`
 
 ```text
 SELECT covid.id,
