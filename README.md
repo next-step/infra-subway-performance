@@ -707,14 +707,17 @@ npm run dev
          <div markdown="1">
 
          ```mysql-sql
-         select b.stay, count(*) count
-           from programmer a, covid b, hospital c
-          where a.id = b.programmer_id
-            and b.hospital_id = c.id
+         select c.stay, count(*) count
+           from programmer a, member b, covid c, hospital d
+          where a.member_id = b.id
+            and a.id = c.programmer_id
+            and c.hospital_id = d.id
+            and b.age >= 20
+            and b.age <= 29
             and a.country = 'India'
-            and c.name = '서울대병원'
-          group by b.stay
-          order by b.stay;
+            and d.name = '서울대병원'
+          group by c.stay
+          order by c.stay;
          ```
 
          </div>
@@ -740,11 +743,14 @@ npm run dev
          - `covid` 테이블에 `hospital_id`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가
          ![img_23.png](images/img_23.png)
 
+         - `programmer` 테이블에 `member_id`. `id`, `country`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가 
+         ![img_33.png](images/img_33.png)
+
          - 실행계획    
          ![img_24.png](images/img_24.png)
 
          - 조회시간    
-         ![img_25.png](images/img_25.png) 
+         ![img_25.png](images/img_25.png)
 
          </div>
        </details>  
@@ -757,30 +763,49 @@ npm run dev
  
          ```mysql-sql
          select a.Exercise 'user.Exercise', count(*)
-           from programmer a, covid b, hospital c
-          where a.id = b.programmer_id
-            and b.hospital_id = c.id
-            and c.name = '서울대병원'
+           from programmer a, member b, covid c, hospital d
+          where a.member_id = b.id
+            and a.id = c.programmer_id
+            and c.hospital_id = d.id
+            and b.age >= 30
+            and b.age <= 39
+            and d.name = '서울대병원'
           group by a.Exercise
-          order by a.Exercise;      
+          order by a.Exercise; 
          ```
  
          </div>
        </details>      
 
      - <details>
-         <summary>튜닝 필요 없음 - 실행계획 / 조회 시간</summary>
+         <summary>튜닝 전 실행계획 / 조회 시간</summary>
          <div markdown="1">
 
          - 실행계획       
          ![img_26.png](images/img_26.png)
 
          - 조회시간    
-         ![img_27.png](images/img_27.png)
+         ![img_27.png](images/img_27.png) 
 
          </div>
        </details>  
 
+     - <details>
+         <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
+         <div markdown="1">
+
+         - `member` 테이블에 `age`를 컬럼으로 하는 인덱스(`I_age`) 추가
+         ![img_34.png](images/img_34.png)
+
+         - 실행계획    
+         ![img_35.png](images/img_35.png)
+
+         - 조회시간    
+         ![img_36.png](images/img_36.png)
+
+         </div>
+       </details>  
+  
   
 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
    - https://changsubkwak.kro.kr/stations   
