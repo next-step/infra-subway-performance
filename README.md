@@ -107,14 +107,99 @@ FROM 사원출입기록
 
 ### B. 인덱스 설계
 
+[X] Coding as a Hobby 와 같은 결과를 반환하세요
+- 개선전 속도 : 370ms
+- 개선 후 속도 : 85ms
+- 개선 내용
+    - `pk` 설정과, `hobby 컬럼`에 인덱스를 추가해여 개선하였습니다.
+    - `create index programmer_hobby_index on programmer (hobby)`
+    - `alter table programmer add constraint programmer_pk  unique (id)`
+```sql
+# 쿼리 
+SELECT
+       hobby,
+       ROUND((COUNT(1)/(SELECT COUNT(1) FROM programmer)) * 100, 1) AS 퍼센트
+FROM programmer
+GROUP BY hobby;
+```
+
 [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 개선전 속도 : 60ms ~ 100ms
+- 개선후 속도 : 45ms ~ 75ms
+- 개선 내용
+    - `covid` 테이블 `hospital_id` 컬럼 인덱스 생성
+        - `create index covid_hospital_id_index on covid (hospital_id)`
+    - `hospital` 테이블 `ID` PK 지정
+        - `alter table hospital  add constraint hospital_pk  primary key (id)`
+
+```sql
+SELECT 코비드.id, 병원.name
+FROM covid 코비드
+         JOIN hospital 병원
+              ON 코비드.hospital_id = 병원.id;
+              
+```
 
 [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 개선전 속도 : 3.5s
+- 개선후 속도 : 50ms ~ 100ms
+- 개선 내용
+- `covid` 테이블의 `programmer_id` 인덱스 생성
+- `create index covid_programmer_id_index  on covid (programmer_id)`
+```sql
+SELECT
+    covid.id, hospital.name, programmer.Hobby, programmer.dev_type, programmer.years_coding
+FROM
+    programmer
+JOIN covid ON programmer.id = covid.programmer_id
+JOIN hospital  on covid.hospital_id = hospital.id
+WHERE
+    programmer.hobby='Yes'
+    AND (programmer.student LIKE 'Yes%' OR programmer.years_coding = '0-2 years')
+ORDER BY programmer.id;
+```
 
 [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 개선전 속도 : 80ms ~ 180ms
+- 개선후 속도 : 68ms ~ 140ms
+- 개선 내용
+    - `programmer.country`와 `hospital.name` 인덱스 추가 하였습니다.
+    - `create index programmer_country_index on programmer (country)`
+    - `create index hospital_name_index on hospital (name)`
+```
+SELECT
+    covid.stay, count(*)
+FROM
+     covid
+JOIN member m on m.id = covid.member_id
+JOIN hospital h on h.id = covid.hospital_id
+JOIN programmer p on p.id = covid.programmer_id
+WHERE
+    h.name='서울대병원'
+    AND p.country='india'
+    AND m.age between 20 and 29
+GROUP BY covid.stay;
+```
 
 [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+- 속도 : 80ms ~ 150ms
+- 이미 인덱스가 모두 적용되어 있어서 따로 개선점을 찾지 못하였습니다.
+
+```sql
+SELECT
+    p.exercise, count(*) as 횟수
+FROM covid
+JOIN member m on m.id = covid.member_id
+JOIN programmer p on p.id = covid.programmer_id
+JOIN hospital h on h.id = covid.hospital_id
+WHERE
+    h.name='서울대병원'
+    AND m.age between 30 and 39
+GROUP BY p.exercise
+ORDER BY 횟수 DESC;
+
+```
 
 ----
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
