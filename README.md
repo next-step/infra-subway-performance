@@ -173,5 +173,7 @@ GROUP BY p.exercise
 ORDER BY null;
 ```
 ![before](images/b/b-5-before.png)
+
 #### C. 페이징 쿼리
-3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- 페이징 쿼리를 적용한 API endpoint를 알려주세요
+  - /stations, /lines, /favorites
