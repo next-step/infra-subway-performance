@@ -22,9 +22,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "stations", key = "'stationAllList'")
-    })
+    @CacheEvict(value = "stations", key = "'stationAllList'")
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -42,7 +40,9 @@ public class StationService {
 
     @Caching(evict = {
             @CacheEvict(value = "station", key = "#id"),
-            @CacheEvict(value = "stations", key = "'stationAllList'")
+            @CacheEvict(value = "stations", key = "'stationAllList'"),
+            @CacheEvict(value = "paths_source", key = "'paths'+#id"),
+            @CacheEvict(value = "paths_target", key = "'paths'+#id")
     })
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);

@@ -8,6 +8,7 @@ import nextstep.subway.map.dto.PathResponseAssembler;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,10 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    @Cacheable(value = "paths", key = "'paths'+#dataSource+#target")
+    @Caching(cacheable = {
+            @Cacheable(value = "paths_source", key = "'paths'+#source"),
+            @Cacheable(value = "paths_target", key = "'paths'+#target")
+    })
     @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
