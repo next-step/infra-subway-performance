@@ -72,7 +72,7 @@ npm run dev
         - `create index 사원출입기록_사원번호_입출입시간_index on 사원출입기록 (사원번호, 입출입시간)`
         - 10배 정도 속도 개선효과를 볼수 있었습니다.
 
-```txt
+```text
 # 쿼리
 SELECT
     사원출입기록.사원번호,
@@ -128,7 +128,7 @@ FROM 사원출입기록
 ```text
 # 쿼리
 SELECT hobby,
-       ROUND((COUNT(1) / (SELECT COUNT(1) FROM programmer)) * 100, 1) AS 퍼센트
+       ROUND((COUNT(*) / (SELECT COUNT(*) FROM programmer)) * 100, 1) AS 퍼센트
 FROM programmer
 GROUP BY hobby;
 ```
@@ -143,7 +143,7 @@ GROUP BY hobby;
     - `hospital` 테이블 `ID` PK 지정
         - `alter table hospital  add constraint hospital_pk  primary key (id)`
 
-```sql
+```text
 SELECT 코비드.id, 병원.name
 FROM covid 코비드
          JOIN hospital 병원
@@ -184,7 +184,7 @@ ORDER BY programmer.id;
     - `programmer.country` 인덱스 추가 하였습니다.
     - `create index programmer_country_index on programmer (country)`
 
-```
+```text
 SELECT
     covid.stay, count(*)
 FROM
