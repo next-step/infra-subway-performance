@@ -36,6 +36,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public Slice<StationResponse> findAllStations(Long offset, int size) {
         Slice<Station> stations = stationRepository.findAll(offset, PageRequest.of(0, size));
         return stations.map(StationResponse::of);
