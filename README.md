@@ -205,8 +205,26 @@ ORDER BY 횟수 DESC;
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
 - [X] C. 페이징 쿼리
-- 역 페이이징 조회 : GET http://localhost:8080/stations?size={size}&page={page}
-- 좋아요 페이징 조회 : GET http://localhost:8080/favorites?size={size}&page={page}
+- 역 페이이징 조회 : GET https://wooobo.r-e.kr/stations?size={size}&page={page}
+- 좋아요 페이징 조회 : GET https://wooobo.r-e.kr/favorites?size={size}&page={page}
+> 테스트 파일 참고 해주세요~  
+    - /httptest/favorite.http  
+    - /httptest/station.http  
 - [X] D. MySQL Replication with JPA
+    - 데이터베이스 EC2 : `EC2-wooobo-database`
 
+### ALB,WAF,ACM
+- [ACM](https://ap-northeast-2.console.aws.amazon.com/acm/home?region=ap-northeast-2#/certificates/164a3186-e637-49b4-9dfd-9fc282ecb2de)
+    - 도메인 이름 : `wooobo.r-e.kr`
+- [Target Group](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#TargetGroup:targetGroupArn=arn:aws:elasticloadbalancing:ap-northeast-2:843255971531:targetgroup/wooobo-webservice/b0af8fa04d7b0f64)
+    - Name : `wooobo-webservice`
+- [ALB](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LoadBalancers:search=wooobo;sort=loadBalancerName)
+    - Name : `wooobo-abl`
+- [WAF]
+    - NAME = `wooobo-abl`
 
+### 접속
+0. pem 파일 이름 : wooobo-nextstep.pem
+1. `EC2-wooobo-bastion` 관리망 접속
+2. 웹서비스 접속 : `ssh ubuntu@webservice`
+3. 데이터베이스 접속 : `ssh ubuntu@database`
