@@ -69,8 +69,7 @@ npm run dev
     - 개선전 속도 430~ms
     - 개선후 적용 후 속도 50~60ms
     - 개선 내용
-        - `create index 사원출입기록_입출입구분_index on 사원출입기록 (입출입구분)`
-        - `create index 사원출입기록_사원번호_index on 사원출입기록 (사원번호 desc)`
+        - `create index 사원출입기록_사원번호_입출입시간_index on 사원출입기록 (사원번호, 입출입시간)`
         - 10배 정도 속도 개선효과를 볼수 있었습니다.
 
 ```txt
