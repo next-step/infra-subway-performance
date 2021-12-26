@@ -1,0 +1,15 @@
+POST https://wooobo.r-e.kr/login/token
+Content-Type: application/json
+
+{
+  "email":"test@test.com","password":"11"
+}
+
+###
+GET https://wooobo.r-e.kr/favorites?size=1&page=1
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNjQwNDk3MDAyLCJleHAiOjE2NDA1MDA2MDJ9.dkQXaAoCD--bdL2NUmepaXgc51r2hVYThRP8obViBeA
+
+
+
+
