@@ -204,6 +204,9 @@ ORDER BY 횟수 DESC;
 ----
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
-### C. 페이징 쿼리
+- [X] C. 페이징 쿼리
+- 역 페이이징 조회 : GET http://localhost:8080/stations?size={size}&page={page}
+- 좋아요 페이징 조회 : GET http://localhost:8080/favorites?size={size}&page={page}
+- [X] D. MySQL Replication with JPA
 
-### D. MySQL Replication with JPA
+
