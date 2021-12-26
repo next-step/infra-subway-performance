@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class MapService {
     private LineService lineService;
     private StationService stationService;
@@ -31,7 +31,6 @@ public class MapService {
             @Cacheable(value = "paths_source", key = "'paths'+#source"),
             @Cacheable(value = "paths_target", key = "'paths'+#target")
     })
-    @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
