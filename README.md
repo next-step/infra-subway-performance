@@ -47,7 +47,12 @@ npm run dev
    - Smoke : [main](/k6/main/smoke_main_result.md), [line-update](/k6/line-update/smoke_update_result.md), [paths](/k6/path/smoke_path_result.md)
    - Stress : [main](/k6/main/stress_main_result.md), [line-update](/k6/line-update/stress_update_result.md), [paths](/k6/path/stress_path_result.md)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+   ![img.png](img.png)
+   ![img_1.png](img_1.png)
+- 페이지에 대한 성능은 별로 차이가 없음을 볼 수 있습니다..
+- k6로 다시 테스트 했을 때 paths 조회에서 http_req_duration이 4~5배 가량 좋아진 것을 볼 수 있습니다.
+- [paths stress test](/k6/path/stress_path_result.md), [paths load test](/k6/path/load_path_result.md)
+---
 ---
 
 ### 2단계 - 조회 성능 개선하기
