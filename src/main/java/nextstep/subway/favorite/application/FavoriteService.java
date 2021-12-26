@@ -1,5 +1,11 @@
 package nextstep.subway.favorite.application;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -10,29 +16,28 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FavoriteService {
+
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository,
+        StationRepository stationRepository) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
     }
 
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(loginMember.getId(), request.getSource(),
+            request.getTarget());
         favoriteRepository.save(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
