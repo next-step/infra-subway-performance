@@ -50,15 +50,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
-        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        지하철역_등록되어_있음(강남역);
+        지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음("선릉역");
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청(1,2);
 
         // then
         지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        지하철역_목록_포함됨(response, Arrays.asList(createResponse3));
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -92,8 +93,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(int page, int size) {
         return RestAssured.given().log().all().
+                param("size", size).
+                param("page", page).
                 when().
                 get("/stations").
                 then().

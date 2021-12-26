@@ -6,6 +6,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,10 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+    public List<StationResponse> findAllStations(Pageable pageable) {
+        List<Station> stations = stationRepository
+            .findAllByIdAfterOrderById(Long.valueOf(getPrevId(pageable)),
+                PageRequest.of(0, pageable.getPageSize()));
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -42,5 +46,11 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    private Long getPrevId(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        return Long.valueOf(pageNumber * pageSize);
     }
 }

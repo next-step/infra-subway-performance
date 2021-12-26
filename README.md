@@ -269,4 +269,5 @@ group by a3.exercise
 ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+ -  https://shinmj-nextstep.n-e.kr/stations?page=1&size=3
+ - **지하철역 목록을 조회해 오는 API에 페이징 쿼리를 적용함.**
