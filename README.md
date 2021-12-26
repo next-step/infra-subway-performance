@@ -269,5 +269,40 @@ group by a3.exercise
 ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
- -  https://shinmj-nextstep.n-e.kr/stations?page=1&size=3
+ -  https://shinmj-nextstep.n-e.kr/stations?page=1&size=2
  - **지하철역 목록을 조회해 오는 API에 페이징 쿼리를 적용함.**
+```json
+{
+    "content": [
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdDate": "20211226",
+            "modifiedDate": "20211226"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "unsorted": false,
+            "sorted": true,
+            "empty": false
+        },
+        "pageNumber": 1,
+        "pageSize": 2,
+        "offset": 2,
+        "paged": true,
+        "unpaged": false
+    },
+    "sort": {
+        "unsorted": false,
+        "sorted": true,
+        "empty": false
+    },
+    "first": false,
+    "last": true,
+    "numberOfElements": 1,
+    "number": 1,
+    "size": 2,
+    "empty": false
+}
+```

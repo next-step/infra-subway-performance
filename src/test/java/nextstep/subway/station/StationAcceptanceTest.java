@@ -50,8 +50,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        지하철역_등록되어_있음(강남역);
-        지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
         ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음("선릉역");
 
         // when
@@ -137,7 +137,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList("content", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 

@@ -6,8 +6,12 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +30,14 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations(Pageable pageable) {
-        List<Station> stations = stationRepository
-            .findAllByIdAfterOrderById(Long.valueOf(getPrevId(pageable)),
-                PageRequest.of(0, pageable.getPageSize()));
+    public Slice<StationResponse> findAllStations(Pageable pageable) {
+        Slice<Station> stations = stationRepository.findAllByOrderById(pageable);
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stationResponses = stations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+
+        return new SliceImpl<>(stationResponses, pageable, stations.hasNext());
     }
 
     public void deleteStationById(Long id) {

@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import java.net.URI;
@@ -9,6 +10,7 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +40,8 @@ public class StationController {
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations(
-        @PageableDefault(size = DEFAULT_SIZE, sort = SORT_KEY, direction = DESC)Pageable pageable) {
+    public ResponseEntity<Slice<StationResponse>> showStations(
+        @PageableDefault(size = DEFAULT_SIZE, sort = SORT_KEY, direction = ASC)Pageable pageable) {
         return ResponseEntity.ok().body(stationService.findAllStations(pageable));
     }
 
