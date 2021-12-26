@@ -102,5 +102,106 @@ CREATE INDEX I_사원번호 ON 사원출입기록 (사원번호);
 -- 인덱스 추가 후 0.9ms
 ```
 
+##### B. 인덱스 설계
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+```sql
+alter table programmer add primary key(id);
+alter table hospital add primary key(id);
+alter table covid add primary key(id);
+CREATE INDEX I_hobby ON programmer (hobby);
+CREATE INDEX I_programmer_id ON covid (programmer_id);
+CREATE INDEX I_hospital_id ON covid (hospital_id);
+```
+
+###### [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```sql
+select
+    hobby,
+    round(count(*) * 100 / (select count(*) from programmer), 1)
+from programmer
+group by hobby
+
+-- 62ms
+```
+
+###### [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+select
+    programmer.id,
+    covid.id,
+    hospital.name
+from hospital
+inner join covid
+on hospital.id = covid.hospital_id
+inner join programmer
+on covid.programmer_id = programmer.id
+
+-- 15ms
+```
+
+###### [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+select
+    covid.id, 
+    hospital.name, 
+    programmer.hobby, 
+    programmer.dev_type, 
+    programmer.years_coding
+from programmer
+inner join covid
+on programmer.id = covid.programmer_id
+inner join hospital
+on covid.hospital_id = hospital.id
+where hobby = 'yes' and (student like 'yes%' or years_coding = '0-2 years')
+order by programmer.id
+
+-- 16ms
+```
+
+###### [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```sql
+alter table hospital modify name varchar(255);
+CREATE INDEX I_name ON hospital (name);
+CREATE INDEX I_country ON programmer (country);
+CREATE INDEX I_member_id ON covid (member_id);
+
+select
+    covid.stay, 
+    count(*)
+from (select id from programmer where country = 'india') indiaProgrammer
+inner join covid
+on indiaProgrammer.id = covid.programmer_id
+inner join (select id from hospital where name = '서울대병원') seoulHospital
+on covid.hospital_id = seoulHospital.id
+inner join (select id from member where age between 20 and 29) member
+on covid.member_id = member.id
+group by covid.stay
+
+-- 62ms
+```
+
+###### [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```sql
+select
+    programmer.exercise, 
+    count(*)
+from programmer
+inner join covid
+on programmer.id = covid.programmer_id
+inner join (select id from hospital where name = '서울대병원') seoulHospital
+on covid.hospital_id = seoulHospital.id
+inner join (select id from member where age between 30 and 39) member
+on covid.member_id = member.id
+group by programmer.exercise
+
+-- 47ms
+```
+
 #### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
