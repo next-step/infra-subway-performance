@@ -3,8 +3,11 @@ package nextstep.subway.favorite;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -66,13 +69,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageMember() {
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 양재역, 정자역);
         // then
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
+        ExtractableResponse<Response> 즐겨찾기_한개조회 = 즐겨찾기_목록_조회_요청(사용자, 1, 2);
+        ExtractableResponse<Response> 즐겨찾기_두개조회 = 즐겨찾기_목록_조회_요청(사용자, 2, 1);
         // then
-        즐겨찾기_목록_조회됨(findResponse);
+        즐겨찾기_목록_조회됨(즐겨찾기_한개조회,1);
+        즐겨찾기_목록_조회됨(즐겨찾기_두개조회,2);
 
         // when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
@@ -96,12 +103,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse, int size, int page) {
         return RestAssured.given().log().all().
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/favorites").
+                get("/favorites?size="+size+"&page"+page).
                 then().
                 log().all().
                 extract();
@@ -123,7 +130,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int expectedSize) {
+        List<Long> resultIds = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+            .map(FavoriteResponse::getId)
+            .collect(Collectors.toList());
+        assertThat(resultIds.size()).isEqualTo(expectedSize);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
