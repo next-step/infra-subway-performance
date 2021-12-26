@@ -359,3 +359,5 @@ ALTER TABLE `subway`.`covid`
 #### 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
 - /lines
+- /stations
+
