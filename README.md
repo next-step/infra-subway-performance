@@ -87,9 +87,81 @@ npm run dev
 
 - 인덱스 설계
    - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
-      - [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
-      - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-      - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-      - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-      - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - Coding as a Hobby 와 같은 결과를 반환하세요.
+  - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+     - 개선 전 : 0.731 sec
+       ![img_2.png](result/img_2.png)
+     - 인덱스 추가 후 : 0.0053 sec
+       ![img_3.png](result/img_3.png)
+    ```sql
+      select c.id, h.name
+      from programmer p inner join covid c on p.id = c.programmer_id
+        inner join hospital h on c.hospital_id = h.id
+    ```
+     - 인덱스 추가
+    ```sql
+      alter table covid add constraint pk_covid_id primary key(id);
+      alter table programmer add constraint pk_programmer_id primary key(id);
+      alter table hospital add constraint pk_hospital_id primary key(id);
+    ```
+  - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+     - 개선 전 : 2.852 sec
+       ![img_4.png](result/img_4.png)
+     - 인덱스 추가 후 : 0.0080 sec
+       ![img_5.png](result/img_5.png)
+    ```sql
+      SELECT c.id, hobby, dev_type, years_coding 
+      FROM programmer p inner join covid c on p.id = c.programmer_id
+        inner join hospital h on c.hospital_id = h.id
+      where upper(hobby) = 'YES' or years_coding = '0-2 years'
+      order by p.id;
+    ```
+     - 인덱스 추가
+    ```sql
+      create index I_programmer_hobby on programmer (hobby);
+      create index I_programmer_years_coding on programmer (years_coding);
+      create index I_covid_programmer_id on covid (programmer_id);
+    ```
+  - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+     - 개선 전 : 0.760 sec
+       ![img_7.png](result/img_7.png)
+     - 인덱스 추가 후 : 0.106 sec
+       ![img_8.png](result/img_8.png)
+    ```sql
+      SELECT c.stay, count(c.stay)
+      FROM
+        member m inner join programmer p on m.id = p.member_id
+        inner join covid c on c.programmer_id = p.id
+        inner join hospital h on h.id = c.hospital_id
+      where h.name = '서울대병원' and p.country = 'India' and m.age > 19 and m.age < 30
+      group by c.stay;
+    ```
+     - 인덱스 추가
+    ```sql
+      create index i_hospital_name on hospital (name);
+      create index i_programmer_country on programmer (country);
+      create index i_programmer_member_id on programmer (member_id);
+      create index i_member_age on member (age);
+      create index i_covid_stay on covid (stay);
+      create index i_covid_hospital_id on covid (hospital_id);
+    ```
+  - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+     - 개선 전 : 0.502 sec <br>
+       ![img_10.png](result/img_10.png)
+     - 인덱스 추가 후 : 0.106 sec <br/>
+       ![img_9.png](result/img_9.png)
+
+    ```sql
+      SELECT p.exercise, count(p.exercise)
+      FROM
+        member m inner join programmer p on m.id = p.member_id
+        inner join covid c on c.programmer_id = p.id
+        inner join hospital h on h.id = c.hospital_id
+      where h.name = '서울대병원' and m.age >= 30 and m.age <= 39
+      group by p.exercise;
+    ```
+     - 인덱스 추가
+    ```sql
+      create index i_programmer_exercise on programmer (exercise);
+    ```
 - [ ] 페이징 쿼리 적용해보기
