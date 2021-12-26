@@ -17,7 +17,7 @@ const AGE = 20;
 
 export default function () {
     const before = new Date().getTime();
-    const T = 11 * 1.5;
+    const T = 6 * 1.5;
 
     let jsonHeaders = {
         headers: {
@@ -30,51 +30,6 @@ export default function () {
             'Content-Type': 'text/html',
         },
     };
-
-    // 회원 생성
-    let memberPayload = JSON.stringify({
-        email: USERNAME,
-        password: PASSWORD,
-        age: AGE
-    });
-    let memberRes = http.post(`${BASE_URL}/members`, memberPayload, jsonHeaders);
-    check(memberRes, {'member saved': (obj) => obj != null});
-
-    // 지하철역 저장
-    let stationPayload = JSON.stringify({
-        name: 'Station' + new Date().getTime()
-    });
-    let stationRes = http.post(`${BASE_URL}/stations`, stationPayload, jsonHeaders);
-    check(stationRes, {'station saved': (obj) => obj != null});
-
-    // 노선 저장
-    let linePayload = JSON.stringify({
-        name: 'Line' + new Date().getTime(),
-        color: "red lighten-1",
-        upStationId: 1,
-        downStationId: 2,
-        distance: 1
-    });
-    let lineRes = http.post(`${BASE_URL}/lines`, linePayload, jsonHeaders);
-    check(lineRes, {'line saved': (obj) => obj != null});
-
-    // 로그인
-    let loginRes = http.post(`${BASE_URL}/login/token`, memberPayload, jsonHeaders);
-
-    check(loginRes, {
-        'logged in successfully': (resp) => resp.json('accessToken') !== '',
-    });
-
-    let authHeaders = {
-        headers: {
-            Authorization: `Bearer ${loginRes.json('accessToken')}`,
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // 내 정보 조회
-    let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
-    check(myObjects, {'retrieved member': (obj) => obj.id != 0});
 
     // 지하철역 목록 조회 화면
     let stationsPage = http.get(`${BASE_URL}/stations`, htmlHeaders);
