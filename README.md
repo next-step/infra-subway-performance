@@ -205,3 +205,4 @@ group by programmer.exercise
 
 #### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+http://jennie267-alb-2134274569.ap-northeast-2.elb.amazonaws.com/stations?offset=0
