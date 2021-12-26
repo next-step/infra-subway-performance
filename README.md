@@ -76,5 +76,57 @@ npm run dev
 
 - **B. 인덱스 설계**
 
+- B-1. Coding as a Hobby 와 같은 결과를 반환하세요.
+  - Hobby 컬럼에 인덱스를 추가하여 `LIMIT 0, 2000	2 row(s) returned	0.360 sec / 0.000 sec` 에서 `2 row(s) returned	0.062 sec / 0.000 sec` 으로 개선할 수 있었습니다.
+```
+SELECT hobby, count(*)/(select count(*) count from programmer) as count
+FROM programmer 
+group by hobby;
+```
+- B-2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - programmer 테이블에 id로 pk, covid 테이블에 hospital_id, programmer_id에 index를 추가하여 `318325 row(s) returned	0.015 sec / 3.235 sec` 으로 개선할 수 있었습니다
+```
+select c.id, a.name from hospital a 
+left join covid b on a.id = b.hospital_id
+left join programmer c on b.programmer_id = c.id;
+```
+  ![./images_explain/B-2.png](./images_explain/B-2.png)
+- B-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - 별도 인덱스 추가 없이 상기 쿼리에 조건만 추가해도 빠른 결과가 나왔습니다. `24537 row(s) returned	0.015 sec / 0.766 sec`
+```
+SELECT B.ID, A.NAME, C.HOBBY, C.DEV_TYPE, C.YEARS_CODING FROM HOSPITAL A 
+LEFT JOIN COVID B ON A.ID = B.HOSPITAL_ID
+LEFT JOIN PROGRAMMER C ON B.PROGRAMMER_ID = C.ID
+WHERE (C.STUDENT IN ('YES, PART-TIME','YES, FULL-TIME') OR C.YEARS_CODING = '0-2 YEARS')
+AND C.HOBBY = 'YES'
+ORDER BY C.ID;
+```
+  ![./images_explain/B-3.png](./images_explain/B-3.png)
+- B-4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 최초 쿼리 작성 시 `10 row(s) returned	0.234 sec / 0.000 sec`이었으나, where 조건에 들어가는 컬럼들에 인덱스를 추가하고 join 순서를 조절하여 `10 row(s) returned	0.094 sec / 0.000 sec`으로 개선하였습니다
+```
+SELECT B.stay, count(*) FROM covid B
+LEFT JOIN hospital A on A.ID = B.hospital_id
+LEFT JOIN programmer C ON B.programmer_id = C.id
+LEFT JOIN member D ON  D.id = B.member_id
+WHERE C.country = 'India'
+AND D.age between 20 and 29
+AND A.id = 9
+GROUP BY stay;
+```
+  ![./images_explain/B-4.png](./images_explain/B-4.png)
+- B-5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - 별도 인덱스 추가 없이 `5 row(s) returned	0.078 sec / 0.000 sec` 로 빠른 조회가 가능했다 
+```
+SELECT C.exercise, count(*) FROM covid B
+LEFT JOIN hospital A on A.ID = B.hospital_id
+LEFT JOIN programmer C ON B.programmer_id = C.id
+LEFT JOIN member D ON  D.id = B.member_id
+WHERE D.age between 30 and 39
+AND A.id = 9
+GROUP BY exercise;
+```
+  ![./images_explain/B-5.png](./images_explain/B-5.png)
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
