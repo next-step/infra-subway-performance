@@ -269,40 +269,52 @@ group by a3.exercise
 ```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
- -  https://shinmj-nextstep.n-e.kr/stations?page=1&size=2
+ - https://shinmj-nextstep.n-e.kr/stations?page=1&size=3
  - **지하철역 목록을 조회해 오는 API에 페이징 쿼리를 적용함.**
 ```json
 {
-    "content": [
-        {
-            "id": 3,
-            "name": "선릉역",
-            "createdDate": "20211226",
-            "modifiedDate": "20211226"
-        }
-    ],
-    "pageable": {
-        "sort": {
-            "unsorted": false,
-            "sorted": true,
-            "empty": false
-        },
-        "pageNumber": 1,
-        "pageSize": 2,
-        "offset": 2,
-        "paged": true,
-        "unpaged": false
+  "content": [
+    {
+      "id": 4,
+      "name": "노량진",
+      "createdDate": "20210106",
+      "modifiedDate": "20210106"
     },
+    {
+      "id": 5,
+      "name": "대방",
+      "createdDate": "20210106",
+      "modifiedDate": "20210106"
+    },
+    {
+      "id": 6,
+      "name": "영등포",
+      "createdDate": "20210106",
+      "modifiedDate": "20210106"
+    }
+  ],
+  "pageable": {
     "sort": {
-        "unsorted": false,
-        "sorted": true,
-        "empty": false
+      "sorted": true,
+      "unsorted": false,
+      "empty": false
     },
-    "first": false,
-    "last": true,
-    "numberOfElements": 1,
-    "number": 1,
-    "size": 2,
+    "pageNumber": 1,
+    "pageSize": 3,
+    "offset": 3,
+    "paged": true,
+    "unpaged": false
+  },
+  "sort": {
+    "sorted": true,
+    "unsorted": false,
     "empty": false
+  },
+  "numberOfElements": 3,
+  "first": false,
+  "last": false,
+  "size": 3,
+  "number": 1,
+  "empty": false
 }
 ```
