@@ -78,12 +78,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("지하철 노선의 PK 기준으로 페이징 목록을 조회한다.")
+    @DisplayName("지하철역을 페이지 형태로 조회한다.")
     void getLinesPageWithPk() {
         // given
         지하철역들이_등록되어있음(STATIONS_COUNT);
 
-        PageRequest pageRequest = PageRequest.of(0, 10); //5 ~ 14 기준이 pk
+        PageRequest pageRequest = PageRequest.of(0, 10);
         Long id = 5L;
 
         // when
@@ -111,11 +111,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name);
     }
 
-    public static int 지하철역들이_등록되어있음(int count) {
+    public static void 지하철역들이_등록되어있음(int count) {
         IntStream.range(0, count)
                 .forEach(index -> 지하철역_생성_요청(String.valueOf(index)));
-
-        return count;
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {

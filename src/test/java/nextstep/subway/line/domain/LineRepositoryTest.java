@@ -53,27 +53,18 @@ public class LineRepositoryTest {
         // when
         Page<Line> lines = lineRepository.findAll(pageRequest);
 
-        PageImpl<LineResponse> lineResponse = new PageImpl<>(
-                lines.getContent()
-                        .stream()
-                        .map(LineResponse::of)
-                        .collect(Collectors.toList()),
-                lines.getPageable(),
-                lines.getTotalElements()
-        );
-
         // then
         assertAll(
-                () -> assertThat(lineResponse).hasSize(10),
-                () -> assertThat(lineResponse.getPageable().getPageNumber()).isEqualTo(pageRequest.getPageNumber()),
-                () -> assertThat(lineResponse.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize()),
-                () -> assertThat(lineResponse.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
+                () -> assertThat(lines).hasSize(10),
+                () -> assertThat(lines.getPageable().getPageNumber()).isEqualTo(pageRequest.getPageNumber()),
+                () -> assertThat(lines.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize()),
+                () -> assertThat(lines.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
         );
     }
 
     @Test
-    @DisplayName("page를 pk를 받아서 성능을 개선한다.")
-    public void pageAdvance() throws Exception {
+    @DisplayName("page 요청 시 id를 기준으로 조회한다.")
+    public void pageAdvance() {
         // given
         PageRequest pageRequest = PageRequest.of(0, 10);
         Long id = 20L;

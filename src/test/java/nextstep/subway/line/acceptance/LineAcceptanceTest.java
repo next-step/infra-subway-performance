@@ -95,7 +95,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public void getLinesPage() throws Exception {
         // given
         지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
-        PageRequest pageRequest = PageRequest.of(5, 8); // 41~ 48
+        PageRequest pageRequest = PageRequest.of(5, 8);
 
 
         // when
@@ -106,11 +106,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("지하철 노선의 PK 기준으로 페이징 목록을 조회한다.")
+    @DisplayName("지하철 노선의 페이징 목록을 조회한다.")
     public void getLinesPageWithPk() throws Exception {
         // given
         지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
-        PageRequest pageRequest = PageRequest.of(0, 10); //25 ~ 34
+        PageRequest pageRequest = PageRequest.of(0, 10);
         Long id = 25L;
 
         // when
@@ -171,7 +171,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_생성_요청(params);
     }
 
-    private int 지하철_노선들이_등록되어_있음(int count) {
+    private void 지하철_노선들이_등록되어_있음(int count) {
         IntStream.range(0, count)
                 .forEach(index -> {
                     Map<String, String> params = new HashMap<>();
@@ -183,7 +183,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
                     지하철_노선_생성_요청(params);
                 });
-        return count;
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {

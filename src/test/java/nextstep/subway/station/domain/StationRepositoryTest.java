@@ -44,7 +44,7 @@ public class StationRepositoryTest {
 
     @Test
     @DisplayName("paging 처리하기")
-    public void paging() throws Exception {
+    public void paging() {
         // given
         PageRequest pageRequest = PageRequest.of(1, 10);
 
@@ -58,52 +58,8 @@ public class StationRepositoryTest {
     }
 
     @Test
-    @DisplayName("pageImpl 사용하기 ")
-    public void pagingToPageImpl() throws Exception {
-        // given
-        PageRequest pageRequest = PageRequest.of(1, 10);
-
-        // when
-        Page<Station> stations = stationRepository.findAll(pageRequest);
-
-        // then
-        PageImpl<Station> stationPageImpl = new PageImpl<>(stations.getContent(), stations.getPageable(), stations.getTotalElements());
-        assertThat(stationPageImpl.getPageable().getPageNumber()).isEqualTo(pageRequest.getPageNumber());
-        assertThat(stationPageImpl.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize());
-        assertThat(stationPageImpl.getContent()).hasSize(10);
-    }
-
-    @Test
-    @DisplayName("response 타입으로 응답하기")
-    public void pagingResult() throws Exception {
-        // given
-        PageRequest pageRequest = PageRequest.of(1, 10);
-
-        // when
-        Page<Station> stations = stationRepository.findAll(pageRequest);
-
-        PageImpl<StationResponse> stationResponses = new PageImpl<>(
-                stations.getContent()
-                        .stream()
-                        .map(StationResponse::of)
-                        .collect(Collectors.toList()),
-                stations.getPageable(),
-                stations.getTotalElements()
-        );
-
-        // then
-        assertAll(
-                () -> assertThat(stationResponses).hasSize(10),
-                () -> assertThat(stationResponses.getPageable().getPageNumber()).isEqualTo(pageRequest.getPageNumber()),
-                () -> assertThat(stationResponses.getPageable().getPageSize()).isEqualTo(pageRequest.getPageSize()),
-                () -> assertThat(stationResponses.getTotalElements()).isEqualTo(TOTAL_ELEMENTS)
-        );
-    }
-
-
-    @Test
-    @DisplayName("page를 pk를 받아서 성능을 개선한다.")
-    public void pageAdvance() throws Exception {
+    @DisplayName("page 요청 시 id를 기준으로 조회한다.")
+    public void pageAdvance() {
         // given
         PageRequest pageRequest = PageRequest.of(0, 10);
         Long id = 20L;

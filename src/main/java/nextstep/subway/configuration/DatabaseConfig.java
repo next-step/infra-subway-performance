@@ -30,17 +30,15 @@ import static nextstep.subway.configuration.ReplicationRoutingDataSource.DATASOU
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @EnableTransactionManagement
-//@EnableJpaRepositories(basePackages = {"nextstep.subway"})
+@EnableJpaRepositories(basePackages = {"nextstep.subway"})
 public class DatabaseConfig {
 
-    // replication master config
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
     public DataSource masterDataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
-    // replication slave config
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave")
     public DataSource slaveDataSource() {
