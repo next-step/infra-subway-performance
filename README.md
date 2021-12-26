@@ -59,3 +59,38 @@ npm run dev
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- 쿼리 최적화
+  - [X] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+  (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+  1. 쿼리 작성만으로 1s 이하로 반환한다.
+    ```
+    select t1.사원번호, 이름, 연봉, 직급명, max(입출입시간) as 입출입시간, 지역, 입출입구분
+    from
+      (SELECT dm.사원번호, emp.이름, pay.연봉, job.직급명
+      FROM 부서관리자 dm inner join 직급 job on dm.사원번호 = job.사원번호
+      inner join 급여 pay on dm.사원번호 = pay.사원번호
+      inner join 사원 emp on dm.사원번호 = emp.사원번호
+      WHERE dm.부서번호 IN (SELECT 부서번호 I_출입문I_출입문I_출입문
+                        FROM 부서
+                        where upper(비고) = 'ACTIVE')
+      AND pay.종료일자 > now()
+      order by pay.연봉 desc
+      limit 5) t1
+      inner join 사원출입기록 io on t1.사원번호 = io.사원번호 AND io.입출입구분 = 'O'
+    group by t1.사원번호, 이름, 연봉, 직급명, 입출입시간, 지역, 입출입구분
+    order by t1.연봉 desc, io.입출입시간 desc;
+    ```
+    - 조회 시간 : *0.356 sec*
+  2. 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
+    - `create index I_입출입구분 on 사원출입기록 (입출입구분);` 인덱스 추가
+    - 조회 시간 : *0.266 sec*
+  
+- 인덱스 설계
+  - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    - [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
+    - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [ ] 페이징 쿼리 적용해보기
+- 
