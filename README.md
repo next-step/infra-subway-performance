@@ -166,7 +166,32 @@ npm run dev
     ORDER BY T3.MEMBER_ID;
     ```
   ![img_2.png](img_2.png)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    ```mysql
+    create index hospital_id_index on hospital (id);
+    create index covid_hospital_id_index on covid (hospital_id);
+    create index covid_member_id_index on covid (member_id);
+    create index covid_stay_index on covid (stay);
+    create index programmer_country_index on programmer (country);
+    create index programmer_member_id_index on programmer (member_id);
+    create index member_id_index on member (id);
+    create index member_age_index on member (age);
+    
+    SELECT T2.STAY, count(T4.ID)
+    FROM hospital T1
+    INNER JOIN covid T2
+        ON T1.ID = T2.HOSPITAL_ID
+        AND T1.name = '서울대병원'
+    INNER JOIN programmer T3
+        ON T2.MEMBER_ID = T3.MEMBER_ID	
+        AND T3.COUNTRY = 'india'
+    INNER JOIN member T4
+        ON T2.MEMBER_ID = T4.ID
+        AND T4.AGE between 20 AND 29
+    GROUP BY T2.STAY
+    ORDER BY null;
+    ```
+   ![img_3.png](img_3.png)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
