@@ -118,7 +118,28 @@ npm run dev
     FROM programmer
     ```
     ![img.png](img.png)
-- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    ```mysql
+    create index hospital_id_index_2
+	on hospital (id);
+
+    create index covid_hospital_id_index
+        on covid (hospital_id);
+    
+    create index covid_member_id_index
+        on covid (member_id);
+    
+    create index programmer_member_id_index
+        on programmer (member_id);  
+
+    SELECT T2.ID, T1.NAME
+    FROM hospital T1
+    INNER JOIN covid T2
+        ON T1.ID = T2.HOSPITAL_ID
+    INNER JOIN programmer T3
+        ON T2.MEMBER_ID = T3.MEMBER_ID
+    ```
+    ![img_1.png](img_1.png)
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. <br/>
       (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
