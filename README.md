@@ -60,8 +60,11 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
-- 아래 요구사항에 기록해두겠습니다.
+    1. 쿼리를 작성한다.
+    2. 실행 시간을 확인한다.
+    3. Visual Explain 으로 병목점을 확인한다.
+    4. 인덱스를 추가 & 수정하면서 다시 실행 시간과 Visual Explain 을 확인한다.
+    5. 아래 "요구사항"란에 기록해두었으니 참고 부탁드립니다.
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
@@ -118,3 +121,148 @@ ALTER TABLE `tuning`.`사원출입기록`
 ```
 
 > 0.0014 sec
+
+##### B. 인덱스 설계
+
+> 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+> 적혀있는 순서대로 진행하지 않고 아래 적은 순서대로 진행했으니 참고 부탁드립니다.
+
+###### Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```sql
+SELECT hobby, ROUND(COUNT(*) * 100 / (SELECT COUNT(*) FROM programmer), 1) AS percentage
+FROM programmer
+GROUP BY hobby
+ORDER BY hobby DESC;
+```
+
+```sql
+ALTER TABLE `subway`.`programmer`
+    ADD INDEX `I_hobby` (`hobby` ASC);
+```
+
+**인덱스 생성 전**
+
+![img_3.png](img_3.png)
+
+**인덱스 생성 후**
+
+![img_4.png](img_4.png)
+
+> 0.609 sec -> 0.059 sec
+
+###### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```sql
+SELECT covid.stay, COUNT(covid.id)
+FROM covid
+         INNER JOIN member
+                    ON member.id = covid.member_id
+                        AND member.age BETWEEN 20 AND 29
+         INNER JOIN hospital
+                    ON hospital.id = covid.hospital_id
+                        AND hospital.name = '서울대병원'
+         INNER JOIN programmer
+                    ON programmer.id = covid.programmer_id
+                        AND programmer.country = 'India'
+GROUP BY covid.stay;
+```
+
+```sql
+ALTER TABLE `subway`.`covid`
+    ADD INDEX `I_member_id` (`member_id` ASC);
+ALTER TABLE `subway`.`member`
+    ADD INDEX `I_id_age` (`id` ASC, `age` ASC);
+ALTER TABLE `subway`.`programmer`
+    ADD INDEX `I_id_country` (`id` ASC, `country` ASC);
+```
+
+**인덱스 생성 전**
+
+![img_9.png](img_9.png)
+
+**인덱스 생성 후**
+
+![img_10.png](img_10.png)
+
+> 1.949 sec -> 0.063 sec
+
+###### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+위에서 생성한 인덱스 덕분인지 100ms 이내로 반환되었음.
+
+```sql
+SELECT programmer.exercise, count(*)
+FROM covid
+         INNER JOIN member
+                    ON member.id = covid.member_id
+                        AND member.age BETWEEN 30 AND 39
+         INNER JOIN programmer
+                    ON programmer.id = covid.programmer_id
+         INNER JOIN hospital
+                    ON hospital.id = covid.hospital_id
+                        AND hospital.name = '서울대병원'
+GROUP BY programmer.exercise;
+```
+
+![img_11.png](img_11.png)
+
+> 0.063 sec
+
+###### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+SELECT covid.id,
+       hospital.name,
+       programmer.hobby,
+       programmer.dev_type,
+       programmer.years_coding
+FROM covid
+         INNER JOIN hospital
+                    ON hospital.id = covid.hospital_id
+         INNER JOIN programmer
+                    ON programmer.id = covid.programmer_id
+                        AND
+                       ((programmer.hobby = 'Yes' AND programmer.student IN ('Yes, part-time', 'Yes, full-time')) OR
+                        programmer.years_coding = '0-2 years')
+ORDER BY programmer.id ASC;
+```
+
+```sql
+ALTER TABLE `subway`.`covid`
+    ADD INDEX `I_hospital_id` (`hospital_id` ASC);
+ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+ALTER TABLE `subway`.`covid`
+    ADD INDEX `I_programmer_id` (`programmer_id` ASC);
+ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+```
+
+**인덱스 생성 전**
+
+![img_7.png](img_7.png)
+
+**인덱스 생성 후**
+
+![img_8.png](img_8.png)
+
+> 0.769 sec -> 0.0030 sec
+
+###### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+위에서 생성한 인덱스 덕분에 100ms 이내로 반환되었음.
+
+```sql
+SELECT covid.id, hospital.name
+FROM covid
+         INNER JOIN hospital ON hospital.id = covid.hospital_id
+         INNER JOIN programmer ON programmer.id = covid.programmer_id;
+```
+
+![img_5.png](img_5.png)
+
+> 0.0037 sec
