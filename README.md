@@ -92,7 +92,7 @@ npm run dev
   * [x] Coding as a Hobby 와 같은 결과를 반환하세요. 
     ~~~
     쿼리
-    select hobby, round(count(hobby) / (select count(*) from programmer) * 100, 1)
+    select hobby, CONCAT(round(count(hobby) / (select count(*) from programmer) * 100, 1), '%') as persent
     from programmer
     group by hobby
     order by hobby desc;
@@ -104,37 +104,78 @@ npm run dev
     인덱스 전 275ms 
     인덱스 후 67ms
     ~~~ 
-  * [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  * [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     ~~~
     쿼리
+    select c.id, h.name
+    from hospital h
+    inner join covid c on h.id = c.hospital_id
+    inner join programmer p on c.programmer_id = p.id;
+    
     인덱스
+    create index programmer_id_index
+	on programmer (id);
+    
     비교 결과
-    인덱스 전 275ms 
-    인덱스 후 67ms
+    인덱스 전 440ms
+    인덱스 후 61ms
     ~~~
-  * [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  * [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
      ~~~
     쿼리
+    select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+    from programmer p
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on h.id = c.hospital_id
+    where p.hobby = 'yes' and (p.student in ('Yes, full-time', 'Yes, part-time') or p.years_coding = '0-2 years')
+    order by p.id;
+    
     인덱스
+    create index hospital_id_index on hospital (id);
+    create index covid_programmer_id_index on covid (programmer_id);
+    
     비교 결과
-    인덱스 전 275ms
-    인덱스 후 67ms
+    인덱스 전 723ms
+    인덱스 후 75ms
     ~~~
-  * [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  * [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
      ~~~
     쿼리
+    select stay, count(*)
+    from covid
+    inner join member on covid.member_id = member.id
+    where hospital_id = (select id from hospital where name = '서울대병원') and age between 20 AND 29
+    group by stay;
+    
     인덱스
+    create index covid_member_id_index on covid (member_id);
+    create index member_id_index on member (id);
+    create index covid_hospital_id_index on covid (hospital_id);
+    
     비교 결과
-    인덱스 전 275ms
-    인덱스 후 67ms
+    인덱스 전 188ms
+    인덱스 후 52ms
     ~~~
-  * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  * [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
      ~~~
     쿼리
+    select exercise
+    from hospital h
+    inner join covid c on h.id = c.hospital_id and h.name = '서울대병원'
+    inner join programmer p on c.programmer_id = p.id
+    inner join member m on c.member_id = m.id
+    where h.name = '서울대병원' and m.age between 30 AND 39
+    group by exercise;
+
     인덱스
+    create index hospital_id_index
+	on hospital (id);
+    create index hospital_name_index
+    on hospital (name);
+    
     비교 결과
-    인덱스 전 275ms
-    인덱스 후 67ms
+    인덱스 전 100ms 
+    인덱스 후 81ms
     ~~~
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
