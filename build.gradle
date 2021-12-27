@@ -37,10 +37,11 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 	implementation("mysql:mysql-connector-java")
-
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
-
+	// hateoas
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	// flyway
+	implementation("org.flywaydb:flyway-core:6.4.2")
 }
 
 if (System.getenv('SPRING_PROFILES_ACTIVE') == "prod") {
