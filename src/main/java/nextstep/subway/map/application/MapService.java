@@ -25,6 +25,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
