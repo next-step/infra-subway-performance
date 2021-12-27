@@ -121,7 +121,7 @@ npm run dev
 - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     ```mysql
     create index hospital_id_index_2
-	on hospital (id);
+    on hospital (id);
 
     create index covid_hospital_id_index
         on covid (hospital_id);
@@ -140,8 +140,32 @@ npm run dev
         ON T2.MEMBER_ID = T3.MEMBER_ID
     ```
     ![img_1.png](img_1.png)
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. <br/>
+- [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. <br/>
       (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    ```mysql
+    create index hospital_id_index_2
+    on hospital (id);
+
+    create index covid_hospital_id_index
+        on covid (hospital_id);
+    
+    create index covid_member_id_index
+        on covid (member_id);
+    
+    create index programmer_member_id_index
+        on programmer (member_id);  
+  
+    SELECT T2.ID, T1.NAME, T3.HOBBY, T3.STUDENT, T3.DEV_TYPE, T3.YEARS_CODING
+    FROM hospital T1
+    INNER JOIN covid T2
+        ON T1.ID = T2.HOSPITAL_ID
+    INNER JOIN programmer T3
+        ON T2.MEMBER_ID = T3.MEMBER_ID
+    WHERE T3.HOBBY = 'YES'
+      AND (T3.YEARS_CODING = '0-2 years' OR T3.STUDENT like 'YES%')
+    ORDER BY T3.MEMBER_ID;
+    ```
+  ![img_2.png](img_2.png)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
