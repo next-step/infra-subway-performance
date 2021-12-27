@@ -1,0 +1,57 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+    hikari:
+      master:
+        username: root
+        password: masterpw
+        jdbc-url: jdbc:mysql://localhost:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      slave:
+        username: root
+        password: slavepw
+        jdbc-url: jdbc:mysql://localhost:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+  data:
+    web:
+      pageable:
+        max-page-size: 10
+security:
+  jwt:
+    token:
+      secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno
+      expire-length: 3600000
+handlebars:
+  suffix: .html
+  enabled: true
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    hikari:
+      master:
+        username: root
+        password: masterpw
+        jdbc-url: jdbc:mysql://localhost:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      slave:
+        username: root
+        password: slavepw
+        jdbc-url: jdbc:mysql://localhost:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+
+
+
