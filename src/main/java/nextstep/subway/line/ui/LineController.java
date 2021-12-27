@@ -42,16 +42,12 @@ public class LineController {
     @GetMapping(produces = "application/x-spring-data-verbose+json")
     public ResponseEntity<CollectionModel<LineResponse>> findAllLines(@RequestParam(defaultValue = "0") Long offset,
                                                                       @RequestParam(defaultValue = "3") int size) {
-
         final Slice<LineResponse> lineResponses = lineService.findLineResponses(offset, size);
-
-        final CollectionModel<LineResponse> pagedLineResponse = CollectionModel.of(lineResponses);
-
         if (lineResponses.hasNext()) {
             final Long lastId = lineResponses.getContent().get(lineResponses.getNumberOfElements() - 1).getId();
-            pagedLineResponse.add(Link.of("/lines?offset=" + lastId).withRel("next"));
+            return ResponseEntity.ok(CollectionModel.of(lineResponses, Link.of("/lines?offset=" + lastId).withRel("next")));
         }
-        return ResponseEntity.ok(pagedLineResponse);
+        return ResponseEntity.ok(CollectionModel.of(lineResponses));
     }
 
     @GetMapping("/{id}")
