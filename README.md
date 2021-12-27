@@ -134,9 +134,12 @@ B. 인덱스 설계
   
 ---
 
-
-
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   http://localhost:8080/stations?page=0&size=2
+   
+---
+
+
 
 
 
