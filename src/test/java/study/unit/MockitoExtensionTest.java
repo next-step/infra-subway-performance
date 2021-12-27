@@ -11,10 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 
 @DisplayName("단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(MockitoExtension.class)
@@ -27,10 +31,11 @@ public class MockitoExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+
+        given(lineRepository.findAll(anyLong(), any(Pageable.class))).willReturn(new SliceImpl(Lists.newArrayList(new Line())));
         LineService lineService = new LineService(lineRepository, stationService);
 
-        // when
+        // whenc
         Slice<LineResponse> responses = lineService.findLineResponses(0L, 10);
 
         // then

@@ -12,9 +12,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,6 +40,9 @@ public class LineService {
     @Transactional(readOnly = true)
     public Slice<LineResponse> findLineResponses(Long offset, int size) {
         Slice<Line> persistLines = lineRepository.findAll(offset, PageRequest.of(0, size));
+        if (persistLines == null) {
+            return new SliceImpl<>(Collections.emptyList());
+        }
         return persistLines.map(LineResponse::of);
     }
 
