@@ -500,29 +500,22 @@ npm run dev
          <div markdown="1">
        
          ```mysql-sql
-         SELECT I.사원번호, I.이름, I.연봉, I.직급명, J.입출입시간, J.지역, J.입출입구분
-           FROM ( SELECT G.사원번호, G.이름, H.연봉, G.직급명
-                    FROM ( SELECT E.사원번호, E.이름, F.직급명
-                             FROM ( SELECT C.사원번호, D.이름
-                                      FROM ( SELECT B.사원번호
-                                               FROM ( SELECT 부서번호
-                                                        FROM 부서
-                                                       WHERE 비고 = 'ACTIVE'
-                                                    ) A INNER JOIN 부서관리자 B
-                                                 ON A.부서번호 = B.부서번호
-                                                AND B.종료일자 >= NOW()
-                                           ) C INNER JOIN 사원 D
-                                        ON C.사원번호 = D.사원번호
-                                  ) E INNER JOIN 직급 F
-                               ON E.사원번호 = F.사원번호
-                              AND F.종료일자 >= NOW()
-                         ) G INNER JOIN 급여 H
-                      ON G.사원번호 = H.사원번호
-                     AND H.종료일자 >= NOW()
-                   ORDER BY H.연봉 DESC LIMIT 5
-                ) I INNER JOIN 사원출입기록 J
-             ON I.사원번호 = J.사원번호
-            AND J.입출입구분 = 'O';
+         SELECT 연봉_상위_5위.*, F.입출입시간, F.지역, F.입출입구분
+           FROM (
+                  SELECT C.사원번호, C.이름, E.연봉, D.직급명
+                    FROM 부서 A, 부서관리자 B, 사원 C, 직급 D, 급여 E
+                   WHERE A.비고 = 'ACTIVE'
+                     AND A.부서번호 = B.부서번호
+                     AND B.종료일자 >= NOW()
+                     AND D.종료일자 >= NOW()
+                     AND E.종료일자 >= NOW()
+                     AND B.사원번호 = C.사원번호
+                     AND C.사원번호 = D.사원번호
+                     AND D.사원번호 = E.사원번호
+                   ORDER BY E.연봉 DESC LIMIT 5   
+                ) 연봉_상위_5위, 사원출입기록 F
+          WHERE 연봉_상위_5위.사원번호 = F.사원번호
+            AND F.입출입구분 = 'O';
          ```
        
          </div>
@@ -740,18 +733,21 @@ npm run dev
          <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
          <div markdown="1">
 
-         - `covid` 테이블에 `hospital_id`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가
+         - `covid` 테이블에 `hospital_id`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가   
          ![img_23.png](images/img_23.png)
 
          - `programmer` 테이블에 `member_id`. `id`, `country`를 컬럼으로 하는 인덱스(`I_hospital_id`) 추가 
          ![img_33.png](images/img_33.png)
 
+         - `hospital` 테이블에 `name`을 컬럼으로 하는 유니크 인덱스(`name_UNIQUE`) 추가
+         ![img_37.png](images/img_37.png) 
+
          - 실행계획    
-         ![img_24.png](images/img_24.png)
+         ![img_24.png](images/img_24.png) 
 
          - 조회시간    
          ![img_25.png](images/img_25.png)
-
+          
          </div>
        </details>  
   
@@ -794,8 +790,11 @@ npm run dev
          <summary>튜닝 작업 / 튜닝 후 실행계획 / 조회 시간</summary>
          <div markdown="1">
 
-         - `member` 테이블에 `age`를 컬럼으로 하는 인덱스(`I_age`) 추가
+         - `member` 테이블에 `age`를 컬럼으로 하는 인덱스(`I_age`) 추가   
          ![img_34.png](images/img_34.png)
+
+         - `hospital` 테이블에 `name`을 컬럼으로 하는 유니크 인덱스(`name_UNIQUE`) 추가(위에서 이미 추가)
+         ![img_37.png](images/img_37.png)
 
          - 실행계획    
          ![img_35.png](images/img_35.png)
