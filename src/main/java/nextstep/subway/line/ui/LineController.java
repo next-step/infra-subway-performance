@@ -44,10 +44,14 @@ public class LineController {
                                                                       @RequestParam(defaultValue = "3") int size) {
         final Slice<LineResponse> lineResponses = lineService.findLineResponses(offset, size);
         if (lineResponses.hasNext()) {
-            final Long lastId = lineResponses.getContent().get(lineResponses.getNumberOfElements() - 1).getId();
-            return ResponseEntity.ok(CollectionModel.of(lineResponses, Link.of("/lines?offset=" + lastId).withRel("next")));
+            return ResponseEntity.ok(CollectionModel.of(lineResponses, getNextLink(lineResponses)));
         }
         return ResponseEntity.ok(CollectionModel.of(lineResponses));
+    }
+
+    private Link getNextLink(Slice<LineResponse> lineResponses) {
+        final Long lastId = lineResponses.getContent().get(lineResponses.getNumberOfElements() - 1).getId();
+        return Link.of("/lines?offset=" + lastId).withRel("next");
     }
 
     @GetMapping("/{id}")
