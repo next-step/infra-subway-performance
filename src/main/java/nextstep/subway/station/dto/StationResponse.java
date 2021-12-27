@@ -4,6 +4,9 @@ import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
 
+import org.springframework.hateoas.server.core.Relation;
+
+@Relation(collectionRelation = "stations")
 public class StationResponse {
     private Long id;
     private String name;
