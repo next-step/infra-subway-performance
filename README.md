@@ -166,4 +166,4 @@ group by p.exercise;
 ```
 
 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+- https://www.woowabros.o-r.kr/stations/25?page=0&size=5
