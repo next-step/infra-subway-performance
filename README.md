@@ -72,13 +72,66 @@ A. 쿼리 최적화
 
 실행 시간 : 0.204
 
+사원출입기록 사원번호 인덱스 설정 후
+
+실행 시간 : 0.000
+
 ---
    
 
 B. 인덱스 설계 
-    
 
+- [x] codding as a hobby 와 같은 결과 반환
+  ```
+  set @rowCount = (select count(hobby) from programmer);
+  select hobby,  round(COUNT( * ) / @rowCount * 100, 1) AS percentage from programmer
+  group by hobby DESC;
+  ```
+  hobby index로 지정 - full index scan으로 전환  
+  실행 결과 0.032s
+  
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```
+  SELECT c.id as covid_id, name as hospital_name FROM hospital as h
+  INNER JOIN covid as c ON h.id = c.hospital_id
+  INNER JOIN programmer as p ON p.id = c.programmer_id;
+  ```
+  programmer, hospital id 키 unique 및 pk 지정  
+  covid programmer_id, hospital_id 복합 인덱스 키 지정  
+  실행 결과 0.016s  
+  
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)  
+  ```
+  SELECT c.id as covid_id, name as hospital_name, hobby as user_hobby, dev_type as user_devType, years_coding as user_YearsCoding FROM hospital as h
+  INNER JOIN covid as c ON h.id = c.hospital_id
+  INNER JOIN (
+    SELECT * FROM programmer WHERE (hobby = 'Yes' and student = 'Yes') or years_coding = '0-2 years'
+  ) as p ON p.id = c.programmer_id;
+  ```
+  실행 결과 : 0.016s  
 
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  ```
+  SELECT c.stay, COUNT(c.id) FROM covid as c 
+  INNER JOIN (SELECT id FROM hospital WHERE name = '서울대병원') as h ON h.id = c.hospital_id
+  INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 20 and 29) as m ON m.id = c.member_id
+  INNER JOIN (SELECT id, country FROM programmer WHERE country = 'india') as p ON p.id = c.programmer_id
+  GROUP BY c.stay;
+  ```
+  hospital text -> varchar(255) 로 변경 후 index search 로 변경
+  실행 결과 : 0.078s
+  
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  ```
+  SELECT p.exercise, COUNT(c.id) FROM covid as c
+  INNER JOIN (SELECT id FROM hospital WHERE name = '서울대병원') as h ON h.id = c.hospital_id
+  INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 30 and 39) as m ON m.id = c.member_id
+  INNER JOIN (SELECT id, exercise FROM programmer) as p ON p.id = c.programmer_id
+  GROUP BY p.exercise;
+  ```
+  앞 단계 최적화 때문인지 바로 해결  
+  실행 결과 : 0.062s
+  
 ---
 
 
