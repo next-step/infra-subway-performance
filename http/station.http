@@ -1,0 +1,10 @@
+GET {{host}}/stations
+
+###
+GET {{host}}/stations?page=0&size=50
+
+###
+GET {{host}}/stations?page=1
+
+###
+GET {{host}}/stations?page=2

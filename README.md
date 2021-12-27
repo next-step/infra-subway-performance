@@ -209,4 +209,5 @@ npm run dev
     ```
     ![img_4.png](img_4.png)
 ### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+/stations
 
