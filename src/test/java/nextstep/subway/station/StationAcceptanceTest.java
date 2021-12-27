@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static final String 교대역 = "교대역";
+    private static final String 서초역 = "서초역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -74,6 +76,24 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("페이징 처리가 되어 있는 지하철 역을 조회한다.")
+    @Test
+    void getPageableStation() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음(교대역);
+        ExtractableResponse<Response> createResponse4 = 지하철역_등록되어_있음(서초역);
+        final StationResponse stationResponse4 = createResponse4.as(StationResponse.class);
+
+        // when
+        final ExtractableResponse<Response> response = 페이징_처리가_되어_있는_지하철역_목록_조회_요청(stationResponse4.getId(), 0, 10);
+
+        // then
+        지하철역_목록_응답됨(response);
+
+    }
+
     public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name);
     }
@@ -96,6 +116,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all().
                 when().
                 get("/stations").
+                then().
+                log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 페이징_처리가_되어_있는_지하철역_목록_조회_요청(Long lastStationId, int page, int size) {
+        return RestAssured.given().log().all().
+                when().
+                queryParam("page", page).
+                queryParam("size", size).
+                get("/stations/{lastStationId}", lastStationId).
                 then().
                 log().all().
                 extract();
