@@ -200,6 +200,7 @@ CREATE INDEX I_사원번호 ON 사원출입기록 (사원번호);
           ALTER TABLE `subway`.`covid` ADD INDEX `I_hospital_id_programmer_id` (`hospital_id`, `programmer_id`);
        ```
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+2. 페이징 쿼리를 적용한 API endpoint 를 알려주세요
 
 
+/lines

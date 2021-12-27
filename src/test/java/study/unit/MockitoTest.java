@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class MockitoTest {
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLineResponses();
+        Slice<LineResponse> responses = lineService.findLineResponses(0L, 10);
 
         // then
         assertThat(responses).hasSize(1);
