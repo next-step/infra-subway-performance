@@ -93,5 +93,52 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+- 쿼리 작성만으로 1s 이하로 반환한다.
+    - 실행 결과 : 475ms
+
+```sql
+
+                SELECT
+                    admin.사원번호
+                    , employee.이름
+                    , pay.연봉
+                    , position.직급명
+                    , access.입출입시간
+                    , access.지역
+                    , access.입출입구분
+                FROM 부서 dept
+                INNER JOIN 부서관리자 as admin
+                    ON admin.부서번호 = dept.부서번호
+                    AND admin.종료일자 = '9999-01-01'
+                INNER JOIN 사원 as employee 
+                    ON employee.사원번호 = admin.사원번호
+                INNER JOIN 직급 as position 
+                    ON position.사원번호 = admin.사원번호
+                    AND position.종료일자 = '9999-01-01'
+                INNER JOIN 사원출입기록 as access 
+                    ON access.사원번호 = admin.사원번호
+                    AND access.입출입구분 = 'O'
+                INNER JOIN 급여 as pay 
+                    ON pay.사원번호 = admin.사원번호
+                    AND pay.종료일자 = '9999-01-01'
+                WHERE dept.비고 = 'active'
+                ORDER BY pay.연봉 desc, access.지역;
+
+```
+![index-before.png](./2step/assets/index-before.png)
+
+
+- 인덱스 설정을 추가하여 50ms 이하로 반환한다.
+    - 실행 결과 : 4ms 
+
+![plan.png](./2step/assets/plan.png)
+
+- 출입구분 테이블이 Full Scan 됨
+- 사원출입기록의 사원번호에 Index를 설정
+
+![index-after.png](./2step/assets/index-after.png)
+![plan-after.png](./2step/assets/plan-after.png)
+
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
