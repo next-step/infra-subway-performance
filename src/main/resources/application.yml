@@ -47,11 +47,11 @@ spring:
       master:
         username: root
         password: masterpw
-        jdbc-url: jdbc:mysql://localhost:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        jdbc-url: jdbc:mysql://192.168.3.145:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
       slave:
         username: root
         password: slavepw
-        jdbc-url: jdbc:mysql://localhost:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        jdbc-url: jdbc:mysql://192.168.3.145:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
 
 
 
