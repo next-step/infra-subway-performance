@@ -52,7 +52,7 @@ npm run dev
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 - A. 쿼리 최적화
   <details>
-    <summary>(1) 쿼리 작성만으로 1s 이하로 반환</summary>
+    <summary>(1) 쿼리 작성만으로 1s 이하로 반환 - 573 ms</summary>
     <div>
   
       ```sql
@@ -83,7 +83,7 @@ npm run dev
   </details>
 
   <details>
-    <summary>(2) 인덱스 설정을 추가하여 50 ms 이하로 반환</summary>
+    <summary>(2) 인덱스 설정을 추가하여 50 ms 이하로 반환 - 26 ms</summary>
     <div>
 
       ```sql
