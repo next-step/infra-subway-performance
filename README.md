@@ -121,7 +121,7 @@ npm run dev
     - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
     - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-    - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 
 - Coding as a Hobby 와 같은 결과를 반환하세요.
@@ -133,13 +133,13 @@ npm run dev
   - 인덱스 적용 전
    > 실행 결과: 2 row(s) returned 5.400 sec / 0.0000081 sec
 
-   ![coding-as-hobby-1](./query/coding-as-hobby.png)
+   ![coding-as-hobby-1](./query/coding_as_hobby.png)
 
   - 인덱스 적용
     - ``CREATE INDEX `idx_programmer_hobby` ON `programmer` (hobby);``
    > 실행 결과: 2 row(s) returned 0.270 sec / 0.000010 sec
 
-   ![coding-as-hobby-index](./query/coding-as-hobby-index.png)
+   ![coding-as-hobby-index](./query/coding_as_hobby_index.png)
 
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요.
@@ -153,7 +153,7 @@ npm run dev
     - PK 적용 전, 인덱스 적용 전
    > 실행 결과: 96180 row(s) returned	0.056 sec / 2.681 sec
 
-   ![programmer-covid-hospital](./query/programmer-covid-hospital.png)
+   ![programmer-covid-hospital](./query/programmer_covid_hospital.png)
 
     - PK 적용, 인덱스 적용
       - ``alter table `covid` add primary key (id);``
@@ -161,7 +161,7 @@ npm run dev
       - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
    > 실행 결과: 96180 row(s) returned	0.037 sec / 1.349 sec
 
-   ![programmer-covid-hospital](./query/programmer-covid-hospital-primary.png)
+   ![programmer-covid-hospital-index](./query/programmer_covid_hospital_primary.png)
 
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
@@ -179,14 +179,14 @@ npm run dev
   - PK 적용 전, 인덱스 적용 전
   > 실행 결과: 30 sec 이상
 
-  ![programmer-covid-hospital](./query/student_or_junior_hospital.png)
+  ![student-junior-hospital](./query/student_or_junior_hospital.png)
 
   - PK 적용, 인덱스 적용
     - ``alter table `hospital` add primary key (id);``
     - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
   > 실행 결과: 35261 row(s) returned	0.026 sec / 5.005 sec
 
-  ![programmer-covid-hospital](./query/student_or_junior_hospital-index.png)
+  ![student-junior-hospital-index](./query/student_or_junior_hospital-index.png)
 
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
@@ -207,14 +207,41 @@ npm run dev
   - 인덱스 적용 전
   > 실행 결과: 30 sec 이상
 
-  ![programmer-covid-hospital](./query/seoul_hospital_india.png)
+  ![seoul-hospital-india](./query/seoul_hospital_india.png)
 
   - 인덱스 적용
     - ``CREATE INDEX `idx_programmer_country` ON `programmer` (country);``
     - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
   > 실행 결과: 10 row(s) returned	2.217 sec / 0.000019 sec
 
-  ![programmer-covid-hospital](./query/seoul_hospital_india_index.png)
+  ![seoul-hospital-india-index](./query/seoul_hospital_india_index.png)
+
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+   ```mysql
+   SELECT user.exercise, COUNT(user.exercise) AS exercise_count
+   FROM programmer AS user
+     INNER JOIN member
+       ON user.member_id = member.id
+       AND member.age BETWEEN 30 AND 39
+     INNER JOIN covid
+       ON user.id = covid.programmer_id
+     INNER JOIN hospital
+       ON covid.hospital_id = hospital.id
+       AND hospital.name = '서울대병원'
+   GROUP BY user.exercise;
+   ```
+  - PK 적용 전, 인덱스 적용 전
+  > 실행 결과: 30 sec 이상
+
+  ![seoul-hospital-exercise](./query/seoul_hospital_exercise.png)
+
+  - PK 적용, 인덱스 적용
+    - ``alter table `hospital` add primary key (id);``
+    - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
+  > 5 row(s) returned	4.496 sec / 0.000019 sec
+
+  ![seoul-hospital-exercise-index](./query/seoul_hospital_exercise_index.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
