@@ -123,8 +123,8 @@ FROM 사원출입기록
 - 개선 내용
     - `pk` 설정과, `hobby 컬럼`에 인덱스를 추가해여 개선하였습니다.
     - `create index programmer_hobby_index on programmer (hobby)`
-    - `alter table programmer add constraint programmer_pk  unique (id)`
-
+    - `alter table programmer add constraint programmer_pk  primary key (id)`
+      
 ```text
 # 쿼리
 SELECT hobby,
@@ -182,7 +182,9 @@ ORDER BY programmer.id;
 - 개선후 속도 : 68ms ~
 - 개선 내용
     - `programmer.country` 인덱스 추가 하였습니다.
-    - `create index programmer_country_index on programmer (country)`
+    - `alter table programmer add constraint programmer_pk primary key (id);`  
+    - ` create index covid_hospital_id_member_id_programmer_id_index  on covid (hospital_id, member_id, programmer_id);`
+
 
 ```text
 SELECT
@@ -223,7 +225,7 @@ ORDER BY 횟수 DESC;
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
 - [X] C. 페이징 쿼리
-- 역 페이이징 조회 : GET https://wooobo.r-e.kr/stations?size={size}&page={page}
+- 역 페이징 조회 : GET https://wooobo.r-e.kr/stations?size={size}&page={page}
 - 좋아요 페이징 조회 : GET https://wooobo.r-e.kr/favorites?size={size}&page={page}
 
 > 테스트 파일 참고 해주세요~
