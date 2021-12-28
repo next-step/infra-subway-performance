@@ -93,6 +93,8 @@ npm run dev
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+### - 쿼리 최적화
+
 - 쿼리 작성만으로 1s 이하로 반환한다.
     - 실행 결과 : 475ms
 
@@ -139,6 +141,136 @@ npm run dev
 ![index-after.png](./2step/assets/index-after.png)
 ![plan-after.png](./2step/assets/plan-after.png)
 
+
+### - 인덱스 설계
+
+### 요구사항
+
+- [X] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+- *[X] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+    - 실행 결과 : 74ms 
+    - programmer 테이블의 hobby Index 설정
+
+```sql
+      
+  SELECT
+    hobby, CONCAT(ROUND(COUNT(hobby) / (SELECT COUNT(*) FROM programmer) * 100, 1), '%') percent
+  FROM
+    programmer
+  GROUP BY
+    hobby
+  ORDER BY
+    hobby desc;
+```
+
+
+![hobby.png](./2step/assets/hobby.png)
+
+- *[X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - 실행 결과 : 3ms
+    - programmer, hospital, covid Primary Key 설정
+    
+
+```sql
+
+SELECT
+	c .id,
+	h .name
+FROM 
+	covid c 
+	INNER JOIN programmer p 
+		ON c .programmer_id = p .id
+	INNER JOIN hospital h 
+		ON c .hospital_id = h .id;
+
+```
+
+![programmer-hospital.png](./2step/assets/programmer-hospital.png)
+
+- *[X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+    - 실행 결과 : 6ms
+    - covid 테이블의 hospital_id, programmer_id Index 설정
+
+```sql
+
+SELECT 
+	c.id ,
+	h.name ,
+	p.hobby ,
+	p.dev_type ,
+	p.years_coding
+FROM 
+	programmer p 
+	INNER JOIN covid c
+		ON p .id = c .programmer_id 
+	INNER JOIN hospital h
+		ON c. hospital_id = h. id
+WHERE
+	hobby = 'yes' AND
+	(LEFT(student, 3) = 'Yes' OR years_coding_prof = '0-2 years')
+ORDER BY 
+	p.id;
+
+```
+
+![programmer-junior.png](./2step/assets/programmer-junior.png)
+
+- *[X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - 실행 결과 : 20ms
+    - programmer 테이블의 member_id Index 설정
+
+```sql
+
+SELECT
+    c.stay,
+    count(c.stay)
+FROM
+    member m
+        INNER JOIN programmer p
+                   ON m.id = p.member_id
+                    AND m.age BETWEEN 20 AND 29
+        INNER JOIN covid c
+                   ON m.id = c.member_id
+        INNER JOIN hospital h
+                   ON c.hospital_id = h.id
+                    AND h.name = '분당서울대병원'
+WHERE
+    p.country = 'India'
+GROUP BY
+    c.stay;
+
+
+```
+
+![india-stay.png](./2step/assets/india-stay.png)
+
+
+- *[X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - 실행 결과 : 22ms
+
+```sql
+
+SELECT
+    p.exercise,
+    count(p.exercise)
+FROM
+    programmer p
+        INNER JOIN member m
+                   ON p.member_id = m.id
+                    AND m.age BETWEEN 30 AND 39
+        INNER JOIN covid c
+                   ON p.id = c.programmer_id
+        INNER JOIN hospital h
+                   ON c.hospital_id = h.id
+                    AND h.name = '분당서울대병원'
+GROUP BY
+    p.exercise
+
+
+```
+
+![exercise.png](./2step/assets/exercise.png)
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
