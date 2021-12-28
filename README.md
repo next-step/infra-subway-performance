@@ -47,8 +47,8 @@ npm run dev
    - Smoke : [main](/k6/main/smoke_main_result.md), [line-update](/k6/line-update/smoke_update_result.md), [paths](/k6/path/smoke_path_result.md)
    - Stress : [main](/k6/main/stress_main_result.md), [line-update](/k6/line-update/stress_update_result.md), [paths](/k6/path/stress_path_result.md)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-   ![img.png](img.png)
-   ![img_1.png](img_1.png)
+- ![img.png](img.png)
+- ![img_1.png](img_1.png)
 - 페이지에 대한 성능은 별로 차이가 없음을 볼 수 있습니다..
 - k6로 다시 테스트 했을 때 paths 조회에서 http_req_duration이 4~5배 가량 좋아진 것을 볼 수 있습니다.
 - [paths stress test](/k6/path/stress_path_result.md), [paths load test](/k6/path/load_path_result.md)
@@ -87,7 +87,22 @@ npm run dev
 
 - 인덱스 설계
    - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
-  - Coding as a Hobby 와 같은 결과를 반환하세요.
+  - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+    - 개선 전 : 0.250 sec
+      ![img_11.png](result/img_11.png)
+    - 인덱스 추가 후 : 0.031 sec 
+      ![img_12.png](result/img_12.png)
+    ```sql
+      select hobby, concat(round(count(hobby) / (select count(id) from programmer) * 100, 1), '%')
+        from programmer
+        group by hobby
+        order by hobby desc;
+    ```
+     - 인덱스 추가
+    ```sql
+      alter table programmer add constraint pk_programmer_id primary key(id);
+      create index I_programmer_hobby on programmer (hobby);
+    ```
   - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
      - 개선 전 : 0.731 sec
        ![img_2.png](result/img_2.png)
