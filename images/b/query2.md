@@ -1,20 +1,20 @@
 ##### Q2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```sql
 SELECT covid.id, name
-FROM programmer
-         INNER JOIN covid ON programmer.id = covid.programmer_id
-         INNER JOIN hospital ON covid.hospital_id = hospital.id;
+FROM covid
+         INNER JOIN hospital ON covid.hospital_id = hospital.id
+WHERE covid.programmer_id IS NOT NULL;
+
 ```
 
-##### BEFORE (약 490ms)
+##### BEFORE
 ```text
-+--+-----------+----------+----------+----+--------------------+--------------------+-------+--------------------------+------+--------+--------------------------------------------------+
-|id|select_type|table     |partitions|type|possible_keys       |key                 |key_len|ref                       |rows  |filtered|Extra                                             |
-+--+-----------+----------+----------+----+--------------------+--------------------+-------+--------------------------+------+--------+--------------------------------------------------+
-|1 |SIMPLE     |h         |NULL      |ALL |NULL                |NULL                |NULL   |NULL                      |32    |100     |NULL                                              |
-|1 |SIMPLE     |covid     |NULL      |ALL |NULL                |NULL                |NULL   |NULL                      |315397|10      |Using where; Using join buffer (Block Nested Loop)|
-|1 |SIMPLE     |programmer|NULL      |ref |programmer_id_uindex|programmer_id_uindex|9      |subway.covid.programmer_id|1     |100     |Using index                                       |
-+--+-----------+----------+----------+----+--------------------+--------------------+-------+--------------------------+------+--------+--------------------------------------------------+
++--+-----------+--------+----------+----+-------------+----+-------+----+------+--------+--------------------------------------------------+
+|id|select_type|table   |partitions|type|possible_keys|key |key_len|ref |rows  |filtered|Extra                                             |
++--+-----------+--------+----------+----+-------------+----+-------+----+------+--------+--------------------------------------------------+
+|1 |SIMPLE     |hospital|NULL      |ALL |NULL         |NULL|NULL   |NULL|32    |100     |NULL                                              |
+|1 |SIMPLE     |covid   |NULL      |ALL |NULL         |NULL|NULL   |NULL|315397|9       |Using where; Using join buffer (Block Nested Loop)|
++--+-----------+--------+----------+----+-------------+----+-------+----+------+--------+--------------------------------------------------+
 ```
 
 ##### AFTER
@@ -29,17 +29,24 @@ FROM programmer
 
 #### 변경 내용
  ```sql
-alter table covid modify id bigint not null;
-create unique index covid_id_uindex	on covid (id);
-alter table covid	add constraint covid_pk	primary key (id);
+ALTER TABLE covid
+    ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+ALTER TABLE covid
+    MODIFY id bigint NOT NULL;
+ALTER TABLE covid
+    MODIFY hospital_id bigint NOT NULL;
+CREATE INDEX covid__index001 ON covid (programmer_id, hospital_id);
 
-alter table programmer modify id bigint not null;
-alter table programmer add constraint programmer_pk primary key (id);
+ALTER TABLE programmer
+    MODIFY id bigint NOT NULL;
+ALTER TABLE programmer
+    ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
 
-alter table hospital modify id int not null;
-create unique index hospital_id_uindex on hospital (id);
-alter table hospital add constraint hospital_pk primary key (id);
+ALTER TABLE hospital
+    MODIFY id int NOT NULL;
+ALTER TABLE hospital
+    ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
  ```
 
 #### 결과
-- 96180 rows retrieved starting from 1 in 463 ms (`execution: 9 ms`, fetching: 454 ms)
+- 96,180 rows retrieved starting from 1 in 783 ms (`execution: 14 ms`, fetching: 769 ms)

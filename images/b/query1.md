@@ -21,12 +21,12 @@ ORDER BY hobby DESC
 
 ##### BEFORE (약 840ms)
 ```text
-+--+-----------+----------+----------+-----+-------------+--------------------+-------+----+-----+--------+-------------------------------+
-|id|select_type|table     |partitions|type |possible_keys|key                 |key_len|ref |rows |filtered|Extra                          |
-+--+-----------+----------+----------+-----+-------------+--------------------+-------+----+-----+--------+-------------------------------+
-|1 |PRIMARY    |programmer|NULL      |ALL  |NULL         |NULL                |NULL   |NULL|81739|100     |Using temporary; Using filesort|
-|2 |SUBQUERY   |programmer|NULL      |index|NULL         |programmer_id_uindex|9      |NULL|81739|100     |Using index                    |
-+--+-----------+----------+----------+-----+-------------+--------------------+-------+----+-----+--------+-------------------------------+
++--+-----------+----------+----------+----+-------------+----+-------+----+-----+--------+-------------------------------+
+|id|select_type|table     |partitions|type|possible_keys|key |key_len|ref |rows |filtered|Extra                          |
++--+-----------+----------+----------+----+-------------+----+-------+----+-----+--------+-------------------------------+
+|1 |PRIMARY    |programmer|NULL      |ALL |NULL         |NULL|NULL   |NULL|71210|100     |Using temporary; Using filesort|
+|2 |SUBQUERY   |programmer|NULL      |ALL |NULL         |NULL|NULL   |NULL|71210|100     |NULL                           |
++--+-----------+----------+----------+----+-------------+----+-------+----+-----+--------+-------------------------------+
 ```
 
 
@@ -44,8 +44,9 @@ ORDER BY hobby DESC
 
 #### 변경 내용
  ```sql
-alter table programmer modify hobby varchar(64) not null;
-create index programmer__index001 on programmer (hobby);
+ALTER TABLE programmer
+    MODIFY hobby varchar(64) NOT NULL;
+CREATE INDEX programmer__index001 ON programmer (hobby);
  ```
 
 #### 결과
