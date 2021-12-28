@@ -64,6 +64,118 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+* [x] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+  * [x] 쿼리 작성만으로 1s 이하로 반환한다.
+    ~~~
+    -- 조회 쿼리  307 ms
+    select 연봉상위자.사원번호, 연봉상위자.이름, 연봉상위자.연봉, 연봉상위자.직급명, 사원출입기록.입출입시간, 사원출입기록.지역, 사원출입기록.입출입구분
+    from 사원출입기록
+           join
+         (select 사원.사원번호, 사원.이름, 급여.연봉, 직급.직급명
+          from 사원
+                   inner join 직급 on 사원.사원번호 = 직급.사원번호 and 직급.종료일자 = '9999-01-01'
+                   inner join 부서관리자 on 사원.사원번호 = 부서관리자.사원번호
+                   inner join 부서 on 부서.부서번호 = 부서관리자.부서번호 and upper(부서.비고) = 'ACTIVE'
+                   inner join 급여 on 급여.사원번호 = 사원.사원번호 and 급여.종료일자 = '9999-01-01'
+          ORDER BY 급여.연봉 DESC
+          limit 5) as 연봉상위자
+         on 사원출입기록.사원번호 = 연봉상위자.사원번호
+    where 사원출입기록.입출입구분 = 'o'
+    ORDER BY 연봉상위자.연봉 DESC, 사원출입기록.지역
+    ~~~
+  * [x] 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
+    ~~~
+    -- 조회 쿼리  36 ms
+    create index i_사원출입기록_사원번호 on 사원출입기록 (사원번호);
+    ~~~
+* [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  * [x] Coding as a Hobby 와 같은 결과를 반환하세요. 
+    ~~~
+    쿼리
+    select hobby, CONCAT(round(count(hobby) / (select count(*) from programmer) * 100, 1), '%') as persent
+    from programmer
+    group by hobby
+    order by hobby desc;
+    
+    인덱스
+    create index programmer_hobby_index on programmer (hobby);
+    
+    비교 결과
+    인덱스 전 275ms 
+    인덱스 후 67ms
+    ~~~ 
+  * [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    ~~~
+    쿼리
+    select c.id, h.name
+    from hospital h
+    inner join covid c on h.id = c.hospital_id
+    inner join programmer p on c.programmer_id = p.id;
+    
+    인덱스
+    create index programmer_id_index
+	on programmer (id);
+    
+    비교 결과
+    인덱스 전 440ms
+    인덱스 후 61ms
+    ~~~
+  * [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+     ~~~
+    쿼리
+    select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+    from programmer p
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on h.id = c.hospital_id
+    where p.hobby = 'yes' and (p.student in ('Yes, full-time', 'Yes, part-time') or p.years_coding = '0-2 years')
+    order by p.id;
+    
+    인덱스
+    create index hospital_id_index on hospital (id);
+    create index covid_programmer_id_index on covid (programmer_id);
+    
+    비교 결과
+    인덱스 전 723ms
+    인덱스 후 75ms
+    ~~~
+  * [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+     ~~~
+    쿼리
+    select stay, count(*)
+    from covid
+    inner join member on covid.member_id = member.id
+    where hospital_id = (select id from hospital where name = '서울대병원') and age between 20 AND 29
+    group by stay;
+    
+    인덱스
+    create index covid_member_id_index on covid (member_id);
+    create index member_id_index on member (id);
+    create index covid_hospital_id_index on covid (hospital_id);
+    
+    비교 결과
+    인덱스 전 188ms
+    인덱스 후 52ms
+    ~~~
+  * [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+     ~~~
+    쿼리
+    select exercise
+    from hospital h
+    inner join covid c on h.id = c.hospital_id and h.name = '서울대병원'
+    inner join programmer p on c.programmer_id = p.id
+    inner join member m on c.member_id = m.id
+    where h.name = '서울대병원' and m.age between 30 AND 39
+    group by exercise;
 
+    인덱스
+    create index hospital_id_index
+	on hospital (id);
+    create index hospital_name_index
+    on hospital (name);
+    
+    비교 결과
+    인덱스 전 100ms 
+    인덱스 후 81ms
+    ~~~
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
