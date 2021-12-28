@@ -19,22 +19,30 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
@@ -42,15 +50,16 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
 - 1단계 미션은 제외로 공지를 받아 2단계부터 진행하겠습니다
 
 ---
 
 ### 2단계 - 조회 성능 개선하기
-
 
 ### 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
@@ -94,7 +103,6 @@ ORDER BY 상위연봉관리자.연봉 DESC, 사원출입기록.지역
 
 **B. 인덱스 설계**
 
-
 **주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환**
 
 1. Coding as a Hobby 와 같은 결과를 반환하세요.
@@ -107,6 +115,7 @@ select
   ROUND(SUM(if(hobby = 'NO', 1, 0))/count(hobby)*100) AS 'NO'
 from programmer p; 
 ```
+
 ![img.png](docs/A_쿼리최적화/img/1번.png)
 
 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -125,7 +134,8 @@ join hospital h on h.id = c.hospital_id ;
 
 ![img.png](docs/A_쿼리최적화/img/2번.png)
 
-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
+   user.YearsCoding)
 
 ```sql
 create index idx_programmer_member_id on programmer (member_id);
@@ -143,8 +153,8 @@ and p.member_id = c.member_id
 and c.hospital_id = h.id 
 order by p.member_id asc;
 ```
-![img.png](docs/A_쿼리최적화/img/3번.png)
 
+![img.png](docs/A_쿼리최적화/img/3번.png)
 
 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
@@ -190,5 +200,6 @@ order by p.exercise asc
 ![img.png](docs/A_쿼리최적화/img/5번.png)
 
 ### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-1. 
+
+/stations
 
