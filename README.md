@@ -133,13 +133,19 @@ B. 인덱스 설계
   실행 결과 : 0.062s
   
 ---
+C. 페이징 쿼리
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
    http://localhost:8080/stations?page=0&size=2
    
 ---
 
+D. MySQL Replication with JPA
 
+적용 완료 /favorites 와 /stations를 통해 테스트 해 봄.
+- 데이터가 너무 적어서 그런지 체감이 느껴지지는 않았음
+- 그러나 자주 쓰는 쪽을 slave로 옮기거나 조회는 slave 데이터 삽입은 master 이런 식으로 나누는 방식에 대해 생각 해 볼 수 있었음
+- subway 데이터가 처음에 들어와 있지 않아 mysql workbench 로 데이터 마이그레이션 진행.
 
 
 
