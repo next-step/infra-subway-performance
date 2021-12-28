@@ -141,15 +141,14 @@ npm run dev
   - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
      - 개선 전 : 0.760 sec
        ![img_7.png](result/img_7.png)
-     - 인덱스 추가 후 : 0.106 sec
-       ![img_8.png](result/img_8.png)
+     - 인덱스 추가 후 : 0.062 sec
+       ![img_2.png](result/img_8.png)
     ```sql
       SELECT c.stay, count(c.stay)
       FROM
-        member m inner join programmer p on m.id = p.member_id
+        member m inner join programmer p on m.id = p.member_id and p.country = 'India' and m.age > 19 and m.age < 30
         inner join covid c on c.programmer_id = p.id
-        inner join hospital h on h.id = c.hospital_id
-      where h.name = '서울대병원' and p.country = 'India' and m.age > 19 and m.age < 30
+        inner join hospital h on h.id = c.hospital_id and h.name = '서울대병원'
       group by c.stay;
     ```
      - 인덱스 추가
