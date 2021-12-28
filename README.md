@@ -120,7 +120,7 @@ npm run dev
     - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
     - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-    - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 
@@ -187,6 +187,34 @@ npm run dev
   > 실행 결과: 35261 row(s) returned	0.026 sec / 5.005 sec
 
   ![programmer-covid-hospital](./query/student_or_junior_hospital-index.png)
+
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+   ```mysql
+   SELECT covid.stay, COUNT(covid.stay) AS programer_count
+   FROM programmer
+     INNER JOIN member
+       ON programmer.member_id = member.id
+       AND member.age BETWEEN 20 AND 29
+     INNER JOIN covid
+       ON programmer.id = covid.programmer_id
+     INNER JOIN hospital
+       ON covid.hospital_id = hospital.id
+       AND hospital.name = '서울대병원'
+   WHERE country = 'India'
+   GROUP BY covid.stay;
+   ```
+  - 인덱스 적용 전
+  > 실행 결과: 30 sec 이상
+
+  ![programmer-covid-hospital](./query/seoul_hospital_india.png)
+
+  - 인덱스 적용
+    - ``CREATE INDEX `idx_programmer_country` ON `programmer` (country);``
+    - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
+  > 실행 결과: 10 row(s) returned	2.217 sec / 0.000019 sec
+
+  ![programmer-covid-hospital](./query/seoul_hospital_india_index.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
