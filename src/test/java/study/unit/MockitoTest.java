@@ -1,6 +1,5 @@
 package study.unit;
 
-import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -8,8 +7,11 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -20,14 +22,15 @@ public class MockitoTest {
     @Test
     void findAllLines() {
         // given
+        PageRequest pageRequest = PageRequest.of(0, 10);
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Collections.singletonList(new Line())));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLineResponses();
+        Page<LineResponse> responses = lineService.findLineResponses(pageRequest);
 
         // then
         assertThat(responses).hasSize(1);
