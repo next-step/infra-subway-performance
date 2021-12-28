@@ -33,7 +33,7 @@ public class DataBaseConfig {
 	}
 
 	@Bean
-	@ConfigurationProperties(prefix = "spring.data.source.hikari.slave")
+	@ConfigurationProperties(prefix = "spring.datasource.hikari.slave")
 	public DataSource slaveDataSource(){
 		return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
