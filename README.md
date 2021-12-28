@@ -274,3 +274,8 @@ GROUP BY
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- 지하철 노선 조회
+    - https://moonjuhyeon-utc.o-r.kr/lines?page={page}&size={size}
+    
+- 지하철 역 목록 조회
+    - https://moonjuhyeon-utc.o-r.kr/stations?page={page}&size={size}
