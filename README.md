@@ -67,18 +67,15 @@ npm run dev
     select t1.사원번호, 이름, 연봉, 직급명, max(입출입시간) as 입출입시간, 지역, 입출입구분
     from
       (SELECT dm.사원번호, emp.이름, pay.연봉, job.직급명
-      FROM 부서관리자 dm inner join 직급 job on dm.사원번호 = job.사원번호
-      inner join 부서 dept on dm.부서번호 = dept.부서번호
-      inner join 급여 pay on dm.사원번호 = pay.사원번호
+      FROM 부서관리자 dm inner join 직급 job on dm.사원번호 = job.사원번호 AND dm.종료일자 > now() AND job.직급명 = 'Manager'
+      inner join 부서 dept on dm.부서번호 = dept.부서번호 AND upper(dept.비고) = 'ACTIVE'
+      inner join 급여 pay on dm.사원번호 = pay.사원번호 AND pay.종료일자 > now()
       inner join 사원 emp on dm.사원번호 = emp.사원번호
-      WHERE upper(dept.비고) = 'ACTIVE'
-      AND pay.종료일자 > now()
-      AND job.직급명 = 'Manager'
       order by pay.연봉 desc
       limit 5) t1
       inner join 사원출입기록 io on t1.사원번호 = io.사원번호 AND io.입출입구분 = 'O'
     group by t1.사원번호, 이름, 연봉, 직급명, 입출입시간, 지역, 입출입구분
-    order by t1.연봉 desc;
+    order by t1.연봉 desc, 지역;
     ```
    - 조회 시간 : *0.356 sec*
    2. 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
@@ -129,7 +126,7 @@ npm run dev
       SELECT c.id, hobby, dev_type, years_coding 
       FROM programmer p inner join covid c on p.id = c.programmer_id
         inner join hospital h on c.hospital_id = h.id
-      where upper(hobby) = 'YES' or years_coding = '0-2 years'
+      where (upper(hobby) = 'YES' and upper(p.student) like 'YES%') or years_coding = '0-2 years'
       order by p.id;
     ```
      - 인덱스 추가
@@ -137,6 +134,7 @@ npm run dev
       create index I_programmer_hobby on programmer (hobby);
       create index I_programmer_years_coding on programmer (years_coding);
       create index I_covid_programmer_id on covid (programmer_id);
+      create index i_programmer_student on programmer (student);
     ```
   - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
      - 개선 전 : 0.760 sec
