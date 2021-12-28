@@ -39,12 +39,12 @@ public class LineService {
     @Transactional(readOnly = true)
     public Page<LineResponse> findLineResponses(Pageable pageable) {
         Page<Line> persistLines = lineRepository.findAll(pageable);
-        List<LineResponse> lineResponses = convertLineResponses(persistLines);
+        List<LineResponse> lineResponses = convertLineResponses(persistLines.getContent());
         return new PageImpl<>(lineResponses, pageable, persistLines.getTotalElements());
     }
 
-    private List<LineResponse> convertLineResponses(Page<Line> persistLines) {
-        return persistLines.getContent().stream()
+    private List<LineResponse> convertLineResponses(List<Line> lines) {
+        return lines.stream()
             .map(LineResponse::of)
             .collect(Collectors.toList());
     }

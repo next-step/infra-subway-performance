@@ -45,12 +45,12 @@ public class FavoriteService {
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites.getContent());
 
-        List<FavoriteResponse> favoriteResponses = convertFavoriteResponses(favorites, stations);
+        List<FavoriteResponse> favoriteResponses = convertFavoriteResponses(favorites.getContent(), stations);
         return new PageImpl<>(favoriteResponses, pageable, favorites.getTotalElements());
     }
 
-    private List<FavoriteResponse> convertFavoriteResponses(Page<Favorite> favorites, Map<Long, Station> stations) {
-        return favorites.getContent().stream()
+    private List<FavoriteResponse> convertFavoriteResponses(List<Favorite> favorites, Map<Long, Station> stations) {
+        return favorites.stream()
             .map(it -> FavoriteResponse.of(
                 it,
                 StationResponse.of(stations.get(it.getSourceStationId())),

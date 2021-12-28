@@ -31,12 +31,12 @@ public class StationService {
     @Transactional(readOnly = true)
     public Page<StationResponse> findAllStations(Pageable pageable) {
         Page<Station> stations = stationRepository.findAll(pageable);
-        List<StationResponse> stationResponses = convertStationResponses(stations);
+        List<StationResponse> stationResponses = convertStationResponses(stations.getContent());
         return new PageImpl<>(stationResponses, pageable, stations.getTotalElements());
     }
 
-    private List<StationResponse> convertStationResponses(Page<Station> stations) {
-        return stations.getContent().stream()
+    private List<StationResponse> convertStationResponses(List<Station> stations) {
+        return stations.stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }
