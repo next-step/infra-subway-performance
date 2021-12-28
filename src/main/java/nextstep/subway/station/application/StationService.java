@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,13 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations(Pageable pageable) {
+    public Page<StationResponse> findAllStations(Pageable pageable) {
         Page<Station> stations = stationRepository.findAll(pageable);
+        List<StationResponse> stationResponses = convertStationResponses(stations);
+        return new PageImpl<>(stationResponses, pageable, stations.getTotalElements());
+    }
+
+    private List<StationResponse> convertStationResponses(Page<Station> stations) {
         return stations.getContent().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());

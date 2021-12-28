@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +40,16 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember,
+    public Page<FavoriteResponse> findFavorites(LoginMember loginMember,
         Pageable pageable) {
         Page<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
         Map<Long, Station> stations = extractStations(favorites.getContent());
 
+        List<FavoriteResponse> favoriteResponses = convertFavoriteResponses(favorites, stations);
+        return new PageImpl<>(favoriteResponses, pageable, favorites.getTotalElements());
+    }
+
+    private List<FavoriteResponse> convertFavoriteResponses(Page<Favorite> favorites, Map<Long, Station> stations) {
         return favorites.getContent().stream()
             .map(it -> FavoriteResponse.of(
                 it,

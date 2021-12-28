@@ -1,8 +1,8 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,9 +36,9 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Page<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember,
         Pageable pageable) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
+        Page<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember, pageable);
         return ResponseEntity.ok().body(favorites);
     }
 

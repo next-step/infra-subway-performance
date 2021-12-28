@@ -1,9 +1,9 @@
 package nextstep.subway.line.ui;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +38,7 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines(Pageable pageable) {
+    public ResponseEntity<Page<LineResponse>> findAllLines(Pageable pageable) {
         return ResponseEntity.ok(lineService.findLineResponses(pageable));
     }
 

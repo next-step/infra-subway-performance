@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +37,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLineResponses(Pageable pageable) {
+    public Page<LineResponse> findLineResponses(Pageable pageable) {
         Page<Line> persistLines = lineRepository.findAll(pageable);
+        List<LineResponse> lineResponses = convertLineResponses(persistLines);
+        return new PageImpl<>(lineResponses, pageable, persistLines.getTotalElements());
+    }
+
+    private List<LineResponse> convertLineResponses(Page<Line> persistLines) {
         return persistLines.getContent().stream()
             .map(LineResponse::of)
             .collect(Collectors.toList());
