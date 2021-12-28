@@ -6,11 +6,22 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.monitor.Monitor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Slice;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 
 @Monitor
 @RestController
@@ -28,9 +39,19 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    @GetMapping(produces = "application/x-spring-data-verbose+json")
+    public ResponseEntity<CollectionModel<LineResponse>> findAllLines(@RequestParam(defaultValue = "0") Long offset,
+                                                                      @RequestParam(defaultValue = "3") int size) {
+        final Slice<LineResponse> lineResponses = lineService.findLineResponses(offset, size);
+        if (lineResponses.hasNext()) {
+            return ResponseEntity.ok(CollectionModel.of(lineResponses, getNextLink(lineResponses)));
+        }
+        return ResponseEntity.ok(CollectionModel.of(lineResponses));
+    }
+
+    private Link getNextLink(Slice<LineResponse> lineResponses) {
+        final Long lastId = lineResponses.getContent().get(lineResponses.getNumberOfElements() - 1).getId();
+        return Link.of("/lines?offset=" + lastId).withRel("next");
     }
 
     @GetMapping("/{id}")

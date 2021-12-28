@@ -79,8 +79,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(params);
         ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineCreateParams);
 
+        params = new HashMap<>();
+        params.put("offset", "0");
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(params);
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -148,10 +150,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(Map<String, String> params) {
         return RestAssured.given().log().all().
-                accept(MediaType.APPLICATION_JSON_VALUE).
+                accept("application/x-spring-data-verbose+json").
                 when().
+                params(params).
                 get("/lines").
                 then().
                 log().all().
@@ -227,7 +230,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList("content", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 

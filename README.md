@@ -19,19 +19,26 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
@@ -84,5 +91,116 @@ npm run dev
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+### A. 쿼리 최적화
 
+활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+<br/> (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+- [x] 쿼리 작성만으로 1s 이하로 반환한다.
+
+```mysql
+# 0.80 -> 0.080
+SELECT 사원.사원번호, 사원.이름, 직급.직급명, 사원출입기록.입출입구분, 사원출입기록.지역, 사원출입기록.입출입시간
+FROM (SELECT 부서관리자.사원번호
+      FROM (SELECT 부서번호 FROM 부서 WHERE 부서.비고 = 'ACTIVE') AS 부서
+               INNER JOIN (SELECT 부서번호, 사원번호 FROM 부서관리자 WHERE NOW() BETWEEN 시작일자 AND 종료일자) AS 부서관리자
+                          ON 부서관리자.부서번호 = 부서.부서번호
+               INNER JOIN (SELECT 급여.사원번호, 급여.연봉 FROM 급여 WHERE NOW() BETWEEN 시작일자 AND 종료일자) 급여
+                          ON 급여.사원번호 = 부서관리자.사원번호
+      ORDER BY 급여.연봉 DESC
+      LIMIT 5) AS 상위연봉관리자
+         INNER JOIN (SELECT 사원번호, 직급명 FROM 직급 WHERE NOW() BETWEEN 시작일자 AND 종료일자) AS 직급
+                    ON 상위연봉관리자.사원번호 = 직급.사원번호
+         INNER JOIN (SELECT 사원번호, 이름 FROM 사원) AS 사원
+                    ON 상위연봉관리자.사원번호 = 사원.사원번호
+         INNER JOIN (SELECT * FROM 사원출입기록 WHERE 입출입구분 = 'O') AS 사원출입기록
+                    ON 상위연봉관리자.사원번호 = 사원출입기록.사원번호
+ORDER BY 사원.사원번호;
+```
+
+- [x] 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
+
+```mysql
+CREATE INDEX I_사원번호 ON 사원출입기록 (사원번호);
+```
+
+### B. 인덱스 설계
+
+- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은
+      결과를 반환하세요.
+      ```mysql
+      SELECT round(((SUM(IF(hobby = 'Yes', 1, 0))) / count(id)) * 100, 1) as 'Yes',
+      round(((SUM(IF(hobby = 'No', 1, 0))) / count(id)) * 100, 1)  as 'No'
+      FROM programmer;
+
+
+      ALTER TABLE `subway`.`programmer` ADD INDEX `I_hobby` (`hobby` ASC);
+      ```
+
+    - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+      ```mysql
+      SELECT covid.id, hospital.name
+      FROM (SELECT id FROM programmer) as programmer
+      INNER JOIN (select id, hospital_id, programmer_id from covid) covid ON covid.programmer_id = programmer.id
+      INNER JOIN hospital ON hospital.id = covid.hospital_id
+  
+      ALTER TABLE hospital MODIFY name VARCHAR(255) NOT NULL;
+      
+      ALTER TABLE `subway`.`hospital`
+      CHANGE COLUMN `id` `id` INT(11) NOT NULL,
+      ADD PRIMARY KEY (`id`),
+      ADD UNIQUE INDEX `id_unique` (`id` ASC);
+  
+      ALTER TABLE `subway`.`covid`
+      CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+      ADD PRIMARY KEY (`id`),
+      ADD UNIQUE INDEX `id_unique` (`id` ASC);
+  
+      ALTER TABLE `subway`.`programmer`
+      CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+      ADD PRIMARY KEY (`id`),
+      ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+      ```
+
+    - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+      (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+        ```mysql
+          SELECT covid.id,
+                 hospital.name,
+                 programmer.hobby,
+                 programmer.student,
+                 programmer.dev_type,
+                 programmer.years_coding
+          FROM (SELECT id, hobby, dev_type, years_coding, student
+                FROM programmer
+                where (hobby = 'YES' AND student LIKE 'Yes%')
+                   OR years_coding = '0-2 years') as programmer
+                   INNER JOIN (select id, hospital_id, programmer_id from covid) covid
+                              ON covid.programmer_id = programmer.id
+                   INNER JOIN hospital ON hospital.id = covid.hospital_id;
+       ```
+    - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+      ```mysql
+      SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+        FROM (SELECT id, name FROM hospital) h
+          INNER JOIN (SELECT id, programmer_id, hospital_id FROM covid) c ON c.hospital_id = h.id
+          INNER JOIN (SELECT id, hobby, dev_type, years_coding FROM programmer WHERE hobby = 'Yes' 
+              AND (student LIKE 'Yes%' OR years_coding = '0-2 years')) p ON p.id = c.programmer_id
+      ORDER BY p.id;
+      ```
+
+    - [x]  서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       ```mysql
+          SELECT p.exercise, count(p.id)
+          FROM (SELECT id FROM hospital WHERE name = '서울대병원') h INNER JOIN (SELECT hospital_id, programmer_id FROM covid) c
+          ON c.hospital_id = h.id INNER JOIN (SELECT id, member_id, exercise FROM programmer) p ON p.id = c.programmer_id
+          INNER JOIN (SELECT id FROM member WHERE age >= 30 AND age <= 39) m ON p.member_id = m.id GROUP BY p.exercise;
+
+          ALTER TABLE `subway`.`covid` ADD INDEX `I_hospital_id_programmer_id` (`hospital_id`, `programmer_id`);
+       ```
+
+2. 페이징 쿼리를 적용한 API endpoint 를 알려주세요
+
+
+/lines
