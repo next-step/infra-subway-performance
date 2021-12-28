@@ -47,6 +47,7 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAll(Long offset, int size) {
         final List<Station> stations = stationRepository.findAll(offset, PageRequest.of(0, size));
         return stations.stream()
