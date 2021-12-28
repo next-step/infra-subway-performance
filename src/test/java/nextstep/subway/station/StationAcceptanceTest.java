@@ -54,16 +54,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
+        ExtractableResponse<Response> pageResponse = 지하철역_페이지목록_조회_요청(0,2);
         // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
-
-        // when
-        ExtractableResponse<Response> pageResponse = 지하철역_페이지목록_조회_요청(0,1);
-        // then
-        지하철역_페이지_목록_조회됨(pageResponse,1);
+        지하철역_목록_응답됨(pageResponse);
+        지하철역_목록_포함됨(pageResponse, Arrays.asList(createResponse1, createResponse2));
+        지하철역_페이지_목록_조회됨(pageResponse,2);
     }
 
     @DisplayName("지하철역을 제거한다.")

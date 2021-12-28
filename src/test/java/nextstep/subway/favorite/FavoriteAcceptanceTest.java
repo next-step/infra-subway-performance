@@ -75,8 +75,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_한개조회 = 즐겨찾기_목록_조회_요청(사용자, 1, 2);
-        ExtractableResponse<Response> 즐겨찾기_두개조회 = 즐겨찾기_목록_조회_요청(사용자, 2, 1);
+        ExtractableResponse<Response> 즐겨찾기_한개조회 = 즐겨찾기_목록_조회_요청(사용자, 1, 0);
+        ExtractableResponse<Response> 즐겨찾기_두개조회 = 즐겨찾기_목록_조회_요청(사용자, 2, 0);
         // then
         즐겨찾기_목록_조회됨(즐겨찾기_한개조회,1);
         즐겨찾기_목록_조회됨(즐겨찾기_두개조회,2);
@@ -108,7 +108,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 auth().oauth2(tokenResponse.getAccessToken()).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/favorites?size="+size+"&page"+page).
+                get("/favorites"+ "?page="+page+"&size="+size).
                 then().
                 log().all().
                 extract();

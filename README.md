@@ -69,7 +69,7 @@ npm run dev
     - 개선전 속도 430~ms
     - 개선후 적용 후 속도 50~60ms
     - 개선 내용
-        - `create index 사원출입기록_사원번호_입출입시간_index on 사원출입기록 (사원번호, 입출입시간)`
+        - `create index 사원출입기록_사원번호_index on 사원출입기록 (사원번호)`
         - 10배 정도 속도 개선효과를 볼수 있었습니다.
 
 ```text
@@ -123,8 +123,8 @@ FROM 사원출입기록
 - 개선 내용
     - `pk` 설정과, `hobby 컬럼`에 인덱스를 추가해여 개선하였습니다.
     - `create index programmer_hobby_index on programmer (hobby)`
-    - `alter table programmer add constraint programmer_pk  unique (id)`
-
+    - `alter table programmer add constraint programmer_pk  primary key (id)`
+      
 ```text
 # 쿼리
 SELECT hobby,
@@ -182,7 +182,9 @@ ORDER BY programmer.id;
 - 개선후 속도 : 68ms ~
 - 개선 내용
     - `programmer.country` 인덱스 추가 하였습니다.
-    - `create index programmer_country_index on programmer (country)`
+    - `alter table programmer add constraint programmer_pk primary key (id);`  
+    - ` create index covid_hospital_id_member_id_programmer_id_index  on covid (hospital_id, member_id, programmer_id);`
+
 
 ```text
 SELECT
@@ -223,7 +225,7 @@ ORDER BY 횟수 DESC;
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
 - [X] C. 페이징 쿼리
-- 역 페이이징 조회 : GET https://wooobo.r-e.kr/stations?size={size}&page={page}
+- 역 페이징 조회 : GET https://wooobo.r-e.kr/stations?size={size}&page={page}
 - 좋아요 페이징 조회 : GET https://wooobo.r-e.kr/favorites?size={size}&page={page}
 
 > 테스트 파일 참고 해주세요~
