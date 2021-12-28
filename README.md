@@ -50,6 +50,42 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+  (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+    <details>
+      <summary> 조회 쿼리(0.409s) </summary>
+  
+          select 상위연봉자.사원번호, 상위연봉자.이름, 상위연봉자.연봉, 상위연봉자.직급명, 사원출입기록.입출입시간, 사원출입기록.지역, 사원출입기록.입출입구분
+          from 사원출입기록
+          join
+          (
+              select 부서관리자.사원번호, 사원.이름, 급여.연봉, 직급.직급명
+              from 부서관리자
+                  join 부서 on 부서관리자.부서번호 = 부서.부서번호 and 부서.비고 = 'active'
+                  join 급여 on  부서관리자.사원번호 = 급여.사원번호 and 급여.종료일자 = '99990101'
+                  join 사원 on 급여.사원번호 = 사원.사원번호
+                  join 직급 on 사원.사원번호 = 직급.사원번호 and 직급.종료일자 = '99990101'
+              where 부서관리자.종료일자 = '99990101'
+              order by 급여.연봉 desc limit 5) as 상위연봉자
+          on 상위연봉자.사원번호 = 사원출입기록.사원번호
+          where 사원출입기록.입출입구분 = 'O'
+          order by 상위연봉자.연봉 desc;
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    </details>
+    <details>
+      <summary> 인덱스 생성 </summary>
+
+        create index idx_사원번호 on tuning.사원출입기록(사원번호)
+
+    </details>
+    <details>
+        <summary> 인덱스 적용후 조회 (0.003s) </summary>
+    <div markdown="1">
+  
+    ![after_index.png](인덱스적용후.png)
+    </div>
+    </details>
+
+
+3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
