@@ -67,6 +67,7 @@ npm run dev
     5. 아래 "요구사항"란에 기록해두었으니 참고 부탁드립니다.
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    1. http://y2o2u2n-alb-1093980542.ap-northeast-2.elb.amazonaws.com/pageable-stations?page=0&size=2
 
 #### 요구사항
 
