@@ -68,23 +68,24 @@ npm run dev
     from
       (SELECT dm.사원번호, emp.이름, pay.연봉, job.직급명
       FROM 부서관리자 dm inner join 직급 job on dm.사원번호 = job.사원번호
+      inner join 부서 dept on dm.부서번호 = dept.부서번호
       inner join 급여 pay on dm.사원번호 = pay.사원번호
       inner join 사원 emp on dm.사원번호 = emp.사원번호
-      WHERE dm.부서번호 IN (SELECT 부서번호 I_출입문I_출입문I_출입문
-                        FROM 부서
-                        where upper(비고) = 'ACTIVE')
+      WHERE upper(dept.비고) = 'ACTIVE'
       AND pay.종료일자 > now()
+      AND job.직급명 = 'Manager'
       order by pay.연봉 desc
       limit 5) t1
       inner join 사원출입기록 io on t1.사원번호 = io.사원번호 AND io.입출입구분 = 'O'
     group by t1.사원번호, 이름, 연봉, 직급명, 입출입시간, 지역, 입출입구분
-    order by t1.연봉 desc, io.입출입시간 desc;
+    order by t1.연봉 desc;
     ```
    - 조회 시간 : *0.356 sec*
    2. 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
    - `create index I_입출입구분 on 사원출입기록 (입출입구분);` 인덱스 추가
-   - 조회 시간 : *0.266 sec*
-
+   - `create index I_사원출입기록_사원번호 on 사원출입기록 (사원번호);` 인덱스 추가
+   - 조회 시간 : *0.000 sec*
+![img_13.png](result/img_13.png)
 - 인덱스 설계
    - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
   - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
