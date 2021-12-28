@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,11 +31,12 @@ public class MockitoExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        Pageable pageable = Pageable.unpaged();
+        when(lineRepository.findAll(pageable)).thenReturn(new PageImpl<>(Lists.newArrayList(new Line())));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLineResponses();
+        Page<LineResponse> responses = lineService.findLineResponses(pageable);
 
         // then
         assertThat(responses).hasSize(1);
