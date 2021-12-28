@@ -137,6 +137,14 @@ ORDER BY p.id;
 ```
 ![before](images/b/b-3-before.png)
 
+```sql
+CREATE INDEX idx_programmer_years_coding  ON programmer (years_coding);
+CREATE INDEX idx_programmer_student  ON programmer (student);
+CREATE INDEX idx_programmer_hobby  ON programmer (hobby);
+```
+
+![after](images/b/b-3-after.png)
+
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```sql
 SELECT c.stay, count(1)
@@ -173,6 +181,13 @@ GROUP BY p.exercise
 ORDER BY null;
 ```
 ![before](images/b/b-5-before.png)
+
+```sql
+CREATE INDEX idx_hospital_name ON hospital (name);
+CREATE INDEX idx_covid_hospital_id  ON covid (hospital_id);
+CREATE INDEX idx_member_age ON member (age);
+```
+![after](images/b/b-5-after.png)
 
 #### C. 페이징 쿼리
 - 페이징 쿼리를 적용한 API endpoint를 알려주세요
