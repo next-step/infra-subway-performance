@@ -73,6 +73,9 @@ A. 쿼리 최적화
 실행 시간 : 0.204
 
 사원출입기록 사원번호 인덱스 설정 후
+```
+CREATE INDEX `idx_사원출입기록_사원번호`  ON `tuning`.`사원출입기록` (사원번호) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+```
 
 실행 시간 : 0.000
 
@@ -87,7 +90,10 @@ B. 인덱스 설계
   select hobby,  round(COUNT( * ) / @rowCount * 100, 1) AS percentage from programmer
   group by hobby DESC;
   ```
-  hobby index로 지정 - full index scan으로 전환  
+  hobby index로 지정 - full index scan으로 전환 
+  ```
+  CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
   실행 결과 0.032s
   
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -97,7 +103,21 @@ B. 인덱스 설계
   INNER JOIN programmer as p ON p.id = c.programmer_id;
   ```
   programmer, hospital id 키 unique 및 pk 지정  
+  ```
+  ALTER TABLE `subway`.`hospital` 
+  CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+  
+  ALTER TABLE `subway`.`programmer` 
+  CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+  ```
   covid programmer_id, hospital_id 복합 인덱스 키 지정  
+  ```
+  CREATE INDEX `idx_covid_programmer_id_hospital_id`  ON `subway`.`covid` (programmer_id, hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
   실행 결과 0.016s  
   
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)  
@@ -119,6 +139,12 @@ B. 인덱스 설계
   GROUP BY c.stay;
   ```
   hospital text -> varchar(255) 로 변경 후 index search 로 변경
+  ```
+  ALTER TABLE `subway`.`hospital` 
+  CHANGE COLUMN `name` `name` VARCHAR(255) NULL DEFAULT NULL ;
+  
+  CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+  ```
   실행 결과 : 0.078s
   
 - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
