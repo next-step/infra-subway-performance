@@ -9,11 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,12 +27,11 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        when(lineRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Collections.singletonList(new Line())));
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(new Line()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        Page<LineResponse> responses = lineService.findLineResponses(pageRequest);
+        List<LineResponse> responses = lineService.findLineResponses();
 
         // then
         assertThat(responses).hasSize(1);

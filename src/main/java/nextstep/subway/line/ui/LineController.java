@@ -6,9 +6,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,12 +35,10 @@ public class LineController {
 
     @GetMapping("/pageable-lines")
     public ResponseEntity<Page<LineResponse>> findAllLines(
-        @PageableDefault(
-            size = 50,
-            sort = "id",
-            direction = Sort.Direction.DESC) Pageable pageable
+        @RequestParam(name = "size", defaultValue = "50") int size,
+        @RequestParam(name = "lastid", defaultValue = "0") Long lastId
     ) {
-        return ResponseEntity.ok(lineService.findLineResponses(pageable));
+        return ResponseEntity.ok(lineService.findLineResponses(PageRequest.of(0, size), lastId));
     }
 
     @GetMapping("/lines/{id}")

@@ -42,8 +42,8 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
-    public Page<LineResponse> findLineResponses(Pageable pageable) {
-        Page<Line> persistLines = lineRepository.findAll(pageable);
+    public Page<LineResponse> findLineResponses(Pageable pageable, Long lastId) {
+        Page<Line> persistLines = lineRepository.findAll(pageable, lastId);
         return persistLines.map(LineResponse::of);
     }
 
