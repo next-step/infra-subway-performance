@@ -130,3 +130,4 @@ GROUP BY exercise;
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 - https://chapitak.kro.kr/stations/paging?page=0
+- 페이징은 0부터 시작하며, size는 20으로 고정하였습니다 
