@@ -131,8 +131,6 @@ ALTER TABLE `tuning`.`부서관리자`
 
 > 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
-> 적혀있는 순서대로 진행하지 않고 아래 적은 순서대로 진행했으니 참고 부탁드립니다.
-
 ###### Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```sql
@@ -156,6 +154,38 @@ ALTER TABLE `subway`.`programmer`
 ![img_4.png](img_4.png)
 
 > 0.609 sec -> 0.059 sec
+
+###### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+SELECT covid.id, hospital.name
+FROM covid
+         INNER JOIN hospital ON hospital.id = covid.hospital_id
+         INNER JOIN programmer ON programmer.id = covid.programmer_id;
+```
+
+**인덱스 생성 전**
+
+> 4.169 sec
+
+![b-2-before.png](b-2-before.png)
+
+**인덱스 생성 후**
+
+> 0.036 sec
+
+![b-2-after.png](b-2-after.png)
+
+```sql
+ALTER TABLE `subway`.`covid`
+    ADD INDEX `I_programmer_id` (`programmer_id` ASC);
+ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+```
 
 ###### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
@@ -256,18 +286,3 @@ ALTER TABLE `subway`.`hospital`
 ![img_8.png](img_8.png)
 
 > 0.769 sec -> 0.0030 sec
-
-###### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-
-위에서 생성한 인덱스 덕분에 100ms 이내로 반환되었음.
-
-```sql
-SELECT covid.id, hospital.name
-FROM covid
-         INNER JOIN hospital ON hospital.id = covid.hospital_id
-         INNER JOIN programmer ON programmer.id = covid.programmer_id;
-```
-
-![img_5.png](img_5.png)
-
-> 0.0037 sec
