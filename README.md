@@ -129,4 +129,4 @@ GROUP BY exercise;
   ![./images_explain/B-5.png](./images_explain/B-5.png)
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+- https://chapitak.kro.kr/stations/paging?page=0
