@@ -225,8 +225,7 @@ npm run dev
        **인덱스 생성 후**<br>
        ![인덱스 생성 후](sqlResult/인덱스설계/request_fifth_after.png)
      
-<br>
-3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
     - /stations 에 적용했습니다. 
     - 호출 예시) /stations?offset=0&size=20
 
