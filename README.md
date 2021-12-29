@@ -201,10 +201,10 @@ order by p.exercise asc
 
 ### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
-https://13.125.64.39/stations?page=0&size=100
+https://chaeyun17.p-e.kr/stations?page=0&size=100
 
 ```shell
-curl -k --location --request GET 'https://13.125.64.39/stations?sort=id,asc&page=0&size=100'
+curl -k --location --request GET 'https://chaeyun17.p-e.kr/stations?sort=id,asc&page=0&size=100'
 ```
 
 
