@@ -134,21 +134,20 @@ ALTER TABLE `tuning`.`부서관리자`
 ###### Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```sql
-SELECT hobby, ROUND(COUNT(*) * 100 / (SELECT COUNT(*) FROM programmer), 1) AS percentage
+SELECT ROUND(SUM(IF(hobby = 'YES', 1, 0)) / COUNT(hobby) * 100, 1) AS Yes,
+       ROUND(SUM(IF(hobby = 'NO', 1, 0)) / COUNT(hobby) * 100, 1) AS No
 FROM programmer
-GROUP BY hobby
-ORDER BY hobby DESC;
 ```
 
 **인덱스 생성 전**
 
-> 3.326 sec
+> 2.751 sec
 
 ![b-1-before.png](b-1-before.png)
 
 **인덱스 생성 후**
 
-> 0.282 sec
+> 0.256 sec
 
 ![b-1-after.png](b-1-after.png)
 
@@ -245,15 +244,15 @@ GROUP BY covid.stay;
 
 ```sql
 ALTER TABLE `subway`.`covid`
-   CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
-   ADD PRIMARY KEY (`id`);
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`);
 ALTER TABLE `subway`.`programmer`
-   ADD INDEX `I_country` (`country` ASC);
+    ADD INDEX `I_country` (`country` ASC);
 ALTER TABLE `subway`.`hospital`
-   CHANGE COLUMN `name` `name` VARCHAR (256) NULL DEFAULT NULL,
-   ADD INDEX `I_name` (`name` ASC);
+    CHANGE COLUMN `name` `name` VARCHAR (256) NULL DEFAULT NULL,
+    ADD INDEX `I_name` (`name` ASC);
 ALTER TABLE `subway`.`covid`
-   ADD INDEX `I_hospital_id` (`hospital_id` ASC);
+    ADD INDEX `I_hospital_id` (`hospital_id` ASC);
 ```
 
 ###### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
