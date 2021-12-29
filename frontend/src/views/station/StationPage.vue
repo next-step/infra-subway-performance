@@ -29,7 +29,7 @@
     <div class="d-flex justify-center relative mt-4">
       <v-card width="500" height="500px" class="overflow-y-auto pl-3">
         <v-list>
-          <template v-for="station in stations">
+          <template v-for="station in stations.content">
             <v-list-item :key="station.name">
               <v-list-item-content>
                 <v-list-item-title v-text="station.name"></v-list-item-title>
