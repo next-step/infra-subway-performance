@@ -256,7 +256,7 @@ ALTER TABLE `subway`.`covid`
 
 ###### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
-위에서 생성한 인덱스 덕분인지 100ms 이내로 반환되었음.
+**별도의 인덱스 생성이 필요하지 않았음.**
 
 ```sql
 SELECT programmer.exercise, count(*)
@@ -272,6 +272,7 @@ FROM covid
 GROUP BY programmer.exercise;
 ```
 
-![img_11.png](img_11.png)
+> 0.261 sec
 
-> 0.063 sec
+
+![b-5.png](b-5.png)
