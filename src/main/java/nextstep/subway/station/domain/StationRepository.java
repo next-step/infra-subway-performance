@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface StationRepository extends JpaRepository<Station, Long> {
-    @Query(value = "SELECT station FROM Station station WHERE station.id >= :lastStationId",
-        countQuery = "select count(station) FROM Station station")
+    @Query("SELECT station FROM Station station WHERE station.id >= :lastStationId")
     Page<Station> findAll(Pageable pageable, @Param("lastStationId") Long lastStationId);
 }
