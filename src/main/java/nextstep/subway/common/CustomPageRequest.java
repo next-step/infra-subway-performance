@@ -2,7 +2,7 @@ package nextstep.subway.common;
 
 import org.springframework.data.domain.PageRequest;
 
-public class CustomPageRequest  {
+public class CustomPageRequest {
 
     private static final int MAX_SIZE = 100;
 
@@ -22,10 +22,10 @@ public class CustomPageRequest  {
         return size;
     }
 
-    public PageRequest toPageRequest(){
-        if(MAX_SIZE < size) {
+    public PageRequest toPageRequest() {
+        if (MAX_SIZE < size) {
             throw new IllegalArgumentException("page over size exception");
         }
-        return PageRequest.of(page,size);
+        return PageRequest.of(page, size);
     }
 }
