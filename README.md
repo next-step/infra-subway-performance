@@ -61,10 +61,11 @@ npm run dev
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
     1. 쿼리최적화
-        1. data-tuning.sql 에 작성한 쿼리로 실행시 수행시간 0.313 초
+        1. [data-tuning.sql] (https://github.com/All-ForOne/infra-subway-performance/blob/7aa4b62c944399c5981668b976885e2b340e853d/src/main/resources/data-tuning.sql) 에 작성한 쿼리로 실행시 수행시간 0.313 초
         2. 사원출입기록 테이블에 (사원번호, 지역, 입출입구분) 인덱스 추가 후 수행시간 0.016 초
-    2. 인덱스설계
-        1. index.sql
+    2. 인덱스설계  
+       [index.sql] (https://github.com/All-ForOne/infra-subway-performance/blob/7aa4b62c944399c5981668b976885e2b340e853d/src/main/resources/index.sql)
 
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요  
+https://all-forone.p-e.kr/stations?offset=0&size=10
 
