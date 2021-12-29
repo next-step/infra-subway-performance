@@ -155,12 +155,12 @@ npm run dev
     </div>
   </details>
   <details>
-    <summary>서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay) - 72 ms</summary>
+    <summary>서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay) - 70 ms</summary>
     <div>
 
       ```sql
       ALTER TABLE subway.hospital MODIFY name varchar(255);
-      CREATE INDEX I_name ON subway.hospital (name);
+      CREATE UNIQUE INDEX UI_name ON subway.hospital (name);
       CREATE INDEX I_country ON subway.programmer (country);
       CREATE INDEX I_member_id ON subway.covid (member_id);
       CREATE INDEX I_member_age ON subway.member (age);
@@ -179,7 +179,7 @@ npm run dev
     </div>
   </details>
   <details>
-    <summary>서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) - 85 ms</summary>
+    <summary>서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) - 68 ms</summary>
     <div>
 
       ```sql
