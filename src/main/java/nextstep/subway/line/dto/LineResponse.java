@@ -1,6 +1,9 @@
 package nextstep.subway.line.dto;
 
-import nextstep.subway.common.BaseResponse;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.domain.Page;
@@ -12,22 +15,30 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class LineResponse extends BaseResponse {
+public class LineResponse {
     private Long id;
     private String name;
     private String color;
     private List<StationResponse> stations;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    public LocalDateTime createDate;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    public LocalDateTime modifiedDate;
+
     public LineResponse() {
-        super();
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        super(createdDate, modifiedDate);
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.createDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static LineResponse of(Line line) {
@@ -70,17 +81,5 @@ public class LineResponse extends BaseResponse {
 
     public List<StationResponse> getStations() {
         return stations;
-    }
-
-    @Override
-    public String toString() {
-        return "LineResponse{" +
-                "createDate=" + createDate +
-                ", modifiedDate=" + modifiedDate +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", stations=" + stations +
-                '}';
     }
 }

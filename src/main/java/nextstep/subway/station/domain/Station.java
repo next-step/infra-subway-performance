@@ -8,8 +8,6 @@ import java.util.Objects;
 
 @Entity
 public class Station extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = -3592742922755525695L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

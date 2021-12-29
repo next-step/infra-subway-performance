@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,8 +41,6 @@ public class StationService {
 
         return StationResponse.ofList(stations);
     }
-
-
 
     @CacheEvict(value = "station", key = "#id")
     public void deleteStationById(Long id) {
