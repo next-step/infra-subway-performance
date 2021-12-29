@@ -36,8 +36,8 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
-    public Page<StationResponse> findAllStations(Pageable pageable) {
-        Page<Station> stations = stationRepository.findAll(pageable);
+    public Page<StationResponse> findAllStations(Pageable pageable, Long lastId) {
+        Page<Station> stations = stationRepository.findAll(pageable, lastId);
 
         return stations.map(StationResponse::of);
     }
