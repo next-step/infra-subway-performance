@@ -201,5 +201,6 @@ order by p.exercise asc
 
 ### 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
-/stations
+http://13.125.64.39/stations?page=0&size=100
+
 
