@@ -66,54 +66,31 @@ npm run dev
 
 ### 2단계 요구사항 
 
-#### A.쿼리 최적화
+#### A.쿼리 최적화  ->  ./queries/a/query.md 
  - 쿼리 작성만으로 1s 이하로 반환한다.
  - 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
  - [x] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
    - (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
    - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
-   - result
-     - ![image info](./images/a/image.png)
-     
-     - `부서.비고` 인덱스 설정 
-     - `부서관리자.종료일자` 인덱스 설정
-     - `사원출입기록.입출입구분&사원번호` 인덱스 설정
+   ![image info](queries/a/image.png)
 
-#### B. 인덱스 설계
+#### B. 인덱스 설계 -> ./queries/b/query1 ~5.md 
  * 요구사항
 - [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
    - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
-   - result 
-     - ![image info](./images/b/image1.png)
+      ![image info](queries/b/image1.png)
      
-     - `programmer.hobby` 인덱스 설정
-     - `programmer.id` pk 설정 
-   
    - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-   - result
-     - ![image info](./images/b/image2.png)
-    
-     - `hospital.id` pk 설정
-     - `hospital.name` not null, varchar 타입으로 변경
-     - `covid.programmer_id` 인덱스 설정
-     
+      ![image info](queries/b/image2.png)
+   
    - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-   - result
-      - ![image info](./images/b/image3.png)
-            
-      - `programmer.hobby&student&years_coding` 인덱스 설정  
+      ![image info](queries/b/image3.png)
 
    - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-   - result 
-      - ![image info](./images/b/image3.png)
-
-      - `member.age`  인덱스 설정 
+      ![image info](queries/b/image3.png)
      
    - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-   - result
-      - ![image info](./images/b/image3.png)
-     
-      - 추가 설정 없음.
+      ![image info](queries/b/image3.png)
 
 #### C. 페이징 쿼리
  - [x] 페이징 쿼리 구현
