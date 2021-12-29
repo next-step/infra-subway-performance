@@ -124,7 +124,7 @@ FROM 사원출입기록
     - `pk` 설정과, `hobby 컬럼`에 인덱스를 추가해여 개선하였습니다.
     - `create index programmer_hobby_index on programmer (hobby)`
     - `alter table programmer add constraint programmer_pk  primary key (id)`
-      
+
 ```text
 # 쿼리
 SELECT hobby,
@@ -182,9 +182,11 @@ ORDER BY programmer.id;
 - 개선후 속도 : 68ms ~
 - 개선 내용
     - `programmer.country` 인덱스 추가 하였습니다.
-    - `alter table programmer add constraint programmer_pk primary key (id);`  
-    - ` create index covid_hospital_id_member_id_programmer_id_index  on covid (hospital_id, member_id, programmer_id);`
-
+    - `alter table programmer add constraint programmer_pk primary key (id);`
+    - `create index covid_hospital_id_member_id_programmer_id_index  on covid (hospital_id, member_id, programmer_id);`
+    - `alter table hospital add constraint hospital_pk primary key (id)`
+    - `alter table hospital modify name varchar(255) null`
+    - `create index hospital_name_index on hospital (name)`
 
 ```text
 SELECT
