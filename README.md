@@ -19,22 +19,30 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
@@ -42,6 +50,7 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
@@ -49,7 +58,13 @@ npm run dev
 ---
 
 ### 2단계 - 조회 성능 개선하기
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    1. 쿼리최적화
+        1. data-tuning.sql 에 작성한 쿼리로 실행시 수행시간 0.313 초
+        2. 사원출입기록 테이블에 (사원번호, 지역, 입출입구분) 인덱스 추가 후 수행시간 0.016 초
+    2. 인덱스설계
+        1. index.sql
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
