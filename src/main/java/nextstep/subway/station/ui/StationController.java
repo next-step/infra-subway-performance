@@ -30,8 +30,9 @@ public class StationController {
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<StationResponse>> showStations(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok().body(stationService.findAllStations(pageable));
+    public ResponseEntity<Page<StationResponse>> showStations(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    , @RequestParam(value = "id", defaultValue = "1", required = false) Long id) {
+        return ResponseEntity.ok().body(stationService.findAllStations(pageable, id));
     }
 
     @DeleteMapping("/stations/{id}")

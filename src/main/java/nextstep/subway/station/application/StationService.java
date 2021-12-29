@@ -28,8 +28,8 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    public Page<StationResponse> findAllStations(Pageable pageable) {
-        Page<Station> stations = stationRepository.findAll(pageable);
+    public Page<StationResponse> findAllStations(Pageable pageable, Long id) {
+        Page<Station> stations = stationRepository.findAll(pageable, id);
 
         List<StationResponse> stationResponses = asStationResponses(stations.toList());
 
