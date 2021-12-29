@@ -6,6 +6,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,6 +25,7 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMember(id);
@@ -42,6 +44,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());

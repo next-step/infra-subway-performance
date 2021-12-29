@@ -27,8 +27,8 @@ public class AuthorizationExtractor {
     private static String extractAuthHeader(String value) {
         String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
         return (authHeaderValue.contains(","))
-            ? authHeaderValue.split(",")[0]
-            : authHeaderValue;
+                ? authHeaderValue.split(",")[0]
+                : authHeaderValue;
     }
 
     private static boolean isBearerType(String value) {
