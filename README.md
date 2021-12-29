@@ -187,6 +187,31 @@ ALTER TABLE `subway`.`programmer`
     ADD PRIMARY KEY (`id`);
 ```
 
+###### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+SELECT covid.id,
+       hospital.name,
+       programmer.hobby,
+       programmer.dev_type,
+       programmer.years_coding
+FROM covid
+         INNER JOIN hospital
+                    ON hospital.id = covid.hospital_id
+         INNER JOIN programmer
+                    ON programmer.id = covid.programmer_id
+                        AND
+                       ((programmer.hobby = 'Yes' AND programmer.student IN ('Yes, part-time', 'Yes, full-time')) OR
+                        programmer.years_coding = '0-2 years')
+ORDER BY programmer.id ASC;
+```
+
+**별도의 인덱스 생성이 필요하지 않았음.**
+
+> 0.042 sec
+
+![b-3.png](b-3.png)
+
 ###### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 ```sql
@@ -244,45 +269,3 @@ GROUP BY programmer.exercise;
 ![img_11.png](img_11.png)
 
 > 0.063 sec
-
-###### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-
-```sql
-SELECT covid.id,
-       hospital.name,
-       programmer.hobby,
-       programmer.dev_type,
-       programmer.years_coding
-FROM covid
-         INNER JOIN hospital
-                    ON hospital.id = covid.hospital_id
-         INNER JOIN programmer
-                    ON programmer.id = covid.programmer_id
-                        AND
-                       ((programmer.hobby = 'Yes' AND programmer.student IN ('Yes, part-time', 'Yes, full-time')) OR
-                        programmer.years_coding = '0-2 years')
-ORDER BY programmer.id ASC;
-```
-
-```sql
-ALTER TABLE `subway`.`covid`
-    ADD INDEX `I_hospital_id` (`hospital_id` ASC);
-ALTER TABLE `subway`.`programmer`
-    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
-    ADD PRIMARY KEY (`id`);
-ALTER TABLE `subway`.`covid`
-    ADD INDEX `I_programmer_id` (`programmer_id` ASC);
-ALTER TABLE `subway`.`hospital`
-    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
-```
-
-**인덱스 생성 전**
-
-![img_7.png](img_7.png)
-
-**인덱스 생성 후**
-
-![img_8.png](img_8.png)
-
-> 0.769 sec -> 0.0030 sec
