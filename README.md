@@ -106,22 +106,26 @@ ORDER BY pay.연봉 DESC, access.지역
 
 ###### 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
 
-사원출입기록에서 비용이 제일 많이 발생하는 것으로 보고 사원번호에 대한 인덱스를 생성함.
-
 **인덱스 생성 전**
 
-![img_1.png](img_1.png)
+> 4.696 sec
+
+![a-before.png](a-before.png)
 
 **인덱스 생성 후**
 
-![img_2.png](img_2.png)
+> 0.019 sec
+
+![a-after.png](a-after.png)
 
 ```sql
 ALTER TABLE `tuning`.`사원출입기록`
     ADD INDEX `I_사원번호` (`사원번호` ASC);
+ALTER TABLE `tuning`.`부서`
+    ADD INDEX `I_비고` (`비고` ASC);
+ALTER TABLE `tuning`.`부서관리자`
+    ADD INDEX `I_종료일자` (`종료일자` ASC);
 ```
-
-> 0.0014 sec
 
 ##### B. 인덱스 설계
 
