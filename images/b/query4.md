@@ -27,34 +27,18 @@ ORDER BY NULL;
 
 ##### AFTER
 ```text
-+--+-----------+----------+----------+------+-----------------------------------------------+--------------------+-------+---------------------------+------+--------+------------------------+
-|id|select_type|table     |partitions|type  |possible_keys                                  |key                 |key_len|ref                        |rows  |filtered|Extra                   |
-+--+-----------+----------+----------+------+-----------------------------------------------+--------------------+-------+---------------------------+------+--------+------------------------+
-|1 |SIMPLE     |hospital  |NULL      |const |PRIMARY,hospital_name_uindex,hospital__index001|hospital_name_uindex|1022   |const                      |1     |100     |Using index             |
-|1 |SIMPLE     |covid     |NULL      |index |covid__index001                                |covid__index001     |1039   |NULL                       |315501|10      |Using where; Using index|
-|1 |SIMPLE     |programmer|NULL      |eq_ref|PRIMARY,programmer__index001                   |PRIMARY             |8      |subway.covid.programmer_id |1     |35.14   |Using where             |
-|1 |SIMPLE     |member    |NULL      |eq_ref|PRIMARY,member__index001                       |PRIMARY             |8      |subway.programmer.member_id|1     |11.11   |Using where             |
-+--+-----------+----------+----------+------+-----------------------------------------------+--------------------+-------+---------------------------+------+--------+------------------------+
++--+-----------+----------+----------+------+----------------------------+--------------------+-------+---------------------------+-----+--------+----------------------------+
+|id|select_type|table     |partitions|type  |possible_keys               |key                 |key_len|ref                        |rows |filtered|Extra                       |
++--+-----------+----------+----------+------+----------------------------+--------------------+-------+---------------------------+-----+--------+----------------------------+
+|1 |SIMPLE     |hospital  |NULL      |const |PRIMARY,hospital_name_uindex|hospital_name_uindex|1022   |const                      |1    |100     |Using index; Using temporary|
+|1 |SIMPLE     |programmer|NULL      |range |PRIMARY,programmer__index001|programmer__index001|9      |NULL                       |37232|10      |Using where; Using index    |
+|1 |SIMPLE     |member    |NULL      |eq_ref|PRIMARY,member__index001    |PRIMARY             |8      |subway.programmer.member_id|1    |44.16   |Using where                 |
+|1 |SIMPLE     |covid     |NULL      |ref   |covid__index001             |covid__index001     |17     |subway.programmer.id,const |3    |100     |Using where; Using index    |
++--+-----------+----------+----------+------+----------------------------+--------------------+-------+---------------------------+-----+--------+----------------------------+
 ```
 
 #### 변경 내용
 ```sql
-ALTER TABLE hospital
-    MODIFY id int NOT NULL;
-
-ALTER TABLE hospital
-    MODIFY name varchar(255) NOT NULL;
-
-CREATE INDEX hospital__index001
-    ON hospital (name);
-
-CREATE UNIQUE INDEX hospital_name_uindex
-    ON hospital (name);
-
-ALTER TABLE hospital
-    ADD CONSTRAINT hospital_pk
-        PRIMARY KEY (id);
-
 ALTER TABLE covid
     MODIFY id bigint NOT NULL;
 
@@ -65,11 +49,33 @@ ALTER TABLE covid
     MODIFY stay varchar(255) NOT NULL;
 
 CREATE INDEX covid__index001
-    ON covid (stay, programmer_id, hospital_id);
+    ON covid (programmer_id, hospital_id, stay);
 
 ALTER TABLE covid
     ADD CONSTRAINT covid_pk
         PRIMARY KEY (id);
+
+
+ALTER TABLE hospital
+    MODIFY id int NOT NULL;
+
+ALTER TABLE hospital
+    MODIFY name varchar(255) NOT NULL;
+
+CREATE UNIQUE INDEX hospital_name_uindex
+    ON hospital (name);
+
+ALTER TABLE hospital
+    ADD CONSTRAINT hospital_pk
+        PRIMARY KEY (id);
+
+
+ALTER TABLE member
+    MODIFY age int NOT NULL;
+
+CREATE INDEX member__index001
+    ON member (age);
+
 
 ALTER TABLE programmer
     MODIFY id bigint NOT NULL;
@@ -83,12 +89,6 @@ CREATE INDEX programmer__index001
 ALTER TABLE programmer
     ADD CONSTRAINT programmer_pk
         PRIMARY KEY (id);
-
-ALTER TABLE member
-    MODIFY age int NOT NULL;
-
-CREATE INDEX member__index001
-    ON member (id, age);
 ```
 #### 결과
-- 10 rows retrieved starting from 1 in 160 ms (`execution: 139 ms`, fetching: 21 ms)
+- 10 rows retrieved starting from 1 in 66 ms (execution: 52 ms, fetching: 14 ms)
