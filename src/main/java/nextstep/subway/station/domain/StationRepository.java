@@ -13,6 +13,5 @@ public interface StationRepository extends JpaRepository<Station, Long> {
     List<Station> findAll();
 
     @Override
-    @Query("SELECT s FROM Station as s WHERE s.id >= ?1")
     Page<Station> findAll(Pageable pageable);
 }
