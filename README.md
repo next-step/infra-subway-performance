@@ -140,20 +140,22 @@ GROUP BY hobby
 ORDER BY hobby DESC;
 ```
 
+**인덱스 생성 전**
+
+> 3.326 sec
+
+![b-1-before.png](b-1-before.png)
+
+**인덱스 생성 후**
+
+> 0.282 sec
+
+![b-1-after.png](b-1-after.png)
+
 ```sql
 ALTER TABLE `subway`.`programmer`
     ADD INDEX `I_hobby` (`hobby` ASC);
 ```
-
-**인덱스 생성 전**
-
-![img_3.png](img_3.png)
-
-**인덱스 생성 후**
-
-![img_4.png](img_4.png)
-
-> 0.609 sec -> 0.059 sec
 
 ###### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
