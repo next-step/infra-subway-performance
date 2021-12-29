@@ -229,24 +229,30 @@ FROM covid
 GROUP BY covid.stay;
 ```
 
-```sql
-ALTER TABLE `subway`.`covid`
-    ADD INDEX `I_member_id` (`member_id` ASC);
-ALTER TABLE `subway`.`member`
-    ADD INDEX `I_id_age` (`id` ASC, `age` ASC);
-ALTER TABLE `subway`.`programmer`
-    ADD INDEX `I_id_country` (`id` ASC, `country` ASC);
-```
-
 **인덱스 생성 전**
 
-![img_9.png](img_9.png)
+> 3.257 sec
+
+![b-4-before.png](b-4-before.png)
 
 **인덱스 생성 후**
 
-![img_10.png](img_10.png)
+> 0.333 sec
 
-> 1.949 sec -> 0.063 sec
+![b-4-after.png](b-4-after.png)
+
+```sql
+ALTER TABLE `subway`.`covid`
+   CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+   ADD PRIMARY KEY (`id`);
+ALTER TABLE `subway`.`programmer`
+   ADD INDEX `I_country` (`country` ASC);
+ALTER TABLE `subway`.`hospital`
+   CHANGE COLUMN `name` `name` VARCHAR (256) NULL DEFAULT NULL,
+   ADD INDEX `I_name` (`name` ASC);
+ALTER TABLE `subway`.`covid`
+   ADD INDEX `I_hospital_id` (`hospital_id` ASC);
+```
 
 ###### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
