@@ -166,4 +166,5 @@ SELECT P.exercise as '운동 횟수', COUNT(P.exercise) as 집계 FROM covid as 
 <br/>
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+- ```/stations```
+- 참고: `http/get-stations-with-page.http` 
