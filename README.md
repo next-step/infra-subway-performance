@@ -73,25 +73,24 @@ npm run dev
 ```sql
 select a.사원번호, a.이름, a.연봉, a.직급명, b.지역, b.입출입구분, max(b.입출입시간) as 입출입시간
 from (
-         select ta.사원번호, tb.연봉, tc.이름, td.직급명
-         from 부서관리자 ta
-                  join 급여 tb
-                       on ta.사원번호 = tb.사원번호
-                  inner join 사원 tc
-                             on ta.사원번호 = tc.사원번호
-                  inner join 직급 td
-                             on ta.사원번호 = td.사원번호
-                                 and td.종료일자 = '9999-01-01'
-         where ta.종료일자 = '9999-01-01'
-           and tb.종료일자 = '9999-01-01'
-           and exists(select 1
-                      from 부서
-                      where 비고 = 'ACTIVE'
-                        and ta.부서번호
-                          = 부서.부서번호)
-         order by tb.연봉 desc limit 5) a
-         inner join 사원출입기록 b
-                    on a.사원번호 = b.사원번호
+       select ta.사원번호, tc.연봉, td.이름, te.직급명
+       from 부서관리자 ta
+              inner join 부서 tb
+                         on ta.부서번호 = tb.부서번호
+              inner join 급여 tc
+                         on ta.사원번호 = tc.사원번호
+              inner join 사원 td
+                         on ta.사원번호 = td.사원번호
+              inner join 직급 te
+                         on ta.사원번호 = te.사원번호
+       where ta.종료일자 = '9999-01-01'
+         and tb.비고 = 'ACTIVE'
+         and tc.종료일자 = '9999-01-01'
+         and te.종료일자 = '9999-01-01'
+       order by tc.연봉 desc
+         limit 5) a
+       inner join 사원출입기록 b
+                  on a.사원번호 = b.사원번호
 where 입출입구분 = 'O'
 group by a.사원번호, a.이름, a.연봉, a.직급명, b.지역, b.입출입구분;
 ```
@@ -120,9 +119,12 @@ alter table programmer
     add constraint programmer_pk
         primary key (id);
 
-select sum(IF(hobby = 'Yes', 1, 0)) / count(hobby) * 100 as yes_rate
-     , sum(IF(hobby = 'No', 1, 0)) / count(hobby) * 100  as no_rate
-from programmer;
+select sum(IF(hobby = 'Yes', hobby_count, 0)) / sum(hobby_count) * 100 as yes_rate
+     , sum(IF(hobby = 'No', hobby_count, 0)) / sum(hobby_count) * 100  as no_rate
+from (
+       select hobby, count(hobby) as hobby_count
+       from programmer
+       group by hobby) a;
 ```
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -142,11 +144,10 @@ create index I_hospital
 create index I_programmer
     on covid (programmer_id);
 
-select p.id, h.name
-from programmer p
-         left join covid c on p.id = c.programmer_id
-         left join hospital h on h.id = c.hospital_id
-where c.id is not null
+select c.programmer_id, h.name
+from covid c
+       inner join programmer p on p.id = c.programmer_id
+       inner join hospital h on h.id = c.hospital_id;
 ```
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
@@ -178,14 +179,14 @@ create index I_country
     on programmer (country);
 
 select c.stay, count(m.id) as 'count'
-from hospital h
-         left outer join covid c on h.id = c.hospital_id
-         left outer join programmer p on c.programmer_id = p.id
-         left outer join member m on m.id = c.member_id
+from covid c
+       inner join hospital h on c.hospital_id = h.id
+       inner join programmer p on c.programmer_id = p.id
+       inner join member m on c.member_id = m.id
 where h.name = '서울대병원'
   and p.country = 'India'
   and m.age between 20 and 29
-group by c.stay
+group by c.stay;
 ```
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -198,10 +199,10 @@ create index I_exercise
     on programmer (exercise);
 
 select p.exercise, count(p.id) as 'count'
-from hospital h
-         left outer join covid c on h.id = c.hospital_id
-         left outer join programmer p on c.programmer_id = p.id
-         left outer join member m on m.id = c.member_id
+from covid c
+       inner join hospital h on h.id = c.hospital_id
+       inner join programmer p on c.programmer_id = p.id
+       inner join member m on m.id = c.member_id
 where h.name = '서울대병원'
   and m.age between 30 and 39
 group by p.exercise;
