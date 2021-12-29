@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.ExpectedPageResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,13 +97,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
         PageRequest pageRequest = PageRequest.of(5, 8);
-
+        ExpectedPageResult expected = new ExpectedPageResult(5, 8, 100);
 
         // when
         ExtractableResponse<Response> response = 노선_페이지_요청함(pageRequest);
 
         // then
-        노선_페이지_응답됨(pageRequest, response);
+        노선_페이지_응답됨(response, expected);
     }
 
     @Test
@@ -112,12 +113,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
         PageRequest pageRequest = PageRequest.of(0, 10);
         Long id = 25L;
+        ExpectedPageResult expected = new ExpectedPageResult(0, 10, TOTAL_ELEMENTS);
 
         // when
         ExtractableResponse<Response> response = 노선_페이지_요청함(id, pageRequest);
 
         // then
-        노선_페이지_응답됨(pageRequest, response);
+        노선_페이지_응답됨(response, expected);
     }
 
 
@@ -313,14 +315,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void 노선_페이지_응답됨(PageRequest pageRequest, ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private void 노선_페이지_응답됨(ExtractableResponse<Response> response, ExpectedPageResult result) {
+
         List<LineResponse> content = response.jsonPath().getList("content", LineResponse.class);
         Map<Object, Object> pageable = response.jsonPath().getMap("pageable");
         int totalElements = (int) response.jsonPath().get("totalElements");
 
-        assertThat(content).hasSize(pageRequest.getPageSize());
-        assertThat((int) pageable.get("pageNumber")).isEqualTo(pageRequest.getPageNumber());
-        assertThat(totalElements).isEqualTo(TOTAL_ELEMENTS);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(content).as("페이지의 사이즈가 일치하지 않음").hasSize(result.getSize());
+        assertThat((int) pageable.get("pageNumber")).as("페이지번호가 일치하지 않음").isEqualTo(result.getPageNumber());
+        assertThat(totalElements).as("전체 row 수가 일치하지 않음").isEqualTo(result.getTotalSize());
     }
+
+
 }

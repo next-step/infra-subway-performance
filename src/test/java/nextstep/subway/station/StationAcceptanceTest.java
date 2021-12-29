@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.ExpectedPageResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
@@ -69,12 +70,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void getStationsPaging() {
         // given
         지하철역들이_등록되어있음(STATIONS_COUNT);
-
         PageRequest request = PageRequest.of(5, 5);
+        ExpectedPageResult expected = new ExpectedPageResult(5, 5, 175);
         // when
         ExtractableResponse<Response> response = 지하철_페이지요청함(request);
 
-        페이지_응답됨(response, request);
+        페이지_응답됨(response, expected);
     }
 
     @Test
@@ -82,15 +83,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
     void getLinesPageWithPk() {
         // given
         지하철역들이_등록되어있음(STATIONS_COUNT);
-
         PageRequest pageRequest = PageRequest.of(0, 10);
+        ExpectedPageResult expected = new ExpectedPageResult(0, 10, 175);
         Long id = 5L;
 
         // when
         ExtractableResponse<Response> response = 지하철_페이지요청함(id, pageRequest);
 
         // then
-        페이지_응답됨(response, pageRequest);
+        페이지_응답됨(response, expected);
     }
 
 
@@ -179,15 +180,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    private void 페이지_응답됨(ExtractableResponse<Response> response, PageRequest pageRequest) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private void 페이지_응답됨(ExtractableResponse<Response> response, ExpectedPageResult result) {
         List<StationResponse> content = response.jsonPath().getList("content", StationResponse.class);
         Map<Object, Object> pageable = response.jsonPath().getMap("pageable");
         int totalElements = (int) response.jsonPath().get("totalElements");
 
-        assertThat(content).hasSize(pageRequest.getPageSize());
-        assertThat((int) pageable.get("pageNumber")).isEqualTo(pageRequest.getPageNumber());
-        assertThat(totalElements).isEqualTo(STATIONS_COUNT);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(content).as("페이지 사이즈가 일치하지 않음").hasSize(result.getSize());
+        assertThat((int) pageable.get("pageNumber")).as("페이지번호가 일치하지않음").isEqualTo(result.getPageNumber());
+        assertThat(totalElements).as("전체 row 수가 일치하지않음").isEqualTo(result.getTotalSize());
     }
 
     private ExtractableResponse<Response> 지하철_페이지요청함(PageRequest pageRequest) {
