@@ -227,5 +227,7 @@ npm run dev
      
 <br>
 3. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    - /stations 에 적용했습니다. 
+    - 호출 예시) /stations?offset=0&size=20
 
 
