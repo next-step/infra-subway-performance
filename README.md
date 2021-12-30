@@ -232,7 +232,8 @@ npm run dev
      INNER JOIN hospital
        ON covid.hospital_id = hospital.id
        AND hospital.name = '서울대병원'
-   GROUP BY user.exercise;
+   GROUP BY user.exercise
+   ORDER BY NULL;
    ```
   - PK 적용 전, 인덱스 적용 전
   > 실행 결과: 30 sec 이상
@@ -242,7 +243,8 @@ npm run dev
   - PK 적용, 인덱스 적용
     - ``alter table `hospital` add primary key (id);``
     - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
-  > 5 row(s) returned	4.496 sec / 0.000019 sec
+  > 5 row(s) returned	4.008 sec / 0.000020 sec
+
 
   ![seoul-hospital-exercise-index](./query/seoul_hospital_exercise_index.png)
 
