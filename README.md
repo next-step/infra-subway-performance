@@ -183,7 +183,9 @@ T: VU iteration을 완료하는데 소요되는 시간보다 큰 시간
 
 <details markdown="1">
   <summary>초기 실행 계획</summary>
+
   ![1번쿼리-초기](https://user-images.githubusercontent.com/62507373/147715477-9d09ee87-ee6d-4e97-8483-63d0d05e6f3f.png)
+</details>
 
 
 
@@ -213,6 +215,7 @@ T: VU iteration을 완료하는데 소요되는 시간보다 큰 시간
 
 <details markdown="1">
   <summary>개선된 실행 계획</summary>
+
 ![a-2](https://user-images.githubusercontent.com/62507373/147719612-75b92efe-ef6c-4f5b-a502-a11d5ce76ccd.png)
 </details>
 
@@ -269,6 +272,7 @@ from
 
 <details markdown="1">
   <summary>실행 계획</summary>
+
 ![b-1](https://user-images.githubusercontent.com/62507373/147715706-1294ed58-3dcd-4c10-bcee-e3685edaf922.png)
 </details>
 
@@ -302,6 +306,7 @@ inner join hospital h on c.hospital_id = h.id;
 
 <details markdown="1">
   <summary>실행 계획</summary>
+
 ![b-2](https://user-images.githubusercontent.com/62507373/147715722-f48fa410-60dc-4c6b-b5ce-4a0591ea3a35.png)
 </details>
 
@@ -336,6 +341,7 @@ order by pr.id;
 
 <details markdown="1">
   <summary>실행 계획</summary>
+
 ![b-3](https://user-images.githubusercontent.com/62507373/147715731-4b549c48-2277-4d5b-8b20-3a86c38241ee.png)
 </details>
 
@@ -368,6 +374,7 @@ inner join member m on c.member_id=m.id and m.age>=20 and m.age<=29;
 
 <details markdown="1">
   <summary>실행 계획</summary>
+
 ![b-4](https://user-images.githubusercontent.com/62507373/147715745-fc294a13-63fb-4a45-a222-068151e87068.png)
 </details>
 
@@ -397,6 +404,7 @@ order by null;
 
 <details markdown="1">
   <summary>실행 계획</summary>
+
 ![b-5](https://user-images.githubusercontent.com/62507373/147715757-1d4e3897-9ff9-4177-8955-27610a4259c9.png)
 </details>
 
