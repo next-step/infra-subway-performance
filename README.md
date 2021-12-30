@@ -403,3 +403,7 @@ order by null;
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- 지하철역 조회
+  https://jerry92k-subway.n-e.kr/stations?page=1&size=2
+- 노선 조회
+  https://jerry92k-subway.n-e.kr/lines?page=1&size=2
