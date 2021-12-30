@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
@@ -78,6 +80,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
         // then
         즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기를 페이징으로 조회가능하다.")
+    @Test
+    void pagingFavorite() {
+        // when
+        즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        즐겨찾기_생성을_요청(사용자, 정자역, 광교역);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_페이징_요청(사용자, 0, 1, "id,desc");
+
+        // then
+        페이징된_즐겨찾기_목록_조회됨(findResponse);
+    }
+
+    private void 페이징된_즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", FavoriteResponse.class)).hasSize(1);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_페이징_요청(TokenResponse tokenResponse, int page, int size, String sort) {
+        return RestAssured.given().log().all().
+                auth().oauth2(tokenResponse.getAccessToken()).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                queryParam("page", page).
+                queryParam("size", size).
+                queryParam("sort", sort).
+                when().
+                get("/favorites").
+                then().
+                log().all().
+                extract();
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
