@@ -71,7 +71,7 @@ from 사원출입기록 D,
      (select C.사원번호, H.이름, C.연봉, G.직급명
       from 부서관리자 A, 부서 B, 급여 C, 사원 H, 직급 G
       where A.부서번호 = B.부서번호
-        and B.비고 like 'active'
+        and B.비고 = 'active'
         and A.사원번호 = C.사원번호
         and H.사원번호 = A.사원번호
         and G.사원번호 = A.사원번호
@@ -99,16 +99,23 @@ CREATE INDEX `idx_사원출입기록_사원번호`  ON `tuning`.`사원출입기
 <br/>
   - Coding as a Hobby 와 같은 결과를 반환하세요.
 
-Yes | No
+hobby | rate
 ----------|-----------
-80.80%	|19.20%
+No|	0.1918
+Yes|	0.8082
   
+
 ```sql
 set @totalCnt = (select count(*) from programmer);
-select concat(round(count(case when hobby = 'Yes' then 1 end) / @totalCnt * 100, 1), '%') AS Yes,
-       concat(round(count(case when hobby = 'No' then 1 end) / @totalCnt * 100, 1), '%') AS No
-from programmer;
+select hobby, count(hobby)/@totalCnt as rate from programmer group by hobby;
 ```
+
+```sql
+CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+```
+
+![img_1.png](src/main/resources/img/hobby-before.png)   ![img.png](src/main/resources/img/hobby-after.png)
+- index 추가하여 group by 시 소트 연산 생략
 
 <br/>
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -120,6 +127,33 @@ from programmer P
        inner join hospital H
                   on P.id = C.programmer_id and C.hospital_id = H.id;
 ```
+
+```sql
+-- index
+CREATE INDEX `idx_hospital_id`  ON `subway`.`hospital` (id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+CREATE UNIQUE INDEX `idx_covid_programmer_id_member_id_hospital_id`  ON `subway`.`covid` (programmer_id, member_id, hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+
+-- pk
+ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+    ADD PRIMARY KEY (`id`);
+;
+ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+    ADD PRIMARY KEY (`id`);
+;
+-- unique 
+ALTER TABLE `subway`.`covid`
+    ADD UNIQUE INDEX `member_id_UNIQUE` (`member_id` ASC);
+;
+ALTER TABLE `subway`.`covid`
+    ADD UNIQUE INDEX `programmer_id_UNIQUE` (`programmer_id` ASC);
+;
+
+```
+![img_2.png](src/main/resources/img/programmer-hospital-before.png)![img_3.png](src/main/resources/img/programmer-hospital-after.png)
+- programmer.id 와 covid.programmer_id 가 모두 unique 설정이 되어 있는데 EXPLAIN 결과에서 non-unique가 뜨는 이유?
+
 
 <br/>
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -133,6 +167,8 @@ from programmer P
                     and C.hospital_id = H.id
 where P.hobby = 'Yes' or P.years_coding like '0-2%';
 ```
+![img_4.png](src/main/resources/img/programmer-hospital2.png)
+- where 조건이 or로 되어 있어 full scan을 피할 수 없으므로 추가 index 설정 하지 않았음.
 
 <br/>
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
@@ -150,7 +186,7 @@ SELECT C.stay as '머문 기간', COUNT(C.stay) as 집계 FROM covid as C
 ```sql
    CREATE INDEX `idx_covid_hospital_id_member_id`  ON `subway`.`covid` (hospital_id, member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
 ```
-
+![img_5.png](src/main/resources/img/india-hospital-before.png) ![img_7.png](src/main/resources/img/india-hospital-after.png)
 <br/>
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
@@ -162,6 +198,8 @@ SELECT P.exercise as '운동 횟수', COUNT(P.exercise) as 집계 FROM covid as 
   INNER JOIN (SELECT id, exercise FROM programmer WHERE country = 'india') as P ON P.id = C.programmer_id
   GROUP BY P.exercise;
 ```
+![img_6.png](src/main/resources/img/hospital-exercise.png)
+- 추가 index 설정한 사항 없음.
 
 <br/>
 
