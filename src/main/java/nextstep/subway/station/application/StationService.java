@@ -14,7 +14,7 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class StationService {
     private static final int ZERO_PAGE = 0;
     private StationRepository stationRepository;
@@ -23,12 +23,12 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
-    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations(Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(ZERO_PAGE, pageable.getPageSize());
         Page<Station> stations = stationRepository.findAllByIdGreaterThan(pageable.getOffset(), pageRequest);
@@ -38,6 +38,7 @@ public class StationService {
             .getContent();
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
