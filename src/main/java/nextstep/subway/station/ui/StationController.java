@@ -25,9 +25,13 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE, params = "offset")
+    public ResponseEntity<List<StationResponse>> showStations(
+        @RequestParam Long offset,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        final List<StationResponse> stations = stationService.findAll(offset, size);
+        return ResponseEntity.ok().body(stations);
     }
 
     @DeleteMapping("/stations/{id}")
