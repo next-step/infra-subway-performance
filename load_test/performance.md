@@ -56,8 +56,27 @@ default ↓ [======================================] 0999/1000 VUs  1m0s
       ```sql
       SELECT * FROM subway.member LIMIT 10000, 10;
       ```
+- 커버링 인덱스
+    - Duration : `0.0031`
+    - 사용 쿼리
+      ```sql
+      SELECT *
+      FROM subway.member as m
+      JOIN (SELECT id
+            FROM subway.member
+            LIMIT 10000, 10
+           ) as temp
+        ON temp.id = m.id;
+      ```
+
 - 비교
 
-    | |NoOffset|offset|비고|
-    |------|---|---|---|
-    |Duration|0.0023|0.0066|쿼리 실행시간 약 3배 차이
+  | |Duration|offset 방식과 비교|
+  |------|---|---|
+  |offset|0.0066|-
+  |NoOffset|0.0023|쿼리 실행시간 약 3배 차이
+  |커버링인덱스|0.0031|쿼리 실행시간 약 2배 차이
+
+- NoOffset 방식을 사용하는 것이 성능상 좋아보임
+  - 단, NoOffset은 다음 페이지를 순차적으로 이동하기 때문에 요구사항과 맞지 않을 경우 사용하기 어려움
+- 커버링 인덱스는 NoOffset 방식보다는 뒤로 갈수록 느리지만 NoOffset방식을 사용할 수 없을때 사용하여 성능을 높일 수 있음
