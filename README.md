@@ -94,8 +94,9 @@ npm run dev
    * 인덱스 설계 - 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
      - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
        ```sql
+       SET @totalCnt = (SELECT COUNT(*) FROM programmer);
        SELECT hobby,
-       ROUND(COUNT(hobby) / (SELECT COUNT(hobby) FROM programmer) * 100, 1) as percentage
+       ROUND(COUNT(hobby) / @totalCnt * 100, 1) as percentage
        FROM programmer
        GROUP BY hobby
        ORDER BY hobby DESC;
@@ -106,7 +107,7 @@ npm run dev
 
        인덱스 생성 전 | 인덱스 생성 후
                ---|---
-       0.813 sec | 0.093 sec
+       0.813 sec | 0.058 sec
      
        **인덱스 생성 전**<br>
        ![인덱스 생성 전](sqlResult/인덱스설계/request_first_before.png)
@@ -116,16 +117,18 @@ npm run dev
      
      - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
         ```sql
-        SELECT c.id, h.name FROM programmer p
-        INNER JOIN covid c
-            ON p.member_id = c.member_id
+        SELECT c.id
+        FROM covid c
+        INNER JOIN programmer p
+            ON c.programmer_id = p.id
         INNER JOIN hospital h
-            ON c.hospital_id = h.id;
+            ON c.hospital_id = h.id
+        WHERE c.programmer_id IS NOT NULL;
        ```
        ```sql
-        CREATE INDEX idx_programmer_id ON programmer (id);
-        CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
-        CREATE INDEX idx_hospital_id ON hospital (id);
+        CREATE INDEX idx_programmer_id ON  programmer (id);
+        CREATE INDEX idx_covid_programmer_hospital_id ON  covid (programmer_id, hospital_id);
+        CREATE INDEX idx_hospital_id ON  hospital (id);
        ```
        인덱스 생성 전 | 인덱스 생성 후
                       ---|---
@@ -146,17 +149,18 @@ npm run dev
         INNER JOIN hospital h
         ON c.hospital_id = h.id
         WHERE p.hobby = 'Yes'
-        AND p.student LIKE 'Yes%' OR p.years_coding = '0-2 years'
+        AND (p.student LIKE 'Yes%' OR p.years_coding = '0-2 years')
         ORDER BY p.id ;
        ```
        ```sql
+        CREATE INDEX idx_programmer_hobby ON programmer (hobby);
         CREATE INDEX idx_programmer_id ON programmer (id);
         CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
         CREATE INDEX idx_hospital_id ON hospital (id);
        ```
        인덱스 생성 전 | 인덱스 생성 후
         ---|---
-       측정불가(뻗음) | 0.031 sec
+       측정불가(뻗음) | 0.016 sec
 
        **인덱스 생성 전**<br>
        [x]
