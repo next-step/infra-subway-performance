@@ -1,6 +1,6 @@
-package nextstep.subway;
+package nextstep.subway.config;
 
-import static nextstep.subway.ReplicationRoutingDataSource.*;
+import static nextstep.subway.config.ReplicationRoutingDataSource.*;
 
 import java.util.HashMap;
 
