@@ -31,9 +31,10 @@ public class StationService {
     public List<StationResponse> findAllStations(Pageable pageable) {
         Page<Station> stations = stationRepository.findAll(pageable);
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return stations.getContent()
+            .stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {

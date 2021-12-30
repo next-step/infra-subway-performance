@@ -5,6 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StationRepository extends JpaRepository<Station, Long> {
-    @Override
     Page<Station> findAll(Pageable pageable);
 }
