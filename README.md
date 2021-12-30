@@ -126,5 +126,4 @@ npm run dev
    ![7](https://user-images.githubusercontent.com/36442984/147694347-ae032bc6-8572-4ed9-8822-75eaab0507d6.png)
 
    
-2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+2. 페이징 쿼리를 적용한 API endpoint를 알려주세요 : GET /stations
