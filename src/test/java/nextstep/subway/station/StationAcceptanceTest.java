@@ -54,11 +54,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
-
+        ExtractableResponse<Response> pageResponse = 지하철역_페이지목록_조회_요청(0,2);
         // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        지하철역_목록_응답됨(pageResponse);
+        지하철역_목록_포함됨(pageResponse, Arrays.asList(createResponse1, createResponse2));
+        지하철역_페이지_목록_조회됨(pageResponse,2);
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -101,6 +101,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_페이지목록_조회_요청(int page, int size) {
+        return RestAssured.given().log().all().
+            when().
+            get("/stations"+ "?page="+page+"&size="+size).
+            then().
+            log().all().
+            extract();
+    }
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
@@ -139,5 +147,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철역_페이지_목록_조회됨(ExtractableResponse<Response> pageResponse, int expectedSize) {
+        List<Long> resultIds = pageResponse.jsonPath().getList(".", StationResponse.class).stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+        assertThat(resultIds.size()).isEqualTo(expectedSize);
     }
 }
