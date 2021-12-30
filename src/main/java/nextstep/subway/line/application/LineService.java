@@ -7,6 +7,9 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,11 @@ public class LineService {
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public Page<LineResponse> findLineResponses(Pageable pageable) {
+        Page<Line> persistLines = lineRepository.findAll(pageable);
+        return new PageImpl<>(LineResponse.toList(persistLines));
     }
 
     public List<Line> findLines() {

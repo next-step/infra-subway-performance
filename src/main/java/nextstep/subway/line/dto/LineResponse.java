@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +44,12 @@ public class LineResponse {
         return line.getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public static List<LineResponse> toList(Page<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
