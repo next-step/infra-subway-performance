@@ -172,8 +172,9 @@ npm run dev
        ON user.id = covid.programmer_id
      INNER JOIN  hospital
        ON hospital.id = covid.hospital_id
-   WHERE (user.hobby = 'yes' AND user.student IN ('Yes, part-time', 'Yes, full-time'))
-     OR user.years_coding_prof = '0-2 years'
+   WHERE user.hobby = 'yes' 
+	 AND (user.student IN ('Yes, part-time', 'Yes, full-time')
+          OR user.years_coding_prof = '0-2 years')
    ORDER BY user.id;
    ```
   - PK 적용 전, 인덱스 적용 전
@@ -184,7 +185,9 @@ npm run dev
   - PK 적용, 인덱스 적용
     - ``alter table `hospital` add primary key (id);``
     - ``CREATE INDEX `idx_covid_programmer_id` ON `covid` (programmer_id);``
-  > 실행 결과: 35261 row(s) returned	0.026 sec / 5.005 sec
+    - ``CREATE INDEX `idx_covid_programmer_hobby` ON `covid` (hobby);``
+  > 실행 결과: 31448 row(s) returned	0.037 sec / 4.492 sec
+
 
   ![student-junior-hospital-index](./query/student_or_junior_hospital-index.png)
 
