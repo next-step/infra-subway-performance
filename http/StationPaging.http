@@ -1,0 +1,7 @@
+### paging (default page = 0, size = 10, Sort = Id)
+GET http://localhost:8080/stations/page?page=3&size=5
+
+
+
+### paging (default page = 0, size = 10, Sort = Id, default id = 0 )
+GET http://localhost:8080/lines/page?page=3&size=3

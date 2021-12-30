@@ -7,9 +7,11 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.ExpectedPageResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +29,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
     private Map<String, String> lineCreateParams;
+    private static final int TOTAL_ELEMENTS = 100;
 
     @BeforeEach
     public void setUp() {
@@ -87,6 +91,38 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @Test
+    @DisplayName("지하철 노선 페이지 목록을 조회한다.")
+    public void getLinesPage() throws Exception {
+        // given
+        지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
+        PageRequest pageRequest = PageRequest.of(5, 8);
+        ExpectedPageResult expected = new ExpectedPageResult(5, 8, 100);
+
+        // when
+        ExtractableResponse<Response> response = 노선_페이지_요청함(pageRequest);
+
+        // then
+        노선_페이지_응답됨(response, expected);
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 페이징 목록을 조회한다.")
+    public void getLinesPageWithPk() throws Exception {
+        // given
+        지하철_노선들이_등록되어_있음(TOTAL_ELEMENTS);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Long id = 25L;
+        ExpectedPageResult expected = new ExpectedPageResult(0, 10, TOTAL_ELEMENTS);
+
+        // when
+        ExtractableResponse<Response> response = 노선_페이지_요청함(id, pageRequest);
+
+        // then
+        노선_페이지_응답됨(response, expected);
+    }
+
+
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
@@ -137,6 +173,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_생성_요청(params);
     }
 
+    private void 지하철_노선들이_등록되어_있음(int count) {
+        IntStream.range(0, count)
+                .forEach(index -> {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("name", "line" + index);
+                    params.put("color", "bg-red-600");
+                    params.put("upStationId", 강남역.getId() + "");
+                    params.put("downStationId", 광교역.getId() + "");
+                    params.put("distance", index + "");
+
+                    지하철_노선_생성_요청(params);
+                });
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(Map<String, String> params) {
         return RestAssured.given().log().all().
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -166,6 +216,29 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract();
+    }
+
+    private ExtractableResponse<Response> 노선_페이지_요청함(PageRequest pageRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("page", pageRequest.getPageNumber())
+                .param("size", pageRequest.getPageSize())
+                .when()
+                .get("/lines/page")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 노선_페이지_요청함(Long id, PageRequest pageRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .params("id", id)
+                .param("page", pageRequest.getPageNumber())
+                .param("size", pageRequest.getPageSize())
+                .when()
+                .get("/lines/page")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(ExtractableResponse<Response> response) {
@@ -241,4 +314,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    private void 노선_페이지_응답됨(ExtractableResponse<Response> response, ExpectedPageResult result) {
+
+        List<LineResponse> content = response.jsonPath().getList("content", LineResponse.class);
+        Map<Object, Object> pageable = response.jsonPath().getMap("pageable");
+        int totalElements = (int) response.jsonPath().get("totalElements");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(content).as("페이지의 사이즈가 일치하지 않음").hasSize(result.getSize());
+        assertThat((int) pageable.get("pageNumber")).as("페이지번호가 일치하지 않음").isEqualTo(result.getPageNumber());
+        assertThat(totalElements).as("전체 row 수가 일치하지 않음").isEqualTo(result.getTotalSize());
+    }
+
+
 }
