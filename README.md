@@ -96,8 +96,13 @@ group by hobby
 order by null;
 ```
 
-![hobby](https://user-images.githubusercontent.com/16433283/147824510-bee72740-3c1c-4acb-829b-efd96271cdca.png)
+```
+programmer 테이블에 hobby 인덱스 추가
+programmer 테이블에 id primary key 추가
+```
 
+![hobby](https://user-images.githubusercontent.com/16433283/147824510-bee72740-3c1c-4acb-829b-efd96271cdca.png)
+![image](https://user-images.githubusercontent.com/16433283/147824558-3fc71022-ab11-4359-9896-b2d806178796.png)
 
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -112,7 +117,6 @@ on c.hospital_id = h.id;
 
 ```
 covid 테이블의 id primary key 추가
-programmer 테이블의 id primary key 추가
 hispital 테이블의 id primary key 추가
 ```
 
