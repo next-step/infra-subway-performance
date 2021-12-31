@@ -50,6 +50,161 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   
+#### A. 쿼리 최적화 
+```
+ 1) 쿼리 작성만으로 1s 이하로 반환한다. 
+ 2) 인덱스 설정을 추가하여 50 ms 이하로 반환한다. 
+
+ - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. 
+(사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간) 
+ - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+```
+   
+
+#### A-1) 쿼리 작성
+- 실행 시간:  `250ms`
+
+```sql
+select E.*, D.입출입시간, D.지역, D.입출입구분
+from 사원출입기록 D,
+     (select C.사원번호, H.이름, C.연봉, G.직급명
+      from 부서관리자 A, 부서 B, 급여 C, 사원 H, 직급 G
+      where A.부서번호 = B.부서번호
+        and B.비고 = 'active'
+        and A.사원번호 = C.사원번호
+        and H.사원번호 = A.사원번호
+        and G.사원번호 = A.사원번호
+        and C.시작일자 < now() and C.종료일자 > now()
+        and A.시작일자 < now() and A.종료일자 > now()
+        and G.시작일자 < now() and G.종료일자 > now()
+      order by C.연봉 desc limit 5) E
+where D.사원번호 = E.사원번호
+  and 입출입구분 = 'O'
+order by E.연봉 desc;
+```
+#### A-2) 인덱스 설정 추가
+- 실행 시간: `0ms`
+```sql
+CREATE INDEX `idx_사원출입기록_사원번호`  ON `tuning`.`사원출입기록` (사원번호) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+```
+
+#### B. 인덱스 설계
+
+
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  <br/>
+   `*` **실행시간을 따로 명시하지 않은 것은 모두** `0ms` <br/>
+   `*` **추가한 img는 EXPLAIN의 결과로 index 설정을 추가하기 전-후 순서로 첨부** <br/>
+   `*` **추가한 index 설정이 없을 때는 하나의 img만 첨부함** <br/>
+  
+<br/>
+  - Coding as a Hobby 와 같은 결과를 반환하세요.
+
+hobby | rate
+----------|-----------
+No|	0.1918
+Yes|	0.8082
+  
+
+```sql
+set @totalCnt = (select count(*) from programmer);
+select hobby, count(hobby)/@totalCnt as rate from programmer group by hobby;
+```
+
+```sql
+CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+```
+
+![img_1.png](src/main/resources/img/hobby-before.png)   ![img.png](src/main/resources/img/hobby-after.png)
+- index 추가하여 group by 시 소트 연산 생략
+
+<br/>
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+select P.id, C.id, H.name
+from programmer P
+       inner join covid C
+       inner join hospital H
+                  on P.id = C.programmer_id and C.hospital_id = H.id;
+```
+
+```sql
+-- index
+CREATE INDEX `idx_hospital_id`  ON `subway`.`hospital` (id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+CREATE UNIQUE INDEX `idx_covid_programmer_id_member_id_hospital_id`  ON `subway`.`covid` (programmer_id, member_id, hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+
+-- pk
+ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+    ADD PRIMARY KEY (`id`);
+;
+ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+    ADD PRIMARY KEY (`id`);
+;
+-- unique 
+ALTER TABLE `subway`.`covid`
+    ADD UNIQUE INDEX `member_id_UNIQUE` (`member_id` ASC);
+;
+ALTER TABLE `subway`.`covid`
+    ADD UNIQUE INDEX `programmer_id_UNIQUE` (`programmer_id` ASC);
+;
+
+```
+![img_2.png](src/main/resources/img/programmer-hospital-before.png)![img_3.png](src/main/resources/img/programmer-hospital-after.png)
+- programmer.id 와 covid.programmer_id 가 모두 unique 설정이 되어 있는데 EXPLAIN 결과에서 non-unique가 뜨는 이유?
+
+
+<br/>
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+select P.id, C.id, H.name, P.hobby, P.dev_type, P.years_coding
+from programmer P
+       inner join covid C
+       inner join hospital H
+                  on P.id = C.programmer_id
+                    and C.hospital_id = H.id
+where P.hobby = 'Yes' or P.years_coding like '0-2%';
+```
+![img_4.png](src/main/resources/img/programmer-hospital2.png)
+- where 조건이 or로 되어 있어 full scan을 피할 수 없으므로 추가 index 설정 하지 않았음.
+
+<br/>
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+- 실행 시간: `125ms`
+```sql
+SELECT C.stay as '머문 기간', COUNT(C.stay) as 집계 FROM covid as C 
+  INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 20 and 29) as M ON M.id = C.member_id
+  INNER JOIN (SELECT id FROM hospital WHERE name = '서울대병원') as H ON H.id = C.hospital_id
+  INNER JOIN (SELECT id, country FROM programmer WHERE country = 'india') as P ON P.id = C.programmer_id
+  GROUP BY C.stay;
+```
+
+- 인덱스 추가 후 실행 시간: `16ms`
+```sql
+   CREATE INDEX `idx_covid_hospital_id_member_id`  ON `subway`.`covid` (hospital_id, member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+```
+![img_5.png](src/main/resources/img/india-hospital-before.png) ![img_7.png](src/main/resources/img/india-hospital-after.png)
+<br/>
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+- 실행 시간: `31ms`
+```sql
+SELECT P.exercise as '운동 횟수', COUNT(P.exercise) as 집계 FROM covid as C 
+  INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 30 and 39) as M ON M.id = C.member_id
+  INNER JOIN (SELECT id FROM hospital WHERE name = '서울대병원') as H ON H.id = C.hospital_id
+  INNER JOIN (SELECT id, exercise FROM programmer WHERE country = 'india') as P ON P.id = C.programmer_id
+  GROUP BY P.exercise;
+```
+![img_6.png](src/main/resources/img/hospital-exercise.png)
+- 추가 index 설정한 사항 없음.
+
+<br/>
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
+- ```/stations```
+- 참고: `http/get-stations-with-page.http` 
