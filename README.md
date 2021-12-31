@@ -146,7 +146,7 @@ order by null
 ;
 ```
 
-![인도](https://user-images.githubusercontent.com/16433283/147816660-174395ea-8c56-41bd-a6db-76be87dbc4c2.png)
+![인도](https://user-images.githubusercontent.com/16433283/147818428-da8e5ecd-7a6d-46d0-ae1a-28cd15e2bb6e.png)
 
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
