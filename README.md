@@ -50,6 +50,39 @@ npm run dev
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```
+select SQL_NO_CACHE e.사원번호, e.이름, s.연봉, p.직급명, m.입출입시간, m.지역, m.입출입구분 from 사원 e
+inner join 
+(select r.사원번호, r.지역, r.입출입구분, max(입출입시간) as 입출입시간 from 사원출입기록 r
+inner join (
+	select s.사원번호, s.연봉, p.직급명 from 부서관리자 dm
+	inner join 부서 d
+	on d.부서번호 = dm.부서번호
+	inner join 급여 s
+	on dm.사원번호 = s.사원번호
+	inner join 직급 p
+	on s.사원번호 = p.사원번호
+	where d.비고 = 'active' 
+	and s.종료일자 = '9999-01-01'
+    and p.종료일자 = '9999-01-01'
+	order by 연봉 desc
+	limit 0, 5
+) t
+on r.사원번호 = t.사원번호
+where r.입출입구분 = 'O'
+group by r.사원번호, r.지역, r.입출입구분) m
+on m.사원번호 = e.사원번호
+inner join 직급 p
+on e.사원번호 = p.사원번호
+inner join 급여 s
+on e.사원번호 = s.사원번호
+where p.종료일자 = '9999-01-01'
+and s.종료일자 = '9999-01-01';
+```
+
+```
+사원출입기록에 사원번호, 지역, 입출입구분 복합칼럼을 가지는 인덱스 추가
+```
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
