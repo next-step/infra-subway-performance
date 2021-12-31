@@ -118,7 +118,8 @@ select SQL_NO_CACHE * from (select case when student = 'Yes, full-time' and hobb
  on t.pid = c.programmer_id
  inner join hospital h
  on c.hospital_id = h.id
- where t.pid is not null;
+ where t.pid is not null
+ order by t.pid;
 ```
 
 ```
