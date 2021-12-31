@@ -126,24 +126,25 @@ hispital 테이블의 id primary key 추가
 
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```
-select SQL_NO_CACHE * from (select case when student = 'Yes, full-time' and hobby = 'YES' then p.id
-			when years_coding = '0-2 years' then p.id
-            else null
-            end as pid, p.hobby, p.dev_type, p.years_coding
- from programmer p) t
- inner join covid c
- on t.pid = c.programmer_id
- inner join hospital h
- on c.hospital_id = h.id
- where t.pid is not null
- order by t.pid;
+select SQL_NO_CACHE 
+c.id, h.name, p.hobby, p.dev_type, p.years_coding 
+from programmer p
+inner join covid c 
+on p.id = c.programmer_id
+inner join hospital h
+on c.hospital_id = h.id
+where p.years_coding = '0-2 years'
+or student = 'Yes, full-time'
+and hobby = 'YES'
+order by p.id;
 ```
 
 ```
 covid 테이블에 programmer_id index 추가
 ```
 
-![프로그래밍이취미](https://user-images.githubusercontent.com/16433283/147815664-6d01a3b1-b7e2-456e-8814-522fd784e327.png)
+![프로그래밍이취미](https://user-images.githubusercontent.com/16433283/147824837-8f36d694-07bb-461e-9e2f-2ab0c3d46cf0.png)
+![image](https://user-images.githubusercontent.com/16433283/147824823-ce90612a-01f8-4da2-83c8-4179d192b7d5.png)
 
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
