@@ -104,6 +104,9 @@ programmer 테이블의 id primary key 추가
 hispital 테이블의 id primary key 추가
 ```
 
+![프로그래머별 병원반환](https://user-images.githubusercontent.com/16433283/147815163-d54c5828-9a6a-4825-979a-a8238f523de8.png)
+
+
 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```
 select SQL_NO_CACHE c.id, h.name, p.hobby, p.dev_type, p.years_coding from programmer p
