@@ -122,7 +122,7 @@ select SQL_NO_CACHE * from (select case when student = 'Yes, full-time' and hobb
 ```
 
 ```
-covid 테이블에 programmer_id 칼럼 index 
+covid 테이블에 programmer_id index 추가
 ```
 
 ![프로그래밍이취미](https://user-images.githubusercontent.com/16433283/147815664-6d01a3b1-b7e2-456e-8814-522fd784e327.png)
