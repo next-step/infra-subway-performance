@@ -95,7 +95,7 @@ select SQL_NO_CACHE hobby, round(count(*) / (select count(*) from programmer p1)
 group by hobby;
 ```
 
-![hobby](https://user-images.githubusercontent.com/16433283/147818844-055b76d8-4485-4a74-8ab5-15143e1dfd69.png)
+![hobby](https://user-images.githubusercontent.com/16433283/147824475-142ea3bc-121a-4174-8497-460ff915cb99.png)
 
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
