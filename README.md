@@ -165,6 +165,7 @@ order by null
 ```
 
 ![인도](https://user-images.githubusercontent.com/16433283/147818428-da8e5ecd-7a6d-46d0-ae1a-28cd15e2bb6e.png)
+![image](https://user-images.githubusercontent.com/16433283/147824872-c832a5b4-6dfe-41c7-8cfa-4633be9d3edb.png)
 
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -184,6 +185,7 @@ order by null
 ```
 
 ![운동](https://user-images.githubusercontent.com/16433283/147816839-52fd35d2-f9fa-42a0-821f-97a5cc75ee37.png)
+![image](https://user-images.githubusercontent.com/16433283/147824887-fbb9f4e6-6940-4053-92ae-04c7c5721e80.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
