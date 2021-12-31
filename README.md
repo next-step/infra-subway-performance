@@ -92,10 +92,12 @@ Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```
 select SQL_NO_CACHE hobby, round(count(*) / (select count(*) from programmer p1) * 100,1) as rate from programmer p
-group by hobby;
+group by hobby
+order by null;
 ```
 
-![hobby](https://user-images.githubusercontent.com/16433283/147824475-142ea3bc-121a-4174-8497-460ff915cb99.png)
+![hobby](https://user-images.githubusercontent.com/16433283/147824510-bee72740-3c1c-4acb-829b-efd96271cdca.png)
+
 
 
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
