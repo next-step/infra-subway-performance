@@ -151,9 +151,21 @@ order by null
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```
-
+select SQL_NO_CACHE p.exercise, count(*) from programmer p
+inner join covid c 
+on p.id = c.programmer_id
+inner join hospital h
+on c.hospital_id = h.id
+inner join member m
+on p.member_id = m.id
+where h.name = '서울대병원'
+and m.age >= 30 and m.age < 40
+group by p.exercise
+order by null
+;
 ```
 
+![운동](https://user-images.githubusercontent.com/16433283/147816839-52fd35d2-f9fa-42a0-821f-97a5cc75ee37.png)
 
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
