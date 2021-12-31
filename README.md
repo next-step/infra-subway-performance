@@ -91,7 +91,7 @@ order by null;
 Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```
-select SQL_NO_CACHE hobby, count(*) / (select count(*) from programmer p1) as rate from programmer p
+select SQL_NO_CACHE hobby, round(count(*) / (select count(*) from programmer p1) * 100,1) as rate from programmer p
 group by hobby;
 ```
 
