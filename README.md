@@ -98,9 +98,25 @@ on c.hospital_id = h.id;
 
 ```
 
-프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```
+covid 테이블의 id primary key 추가
+programmer 테이블의 id primary key 추가
+hispital 테이블의 id primary key 추가
 ```
 
+프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```
+select SQL_NO_CACHE c.id, h.name, p.hobby, p.dev_type, p.years_coding from programmer p
+inner join covid c 
+on p.id = c.programmer_id
+inner join hospital h
+on c.hospital_id = h.id
+where p.years_coding = '0-2 years'
+or student = 'Yes, full-time'
+and hobby = 'YES';
+```
+
+```
 ```
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
