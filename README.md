@@ -88,6 +88,16 @@ order by null;
 ![explain](https://user-images.githubusercontent.com/16433283/147811804-33846fd9-8f57-4a7b-a320-919428b24f5a.png)
 
 
+Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```
+select SQL_NO_CACHE hobby, count(*) / (select count(*) from programmer p1) as rate from programmer p
+group by hobby;
+```
+
+![hobby](https://user-images.githubusercontent.com/16433283/147818844-055b76d8-4485-4a74-8ab5-15143e1dfd69.png)
+
+
 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```
 select c.id, h.name from covid c
