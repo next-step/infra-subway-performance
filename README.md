@@ -84,5 +84,10 @@ and s.종료일자 = '9999-01-01';
 사원출입기록에 사원번호, 지역, 입출입구분 복합칼럼을 가지는 인덱스 추가
 ```
 
+![explain](https://user-images.githubusercontent.com/16433283/147811804-33846fd9-8f57-4a7b-a320-919428b24f5a.png)
+
+
+
+
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
