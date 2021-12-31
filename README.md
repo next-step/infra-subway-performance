@@ -108,10 +108,18 @@ npm run dev
 
    * [X] **프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
    : 이 경우, 이미 충분한 성능이 나와서 인덱스를 추가하지 않음. 과도한 인덱스는 insert, update, delete 성능을 저하시키기 때문
+   
+   [PR 이전]
 
    ![스크린샷 2021-12-30 오전 3 04 41](https://user-images.githubusercontent.com/36442984/147691003-9d419159-9f8e-4255-8aa1-45631e6545d1.png)
 
    ![4](https://user-images.githubusercontent.com/36442984/147690907-a9f0f3a4-b0ff-4841-a6c4-97568cde9eff.png)
+
+   [PR 이후]
+
+   ![스크린샷 2021-12-31 오후 1 23 22](https://user-images.githubusercontent.com/36442984/147803296-d6d442ca-5f95-4651-9d6b-2265b5ad612c.png)
+
+   ![pr](https://user-images.githubusercontent.com/36442984/147803293-8c1abb27-f9cf-4a53-bdba-4b0baf3e894d.png)
 
    * [X] **서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
    
