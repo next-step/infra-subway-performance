@@ -70,22 +70,23 @@ inner join (
 ) t
 on r.사원번호 = t.사원번호
 where r.입출입구분 = 'O'
-group by r.사원번호, r.지역, r.입출입구분) m
+group by r.사원번호, r.지역, r.입출입구분
+order by null) m
 on m.사원번호 = e.사원번호
 inner join 직급 p
 on e.사원번호 = p.사원번호
 inner join 급여 s
 on e.사원번호 = s.사원번호
 where p.종료일자 = '9999-01-01'
-and s.종료일자 = '9999-01-01'
-order by null;
+and s.종료일자 = '9999-01-01';
 ```
 
 ```
 사원출입기록에 사원번호, 지역, 입출입구분 복합칼럼을 가지는 인덱스 추가
 ```
 
-![explain](https://user-images.githubusercontent.com/16433283/147811804-33846fd9-8f57-4a7b-a320-919428b24f5a.png)
+![explain](https://user-images.githubusercontent.com/16433283/147825136-3523cd4f-dcca-4182-a4ad-7038d86340f9.png)
+![image](https://user-images.githubusercontent.com/16433283/147825126-6a2e6078-abcf-40b4-998d-1b6ed8b04e62.png)
 
 
 Coding as a Hobby 와 같은 결과를 반환하세요.
