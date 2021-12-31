@@ -131,8 +131,23 @@ covid 테이블에 programmer_id index 추가
 
 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```
-
+select SQL_NO_CACHE c.stay, count(*) from programmer p
+inner join covid c 
+on p.id = c.programmer_id
+inner join hospital h
+on c.hospital_id = h.id
+inner join member m
+on p.member_id = m.id
+where h.name = '서울대병원'
+and m.age >= 20 and m.age < 30
+and p.country = 'India'
+group by c.stay
+order by null
+;
 ```
+
+![인도](https://user-images.githubusercontent.com/16433283/147816660-174395ea-8c56-41bd-a6db-76be87dbc4c2.png)
+
 
 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```
