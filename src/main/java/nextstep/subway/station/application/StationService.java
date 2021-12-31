@@ -27,8 +27,8 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+    public List<StationResponse> findAllStations(Pageable pageable) {
+        Page<Station> stations = stationRepository.findAll(pageable);
 
         return stations.stream()
                 .map(StationResponse::of)
