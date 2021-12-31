@@ -61,6 +61,28 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @DisplayName("지하철역을 조회한다.")
+    @Test
+    void getStationsPaging() {
+
+        //given
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음("교대역");
+        ExtractableResponse<Response> createResponse4 = 지하철역_등록되어_있음("방배역");
+        ExtractableResponse<Response> createResponse5 = 지하철역_등록되어_있음("구로디지털단지역");
+        ExtractableResponse<Response> createResponse6 = 지하철역_등록되어_있음("신림역");
+        ExtractableResponse<Response> createResponse7 = 지하철역_등록되어_있음("봉천역");
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청(0, 5);
+
+        //then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2, createResponse3, createResponse4
+        , createResponse5));
+    }
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -99,6 +121,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(int offset, int size) {
+        return RestAssured.given().log().all()
+                .when()
+                .get(String.format("/stations?offset=%d&size=%d", offset, size))
+                .then()
+                .log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
