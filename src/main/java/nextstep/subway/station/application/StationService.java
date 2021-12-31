@@ -6,7 +6,8 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +18,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class StationService {
 
-    public static final String ALL_STATIONS_CACHE_KEY = "allStationKey";
-
     private StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
@@ -26,19 +25,22 @@ public class StationService {
     }
 
     @Transactional
-    @CacheEvict(value = "station", key = "#root.target.ALL_STATIONS_CACHE_KEY")
+    @CacheEvict(value = "station", allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
-    @Cacheable(value = "station", key = "#root.target.ALL_STATIONS_CACHE_KEY")
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = findAllStations();
-
+    @Cacheable(value = "station", key =  "#pageable")
+    public List<StationResponse> findAllStationResponses(Pageable pageable) {
+        Page<Station> stations = findAllStations(pageable);
         return stations.stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public Page<Station> findAllStations(Pageable pageable) {
+        return stationRepository.findAll(pageable);
     }
 
     public List<Station> findAllStations() {
@@ -46,7 +48,7 @@ public class StationService {
     }
 
     @Transactional
-    @CacheEvict(value = "station", key = "#root.target.ALL_STATIONS_CACHE_KEY")
+    @CacheEvict(value = "station", allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

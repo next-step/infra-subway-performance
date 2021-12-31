@@ -155,6 +155,263 @@ T: VU iteration을 완료하는데 소요되는 시간보다 큰 시간
 
 ### 2단계 - 조회 성능 개선하기
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+### A. 쿼리 최적화
+
+#### 요구사항
+
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+  (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+- 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+
+#### 단계별 요구사항
+
+1. 쿼리 작성만으로 1s 이하로 반환한다.
+2. 인덱스 설정을 추가하여 50 ms 이하로 반환한다.
+
+
+
+#### 진행과정
+
+> [참고] mac M1 칩 사용 환경
+
+1.쿼리 작성 후 실행
+
+- cost : 14828.04
+- duration time : 2.707 s
+- fetch time : 0.000062 s
+
+<details markdown="1">
+  <summary>초기 실행 계획</summary>
+
+  ![1번쿼리-초기](https://user-images.githubusercontent.com/62507373/147715477-9d09ee87-ee6d-4e97-8483-63d0d05e6f3f.png)
+</details>
+
+
+
+2.개선 대상 파악
+
+- '부서' 테이블이 table full scan됨
+
+  - 전체 중 active가 대부분을 차지함
+
+  - 테이블의 데이터 양 자체가 작아서 (부서번호,비고) 복합키로 거는게 아니면 인덱스 스캔을 해도 테이블 랜덤 액세스를 할 것임
+
+    => 결론 : 테이블 크기가 작고 active 비율이 대부분이라 인덱스 사용하지 않음
+
+- '사원출입기록' 테이블이 table full scan 됨.
+
+  - PK 복합키로 묶여있는 ''사원번호'' 칼럼에 대해 별도 인덱스 생성
+
+3.개선
+
+- '사원출입기록' 테이블에 '사원번호' 칼럼에 인덱스 추가
+
+4.결과 확인
+
+- cost : 13.74
+- duration time : 0.011 s
+- fetch time : 0.000013 s
+
+<details markdown="1">
+  <summary>개선된 실행 계획</summary>
+
+![a-2](https://user-images.githubusercontent.com/62507373/147719612-75b92efe-ef6c-4f5b-a502-a11d5ce76ccd.png)
+</details>
+
+
+> 실행쿼리
+
+```sql
+select ba.사원번호
+     , em.이름
+     , ba.연봉
+     , l.직급명
+     , r.지역
+     , r.입출입구분
+     , r.입출입시간
+from
+  (SELECT bm.사원번호, s.연봉 FROM 부서관리자 as bm
+                               inner join 부서 as b on b.비고 = 'active' and bm.부서번호 = b.부서번호
+                               inner join 급여 as s on s.사원번호 = bm.사원번호 and s.시작일자<=curdate() and s.종료일자 = str_to_date('99990101','%Y%m%d')
+   order by s.연봉 desc
+     limit 0,5) as ba
+    inner join 사원출입기록 as r on ba.사원번호 = r.사원번호
+    inner join 사원 as em on ba.사원번호 = em.사원번호
+    inner join 직급 as l on ba.사원번호 = l.사원번호 and l.시작일자<= curdate() and l.종료일자 = str_to_date('99990101','%Y%m%d');
+```
+
+### B. 인덱스 설계
+
+#### 요구사항
+
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+**1.[Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.**
+
+- 인덱스 설정
+
+  - programmer : hobby 인덱스 생성
+
+- 결과
+
+  - cost : 1
+  - duration time : 0.303 s
+  - fetch time : 0.000019 s
+
+  
+> 실행쿼리
+
+```sql
+select concat(round((st.yes_count*100) / total,1),'%') as 'Yes' 
+, concat(round((st.no_count*100) / total,1),'%') as 'No' 
+from
+(select sum(case when hobby = 'yes' then 1 else 0 end) as yes_count , sum(case when hobby = 'no' then 1 else 0 end) as no_count, sum(1) as total
+ from programmer p) st;
+```
+
+<details markdown="1">
+  <summary>실행 계획</summary>
+
+![b-1](https://user-images.githubusercontent.com/62507373/147715706-1294ed58-3dcd-4c10-bcee-e3685edaf922.png)
+</details>
+
+
+
+**2.프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
+
+- 인덱스 설정
+
+  - covid : 복합키 인덱스(programmer_id, hospital_id)
+
+  - programmer : id에 pk 설정
+
+  - hospital : id에 pk 설정, 복합키 인덱스(id, name)
+- 결과
+
+  - cost : 443969.12
+  - duration time : 0.035 s
+  - fetch time : 0.012s
+
+
+
+> 실행 쿼리
+
+```sql
+select p.id, h.name
+from programmer p 
+inner join covid c on p.id = c.programmer_id
+inner join hospital h on c.hospital_id = h.id;
+```
+
+<details markdown="1">
+  <summary>실행 계획</summary>
+
+![b-2](https://user-images.githubusercontent.com/62507373/147715722-f48fa410-60dc-4c6b-b5ce-4a0591ea3a35.png)
+</details>
+
+
+
+**3.프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
+
+- 인덱스 설정
+
+  - programmer : years_coding에 인덱스 설정
+
+- 결과
+
+  - cost : 109532.17
+
+  - duration time : 0.036 s
+
+  - fetch time : 0.012s
+
+  
+> 실행 쿼리
+
+```sql
+select pr.id, h.name
+from
+(select p.id from programmer p 
+ where p.hobby='yes' or p.years_coding = '0-2 years') pr
+inner join covid c on pr.id = c.programmer_id
+inner join hospital h on c.hospital_id = h.id
+order by pr.id;
+```
+
+<details markdown="1">
+  <summary>실행 계획</summary>
+
+![b-3](https://user-images.githubusercontent.com/62507373/147715731-4b549c48-2277-4d5b-8b20-3a86c38241ee.png)
+</details>
+
+**4.서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
+
+- 인덱스 설정
+
+  - hospital : name 인덱스 설정
+  - programmer: country 인덱스 설정
+  - member: id pk 설정, age 인덱스 설정
+  - covid : (hospital_id, programmer_id, member_id, stay) 복합키 인덱스 설정
+
+- 결과
+
+  - cost : 199294.39
+
+  - duration time : 0.078 s
+
+  - fetch time : 0.000018s
+
+
+> 실행 쿼리
+
+```sql
+select * from covid c
+inner join hospital h on h.name='서울대병원' and c.hospital_id = h.id
+inner join programmer p on c.programmer_id=p.id and p.country='India'
+inner join member m on c.member_id=m.id and m.age>=20 and m.age<=29;
+```
+
+<details markdown="1">
+  <summary>실행 계획</summary>
+
+![b-4](https://user-images.githubusercontent.com/62507373/147715745-fc294a13-63fb-4a45-a222-068151e87068.png)
+</details>
+
+**5.서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+
+1. 인덱스 설정
+  - programmer: exercise 인덱스 설정
+2. 결과
+
+  - cost : 20909.79
+
+  - duration time : 0.075s
+
+  - fetch time : 0.0.000015s
+  
+> 실행 쿼리
+
+```sql
+select p.exercise, count(exercise)
+from covid c
+inner join hospital h on h.name='서울대병원' and c.hospital_id = h.id
+inner join member m on c.member_id=m.id and m.age>=30 and m.age<=39
+inner join programmer p on c.programmer_id=p.id
+group by p.exercise
+order by null;
+```
+
+<details markdown="1">
+  <summary>실행 계획</summary>
+
+![b-5](https://user-images.githubusercontent.com/62507373/147715757-1d4e3897-9ff9-4177-8955-27610a4259c9.png)
+</details>
+
 
 2. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- 지하철역 조회
+  https://jerry92k-subway.n-e.kr/stations?page=1&size=2
+- 노선 조회
+  https://jerry92k-subway.n-e.kr/lines?page=1&size=2
