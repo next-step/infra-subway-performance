@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
@@ -38,10 +39,11 @@ public class StationRepositoryTest {
         stationRepository.saveAll(saveStations);
 
         //when
-        List<Station> stations = stationRepository.findByIdGreaterThanEqualOrderById(1L, pageRequest);
+        List<Station> stations = stationRepository.findByIdGreaterThanEqualOrderById(4L, pageRequest);
+        stationRepository.count();
 
         //then
-        assertThat(stations.size()).isEqualTo(size);
-        assertThat(stations).containsExactly(강남역, 교대역, 신대방역);
+        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations).containsExactly(신림역, 구로디지털단지역);
     }
 }

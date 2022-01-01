@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationsResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,16 +30,14 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations(Integer offset, Integer size) {
+    public StationsResponse findAllStations(Integer offset, Integer size) {
 
-        if(offset != null && size != null) {
+        if(offset != null) {
             return findStations(offset, size);
         }
 
         List<Station> stations = stationRepository.findAll();
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return new StationsResponse(size, (long)stations.size(), stations);
     }
 
     public void deleteStationById(Long id) {
@@ -53,12 +53,12 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findStations(Integer offset, Integer size) {
-        final PageRequest pageRequest = PageRequest.of(offset, size);
+    public StationsResponse findStations(Integer offset, Integer size) {
+        final PageRequest pageRequest = PageRequest.of(0, size);
         final long id = offset * size + 1;
         List<Station> stations = stationRepository.findByIdGreaterThanEqualOrderById(id, pageRequest);
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        long count = stationRepository.count();
+
+        return new StationsResponse(size, count, stations);
     }
 }

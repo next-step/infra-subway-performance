@@ -3,7 +3,9 @@ package nextstep.subway.station.ui;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationsResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,8 @@ public class StationController {
     }
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StationResponse>> showStations(@RequestParam(required = false) Integer offset,
-                                                              @RequestParam(required = false) Integer size) {
+    public ResponseEntity<StationsResponse> showStations(@RequestParam(required = false) Integer offset,
+                                                         @RequestParam(required = false, defaultValue = "5") Integer size) {
 
         return ResponseEntity.ok().body(stationService.findAllStations(offset, size));
     }
