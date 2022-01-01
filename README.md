@@ -176,7 +176,15 @@ FROM   covid cv
          ON cv.hospital_id = hp.id
 ORDER  BY user.id; 
          
-covid 테이블의 programmer_id 칼럼 인덱스 설정     
+covid 테이블의 programmer_id 칼럼 인덱스 설정 
+
+programmer 테이블은 아래 4가지 방법의 인덱스 중에서 가장 쿼리 속도가 빨랐던 1번을 선택하였습니다.(동시에 만들었을 때 인덱스도 1번 hobby 칼럼을 탐)
+-> image/B_3_visual_explain.png
+-> B_3_programmer_Index.png
+1) programmer 테이블의 [hobby] 칼럼 인덱스 설정  
+2) programmer 테이블의 [hobby > years_coding] 와 [hobby > student] 순서로 하는 인덱스 설정 
+3) programmer 테이블의 [hobby > years_coding > student] 순으로 하는 인덱스 설정
+4) programmer 테이블의 [hobby > student > years_coding] 순으로 하는 인덱스 설정
 ```
 
 
