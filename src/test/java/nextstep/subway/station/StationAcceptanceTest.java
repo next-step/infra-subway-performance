@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,28 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @DisplayName("지하철역을 조회한다.")
+    @Test
+    void getStationsPaging() {
+
+        //given
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음("교대역");
+        ExtractableResponse<Response> createResponse4 = 지하철역_등록되어_있음("방배역");
+        ExtractableResponse<Response> createResponse5 = 지하철역_등록되어_있음("구로디지털단지역");
+        ExtractableResponse<Response> createResponse6 = 지하철역_등록되어_있음("신림역");
+        ExtractableResponse<Response> createResponse7 = 지하철역_등록되어_있음("봉천역");
+
+        //when
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청(0, 5);
+
+        //then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2, createResponse3, createResponse4
+        , createResponse5));
+    }
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -101,6 +124,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(int offset, int size) {
+        return RestAssured.given().log().all()
+                .when()
+                .get(String.format("/stations?offset=%d&size=%d", offset, size))
+                .then()
+                .log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
@@ -134,7 +166,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList("stations", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
