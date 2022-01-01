@@ -227,7 +227,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList("content", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
 
