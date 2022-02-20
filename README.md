@@ -44,8 +44,29 @@ npm run dev
 ### 1단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
-
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+  - 실행 쿼리(실행시간 : 0.287sec)
+    ```
+    SELECT ear.사원번호, e.이름, top_pay.연봉, r.직급명, ear.지역, ear.입출입구분, ear.입출입시간
+    FROM (
+       SELECT om.사원번호, s.연봉 
+          FROM 부서관리자 om
+             JOIN 부서 o ON o.비고 = "active" AND om.부서번호 = o.부서번호
+             JOIN 급여 s ON om.사원번호 = s.사원번호 AND s.종료일자 > now()
+         WHERE om.종료일자 > now()
+         ORDER BY s.연봉 DESC
+         LIMIT 5
+     ) top_pay
+        JOIN 사원 e ON e.사원번호 = top_pay.사원번호
+        JOIN 직급 r ON r.사원번호 = top_pay.사원번호 and r.종료일자 > now()
+        JOIN 사원출입기록 ear ON ear.사원번호 = top_pay.사원번호 AND ear.입출입구분 = "O"
+    ```
+  - 쿼리 결과
+    
+    ![query_result](./images/query_result.png)
+  - 실행계획 
+    ![explain_result](./images/explain_result.png)
 
 ---
 
