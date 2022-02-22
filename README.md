@@ -47,6 +47,37 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+``` SQL
+SELECT
+  admin.사원번호
+  , employee.이름
+  , pay.연봉
+  , position.직급명
+  , visit_log.입출입시간
+  , visit_log.지역
+  , visit_log.입출입구분
+FROM (
+  SELECT dpt_sub.부서번호
+  FROM tuning.부서 AS dpt_sub
+  WHERE dpt_sub.비고 = "Active"
+) AS dpt
+JOIN tuning.부서관리자 AS admin
+  ON admin.부서번호 = dpt.부서번호
+  AND admin.종료일자 = "9999-01-01"
+JOIN tuning.사원 AS employee
+  ON employee.사원번호 = admin.사원번호
+JOIN tuning.직급 AS position
+  ON position.사원번호 = admin.사원번호
+  AND position.종료일자 = "9999-01-01"
+JOIN tuning.급여 AS pay
+  ON pay.사원번호 = admin.사원번호
+  AND pay.종료일자 = "9999-01-01"
+JOIN tuning.사원출입기록 AS visit_log
+  ON visit_log.사원번호 = admin.사원번호
+  AND visit_log.입출입구분 = "O"
+ORDER BY pay.연봉 DESC, visit_log.지역;
+```
+
 ---
 
 ### 2단계 - 인덱스 설계
