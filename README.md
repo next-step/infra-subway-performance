@@ -122,47 +122,80 @@ npm run dev
     where p.hobby = "yes" and (p.student like "yes%" or p.years_coding = "0-2 years")
     ```
   - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-    - 쿼리실행 (22.574sec)
+    - 쿼리실행 (16.416sec)
       ```
-      select c.stay, count(*) from covid c
-          JOIN hospital h ON h.name = "서울대병원"
-          JOIN member m ON m.id = c.member_id and m.age >= 20 and m.age < 30
-          JOIN programmer p ON p.member_id = m.id and p.country = "india"
+      select c.stay, count(*) from covid c,
+        (select id from hospital where name = "서울대병원") h,
+        (select id from member JOIN (select member_id from programmer where country = "india") p ON p.member_id = id where age >= 20 and age < 30) m
+      WHERE c.hospital_id = h.id and c.member_id = m.id
       group by c.stay
       ```
-    - unique 설정 (15.623sec)
+    - unique 설정 (1.336sec)
       ```
       ALTER TABLE `subway`.`hospital` 
       ADD UNIQUE INDEX `name_UNQUE` (`name` ASC);
       ```
-    - member PK 설정 (0.367sec) 
+    - member PK 설정 (0.401sec) 
       ```
       ALTER TABLE `subway`.`member` 
       CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
       ADD PRIMARY KEY (`id`),
       ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
       ```
-    - programmer PK 설정 (0.326)
+    - programmer PK 설정 (0.353)
       ```
       ALTER TABLE `subway`.`programmer` 
       CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
       ADD PRIMARY KEY (`id`),
       ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
       ```
-    - programmer index 설정 (0.207)
+    - programmer index 설정 (0.209)
       ```
       ALTER TABLE `subway`.`programmer` 
       ADD INDEX `I_contry` (`country` ASC);
+      ```
+    - member index 설정 (0.199)
+      ```
+      ALTER TABLE `subway`.`member` 
+      ADD INDEX `I_age` (`age` ASC);
+      ```
+    - member index 설정 (0.153)
+      ```
+      ALTER TABLE `subway`.`member` 
+      ADD INDEX `I_age` (`age` ASC);
+      ```
+    - 쿼리 수정 (0.038sec)
+      ```
+      select c.stay, count(*) from member m
+        JOIN (select stay, member_id from covid where hospital_id = (select id from hospital where name = "서울대병원")) c ON c.member_id = m.id
+        and c.member_id IN (select member_id from programmer where country = "india")
+      where m.age >= 20 and m.age < 30
+      group by c.stay
+      
+      -- 인덱스 추가
+      ALTER TABLE `subway`.`covid` 
+      ADD INDEX `I_hospital_id` (`hospital_id` ASC);
       ```
 
   - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
     - 쿼리 실행 (0.480sec)
       ```
-      select p.exercise, count(*) from covid c
-          JOIN hospital h ON h.name = "서울대병원"
-          JOIN member m ON m.id = c.member_id and m.age >= 30 and m.age < 40
-          JOIN programmer p ON p.member_id = m.id
+      select p.exercise, count(p.exercise) 
+      from covid c
+        JOIN (select id from hospital where name = "서울대병원") h ON h.id = c.hospital_id
+        JOIN (select id from member m where m.age >= 30 and m.age < 40) m ON m.id = c.member_id
+        JOIN programmer p ON p.member_id = m.id
       group by p.exercise
+      ```
+    - programmer memberId unique (0.196)
+      ```
+      ALTER TABLE `subway`.`programmer` 
+      ADD UNIQUE INDEX `member_id_UNIQUE` (`member_id` ASC);
+      ```
+    - covid index 추가 (0.074sec)
+      ```
+      ALTER TABLE `subway`.`covid` 
+      ADD INDEX `I_member_id_hospital_id` (`member_id` ASC, `hospital_id` ASC);
       ```
 ---
 
