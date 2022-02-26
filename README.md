@@ -49,18 +49,17 @@ npm run dev
 
 <img width="1644" alt="CleanShot 2022-02-26 at 14 20 12@2x" src="https://user-images.githubusercontent.com/37217320/155830330-55d0b287-a26f-4582-b553-07e3c6e8dd65.png">
 
+<img width="1762" alt="CleanShot 2022-02-26 at 16 49 44@2x" src="https://user-images.githubusercontent.com/37217320/155835069-3801e637-61ba-47df-8670-c70b28579abf.png">
+
 
 ```mysql
 select u.사원번호, u.이름, u.연봉, u.직급명, h.입출입시간, h.지역, h.입출입구분
 from 사원출입기록 h
          right join (select a.사원번호, u.이름, r.직급명, a.부서번호, p.연봉
                      from 부서관리자 a
-                              join (select *
+                              join (select p1.사원번호, p1.연봉
                                     from 급여 p1
-                                    where 시작일자 = (select max(p2.시작일자)
-                                                  from 급여 p2
-                                                  where p2.사원번호 = p1.사원번호
-                                                  group by p2.사원번호)) p
+                                    where p1.종료일자 > now()) p
                                    on a.사원번호 = p.사원번호
                               join 사원 u
                                    on a.사원번호 = u.사원번호
@@ -68,18 +67,15 @@ from 사원출입기록 h
                                    on a.부서번호 = d.부서번호
                               join (select r1.사원번호, r1.직급명
                                     from 직급 r1
-                                    where r1.시작일자 =
-                                          (select max(r2.시작일자)
-                                           from 직급 r2
-                                           where r2.사원번호 = r1.사원번호
-                                           group by r2.사원번호)) as r
+                                    where r1.종료일자 > now()) as r
                                    on r.사원번호 = u.사원번호
                      where d.비고 = 'active'
                      order by p.연봉 desc
                      limit 5) u
                     on h.사원번호 = u.사원번호
 where h.입출입구분 = 'O'
-order by u.연봉 desc, h.지역
+order by u.연봉 desc, h.지역;
+
 ```
 
 
