@@ -47,9 +47,9 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-<img width="1644" alt="CleanShot 2022-02-26 at 14 20 12@2x" src="https://user-images.githubusercontent.com/37217320/155830330-55d0b287-a26f-4582-b553-07e3c6e8dd65.png">
+<img width="1629" alt="CleanShot 2022-02-26 at 17 03 19@2x" src="https://user-images.githubusercontent.com/37217320/155835455-62e43e00-8f17-48ce-a8de-a5c1e08c0a4d.png">
 
-<img width="1762" alt="CleanShot 2022-02-26 at 16 49 44@2x" src="https://user-images.githubusercontent.com/37217320/155835069-3801e637-61ba-47df-8670-c70b28579abf.png">
+<img width="1738" alt="CleanShot 2022-02-26 at 17 04 29@2x" src="https://user-images.githubusercontent.com/37217320/155835493-c132884b-b8a7-499e-a163-3a63868232b7.png">
 
 
 ```mysql
@@ -70,11 +70,13 @@ from 사원출입기록 h
                                     where r1.종료일자 > now()) as r
                                    on r.사원번호 = u.사원번호
                      where d.비고 = 'active'
+                       and a.종료일자 > now()
                      order by p.연봉 desc
                      limit 5) u
                     on h.사원번호 = u.사원번호
 where h.입출입구분 = 'O'
 order by u.연봉 desc, h.지역;
+
 
 ```
 
