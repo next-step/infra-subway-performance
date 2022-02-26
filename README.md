@@ -47,6 +47,40 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+<img width="1629" alt="CleanShot 2022-02-26 at 17 03 19@2x" src="https://user-images.githubusercontent.com/37217320/155835455-62e43e00-8f17-48ce-a8de-a5c1e08c0a4d.png">
+
+<img width="1738" alt="CleanShot 2022-02-26 at 17 04 29@2x" src="https://user-images.githubusercontent.com/37217320/155835493-c132884b-b8a7-499e-a163-3a63868232b7.png">
+
+
+```mysql
+select u.사원번호, u.이름, u.연봉, u.직급명, h.입출입시간, h.지역, h.입출입구분
+from 사원출입기록 h
+         right join (select a.사원번호, u.이름, r.직급명, a.부서번호, p.연봉
+                     from 부서관리자 a
+                              join (select p1.사원번호, p1.연봉
+                                    from 급여 p1
+                                    where p1.종료일자 > now()) p
+                                   on a.사원번호 = p.사원번호
+                              join 사원 u
+                                   on a.사원번호 = u.사원번호
+                              join 부서 d
+                                   on a.부서번호 = d.부서번호
+                              join (select r1.사원번호, r1.직급명
+                                    from 직급 r1
+                                    where r1.종료일자 > now()) as r
+                                   on r.사원번호 = u.사원번호
+                     where d.비고 = 'active'
+                       and a.종료일자 > now()
+                     order by p.연봉 desc
+                     limit 5) u
+                    on h.사원번호 = u.사원번호
+where h.입출입구분 = 'O'
+order by u.연봉 desc, h.지역;
+
+
+```
+
+
 ---
 
 ### 2단계 - 인덱스 설계
