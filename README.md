@@ -87,6 +87,30 @@ order by u.연봉 desc, h.지역;
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+
+#### [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+ ```mysql
+select years_coding,
+       ROUND((count(*) / (select count(*)
+                          from programmer
+                          where years_coding <> 'NA')) * 100, 1) as percentage
+from programmer
+where years_coding <> 'NA'
+group by years_coding
+order by years_coding * 1;
+```
+
+인덱스 적용
+```
+ create index programmer_years_coding_index
+    on programmer (years_coding);
+```
+
+performance: 4.637ms -> 629ms
+
+
+
+
 ---
 
 ### 추가 미션
