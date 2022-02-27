@@ -89,7 +89,8 @@ order by u.연봉 desc, h.지역;
 
 
 #### [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
- ```mysql
+(629ms)
+```mysql
 select years_coding,
        ROUND((count(*) / (select count(*)
                           from programmer
@@ -109,7 +110,43 @@ order by years_coding * 1;
 performance: 4.637ms -> 629ms
 
 
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+(3.17s)
+```mysql
+select c.id, h.name
+from covid c
+         join programmer p
+              on c.programmer_id = p.id
+         join hospital h
+              on c.hospital_id = h.id
+group by c.id, h.name;
+```
 
+인덱스 적용
+performance: 120s after (time-out) -> 3.17s
+
+```mysql
+alter table programmer
+add constraint programmer_pk
+primary key (id);
+
+alter table hospital
+add constraint hospital_pk
+primary key (id);
+
+alter table covid
+add constraint covid_pk
+primary key (id);
+
+
+create index covid_programmer_id_hospital_id_index
+on covid (programmer_id, hospital_id);
+```
+
+
+개선 포인트:
+- programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17s 
+- programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s
 
 ---
 
