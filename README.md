@@ -84,6 +84,186 @@ ORDER BY pay.연봉 DESC, visit_log.지역;
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+   * Coding as a Hobby 와 같은 결과를 반환하세요.
+      
+      **[Query - befor indexing]**
+      ```sql
+      SELECT
+        ROUND(COUNT(CASE WHEN hobby = "Yes" THEN 1 END) / COUNT(*) * 100, 1) AS Yes,
+        ROUND(COUNT(CASE WHEN hobby = "No" THEN 1 END) / COUNT(*) * 100, 1) AS No
+      FROM subway.programmer;
+
+      Result(Duration / Fetch Time): 1.041 sec / 0.0000050 sec
+      ```
+
+      **[Query - after applying the index]**
+      ```sql
+      ALTER TABLE `subway`.`programmer` 
+      ADD INDEX `IDX_HOBBY` (`hobby` ASC);
+
+      Result(Duration / Fetch Time): 0.052 sec / 0.0000069 sec
+      ```
+
+   * 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+      **[Query - befor indexing]**
+      ```sql
+      SELECT
+        programmer.member_id
+          , covid.id
+          , hospital.name
+      FROM subway.programmer AS programmer
+      JOIN subway.covid AS covid
+        ON covid.member_id = programmer.member_id
+      JOIN subway.hospital AS hospital
+        ON hospital.id = covid.hospital_id
+      ;
+
+      # 50,000 rows
+      Result: Error Code: 2013. Lost connection to MySQL server during query
+      ```
+      
+      **[Query - after applying the index]**
+      ```sql
+      ALTER TABLE `subway`.`covid` 
+      ADD INDEX `IDX_MEMBER_ID` (`member_id` ASC);
+      ;
+
+      ALTER TABLE `subway`.`hospital` 
+      ADD UNIQUE INDEX `UQ_IDX_ID` (`id` ASC);
+      ;
+
+      # 50,000 rows
+      Result(Duration / Fetch Time): 0.016 sec / 1.038 sec
+      ```
+
+   * 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+      
+      **[Query - befor indexing]**
+      ```sql
+      SELECT
+        covid.id
+          , hospital.name
+          , user.Hobby
+          , user.DevType
+          , user.YearsCoding
+      FROM (
+        SELECT
+            filtered_programmer.member_id AS member_id
+            , filtered_programmer.hobby AS Hobby
+            , filtered_programmer.dev_type AS DevType
+            , filtered_programmer.years_coding AS YearsCoding
+          FROM subway.programmer AS filtered_programmer
+          WHERE
+            filtered_programmer.hobby = "Yes"
+            AND filtered_programmer.student LIKE "Yes%"
+            AND filtered_programmer.years_coding = "0-2 years"
+      ) AS user
+      JOIN subway.covid AS covid
+        ON covid.member_id = user.member_id
+      JOIN subway.hospital AS hospital
+        ON hospital.id = covid.hospital_id
+      ;
+
+      # 3,610 rows
+      Result(Duration / Fetch Time): 0.121 sec / 2.453 sec
+      ```
+      
+      **[Query - after applying the index]**
+      ```sql
+      ALTER TABLE `subway`.`programmer` 
+      ADD INDEX `IDX_STUDENT` (`student` ASC),
+      ADD INDEX `IDX_YEARS_CODING` (`years_coding` ASC);
+      ;
+
+      # 3,610 rows
+      Result(Duration / Fetch Time): 0.029 sec / 0.418 sec
+      ```
+
+   * 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+      **[Query - before indexing]**
+      ```sql
+      SELECT
+        covid.stay AS Stay
+          , COUNT(*) AS Count
+      FROM (
+        SELECT 
+          covid.stay
+              , covid.member_id
+        FROM (
+          SELECT *
+          FROM subway.covid
+          WHERE covid.hospital_id = (SELECT id FROM subway.hospital AS hospital WHERE hospital.name = "서울대병원")
+        ) AS covid
+        JOIN subway.member ON member.id = covid.member_id AND member.age >= 20 AND member.age < 30
+      ) AS covid
+      WHERE covid.member_id IN (SELECT member_id FROM programmer WHERE country = "India")
+      GROUP BY covid.stay
+      ;
+
+      # 10 rows
+      Result(Duration / Fetch Time): 2.192 sec / 0.0000079 sec
+      ```
+
+      **[Query - after applying the index]**
+
+      ```sql
+      ALTER TABLE `subway`.`member` 
+      CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+      ADD PRIMARY KEY (`id`) ,
+      ADD INDEX `IDX_AGE` (`age` ASC)
+      ;
+
+      ALTER TABLE `subway`.`hospital` 
+      CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+      ADD PRIMARY KEY (`id`) ,
+      ADD UNIQUE INDEX `UQ_IDX_ID` (`id` ASC)
+      ;
+
+      ALTER TABLE `subway`.`programmer` 
+      ADD INDEX `IDX_COUNTRY` (`country` ASC) ,
+      ADD INDEX `IDX_MEMBER_ID` (`member_id` ASC)
+      ;
+
+      ALTER TABLE `subway`.`covid` 
+      ADD INDEX `IDX_STAY` (`stay` ASC) ,
+      ADD INDEX `IDX_HOSPITAL_ID` (`hospital_id` ASC)
+      ;
+
+      # 10 rows
+      Result(Duration / Fetch Time): 0.036 sec / 0.0000079 sec
+      ```
+
+   * 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+      **[Query - no additional indexes]**
+
+      ```sql
+      SELECT
+        user.exercise AS Exercise
+          , COUNT(*) AS Count
+      FROM (
+        SELECT 
+          programmer.exercise
+              , programmer.member_id
+        FROM (
+          SELECT covid.member_id
+          FROM subway.covid
+          WHERE covid.hospital_id = (
+            SELECT id FROM subway.hospital AS hospital WHERE hospital.name = "서울대병원"
+          )
+        ) AS covid
+        JOIN subway.member ON member.id = covid.member_id AND member.age >= 30 AND member.age < 40
+        JOIN subway.programmer ON programmer.member_id = covid.member_id
+      ) AS user
+      GROUP BY user.exercise
+      ;
+
+      # 5 rows
+      Result(Duration / Fetch Time): 0.034 sec / 0.0000081 sec
+      ```
+      
 ---
 
 ### 추가 미션
