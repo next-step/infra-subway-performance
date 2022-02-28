@@ -146,7 +146,60 @@ on covid (programmer_id, hospital_id);
 
 개선 포인트:
 - programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17s 
-- programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s
+- programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s (미적용)
+
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```mysql
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer p
+         join covid c on p.id = c.programmer_id
+         join hospital h on c.hospital_id = h.id
+where hobby = 'Yes'
+  and (student like 'Yes%' || years_coding = '0-2 years')
+order by p.id;
+
+```
+
+인덱스 적용: 10.9s -> 4.16s
+<img width="608" alt="CleanShot 2022-03-01 at 00 04 29@2x" src="https://user-images.githubusercontent.com/37217320/156006150-a9bb2048-e0e6-4a9b-8dbc-031cebd2006a.png">
+
+
+```mysql
+ create index programmer_hobby_index
+    on programmer (hobby);
+```
+
+시도 1: Or조건은 Index를 안타는 것으로 알고 있어서, union all로 개선을 해보면 어떨까?
+ - 결과: 6.379초
+ - union 과정에서, `Full Table Scan` 이 결국 일어나는 것으로 보인다.
+<img width="1563" alt="CleanShot 2022-02-28 at 23 58 19@2x" src="https://user-images.githubusercontent.com/37217320/156005186-f8c7cc8d-4652-421b-8478-48eabc828e7e.png">
+
+
+```mysql
+
+create index programmer_student_hobby_index
+    on programmer (hobby, student);
+
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from (select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+      from programmer p
+               join covid c on p.id = c.programmer_id
+               join hospital h on c.hospital_id = h.id
+      where hobby = 'Yes'
+        and student like 'Yes%'
+      union all
+      select c2.id, h2.name, p2.hobby, p2.dev_type, p2.years_coding
+      from programmer p2
+               join covid c2 on p2.id = c2.programmer_id
+               join hospital h2 on c2.hospital_id = h2.id
+      where p2.hobby = 'Yes'
+        and years_coding = '0-2 years') p
+         join covid c on p.id = c.programmer_id
+         join hospital h on c.hospital_id = h.id
+where hobby = 'Yes'
+order by p.id;
+```
+
 
 ---
 
