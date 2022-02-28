@@ -19,22 +19,30 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
@@ -45,12 +53,12 @@ npm run dev
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역,
+  입출입구분, 입출입시간)
 
 <img width="1629" alt="CleanShot 2022-02-26 at 17 03 19@2x" src="https://user-images.githubusercontent.com/37217320/155835455-62e43e00-8f17-48ce-a8de-a5c1e08c0a4d.png">
 
 <img width="1738" alt="CleanShot 2022-02-26 at 17 04 29@2x" src="https://user-images.githubusercontent.com/37217320/155835493-c132884b-b8a7-499e-a163-3a63868232b7.png">
-
 
 ```mysql
 select u.사원번호, u.이름, u.연봉, u.직급명, h.입출입시간, h.지역, h.입출입구분
@@ -80,16 +88,16 @@ order by u.연봉 desc, h.지역;
 
 ```
 
-
 ---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-
 #### [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+
 (629ms)
+
 ```mysql
 select years_coding,
        ROUND((count(*) / (select count(*)
@@ -102,6 +110,7 @@ order by years_coding * 1;
 ```
 
 인덱스 적용
+
 ```
  create index programmer_years_coding_index
     on programmer (years_coding);
@@ -109,9 +118,12 @@ order by years_coding * 1;
 
 performance: 4.637ms -> 629ms
 
+<img width="346" alt="CleanShot 2022-03-01 at 00 40 50@2x" src="https://user-images.githubusercontent.com/37217320/156012293-f2ce6b7c-36d1-455d-a279-740b4492d87c.png">
 
 #### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
 (3.17s)
+
 ```mysql
 select c.id, h.name
 from covid c
@@ -122,47 +134,51 @@ from covid c
 group by c.id, h.name;
 ```
 
-인덱스 적용
-performance: 120s after (time-out) -> 3.17s
+인덱스 적용 performance: 120s after (time-out) -> 3.17s
 
 ```mysql
 alter table programmer
-add constraint programmer_pk
-primary key (id);
+    add constraint programmer_pk
+        primary key (id);
 
 alter table hospital
-add constraint hospital_pk
-primary key (id);
+    add constraint hospital_pk
+        primary key (id);
 
 alter table covid
-add constraint covid_pk
-primary key (id);
+    add constraint covid_pk
+        primary key (id);
 
 
 create index covid_programmer_id_hospital_id_index
-on covid (programmer_id, hospital_id);
+    on covid (programmer_id, hospital_id);
 ```
 
-
 개선 포인트:
-- programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17s 
+
+- programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17s
 - programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s (미적용)
 
+<img width="571" alt="CleanShot 2022-03-01 at 00 41 54@2x" src="https://user-images.githubusercontent.com/37217320/156012451-e7d9439a-b210-4f6b-b1d6-0c7ccbd861bd.png">
+
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+(4.16s)
+
 ```mysql
 select c.id, h.name, p.hobby, p.dev_type, p.years_coding
 from programmer p
          join covid c on p.id = c.programmer_id
          join hospital h on c.hospital_id = h.id
 where hobby = 'Yes'
-  and (student like 'Yes%' || years_coding = '0-2 years')
+  and (student <> 'No' || years_coding = '0-2 years')
 order by p.id;
 
 ```
 
 인덱스 적용: 10.9s -> 4.16s
-<img width="608" alt="CleanShot 2022-03-01 at 00 04 29@2x" src="https://user-images.githubusercontent.com/37217320/156006150-a9bb2048-e0e6-4a9b-8dbc-031cebd2006a.png">
 
+<img width="608" alt="CleanShot 2022-03-01 at 00 04 29@2x" src="https://user-images.githubusercontent.com/37217320/156006150-a9bb2048-e0e6-4a9b-8dbc-031cebd2006a.png">
 
 ```mysql
  create index programmer_hobby_index
@@ -170,10 +186,10 @@ order by p.id;
 ```
 
 시도 1: Or조건은 Index를 안타는 것으로 알고 있어서, union all로 개선을 해보면 어떨까?
- - 결과: 6.379초
- - union 과정에서, `Full Table Scan` 이 결국 일어나는 것으로 보인다.
-<img width="1563" alt="CleanShot 2022-02-28 at 23 58 19@2x" src="https://user-images.githubusercontent.com/37217320/156005186-f8c7cc8d-4652-421b-8478-48eabc828e7e.png">
 
+- 결과: 6.379초
+- union 과정에서, `Full Table Scan` 이 결국 일어나는 것으로 보인다.
+  <img width="1563" alt="CleanShot 2022-02-28 at 23 58 19@2x" src="https://user-images.githubusercontent.com/37217320/156005186-f8c7cc8d-4652-421b-8478-48eabc828e7e.png">
 
 ```mysql
 
@@ -200,9 +216,9 @@ where hobby = 'Yes'
 order by p.id;
 ```
 
-
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-()
+
+(1.354s)
 
 ```mysql
 select c.stay, count(*)
@@ -233,6 +249,10 @@ create index programmer_country_index
 성능 개선: 120s after -> 1.354s
 
 <img width="754" alt="CleanShot 2022-03-01 at 00 32 56@2x" src="https://user-images.githubusercontent.com/37217320/156011007-390e18da-ab38-4573-ab0b-503f994dda14.png">
+
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+(0.289s)
 
 ```mysql
 select p.exercise, count(*)
