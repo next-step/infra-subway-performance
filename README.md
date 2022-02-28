@@ -205,7 +205,7 @@ order by p.id;
 ()
 
 ```mysql
-select c.stay
+select c.stay, count(*)
 from member m
          join programmer p on m.id = p.member_id
          join covid c on p.id = c.programmer_id
@@ -233,6 +233,22 @@ create index programmer_country_index
 성능 개선: 120s after -> 1.354s
 
 <img width="754" alt="CleanShot 2022-03-01 at 00 32 56@2x" src="https://user-images.githubusercontent.com/37217320/156011007-390e18da-ab38-4573-ab0b-503f994dda14.png">
+
+```mysql
+select p.exercise, count(*)
+from member m
+         join programmer p on m.id = p.member_id
+         join covid c on p.id = c.programmer_id
+         join hospital h on h.id = c.hospital_id
+where m.age in (30, 31, 32, 33, 34, 35, 36, 37, 38, 39)
+  and h.id = 9
+group by p.exercise;
+```
+
+성능 개선: - -> 0.289s (위과정 설정 인덱스 사용)
+
+<img width="671" alt="CleanShot 2022-03-01 at 00 38 04@2x" src="https://user-images.githubusercontent.com/37217320/156011829-b7b34597-6890-4803-b6f5-6c88f60c4d8e.png">
+
 
 ---
 
