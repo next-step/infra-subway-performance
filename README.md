@@ -96,7 +96,7 @@ order by u.연봉 desc, h.지역;
 
 #### [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
 
-(629ms)
+(0.629s)
 
 ```mysql
 select years_coding,
@@ -116,7 +116,7 @@ order by years_coding * 1;
     on programmer (years_coding);
 ```
 
-performance: 4.637ms -> 629ms
+performance: 4.637s -> 629s
 
 <img width="346" alt="CleanShot 2022-03-01 at 00 40 50@2x" src="https://user-images.githubusercontent.com/37217320/156012293-f2ce6b7c-36d1-455d-a279-740b4492d87c.png">
 
