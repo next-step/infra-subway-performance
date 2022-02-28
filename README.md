@@ -201,6 +201,39 @@ order by p.id;
 ```
 
 
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+()
+
+```mysql
+select c.stay
+from member m
+         join programmer p on m.id = p.member_id
+         join covid c on p.id = c.programmer_id
+         join hospital h on h.id = c.hospital_id
+where m.age in (20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
+  and p.country = 'India'
+  and h.id = 9
+group by stay;
+
+```
+
+```mysql
+alter table member
+    add constraint member_pk
+        primary key (id);
+
+create index member_age_index
+    on member (age);
+
+create index programmer_country_index
+    on programmer (country);
+
+```
+
+성능 개선: 120s after -> 1.354s
+
+<img width="754" alt="CleanShot 2022-03-01 at 00 32 56@2x" src="https://user-images.githubusercontent.com/37217320/156011007-390e18da-ab38-4573-ab0b-503f994dda14.png">
+
 ---
 
 ### 추가 미션
