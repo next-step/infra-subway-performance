@@ -126,11 +126,11 @@ performance: 4.637s -> 0.629s
 
 ```mysql
 select c.id, h.name
-from covid c
-         join programmer p
-              on c.programmer_id = p.id
-         join hospital h
-              on c.hospital_id = h.id
+from (select id, hospital_id, programmer_id from covid) c
+       join programmer p
+            on c.programmer_id = p.id
+       join hospital h
+            on c.hospital_id = h.id;
 ```
 
 ~~인덱스 적용 performance: 120s after (time-out) -> 3.17s~~
