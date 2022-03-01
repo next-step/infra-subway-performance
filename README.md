@@ -172,7 +172,7 @@ from programmer p
          join covid c on p.id = c.programmer_id
          join hospital h on c.hospital_id = h.id
 where hobby = 'Yes'
-  and (student <> 'No' || years_coding = '0-2 years')
+  and (student like 'Yes%' || years_coding = '0-2 years')
 order by p.id;
 
 ```
