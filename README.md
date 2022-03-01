@@ -116,13 +116,13 @@ order by years_coding * 1;
     on programmer (years_coding);
 ```
 
-performance: 4.637s -> 629s
+performance: 4.637s -> 0.629s
 
 <img width="346" alt="CleanShot 2022-03-01 at 00 40 50@2x" src="https://user-images.githubusercontent.com/37217320/156012293-f2ce6b7c-36d1-455d-a279-740b4492d87c.png">
 
 #### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
-(3.17s)
+(1.67s)
 
 ```mysql
 select c.id, h.name
@@ -131,10 +131,10 @@ from covid c
               on c.programmer_id = p.id
          join hospital h
               on c.hospital_id = h.id
-group by c.id, h.name;
 ```
 
-인덱스 적용 performance: 120s after (time-out) -> 3.17s
+~~인덱스 적용 performance: 120s after (time-out) -> 3.17s~~
+리뷰 반영: 3.17s -> 1.67s
 
 ```mysql
 alter table programmer
@@ -156,10 +156,11 @@ create index covid_programmer_id_hospital_id_index
 
 개선 포인트:
 
-- programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17s
-- programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s (미적용)
+~~- programmer_id, hospital_id 두가지를 한 Index로 지정: 3.17~~
+~~- programmer_id, hospital_id를 다르게 두 Index 지정: 3.352s (미적용)~~
+- programmer_id, hospital_id 두가지를 한 Index로 지정: 1.67s
 
-<img width="571" alt="CleanShot 2022-03-01 at 00 41 54@2x" src="https://user-images.githubusercontent.com/37217320/156012451-e7d9439a-b210-4f6b-b1d6-0c7ccbd861bd.png">
+<img width="556" alt="CleanShot 2022-03-01 at 16 34 05@2x" src="https://user-images.githubusercontent.com/37217320/156124984-32e2a8ef-59ba-4e0b-aa06-b3105c8971ef.png">
 
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
