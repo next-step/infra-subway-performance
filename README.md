@@ -68,6 +68,7 @@ from (select 사원번호,
                         from 부서
                         where 부서.비고 = 'Active'
                     )
+                    and 부서관리자.종료일자 = '9999-01-01'
                 )
                   and 종료일자 = '9999-01-01'
                 order by 연봉 desc
