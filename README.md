@@ -83,7 +83,7 @@ order by 사원번호
 ;
 ```
 
-m1 기준 실행속도 : 1s 805ms
+m1 기준 실행속도 : 1s 810ms
 
 ![step1](/images/step1.png)
 
