@@ -47,16 +47,26 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 ```
+explain
 select *
-from (select 사원번호,
-             (select 이름 from 사원 where 사원.사원번호 = 사원출입기록.사원번호)                          as 이름,
-             (select 연봉 from 급여 where 급여.사원번호 = 사원출입기록.사원번호 and 종료일자 = '9999-01-01')  as 연봉,
-             (select 직급명 from 직급 where 직급.사원번호 = 사원출입기록.사원번호 and 종료일자 = '9999-01-01') as 직급명,
+from (select 사원.사원번호    as 사원번호,
+             사원.이름      as 이름,
+             급여.연봉      as 연봉,
+             직급.직급명     as 직급명,
              입출입구분,
              지역,
              max(입출입시간) as 입출입시간
-      from 사원출입기록
-      where 사원번호 in (
+      from 사원출입기록,
+           사원,
+           급여,
+           직급
+      where 사원출입기록.사원번호 = 사원.사원번호
+        and 사원출입기록.사원번호 = 급여.사원번호
+        and 사원출입기록.사원번호 = 직급.사원번호
+        and 급여.종료일자 = '9999-01-01'
+        and 직급.종료일자 = '9999-01-01'
+        and 사원출입기록.입출입구분 = 'O'
+        and 사원출입기록.사원번호 in (
           select *
           from (select 사원번호
                 from 급여
@@ -68,22 +78,21 @@ from (select 사원번호,
                         from 부서
                         where 부서.비고 = 'Active'
                     )
-                    and 부서관리자.종료일자 = '9999-01-01'
+                      and 부서관리자.종료일자 = '9999-01-01'
                 )
                   and 종료일자 = '9999-01-01'
                 order by 연봉 desc
                 limit 5
                ) a
       )
-      group by 사원번호, 입출입구분, 지역
+      group by 사원.사원번호, 사원.이름, 급여.연봉, 직급.직급명, 입출입구분, 지역
       order by null
      ) as 결과
-where 입출입구분 = 'O'
 order by 사원번호
 ;
 ```
 
-m1 기준 실행속도 : 1s 810ms
+m1 기준 실행속도 : 1s 809ms
 
 ![step1](/images/step1.png)
 
