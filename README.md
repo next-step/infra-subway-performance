@@ -47,6 +47,46 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```
+SELECT result.사원번호, em.이름, result.연봉, rank.직급명, result.지역, result.입출입구분, result.입출입시간
+FROM (
+	SELECT top5.사원번호, max(top5.연봉) AS 연봉, his.지역, his.입출입구분, max(his.입출입시간) AS 입출입시간
+	FROM (
+		SELECT man.사원번호, sal.연봉
+		FROM 부서 dep
+
+		INNER JOIN 부서관리자 man
+			ON man.부서번호 = dep.부서번호
+			AND man.종료일자 > CURRENT_DATE
+
+		INNER JOIN 급여 sal
+			ON sal.사원번호 = man.사원번호
+			AND sal.종료일자 > CURRENT_DATE
+
+		WHERE dep.비고 = 'active'
+		ORDER BY sal.연봉 DESC
+		LIMIT 5
+	) top5
+    
+	INNER JOIN 사원출입기록 his
+		ON his.사원번호 = top5.사원번호
+		AND his.입출입구분 = 'O'
+    
+    GROUP BY 사원번호, 지역
+) result
+
+INNER JOIN 사원 em
+	ON em.사원번호 = result.사원번호
+
+INNER JOIN 직급 rank
+	ON rank.사원번호 = result.사원번호
+	AND rank.종료일자 > CURRENT_DATE;
+```
+
+결과 : 1.763s (M1 기준)
+
+![step1](./images/step1_result.png)
+
 ---
 
 ### 2단계 - 인덱스 설계
