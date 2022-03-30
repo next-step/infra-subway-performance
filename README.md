@@ -46,6 +46,24 @@ npm run dev
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```sql
+SELECT DRI.사원번호, HR.이름, DRI.연봉, RK.직급명, AR.입출입시간, AR.지역, AR.입출입구분
+  FROM 사원출입기록 AR
+  JOIN (
+	SELECT DISTINCT PY.사원번호, MAX(PY.연봉) AS 연봉
+	  FROM 급여 PY
+	  JOIN 부서관리자 BA ON (BA.사원번호 = PY.사원번호)
+	  JOIN 부서 DM ON (DM.부서번호 = BA.부서번호)
+	  WHERE PY.종료일자 = '9999-01-01'
+		AND 'ACTIVE' = upper(DM.비고)
+	  GROUP BY PY.사원번호
+	  ORDER BY MAX(PY.연봉) DESC
+	  LIMIT 5
+    ) DRI ON (DRI.사원번호 = AR.사원번호)
+  JOIN 사원 HR ON (HR.사원번호 = DRI.사원번호)
+  JOIN 직급 RK ON (RK.사원번호 = DRI.사원번호)
+ ORDER BY HR.사원번호;
+```
 
 ---
 
