@@ -47,6 +47,23 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+- M1 환경입니다.
+
+```
+select top5OfSalary.사번, 사.이름, top5OfSalary.연봉, 직.직급명, 출입기록.입출입시간, 출입기록.지역, 출입기록.입출입구분
+from (select Active관리자.사원번호 as 사번, max(급.연봉) as 연봉
+      from (select 부서번호 from 부서 where 비고 = 'Active') activeDepart
+               join (select 사원번호, 부서번호 from 부서관리자 where 종료일자 = '9999-01-01') Active관리자
+                    on activeDepart.부서번호 = Active관리자.부서번호
+               join 급여 급 on Active관리자.사원번호 = 급.사원번호
+      group by Active관리자.사원번호
+      order by 연봉 desc
+      limit 5) top5OfSalary
+         join 사원 사 on top5OfSalary.사번 = 사.사원번호
+         join (select 사원번호, 직급명 from 직급 where 직급명 = 'Manager') 직 on top5OfSalary.사번 = 직.사원번호
+         join (select * from 사원출입기록 where 입출입구분 = 'O') 출입기록 on top5OfSalary.사번 = 출입기록.사원번호;
+```
+
 ---
 
 ### 2단계 - 인덱스 설계
