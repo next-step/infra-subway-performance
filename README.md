@@ -53,9 +53,9 @@ SELECT emp.사원번호,
        emp.이름,
        salary_2.연봉,
        po.직급명,
-       ar.입출입시간,
        ar.지역,
-       ar.입출입구분
+       ar.입출입구분,
+       ar.입출입시간
 FROM   사원출입기록 AS ar
        JOIN (SELECT salary_1.사원번호,
                     Max(salary_1.연봉) AS 연봉
