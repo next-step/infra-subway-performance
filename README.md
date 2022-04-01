@@ -92,7 +92,71 @@ m1 기준 실행속도 : 1s 809ms
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```
+select c.id, h.name
+from programmer p,
+     covid c,
+     hospital h
+where p.id = c.programmer_id
+  and h.id = c.hospital_id
+```
+![step2](https://user-images.githubusercontent.com/56009774/161279560-69898ce6-d230-4c1f-9ebc-39884b4b5b52.png)
+![step2](https://user-images.githubusercontent.com/56009774/161279556-5a6d994f-bc8f-4a1f-9e5e-553f69e0b247.png)
+![step2](https://user-images.githubusercontent.com/56009774/161279535-115210e8-4534-4be1-8fc5-9629937ddd79.png)
 
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer p,
+     covid c,
+     hospital h
+where p.id = c.programmer_id
+  and h.id = c.hospital_id
+  and ((student like 'Yes%' and hobby = 'Yes') or (years_coding = '0-2 years'))
+```
+![step2](https://user-images.githubusercontent.com/56009774/161279982-f09d18da-6a7d-4ad0-8ced-bab3637c344a.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280004-6c01fc64-7bd8-4c42-bee0-f508228add43.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280008-5baa23e3-3bb8-4728-8c9d-3f606c25f375.png)
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```
+select c.stay, count(c.stay)
+from programmer p,
+     covid c,
+     hospital h,
+     member m
+where p.id = c.programmer_id
+  and h.id = c.hospital_id
+  and m.id = p.member_id
+  and p.country = 'India'
+  and h.name = '서울대병원'
+  and m.age in (20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
+group by c.stay
+order by null  
+```
+![step2](https://user-images.githubusercontent.com/56009774/161280191-72292f7f-73ee-423e-826e-bcf1495a7410.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280198-40a963ae-7917-4fc3-97c2-ff2fc23bb126.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280201-78f35229-f8f0-4541-bf62-bbb0f49c0efd.png)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```
+select p.exercise, count(p.exercise)
+from programmer p,
+     covid c,
+     hospital h,
+     member m
+where p.id = c.programmer_id
+  and h.id = c.hospital_id
+  and m.id = p.member_id
+  and h.name = '서울대병원'
+  and m.age in (30, 31, 32, 33, 34, 35, 36, 37, 38, 39)
+group by p.exercise
+order by null
+```
+![step2](https://user-images.githubusercontent.com/56009774/161280323-aee143c8-851a-478b-a0af-1ccf1aff9103.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280337-a2ea14f4-5128-4f85-8842-01044dad5d42.png)
+![step2](https://user-images.githubusercontent.com/56009774/161280345-20c89ac3-4e46-47d8-9db0-117efb6ffaa6.png)
 ---
 
 ### 추가 미션
