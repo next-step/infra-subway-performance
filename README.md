@@ -85,7 +85,7 @@ order by null
 
 m1 기준 실행속도 : 1s 809ms
 
-![step1](/images/step1.png)
+![step1](https://user-images.githubusercontent.com/56009774/161280703-314fd095-9716-49ac-be05-262c5621e7a1.png)
 
 ---
 
