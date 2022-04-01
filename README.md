@@ -135,8 +135,14 @@ npm run dev
        ```
        - 2차 결과
        ![이미지](./query-test/step02-2-5.png)
-     - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+     - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+     ```sql
+     ALTER TABLE `programmer`
+       ADD INDEX `exercise` (`exercise`);
 
+     SELECT p.exercise, COUNT(p.exercise) AS count FROM hospital h inner join covid c on h.id=c.hospital_id and h.name="서울대병원" INNER JOIN programmer p ON p.id=c.programmer_id GROUP BY p.exercise;
+     ```
+     ![이미지](./query-test/step02-2-6.png)
 ---
 
 ### 추가 미션
