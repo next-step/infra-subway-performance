@@ -46,39 +46,39 @@ npm run dev
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-    ```sql
-    SET @end_date = '9999-01-01';
-    
-    SELECT emp.사원번호,
-           emp.이름,
-           salary_2.연봉,
-           po.직급명,
-           ar.지역,
-           ar.입출입구분,
-           ar.입출입시간
-    FROM   사원출입기록 AS ar
-           JOIN (SELECT salary_1.사원번호,
-                        Max(salary_1.연봉) AS 연봉
-                 FROM   급여 AS salary_1
-                        INNER JOIN 부서관리자 AS dm
-                                ON dm.사원번호 = salary_1.사원번호
-                                   AND dm.종료일자 = @end_date
-                        INNER JOIN 부서 AS dep
-                                ON dep.부서번호 = dm.부서번호
-                 WHERE  dep.비고 = 'Active'
-                        AND salary_1.종료일자 = @end_date
-                 GROUP  BY 사원번호
-                 ORDER  BY 2 DESC
-                 LIMIT  5) AS salary_2
-             ON salary_2.사원번호 = ar.사원번호
-           INNER JOIN 사원 AS emp
-                   ON emp.사원번호 = ar.사원번호
-           INNER JOIN 직급 AS po
-                   ON po.사원번호 = ar.사원번호
-                      AND po.종료일자 = @end_date
-    WHERE  po.종료일자 = @end_date
-           AND ar.입출입구분 = 'O'; 
-    ```
+```sql
+SET @end_date = '9999-01-01';
+
+SELECT emp.사원번호,
+       emp.이름,
+       salary_2.연봉,
+       po.직급명,
+       ar.지역,
+       ar.입출입구분,
+       ar.입출입시간
+FROM   사원출입기록 AS ar
+       JOIN (SELECT salary_1.사원번호,
+                    Max(salary_1.연봉) AS 연봉
+             FROM   급여 AS salary_1
+                    INNER JOIN 부서관리자 AS dm
+                            ON dm.사원번호 = salary_1.사원번호
+                               AND dm.종료일자 = @end_date
+                    INNER JOIN 부서 AS dep
+                            ON dep.부서번호 = dm.부서번호
+             WHERE  dep.비고 = 'Active'
+                    AND salary_1.종료일자 = @end_date
+             GROUP  BY 사원번호
+             ORDER  BY 2 DESC
+             LIMIT  5) AS salary_2
+         ON salary_2.사원번호 = ar.사원번호
+       INNER JOIN 사원 AS emp
+               ON emp.사원번호 = ar.사원번호
+       INNER JOIN 직급 AS po
+               ON po.사원번호 = ar.사원번호
+                  AND po.종료일자 = @end_date
+WHERE  po.종료일자 = @end_date
+       AND ar.입출입구분 = 'O'; 
+```
 
 ---
 
