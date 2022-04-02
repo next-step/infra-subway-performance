@@ -102,11 +102,13 @@ CREATE INDEX programmer_id on programmer (id);
 covid의 hospital_id, programmer_id에 인덱스를 추가했고, programmer의 id에 인덱스를 추가했다. 조인 조건이 되는 id에 인덱스를 추가했기 때문에 실행계획에서 ref가
 나왔다. 성능은 110ms 전후로 측정됐다. 아래는 최종쿼리이다.
 
+리뷰반영) 피드백을 반영하여 100개 단위로 끊는 페이징 쿼리를 추가했다.
+
 ```sql
 select programmer_id, hospital.name
 from hospital
          join covid c on hospital.id = c.hospital_id
-         join programmer p on c.programmer_id = p.id;
+         join programmer p on c.programmer_id = p.id limit 0, 100;
 ``` 
 
 #### Q3 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -126,15 +128,17 @@ create index years_coding on programmer (years_coding);
 
 하지만, 인덱스 추가했다고 100ms 이하로 성능이 개선되진 않았고 1초대로 측정됐다.
 
+리뷰반영) 쿼리작성이 잘못되어 있어서 수정했고, 페이징쿼리도 추가.
+
 ```sql
-select p.id, h.name
+select p.id, p.hobby, p.years_coding, p.student, h.name
 from hospital h
          join covid c on h.id = c.hospital_id
-         join (select id
+         join (select id, hobby, years_coding, student
                from programmer
-               where hobby = 'Yes' and years_coding = '0-2 years'
-                  or dev_type = 'Student'
-               order by id) p on c.programmer_id = p.id;
+               where hobby = 'Yes'
+                 and (years_coding = '0-2 years' or student like 'yes%')
+               order by id) p on c.programmer_id = p.id limit 0, 100;
 ```
 
 #### Q4 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
@@ -161,13 +165,23 @@ CREATE INDEX member_age on member (age);
 
 아래 최종 쿼리이고, 성능은 200ms로 개선했다.
 
+리뷰반영)
+리뷰대로 복합인덱스 및 country에 대한 인덱스를 추가했다.
+
+```sql
+create index programmer on programmer (country);
+create index covid_hosipital_id_programmer_id on covid (hospital_id, programmer_id); 
+```
+
+최종 쿼리 수정후 100ms 성능.
+
 ```sql
 select c.stay, count(c.stay) as '서울대병원에 다닌 20대 India 환자들 병원에서 머문 기간'
 from (select * from hospital where id = 9) as h
          join covid c on h.id = c.hospital_id
          join (select id from member where age between 20 and 29) m on m.id = c.member_id
          join (select id from programmer where country = 'India') p on c.programmer_id = p.id
-group by c.stay;
+group by c.stay
 ```
 
 #### Q5 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
@@ -176,10 +190,11 @@ group by c.stay;
 쿼리는 아래와 같으면 성능은 300ms 전후가 측정된다.
 
 ```sql
-select exercise, count(exercise) as '서울대병원에 다닌 30대 환자들 운동 횟수' from (select * from hospital where id=9) as h
-join covid c on h.id = c.hospital_id
-join (select id from member where age between 30 and 39) m on m.id = c.member_id
-join programmer p on c.programmer_id = p.id
+select exercise, count(exercise) as '서울대병원에 다닌 30대 환자들 운동 횟수'
+from (select * from hospital where id = 9) as h
+         join covid c on h.id = c.hospital_id
+         join (select id from member where age between 30 and 39) m on m.id = c.member_id
+         join programmer p on c.programmer_id = p.id
 group by exercise;
 ```
 
