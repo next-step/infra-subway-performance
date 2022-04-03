@@ -54,15 +54,18 @@ SELECT DRI.사원번호, HR.이름, DRI.연봉, RK.직급명, AR.입출입시간
 	  FROM 급여 PY
 	  JOIN 부서관리자 BA ON (BA.사원번호 = PY.사원번호)
 	  JOIN 부서 DM ON (DM.부서번호 = BA.부서번호)
-	  WHERE PY.종료일자 = '9999-01-01'
-		AND 'ACTIVE' = upper(DM.비고)
+	  WHERE 'ACTIVE' = upper(DM.비고)
+		AND PY.종료일자 = '9999-01-01'
+	    AND BA.종료일자 = '9999-01-01'
 	  GROUP BY PY.사원번호
 	  ORDER BY MAX(PY.연봉) DESC
 	  LIMIT 5
     ) DRI ON (DRI.사원번호 = AR.사원번호)
   JOIN 사원 HR ON (HR.사원번호 = DRI.사원번호)
   JOIN 직급 RK ON (RK.사원번호 = DRI.사원번호)
- ORDER BY HR.사원번호;
+ WHERE RK.직급명 = 'Manager'
+   AND AR.입출입구분 = 'O'
+ ORDER BY DRI.연봉 DESC;
 ```
 
 ---
