@@ -155,8 +155,6 @@ group by c.stay;
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```
-
-
 select p.exercise,p.id
 from subway.programmer as p
 join 
