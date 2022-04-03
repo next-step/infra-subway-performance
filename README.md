@@ -47,7 +47,33 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
   ```
-  SELECT huge.`사원번호`, g.`이름`, huge.`연봉`, f.`직급명`, d.`입출입시간`, d.`지역`, d.`입출입구분` FROM (SELECT a.`사원번호`, a.`연봉` FROM `급여` a INNER JOIN `부서관리자` b ON a.`사원번호`=b.`사원번호` INNER JOIN `부서` c ON c.`부서번호`=b.`부서번호` WHERE NOW() BETWEEN a.`시작일자` AND a.`종료일자` AND NOW() BETWEEN b.`시작일자` AND b.`종료일자` AND c.`비고`='active' ORDER by a.`연봉` DESC LIMIT 5) AS huge INNER JOIN `사원출입기록` d ON huge.`사원번호`=d.`사원번호` AND d.`입출입구분`='O' INNER JOIN `직급` f ON huge.`사원번호`=f.`사원번호` AND NOW() BETWEEN f.`시작일자` AND f.`종료일자` INNER JOIN `사원` g ON huge.`사원번호`=g.`사원번호` ORDER BY huge.`연봉` desc;
+  SELECT 
+    huge.`사원번호`, 
+    g.`이름`, 
+    huge.`연봉`, 
+    f.`직급명`, 
+    d.`입출입시간`, 
+    d.`지역`, 
+    d.`입출입구분` 
+  FROM 
+    (SELECT 
+      a.`사원번호`, 
+      a.`연봉`
+    FROM 
+      `급여` a 
+      INNER JOIN `부서관리자` b ON a.`사원번호`=b.`사원번호` 
+      INNER JOIN `부서` c ON c.`부서번호`=b.`부서번호` 
+    WHERE 
+      NOW() 
+        BETWEEN a.`시작일자` AND a.`종료일자` 
+      AND NOW() 
+        BETWEEN b.`시작일자` AND b.`종료일자` 
+      AND c.`비고`='active' 
+      ORDER by a.`연봉` DESC LIMIT 5) AS huge 
+    INNER JOIN `사원출입기록` d ON huge.`사원번호`=d.`사원번호` AND d.`입출입구분`='O' 
+    INNER JOIN `직급` f ON huge.`사원번호`=f.`사원번호` AND NOW() BETWEEN f.`시작일자` AND f.`종료일자` 
+    INNER JOIN `사원` g ON huge.`사원번호`=g.`사원번호` 
+    ORDER BY huge.`연봉` desc;
   ```
   <br>![image](./query-test/active-huge.png)
 
