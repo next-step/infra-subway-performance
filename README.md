@@ -80,6 +80,30 @@ group by 사원출입기록.사원번호, 사원출입기록.지역;
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+아래와 같이 인덱스를 설정해줬습니다.
+```
+ALTER TABLE subway.hospital
+MODIFY COLUMN id bigint(20) PRIMARY KEY;
+
+ALTER TABLE subway.covid
+MODIFY COLUMN id bigint(20) PRIMARY KEY;
+
+ALTER TABLE subway.programmer
+MODIFY COLUMN id bigint(20) PRIMARY KEY;
+
+ALTER TABLE subway.covid ADD INDEX stay (stay, id);
+
+ALTER TABLE subway.hospital ADD INDEX name ( name, id );
+
+ALTER TABLE subway.programmer ADD INDEX country ( country,id );
+
+ALTER TABLE subway.member ADD INDEX age ( age, id );
+
+ALTER TABLE subway.covid ADD INDEX programmer_id ( programmer_id, id );
+
+ALTER TABLE subway.programmer ADD INDEX p_where ( years_coding_prof, student );
+```
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 ```
 SELECT hobby, count(hobby) * 100 / (select count(*) from subway.programmer ) as ratio
@@ -99,11 +123,11 @@ on h.id = c.hospital_id;
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```
-SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding, p.years_coding_prof, p.student FROM subway.covid as c
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding FROM subway.covid as c
 join subway.hospital as h
-on h.id = c.id
+on h.id = c.hospital_id
 join subway.programmer as p
-on p.id = h.id
+on p.id = c.programmer_id
 where (p.years_coding_prof = '0-2 years' or p.student != 'No') and !(p.years_coding_prof = 'NA' and p.student = 'NA')
 order by p.id;
 ```
@@ -131,22 +155,7 @@ group by c.stay;
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```
-ALTER TABLE subway.hospital
-MODIFY COLUMN id bigint(20) PRIMARY KEY;
 
-ALTER TABLE subway.covid
-MODIFY COLUMN id bigint(20) PRIMARY KEY;
-
-ALTER TABLE subway.programmer
-MODIFY COLUMN id bigint(20) PRIMARY KEY;
-
-ALTER TABLE subway.covid ADD INDEX stay (stay, id);
-
-ALTER TABLE subway.hospital ADD INDEX name ( name, id );
-
-ALTER TABLE subway.programmer ADD INDEX country ( country,id );
-
-ALTER TABLE subway.member ADD INDEX age ( age, id );
 
 select p.exercise,p.id
 from subway.programmer as p
