@@ -151,7 +151,14 @@ npm run dev
        ```
        - 결과
        ```sql
-       SELECT c.stay, count(c.stay) FROM hospital h inner join covid c on h.id=c.hospital_id and h.name="서울대병원" INNER JOIN programmer p ON p.id=c.programmer_id AND p.country='India' INNER JOIN member m ON m.id=c.member_id AND floor(m.age/10)=2 GROUP BY c.stay;
+       SELECT 
+         c.stay, 
+         count(c.stay) 
+       FROM 
+         hospital h inner join covid c on h.id=c.hospital_id and h.name="서울대병원" 
+         INNER JOIN programmer p ON p.id=c.programmer_id AND p.country='India' 
+         INNER JOIN member m ON m.id=c.member_id AND floor(m.age/10)=2 
+       GROUP BY c.stay;
        ```
        ![이미지](./query-test/step02-2-4.png)
        -> 100ms로 줄지 않아 플랜 조회
@@ -166,7 +173,14 @@ npm run dev
      ALTER TABLE `programmer`
        ADD INDEX `exercise` (`exercise`);
 
-     SELECT p.exercise, COUNT(p.exercise) AS count FROM hospital h inner join covid c on h.id=c.hospital_id and h.name="서울대병원" INNER JOIN programmer p ON p.id=c.programmer_id GROUP BY p.exercise;
+     SELECT 
+       p.exercise, 
+       COUNT(p.exercise) AS count 
+     FROM 
+       hospital h 
+       inner join covid c on h.id=c.hospital_id and h.name="서울대병원" 
+       INNER JOIN programmer p ON p.id=c.programmer_id 
+     GROUP BY p.exercise;
      ```
      ![이미지](./query-test/step02-2-6.png)
 ---
