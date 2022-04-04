@@ -98,6 +98,7 @@ select covid.id, hospital.name
 from hospital
          inner join covid on  hospital.id = covid.hospital_id
          inner join programmer  on covid.programmer_id = programmer.id
+    limit 10 offset 5000
 
 --- 튜닝
 create index idx_hosptial_id
@@ -108,11 +109,13 @@ create index idx_programmer_id
 
 ALTER TABLE programmer
     ADD PRIMARY KEY (id)
-```
 
-1000개 조회 기준
-* 튜닝전 : 0.7 sec 이상 / 0.4 sec 이상 
-* 튜닝후 : 0.006 sec 미만 / 0.003 미만
+--- 리뷰 반영 튜닝
+create index idx_id_name
+    on subway.hospital (id, `name`);
+```
+* 튜닝전 : 5.412 sec 이상 / 0.000007 sec 
+* 튜닝후 : 0.027 sec 미만 / 0.000007 sec  
 
 ---
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -165,6 +168,9 @@ ALTER TABLE `subway`.`member`
 ALTER TABLE `subway`.`covid`
     ADD INDEX `idx_programmer_id_hospital_id_stay` (`programmer_id` ASC, `hospital_id` ASC, stay ASC);
 
+-- 리뷰 반영 튜닝 
+ALTER TABLE `subway`.`hospital`
+    ADD UNIQUE INDEX `idx_hospital_id_name` (`id` ASC, `name` ASC);
 ```
 * 튜닝전: 무제한 속도 걸림
 * 튜닝후: 0.032sec / 0.0000007 sec
