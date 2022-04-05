@@ -86,6 +86,85 @@ WHERE 직급.종료일자 >= CURDATE();
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+-  Coding as a Hobby 와 같은 결과를 반환하세요
+
+``` sql
+CREATE INDEX idx_user_hobby ON programmer (hobby); 
+SELECT 
+	ROUND((SELECT COUNT(*) FROM programmer WHERE hobby = 'yes')/(SELECT COUNT(*) FROM programmer) * 100 ,1) AS 'YES', 
+	ROUND((SELECT COUNT(*) FROM programmer WHERE hobby = 'no')/(SELECT COUNT(*) FROM programmer) * 100, 1) AS 'NO';
+```
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+``` sql
+ALTER TABLE covid ADD PRIMARY KEY (id);
+ALTER TABLE hospital ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD PRIMARY KEY (id);
+CREATE INDEX idx_name ON hospital (name);
+
+SELECT covid.id, hospital.name
+FROM hospital
+JOIN covid ON hospital.id = covid.hospital_id
+JOIN programmer ON programmer.id = covid.programmer_id;
+```
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+``` sql
+ALTER TABLE covid ADD PRIMARY KEY (id);
+ALTER TABLE hospital ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD PRIMARY KEY (id);
+CREATE INDEX idx_programmer_hospital_id  ON covid (programmer_id, hospital_id);
+
+SELECT covid.id, hospital.name, programmer.hobby, programmer.dev_type, programmer.years_coding
+FROM programmer
+JOIN covid ON  programmer.id = covid.programmer_id
+JOIN hospital ON hospital.id = covid.hospital_id
+WHERE (hobby = 'yes' AND student LIKE 'yes%') OR years_coding = '0-2 years';
+```
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+``` sql
+ALTER TABLE covid ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD PRIMARY KEY (id);
+ALTER TABLE member ADD PRIMARY KEY (id);
+CREATE INDEX idx_stay  ON covid (hospital_id,stay);
+CREATE INDEX idx_age  ON member (age);
+CREATE INDEX idx_country  ON programmer (country);
+CREATE INDEX idx_name  ON hospital (name);
+
+
+EXPLAIN
+SELECT covid.stay, COUNT(*) as COUNT
+FROM covid
+JOIN member on covid.member_id = member.id
+JOIN programmer on covid.programmer_id = programmer.id
+JOIN hospital on covid.hospital_id = hospital.id
+WHERE member.age BETWEEN 20 AND 29
+AND programmer.country = 'india'
+AND hospital.name = '서울대병원'
+GROUP BY covid.stay;
+```
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+``` sql
+ALTER TABLE covid ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD PRIMARY KEY (id);
+ALTER TABLE member ADD PRIMARY KEY (id);
+CREATE INDEX idx_stay  ON covid (programmer_id,member_id);
+CREATE INDEX idx_age  ON member (age);
+CREATE INDEX idx_exercise  ON programmer (exercise);
+CREATE INDEX idx_name  ON hospital (name);
+
+
+EXPLAIN
+SELECT programmer.exercise, COUNT(*) as COUNT
+FROM programmer
+JOIN covid ON covid.programmer_id = programmer.id
+JOIN member ON covid.member_id = member.id
+JOIN hospital ON covid.hospital_id = hospital.id
+WHERE member.age between 30 AND 39 AND hospital.name = '서울대병원'
+GROUP BY programmer.exercise;
+```
 ---
 
 ### 추가 미션
