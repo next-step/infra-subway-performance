@@ -92,6 +92,9 @@ MODIFY COLUMN id bigint(20) PRIMARY KEY;
 ALTER TABLE subway.programmer
 MODIFY COLUMN id bigint(20) PRIMARY KEY;
 
+ALTER TABLE subway.member
+MODIFY COLUMN id bigint(20) PRIMARY KEY;
+
 ALTER TABLE subway.covid ADD INDEX stay (stay, id);
 
 ALTER TABLE subway.hospital ADD INDEX name ( name, id );
@@ -103,6 +106,11 @@ ALTER TABLE subway.member ADD INDEX age ( age, id );
 ALTER TABLE subway.covid ADD INDEX programmer_id ( programmer_id, id );
 
 ALTER TABLE subway.programmer ADD INDEX p_where ( years_coding_prof, student );
+
+ALTER TABLE subway.programmer ADD INDEX hobby ( hobby, id);
+
+ALTER TABLE subway.covid ADD INDEX hospital_id ( hospital_id, id);
+
 ```
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 ```
