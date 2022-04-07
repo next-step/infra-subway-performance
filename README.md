@@ -67,10 +67,11 @@ npm run dev
   CREATE INDEX `IDX_MEMBER__AGE` ON subway.member (`age`);
   ALTER TABLE subway.member add constraint PK_MEMBER__ID primary key (`id`);
   
-  CREATE INDEX `IDX_COVID__HOSPITAL_ID__MEMBER_ID` ON subway.covid (`hospital_id`, `member_id`);
+  CREATE INDEX `IDX_COVID__HOSPITAL_ID` ON subway.covid (`hospital_id`);
   ALTER TABLE subway.covid add constraint PK_COVID__ID primary key (`id`);
   
   CREATE INDEX `IDX_PROGRAMMER__MEMBER_ID` ON subway.programmer (`member_id`);
+  CREATE INDEX `IDX_PROGRAMMER__COUNTRY` ON subway.programmer (`country`);  
   ALTER TABLE subway.programmer add constraint PK_PROGRAMMER__ID primary key (`id`);
   
   ALTER TABLE subway.hospital add constraint PK_HOSPITAL__ID primary key (`id`);
@@ -84,47 +85,46 @@ npm run dev
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     ```
-    select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+    select c.id, h.name, p.hobby
     from subway.programmer p
-    inner join subway.covid c on p.member_id = c.member_id
+    inner join subway.covid c on p.id = c.id
     inner join subway.hospital h on h.id = c.hospital_id;
     ```
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
     ```
-    select c.id, h.name, p.hobby, p.dev_type, p.years_coding
-    from subway.programmer p
-    inner join subway.covid c on p.member_id = c.member_id
-    inner join subway.hospital h on h.id = c.hospital_id
-    where years_coding = '0-2 years'
-    or (hobby = 'Yes' and student like 'Yes%');
+  select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+  from subway.programmer p
+  inner join subway.covid c on p.id = c.id
+  inner join subway.hospital h on h.id = c.hospital_id
+  where (p.years_coding = '0-2 years' and p.student = 'No')
+  or (p.hobby = 'Yes' and p.student like 'Yes%');
     ```
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     ```
-    select c.stay, count(*) count
-    from subway.programmer p
-    inner join subway.covid c on p.member_id = c.member_id
-    inner join subway.hospital h on h.id = c.hospital_id
-    inner join subway.member m on m.id = p.member_id
-    where h.id = 9
-    and m.age >= 20 
-    and m.age < 30
-    and p.country = 'India'
-    group by c.stay;
+  select c.stay, count(*) count
+  from subway.programmer p
+  inner join subway.covid c on p.id = c.id
+  inner join subway.hospital h on h.id = c.hospital_id
+  inner join subway.member m on m.id = p.member_id
+  where h.id = 9
+  and m.age between 20 and 30
+  and p.country = 'India'
+  group by c.stay;
     ```
   
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
     ```
-    select p.exercise, count(*) count
-    from subway.programmer p
-    inner join subway.covid c on p.member_id = c.member_id
-    inner join subway.hospital h on h.id = c.hospital_id
-    inner join subway.member m on m.id = p.member_id
-    where h.id = 9
-    and m.age >= 30 and m.age < 39
-    group by p.exercise;
-    ``````
+  select p.exercise, count(*) count
+  from subway.programmer p
+  inner join subway.covid c on p.id = c.id
+  inner join subway.hospital h on h.id = c.hospital_id
+  inner join subway.member m on m.id = p.member_id
+  where h.id = 9
+  and m.age between 30 and 39
+  group by p.exercise;
+    ```
 ---
 
 ### 추가 미션
