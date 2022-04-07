@@ -109,7 +109,7 @@ npm run dev
   inner join subway.hospital h on h.id = c.hospital_id
   inner join subway.member m on m.id = p.member_id
   where h.id = 9
-  and m.age between 20 and 30
+  and m.age between 20 and 29
   and p.country = 'India'
   group by c.stay;
     ```
