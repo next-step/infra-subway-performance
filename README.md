@@ -321,10 +321,10 @@ CREATE INDEX idx_hospital_id ON hospital (id,name);
 
 
 인덱스 적용전: 2분동안 안끝남
-covid 테이블의 인덱스만 적용 : 1,902ms  
+covid 테이블의 인덱스만 적용 : 1000ms  
 covid,programmer 테이블의 인덱스 적용 : 80~100ms  
-covid,programmer,hospital 테이블 인덱스 적용 : 90~110ms  
-covid,programmer,hospital,member 인덱스 적용 후 : 40 ~ 60ms
+covid,programmer,hospital 테이블 인덱스 적용 : 90~110ms    
+모든 인덱스 적용 후 : 70 ~ 90ms
 
 > 인덱스를 설정하면 자동으로 범위 조건이 있는 테이블을 제일 마지막에 실행하게 한다.
 
@@ -356,17 +356,32 @@ GROUP BY c.stay
 ORDER BY NULL
 ;
 
-
+CREATE INDEX idx_covid_id ON covid (id);
 CREATE INDEX idx_covid_hospital_id ON covid (hospital_id);
 CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
 CREATE INDEX idx_covid_member_id ON covid (member_id);
 CREATE INDEX idx_covid_stay ON covid (stay);
 CREATE INDEX idx_programmer_id ON programmer (id);
 CREATE INDEX idx_programmer_country ON programmer (country);
-#CREATE INDEX idx_programmer_two ON programmer (member_id,country);
-CREATE INDEX idx_hospital_id ON hospital (id,name);
+CREATE INDEX idx_hospital_id ON hospital (id);
+CREATE INDEX idx_hospital_name ON hospital (name);
 CREATE INDEX idx_member_id ON member (id);
+CREATE INDEX idx_member_age ON member (age);
 ```
+
+```sql
+CREATE INDEX idx_hospital_id ON hospital (id);
+CREATE INDEX idx_hospital_name ON hospital (name);
+CREATE INDEX idx_member_id ON member (id);
+CREATE INDEX idx_member_age ON member (age);
+
+아래로 변경
+
+CREATE INDEX idx_hospital_two ON hospital (id, name);
+CREATE INDEX idx_member_two ON member (id, age);
+```
+
+아래 인덱스로 변경시 : 40~60ms
 
 
 ## 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
