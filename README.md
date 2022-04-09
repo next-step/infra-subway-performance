@@ -86,13 +86,13 @@ npm run dev
      ALTER TABLE subway.hospital add constraint PK_HOSPITAL__ID primary key (`id`);
      CREATE INDEX `idx_hospital_name_id` ON subway.hospital (`name`,`id`)
      ```
-   - Coding as a Hobby 와 같은 결과를 반환하세요. 
-     - hobby 인덱스 삭제하고 idx_programmer_hobby_student_years_coding 를 태웠습니다 
-         ```
-         select concat(round(count(case when hobby = 'Yes' then 1 end) / count(*) * 100, 1), '%') yes,
-         concat(round(count(case when hobby = 'No' then 1 end) / count(*) * 100, 1), '%') No
-         from subway.programmer;
-         ```
+- Coding as a Hobby 와 같은 결과를 반환하세요. 
+  - hobby 인덱스 삭제하고 idx_programmer_hobby_student_years_coding 를 태웠습니다 
+      ```
+      select concat(round(count(case when hobby = 'Yes' then 1 end) / count(*) * 100, 1), '%') yes,
+      concat(round(count(case when hobby = 'No' then 1 end) / count(*) * 100, 1), '%') No
+      from subway.programmer;
+      ```
   
 - 프로그래머별로 해당하는 병원 이름을 반환하세요.
   - programmer id로 Range Index 를 태웠습니다. 
