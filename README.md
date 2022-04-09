@@ -158,6 +158,23 @@ WHERE 사원출입기록.입출입구분 = 'O';
     ```
     ![result/2단계_4번.png](result/2단계_4번.png)
 
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    ```sql
+    SELECT
+        programmer.exercise,
+        count(programmer.exercise)
+    FROM member
+    INNER JOIN programmer ON member.id = programmer.member_id
+    INNER JOIN covid ON covid.member_id = member.id
+    INNER JOIN hospital ON covid.hospital_id = hospital.id
+    WHERE hospital.name = '서울대병원'
+    AND member.age BETWEEN 30 AND 39
+    GROUP BY programmer.exercise; 
+    ```
+   ![result/2단계_4번.png](result/2단계_4번.png)
+
+
 ---
 
 ### 추가 미션
