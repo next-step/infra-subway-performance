@@ -86,74 +86,74 @@ npm run dev
      ALTER TABLE subway.hospital add constraint PK_HOSPITAL__ID primary key (`id`);
      CREATE INDEX `idx_hospital_name_id` ON subway.hospital (`name`,`id`)
      ```
-- Coding as a Hobby 와 같은 결과를 반환하세요. 
-  - hobby 인덱스 삭제하고 idx_programmer_hobby_student_years_coding 를 태웠습니다 
-      ```
-      select concat(round(count(case when hobby = 'Yes' then 1 end) / count(*) * 100, 1), '%') yes,
-      concat(round(count(case when hobby = 'No' then 1 end) / count(*) * 100, 1), '%') No
-      from subway.programmer;
-      ```
+   - Coding as a Hobby 와 같은 결과를 반환하세요. 
+     - hobby 인덱스 삭제하고 idx_programmer_hobby_student_years_coding 를 태웠습니다 
+         ```
+         select concat(round(count(case when hobby = 'Yes' then 1 end) / count(*) * 100, 1), '%') yes,
+         concat(round(count(case when hobby = 'No' then 1 end) / count(*) * 100, 1), '%') No
+         from subway.programmer;
+         ```
   
-- 프로그래머별로 해당하는 병원 이름을 반환하세요.
-  - programmer id로 Range Index 를 태웠습니다. 
-  - 페이징 쿼리 적용하여 Fetch를 줄였습니다.
-    ```
-    select c.id, h.name
-    from (select id, hospital_id, programmer_id from subway.covid) c     
-    inner join (select id from subway.programmer) p
-    on c.programmer_id = p.id
-    inner join (select id, name from subway.hospital) h 
-    on c.hospital_id = h.id
-    where p.id >= 0
-    limit 0, 1000;
-    ```
+   - 프로그래머별로 해당하는 병원 이름을 반환하세요.
+     - programmer id로 Range Index 를 태웠습니다. 
+     - 페이징 쿼리 적용하여 Fetch를 줄였습니다.
+       ```
+       select c.id, h.name
+       from (select id, hospital_id, programmer_id from subway.covid) c     
+       inner join (select id from subway.programmer) p
+       on c.programmer_id = p.id
+       inner join (select id, name from subway.hospital) h 
+       on c.hospital_id = h.id
+       where p.id >= 0
+       limit 0, 1000;
+       ```
 
-- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
-   - 이전 작업은 (취미 and 학생) or (주니어 and no 학생) 조건으로 진행 했었습니다.
-   - 다른 곳에 피드백하신 쿼리조건 참고하여 다시 수정하였습니다.
-   - 한국어 참 어렵네요..;;
-   - hobby, student, years_coding 복합 인덱스 적용
-   - 페이징쿼리 적용
-     ```
-     select c.id, h.name, p.hobby, p.dev_type, p.years_coding, student
-     from (select id, hobby, student, dev_type, years_coding from subway.programmer
-           where hobby = 'Yes' and (years_coding = '0-2 years' or student like 'Yes%')) p
-     inner join (select id, programmer_id, hospital_id from subway.covid) c
-     on p.id = c.programmer_id
-     inner join (select id, name from subway.hospital) h
-     on h.id = c.hospital_id  
-     order by p.id 0, limit 100;
-     ```
+   - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+      - 이전 작업은 (취미 and 학생) or (주니어 and no 학생) 조건으로 진행 했었습니다.
+      - 다른 곳에 피드백하신 쿼리조건 참고하여 다시 수정하였습니다.
+      - 한국어 참 어렵네요..;;
+      - hobby, student, years_coding 복합 인덱스 적용
+      - 페이징쿼리 적용
+        ```
+        select c.id, h.name, p.hobby, p.dev_type, p.years_coding, student
+        from (select id, hobby, student, dev_type, years_coding from subway.programmer
+              where hobby = 'Yes' and (years_coding = '0-2 years' or student like 'Yes%')) p
+        inner join (select id, programmer_id, hospital_id from subway.covid) c
+        on p.id = c.programmer_id
+        inner join (select id, name from subway.hospital) h
+        on h.id = c.hospital_id  
+        order by p.id 0, limit 100;
+        ```
 
-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
-  - File Sort 제거하였습니다.
-      ```
-     select c.stay, count(*) count
-     from (select id from subway.member where age between 20 and 29)  m
-     inner join (select id from subway.programmer where country = 'India') p 
-     on m.id = p.id
-     inner join (select id, hospital_id, stay from subway.covid) c 
-     on p.id = c.id
-     inner join (select id from subway.hospital where id = 9) h 
-     on h.id = c.hospital_id
-     group by c.stay
-     order by null;
-      ```
+   - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+     - File Sort 제거하였습니다.
+         ```
+        select c.stay, count(*) count
+        from (select id from subway.member where age between 20 and 29)  m
+        inner join (select id from subway.programmer where country = 'India') p 
+        on m.id = p.id
+        inner join (select id, hospital_id, stay from subway.covid) c 
+        on p.id = c.id
+        inner join (select id from subway.hospital where id = 9) h 
+        on h.id = c.hospital_id
+        group by c.stay
+        order by null;
+         ```
   
-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
-  - File Sort 제거하였습니다. 
-      ```
-    select p.exercise, count(*) count
-    from (select id, member_id, hospital_id, programmer_id from subway.covid) c   
-    inner join (select id from subway.hospital where id = 9) h
-    on c.hospital_id = h.id
-    inner join (select id, exercise from subway.programmer) p
-    on c.programmer_id  = p.id
-    inner join (select id, age from subway.member where age between 30 and 39) m
-    on c.member_id = m.id
-    group by p.exercise
-    order by null;
-      ```
+   - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+     - File Sort 제거하였습니다. 
+         ```
+       select p.exercise, count(*) count
+       from (select id, member_id, hospital_id, programmer_id from subway.covid) c   
+       inner join (select id from subway.hospital where id = 9) h
+       on c.hospital_id = h.id
+       inner join (select id, exercise from subway.programmer) p
+       on c.programmer_id  = p.id
+       inner join (select id, age from subway.member where age between 30 and 39) m
+       on c.member_id = m.id
+       group by p.exercise
+       order by null;
+         ```
 ---
 
 ### 추가 미션
