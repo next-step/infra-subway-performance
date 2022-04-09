@@ -79,7 +79,7 @@ FROM (
 INNER JOIN 사원출입기록 ON SUB_TABLE.사원번호 = 사원출입기록.사원번호 
 WHERE 사원출입기록.입출입구분 = 'O';
 ```
-![1주차미션결과.png](1주차미션결과.png)
+![1주차미션결과.png](result/1주차미션결과.png)
 
 
 
@@ -88,6 +88,19 @@ WHERE 사원출입기록.입출입구분 = 'O';
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+-  Coding as a Hobby 와 같은 결과를 반환하세요.
+    ```sql
+    CREATE INDEX `idx_hobby` ON `subway`.`programmer` (hobby);
+     
+    SELECT 
+        hobby,
+        ROUND((count(*) * 100) / (select count(*) f![img.png](img.png)rom subway.programmer), 1) as percent
+    FROM subway.programmer
+    GROUP BY hobby
+    ORDER BY percent desc;
+    ```
+    ![result/2단계_1번.png](result/2단계_1번.png)
+
 
 ---
 
