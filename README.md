@@ -218,6 +218,238 @@ WHERE 절이 없으면 Using index 로 나오다가 WHERE 을 붙이면 filtered
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+## Coding as a Hobby 와 같은 결과를 반환하세요.
+
+인덱스 적용전 : 140~160ms  
+인덱스 적용후 : 50~70ms
+
+```sql
+SELECT
+    ROUND(SUM(IF(hobby = 'YES', 1, 0)) / COUNT(hobby) * 100) AS 'YES',
+    ROUND(SUM(IF(hobby = 'NO', 1, 0)) / COUNT(hobby) * 100) AS 'NO'
+FROM programmer p;
+
+CREATE INDEX idx_programmer_hobby ON programmer (hobby);
+```
+
+
+## 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+인덱스 적용전 : 280~ 299ms
+인덱스 적용후 : 22 ~ 49ms
+
+```sql
+SELECT
+  c.id,h.name
+FROM covid c
+       INNER JOIN
+     (
+       SELECT id FROM programmer
+     ) p
+     ON c.programmer_id = p.id
+       INNER JOIN
+     (
+       SELECT id, name   FROM hospital
+     ) h
+     ON c.hospital_id = h.id
+;
+
+CREATE INDEX idx_covid_id ON covid (id);
+CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
+CREATE INDEX idx_covid_hospital_id ON covid (hospital_id);
+CREATE INDEX idx_programmer_member_id ON programmer (id);
+CREATE INDEX idx_hospital_id ON hospital (id,name);
+```
+
+## 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+
+인덱스 적용전 : 2분동안 안끝남
+
+programmer 인덱스 적용후 : 706 ms
+hospital 인덱스 적용후 : 2분동안 안끝남
+covid 인덱스 적용후 : 1,256ms
+
+> where 절에 조건이 있는 programmer 테이블의 인덱스를 적용해야 시간이 단축되는 것 같다.
+
+programmer,hospital 인덱스 적용후 : 640 ms
+covid, hospital 인덱스 적용후 : 165ms
+programmer, covid 인덱스 적용후 : 2,635ms
+
+> 그런데 where 절 컬럼의 인덱스가 사용됐지만 programmer,covid 인덱스 적용한 결과는 시간이 느려졌다. 왤까...?
+
+programmer,hospital,covid 인덱스 적용후 : 23 ms
+
+
+```sql
+select count(*) from programmer where student like 'Yes%'; # 24502
+select count(*) from programmer where years_coding = '0-2 years'; # 10682
+select count(*) from programmer where hobby = 'YES'; # 79897
+
+SELECT
+  c.id,
+  h.name,
+  p.hobby,
+  p.dev_type,
+  p.years_coding
+FROM covid c
+       INNER JOIN
+     (
+       SELECT id,hobby,student,years_coding,dev_type FROM programmer
+       WHERE hobby = 'YES' AND (student LIKE 'Yes%' OR years_coding = '0-2 years')
+     ) p
+     ON c.programmer_id = p.id
+       INNER JOIN
+     (
+       SELECT id,name FROM hospital
+     ) h
+     ON c.hospital_id = h.id
+ORDER BY p.id ASC
+;
+
+CREATE INDEX idx_covid_id ON covid (id);
+CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
+CREATE INDEX idx_covid_hospital_id ON covid (hospital_id);
+CREATE INDEX idx_programmer_where_condition ON programmer (hobby, student, years_coding);
+CREATE INDEX idx_programmer_id ON programmer (id);
+CREATE INDEX idx_hospital_id ON hospital (id,name);
+```
+
+## 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+
+인덱스 적용전: 2분동안 안끝남
+covid 테이블의 인덱스만 적용 : 1000ms  
+covid,programmer 테이블의 인덱스 적용 : 80~100ms  
+covid,programmer,hospital 테이블 인덱스 적용 : 90~110ms    
+모든 인덱스 적용 후 : 70 ~ 90ms
+
+> 인덱스를 설정하면 자동으로 범위 조건이 있는 테이블을 제일 마지막에 실행하게 한다.
+
+
+```sql
+SELECT count(*) FROM member WHERE age >= 20 AND age <= 29; # 22745
+SELECT count(*) FROM programmer WHERE country = 'India'; # 13721
+SELECT count(*) FROM hospital WHERE name = '서울대병원'; # 1
+
+SELECT
+  c.stay
+FROM covid c
+       INNER JOIN
+     (
+       SELECT id FROM hospital WHERE name = '서울대병원'
+     ) h
+     ON c.hospital_id = h.id
+       INNER JOIN
+     (
+       SELECT id FROM programmer WHERE country = 'India'
+     ) p
+     ON c.programmer_id = p.id
+       INNER JOIN
+     (
+       SELECT id FROM member WHERE age >= 20 AND age <= 29
+     ) m
+     ON c.member_id = m.id
+GROUP BY c.stay
+ORDER BY NULL
+;
+
+CREATE INDEX idx_covid_id ON covid (id);
+CREATE INDEX idx_covid_hospital_id ON covid (hospital_id);
+CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
+CREATE INDEX idx_covid_member_id ON covid (member_id);
+CREATE INDEX idx_covid_stay ON covid (stay);
+CREATE INDEX idx_programmer_id ON programmer (id);
+CREATE INDEX idx_programmer_country ON programmer (country);
+CREATE INDEX idx_hospital_id ON hospital (id);
+CREATE INDEX idx_hospital_name ON hospital (name);
+CREATE INDEX idx_member_id ON member (id);
+CREATE INDEX idx_member_age ON member (age);
+```
+
+```sql
+CREATE INDEX idx_hospital_id ON hospital (id);
+CREATE INDEX idx_hospital_name ON hospital (name);
+CREATE INDEX idx_member_id ON member (id);
+CREATE INDEX idx_member_age ON member (age);
+
+아래로 변경
+
+CREATE INDEX idx_hospital_two ON hospital (id, name);
+CREATE INDEX idx_member_two ON member (id, age);
+```
+
+아래 인덱스로 변경시 : 40~60ms
+
+
+## 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+인덱스 적용전: 2분동안 안끝남
+
+모든 테이블의 인덱스 적용후: 40~50ms
+- programmer, member 의 인덱스를 컬럼 하나씩 인덱스 걸지 않고  
+  두개를 한번에 거니까 시간이 많이 줄어들었음.programmer (id,exercise),member (id,age)
+
+> member와 programmer 테이블 조인문 위치를 바꿔도 결과는 같다.
+  인덱스를 설정하면 자동으로 범위 조건이 있는 테이블을 제일 마지막에 실행하게 한다. 
+
+```sql
+SELECT
+    count(p.exercise)
+FROM covid c
+INNER JOIN
+    (
+        SELECT id FROM hospital where name = '서울대병원'
+    ) h
+ON c.hospital_id = h.id
+INNER JOIN
+    (
+        SELECT id FROM member WHERE age >= 30 AND age <= 39
+     ) m
+ON c.member_id = m.id
+INNER JOIN
+     (
+         SELECT id,exercise FROM programmer
+     ) p
+     ON c.programmer_id = p.id
+GROUP BY p.exercise
+ORDER BY NULL
+;
+
+CREATE INDEX idx_covid_hospital_id ON covid (hospital_id);
+CREATE INDEX idx_covid_member_id ON covid (member_id);
+CREATE INDEX idx_covid_programmer_id ON covid (programmer_id);
+# CREATE INDEX idx_programmer_id ON programmer (id);
+# CREATE INDEX idx_programmer_exercise ON programmer (exercise);
+CREATE INDEX idx_programmer_two ON programmer (id,exercise);
+CREATE INDEX idx_hospital_id ON hospital (id);
+CREATE INDEX idx_hospital_name ON hospital (name);
+#CREATE INDEX idx_member_id ON member (id);
+#CREATE INDEX idx_member_age ON member (age);
+#CREATE INDEX idx_member_two ON member (age,id);
+CREATE INDEX idx_member_two ON member (id,age);
+
+
+DROP INDEX idx_covid_hospital_id ON covid;
+DROP INDEX idx_covid_member_id ON covid;
+DROP INDEX idx_covid_programmer_id ON covid;
+#DROP INDEX idx_programmer_id ON programmer;
+#DROP INDEX idx_programmer_exercise ON programmer;
+DROP INDEX idx_programmer_two ON programmer;
+DROP INDEX idx_hospital_id ON hospital;
+DROP INDEX idx_hospital_name ON hospital;
+#DROP INDEX idx_member_id ON member;
+#DROP INDEX idx_member_age ON member;
+DROP INDEX idx_member_two ON member;
+```
+
+
+
+
+
+
 ---
 
 ### 추가 미션
