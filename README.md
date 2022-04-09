@@ -135,6 +135,29 @@ WHERE 사원출입기록.입출입구분 = 'O';
     ![result/2단계_3번.png](result/2단계_3번.png)
 
 
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    ```sql
+    ALTER TABLE `member` ADD PRIMARY KEY (id);
+    CREATE INDEX `idx_age` ON `subway`.`member` (age);
+    CREATE INDEX `idx_hospital_id` ON `subway`.`covid` (hospital_id);
+    CREATE INDEX `idx_member_id` ON `subway`.`programmer` (member_id);
+    CREATE INDEX `idx_country` ON `subway`.`programmer` (country);
+    CREATE INDEX `idx_name` ON `subway`.`hospital` (name);
+
+    SELECT 
+      covid.stay,
+        count(covid.stay)
+    FROM member
+    INNER JOIN programmer ON member.id = programmer.member_id
+    INNER JOIN covid ON covid.member_id = member.id
+    INNER JOIN hospital ON covid.hospital_id = hospital.id
+    WHERE hospital.name = '서울대병원'
+    AND member.age BETWEEN 20 AND 29
+    AND programmer.country =  'India'
+    GROUP BY covid.stay;
+    ```
+    ![result/2단계_4번.png](result/2단계_4번.png)
+
 ---
 
 ### 추가 미션
