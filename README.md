@@ -102,6 +102,24 @@ WHERE 사원출입기록.입출입구분 = 'O';
     ![result/2단계_1번.png](result/2단계_1번.png)
 
 
+-  프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    ```sql
+    ALTER TABLE `hospital` ADD PRIMARY KEY (id);
+    ALTER TABLE `programmer` ADD PRIMARY KEY (id);
+    CREATE INDEX `idx_programmer_id` ON `subway`.`covid` (programmer_id);
+
+    SELECT 
+        covid.id, 
+        hospital.name, 
+        programmer.id
+    FROM programmer
+    INNER JOIN covid ON covid.programmer_id = programmer.id
+    INNER JOIN hospital ON covid.hospital_id = hospital.id;
+    ```
+   ![result/2단계_2번.png](result/2단계_2번.png)
+
+
+
 ---
 
 ### 추가 미션
