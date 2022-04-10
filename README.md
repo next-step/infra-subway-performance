@@ -51,31 +51,30 @@ npm run dev
 SELECT A.사원번호, A.이름, A.연봉, 직급.직급명, 사원출입기록.입출입시간, 사원출입기록.지역
 FROM 
 	(
-	SELECT 부서관리자.사원번호, 사원.이름, 급여.연봉 
+	SELECT 사원.사원번호, 사원.이름, 급여.연봉 
 	FROM 
-		부서관리자 
+		사원 
+	JOIN 부서관리자 
+		ON 사원.사원번호 = 부서관리자.사원번호 
 	JOIN 부서
 		ON 부서관리자.부서번호 = 부서.부서번호
-	JOIN 사원
-		ON 사원.사원번호 = 부서관리자.사원번호 
 	JOIN 급여 
 		ON 사원.사원번호 = 급여.사원번호 
-	WHERE 부서.비고 = 'active' 
-	AND 부서관리자.종료일자 >= NOW() 
+	WHERE  부서관리자.종료일자 >= NOW() 
+	AND 부서.비고 = 'active' 
 	AND 급여.종료일자 >= NOW()
 	ORDER BY 연봉 DESC
 	LIMIT 5
 	) AS A
-JOIN 사원출입기록 
-	ON A.사원번호 = 사원출입기록.사원번호 
 JOIN 직급 
 	ON A.사원번호 = 직급.사원번호
-WHERE 사원출입기록.입출입구분 = 'o'
-AND 직급.종료일자 >= NOW()
-
+JOIN 사원출입기록 
+	ON A.사원번호 = 사원출입기록.사원번호 
+WHERE 직급.종료일자 >= NOW()
+AND 사원출입기록.입출입구분 = 'o'
 ```
 
-![](https://user-images.githubusercontent.com/63947424/162609050-4470de8b-b1b2-4373-a3e4-2d367e3ea91d.png)
+![](https://user-images.githubusercontent.com/63947424/162609917-960fba72-5eb7-421d-8f67-03b3ffb563f0.png)
 
 
 ---
