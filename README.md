@@ -100,41 +100,42 @@ ALTER TABLE hospital ADD PRIMARY KEY (id);
 CREATE INDEX `idx_programmer_id` ON `subway`.`covid` (programmer_id);
 
 SELECT A.id, A.name
-FROM (
+FROM programmer
+JOIN (
 	SELECT covid.id, hospital.name, covid.programmer_id
-  FROM covid 
-  JOIN hospital
-    ON hospital.id = covid.hospital_id
-  ) A
-JOIN programmer
+    FROM covid 
+    JOIN hospital
+	ON hospital.id = covid.hospital_id
+    ) A
 ON A.programmer_id = programmer.id
 ```
 ![](https://user-images.githubusercontent.com/63947424/163799723-c604f95c-551c-4203-a4b8-d3e6d0d3a7b4.png)
 ![](https://user-images.githubusercontent.com/63947424/163799728-fac9ee3f-6a39-45b7-a774-4e2034d92ec3.png)
-![](https://user-images.githubusercontent.com/63947424/163799727-38ce9a9f-9587-403b-8170-c66eaed3d863.png)
+![](https://user-images.githubusercontent.com/63947424/163908903-eea1f4f0-394f-46ea-a399-88362bc09a5e.png)
 
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```
 CREATE INDEX `idx_student_years_coding_hobby` ON `subway`.`programmer` (hobby, student, years_coding);
 
- EXPLAIN SELECT covid.id, hospital.name, B.hobby, B.dev_type, B.years_coding, B.student
+SELECT A.id, A.name, programmer.hobby, programmer.dev_type, programmer.years_coding, programmer.student
 FROM (
-	SELECT programmer.id, programmer.hobby, programmer.dev_type, programmer.years_coding, programmer.student
-    FROM programmer
-	WHERE programmer.hobby = 'YES'
-		AND (programmer.student LIKE 'YES%' OR programmer.years_coding = '0-2 years')
-	ORDER BY programmer.id
-    ) B
-JOIN covid
-ON covid.programmer_id = B.id
-JOIN hospital
-ON covid.hospital_id = hospital.id
-ORDER BY B.id ASC
+  SELECT covid.id, hospital.name, covid.programmer_id
+  FROM covid 
+  JOIN hospital
+    ON hospital.id = covid.hospital_id
+  ) A
+JOIN programmer
+ON A.programmer_id = programmer.id
+WHERE programmer.hobby = 'YES'
+    AND (programmer.student LIKE 'YES%' OR programmer.years_coding = '0-2 years')
+ORDER BY programmer.id ASC
+
 ```
 ![](https://user-images.githubusercontent.com/63947424/163905141-3b918b81-efff-4023-a170-134ea13a23e2.png)
 ![](https://user-images.githubusercontent.com/63947424/163799731-8a57ce83-433c-48b2-919c-96f89ff8fe23.png)
 ![](https://user-images.githubusercontent.com/63947424/163905005-9f71b6c0-bab7-4a8d-af1a-bdd6cc1312d2.png)
+
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```
@@ -144,31 +145,34 @@ CREATE INDEX `idx_age` ON `subway`.`member` (age);
 CREATE INDEX `idx_hospital_member` ON `subway`.`covid` (hospital_id, member_id);
 CREATE INDEX `idx_country_member` ON `subway`.`programmer` (country, member_id);
 
-EXPLAIN SELECT covid.stay, COUNT(covid.stay)
+SELECT A.stay, COUNT(A.stay)
 FROM (
+	SELECT covid.stay, covid.member_id
+	FROM covid
+	JOIN hospital
+	ON covid.hospital_id = hospital.id
+	WHERE hospital.name = '서울대병원' OR hospital.name = '분당서울대병원'
+)A
+JOIN (
 	SELECT member.id
     FROM member
     JOIN programmer
     ON programmer.member_id = member.id
 	WHERE member.age BETWEEN 20 AND 29
 	AND programmer.country = 'INDIA'
-)A
-JOIN covid
-ON covid.member_id = A.id
-JOIN hospital
-ON covid.hospital_id = hospital.id
-WHERE name LIKE '%서울대병원'
-GROUP BY covid.stay
+) B
+ON A.member_id = B.id
+GROUP BY A.stay
 ```
-![](https://user-images.githubusercontent.com/63947424/163801639-3cd57402-8cff-4387-849f-221c552cdc83.png)
-![](https://user-images.githubusercontent.com/63947424/163801634-d82c769c-13a0-45b4-ae69-b310ffb36ece.png)
-![](https://user-images.githubusercontent.com/63947424/163905213-85ddc3e2-5e09-4d9e-b8db-10a4424b5290.png)
+![](https://user-images.githubusercontent.com/63947424/163907113-a29d8341-4228-450a-a351-d48b6d911ec7.png)
+![](https://user-images.githubusercontent.com/63947424/163907111-63e35bbc-b64d-42f2-bbc8-cbf2c2c39d58.png)
+![](https://user-images.githubusercontent.com/63947424/163907105-f18e01f6-0317-4c79-ab9a-43ef71c7f700.png)
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```
 CREATE INDEX `idx_member` ON `subway`.`programmer` (member_id);
 
-EXPLAIN SELECT A.exercise, COUNT(A.exercise)
+SELECT A.exercise, COUNT(A.exercise)
 FROM (
 	SELECT member.id, programmer.exercise
     FROM member
@@ -176,16 +180,19 @@ FROM (
     ON programmer.member_id = member.id
 	WHERE member.age BETWEEN 30 AND 39
 )A
-JOIN covid
-ON covid.member_id = A.id
-JOIN hospital
-ON covid.hospital_id = hospital.id
-WHERE hospital.name LIKE '%서울대병원'
+JOIN (
+	SELECT covid.stay, covid.member_id
+	FROM covid
+	JOIN hospital
+	ON covid.hospital_id = hospital.id
+	WHERE hospital.name = '서울대병원' OR hospital.name = '분당서울대병원'
+)B
+ON A.id = B.member_id
 GROUP BY A.exercise
 ```
-![](https://user-images.githubusercontent.com/63947424/163905441-56ad3b43-bbd6-4758-b295-b9bc0275c4fc.png)
-![](https://user-images.githubusercontent.com/63947424/163801642-f87f7fea-8bba-49ab-9a51-86ce8f012298.png)
-![](https://user-images.githubusercontent.com/63947424/163905438-e6f061cb-5acc-4851-b3cb-1c2a624e530c.png)
+![](https://user-images.githubusercontent.com/63947424/163907305-98c2aef5-f8af-4f84-a860-2d096a10999a.png)
+![](https://user-images.githubusercontent.com/63947424/163907315-36e71d9f-81ed-4585-9bdd-6b358df8f95f.png)
+![](https://user-images.githubusercontent.com/63947424/163907324-064d3aa9-57ff-4f7d-bc84-5a7b425a83a3.png)
 ---
 
 ### 추가 미션
