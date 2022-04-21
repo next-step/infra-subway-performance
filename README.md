@@ -199,3 +199,6 @@ GROUP BY A.exercise
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+- https://yunha-infra-subway.r-e.kr/stations
+두번째 페이지 (id >= 5부터) 5개의 결과를 가져오도록 설정하였습니다.

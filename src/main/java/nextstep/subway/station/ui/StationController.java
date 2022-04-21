@@ -27,7 +27,8 @@ public class StationController {
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+        int page = 1;
+        return ResponseEntity.ok().body(stationService.findAllStations(page));
     }
 
     @DeleteMapping("/stations/{id}")
