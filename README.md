@@ -204,7 +204,7 @@ GROUP BY A.exercise
 - https://yunha-infra-subway.r-e.kr/stations
 두번째 페이지 (id >= 5부터) 5개의 결과를 가져오도록 설정하였습니다.
 
-2. Local 에서 MySQL replication 적용
+2. Local에서 MySQL replication 적용
 - local에 master 와 slave 데이터베이스 생성 
 ![](https://user-images.githubusercontent.com/63947424/164444852-6ebbb3e7-8f68-4967-a016-aa04ce4666de.png)
 
@@ -214,3 +214,21 @@ GROUP BY A.exercise
 
 - readOnly = true인 역 조회에서 데이터를 잘 받아오는 것을 확인 
 ![](https://user-images.githubusercontent.com/63947424/164445614-27b027f2-9f91-4cad-8173-d3e7f53f0396.png)
+
+
+3. ec2에서 mysql master, slave Docker 실행 및 적용
+- mysql master, slave 도커 실행 및 설정파일 추가 
+```
+spring.datasource.hikari.master.username=root
+spring.datasource.hikari.master.password=masterpw
+spring.datasource.hikari.master.jdbc-url=jdbc:mysql://192.168.23.158:13306/subway?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2&useSSL=false&useUnicode=yes&allowPublicKeyRetrieval=true
+
+spring.datasource.hikari.slave.username=root
+spring.datasource.hikari.slave.password=slavepw
+spring.datasource.hikari.slave.jdbc-url=jdbc:mysql://192.168.23.158:13307/subway?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2&useSSL=false&useUnicode=yes&allowPublicKeyRetrieval=true
+```
+
+- readOnly = true인 역 조회에서 데이터를 잘 받아오는 것을 확인 (페이징 쿼리가 적용되어 있음)
+![](https://user-images.githubusercontent.com/63947424/164454876-e947459f-f548-4891-8f6a-ada221c4ab6b.png)
+
+
