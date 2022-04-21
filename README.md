@@ -129,6 +129,7 @@ JOIN programmer
 ON A.programmer_id = programmer.id
 WHERE programmer.hobby = 'YES'
     AND (programmer.student LIKE 'YES%' OR programmer.years_coding = '0-2 years')
+	AND A.id >=20
 ORDER BY programmer.id ASC
 LIMIT 0,20
 ```
@@ -163,7 +164,6 @@ JOIN (
 ) B
 ON A.member_id = B.id
 GROUP BY A.stay
-LIMIT 0,20
 ```
 ![](https://user-images.githubusercontent.com/63947424/163907113-a29d8341-4228-450a-a351-d48b6d911ec7.png)
 ![](https://user-images.githubusercontent.com/63947424/163907111-63e35bbc-b64d-42f2-bbc8-cbf2c2c39d58.png)
