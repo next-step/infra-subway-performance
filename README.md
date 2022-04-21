@@ -135,6 +135,8 @@ LIMIT 0,20
 ```
 ![](https://user-images.githubusercontent.com/63947424/163905141-3b918b81-efff-4023-a170-134ea13a23e2.png)
 ![](https://user-images.githubusercontent.com/63947424/163799731-8a57ce83-433c-48b2-919c-96f89ff8fe23.png)
+- 페이징 쿼리 추가 시
+![](https://user-images.githubusercontent.com/63947424/164445866-ef5b9755-1dfd-4a5a-b984-72dac7fcff40.png)
 ![](https://user-images.githubusercontent.com/63947424/163905005-9f71b6c0-bab7-4a8d-af1a-bdd6cc1312d2.png)
 
 
@@ -199,6 +201,16 @@ GROUP BY A.exercise
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
 - https://yunha-infra-subway.r-e.kr/stations
 두번째 페이지 (id >= 5부터) 5개의 결과를 가져오도록 설정하였습니다.
+
+2. Local 에서 MySQL replication 적용
+- local에 master 와 slave 데이터베이스 생성 
+![](https://user-images.githubusercontent.com/63947424/164444852-6ebbb3e7-8f68-4967-a016-aa04ce4666de.png)
+
+- master의 데이터베이스가 slave에 반영됨을 확인 
+![](https://user-images.githubusercontent.com/63947424/164445492-5e868245-261b-4c28-95a5-a22264b867a9.png)
+![](https://user-images.githubusercontent.com/63947424/164445507-f3e2bde2-1008-4c0d-8e54-2196e133384f.png)
+
+- readOnly = true인 역 조회에서 데이터를 잘 받아오는 것을 확인 
+![](https://user-images.githubusercontent.com/63947424/164445614-27b027f2-9f91-4cad-8173-d3e7f53f0396.png)
