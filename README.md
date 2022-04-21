@@ -130,7 +130,7 @@ ON A.programmer_id = programmer.id
 WHERE programmer.hobby = 'YES'
     AND (programmer.student LIKE 'YES%' OR programmer.years_coding = '0-2 years')
 ORDER BY programmer.id ASC
-
+LIMIT 0,20
 ```
 ![](https://user-images.githubusercontent.com/63947424/163905141-3b918b81-efff-4023-a170-134ea13a23e2.png)
 ![](https://user-images.githubusercontent.com/63947424/163799731-8a57ce83-433c-48b2-919c-96f89ff8fe23.png)
@@ -163,6 +163,7 @@ JOIN (
 ) B
 ON A.member_id = B.id
 GROUP BY A.stay
+LIMIT 0,20
 ```
 ![](https://user-images.githubusercontent.com/63947424/163907113-a29d8341-4228-450a-a351-d48b6d911ec7.png)
 ![](https://user-images.githubusercontent.com/63947424/163907111-63e35bbc-b64d-42f2-bbc8-cbf2c2c39d58.png)
