@@ -49,21 +49,29 @@ npm run dev
 
 - Mobile(Chrome, LTE)
 
-| 항목 | 평균값 |
-|--|--|
-| FCP | 3639ms |
-| TTI | 3671ms |
+| 항목 | 개선전 | 개선후 |
+|--|--|--|
+| FCP | 5753ms | 3639ms |
+| TTI | 6229ms | 3671ms |
 
 - Desktop(Chrome, Cable)
 
-| 항목 | 평균값 |
-|--|--|
-| FCP | 1719ms |
-| TTI | 1707ms |
+| 항목 | 개선전 | 개선후 |
+|--|--|--|
+| FCP | 4918ms | 1719ms |
+| TTI | 5064ms | 1707ms |
+
+**Smoke 테스트 결과**
 
 ```
-$ k6 run smoke.js
+// before
+✗ http_req_duration..............: avg=245ms    min=67.35ms med=168.32ms max=875.99ms p(90)=552.76ms p(95)=718.02ms
 
+// after
+✓ http_req_duration..............: avg=31.97ms min=1.89ms  med=5.55ms  max=257.06ms p(90)=79.8ms   p(95)=250.18ms
+```
+
+```
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
     /  \/    \    |     (   /   ‾‾\
@@ -78,34 +86,42 @@ $ k6 run smoke.js
            * default: 1 looping VUs for 10s (gracefulStop: 30s)
 
 
-running (10.3s), 0/1 VUs, 8 complete and 0 interrupted iterations
+running (10.1s), 0/1 VUs, 9 complete and 0 interrupted iterations
 default ↓ [======================================] 1 VUs  10s
 
      ✓ retrieved stations
      ✓ retrieved paths
 
-     checks.........................: 100.00% ✓ 16       ✗ 0
-     data_received..................: 606 kB  59 kB/s
-     data_sent......................: 4.0 kB  387 B/s
-     http_req_blocked...............: avg=40.84ms  min=282ns   med=354ns   max=653.51ms p(90)=587ns    p(95)=163.37ms
-     http_req_connecting............: avg=57.83µs  min=0s      med=0s      max=925.37µs p(90)=0s       p(95)=231.34µs
-   ✓ http_req_duration..............: avg=101.31ms min=38.12ms med=92.02ms max=264.45ms p(90)=198.99ms p(95)=260.06ms
-       { expected_response:true }...: avg=101.31ms min=38.12ms med=92.02ms max=264.45ms p(90)=198.99ms p(95)=260.06ms
-     http_req_failed................: 0.00%   ✓ 0        ✗ 16
-     http_req_receiving.............: avg=2.61ms   min=49.91µs med=1.45ms  max=10.14ms  p(90)=6.75ms   p(95)=8.24ms
-     http_req_sending...............: avg=60.11µs  min=37µs    med=50.61µs max=156.21µs p(90)=77.85µs  p(95)=102.75µs
-     http_req_tls_handshaking.......: avg=859.85µs min=0s      med=0s      max=13.75ms  p(90)=0s       p(95)=3.43ms
-     http_req_waiting...............: avg=98.64ms  min=34.53ms med=91.92ms max=258.98ms p(90)=198.88ms p(95)=258.61ms
-     http_reqs......................: 16      1.554039/s
-     iteration_duration.............: avg=1.28s    min=1.13s   med=1.14s   max=2.05s    p(90)=1.57s    p(95)=1.81s
-     iterations.....................: 8       0.77702/s
+     checks.........................: 100.00% ✓ 18       ✗ 0
+     data_received..................: 681 kB  67 kB/s
+     data_sent......................: 4.2 kB  409 B/s
+     http_req_blocked...............: avg=30.69ms min=297ns   med=463ns   max=552.52ms p(90)=617ns    p(95)=82.87ms
+     http_req_connecting............: avg=37.9µs  min=0s      med=0s      max=682.37µs p(90)=0s       p(95)=102.35µs
+   ✓ http_req_duration..............: avg=31.97ms min=1.89ms  med=5.55ms  max=257.06ms p(90)=79.8ms   p(95)=250.18ms
+       { expected_response:true }...: avg=31.97ms min=1.89ms  med=5.55ms  max=257.06ms p(90)=79.8ms   p(95)=250.18ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 18
+     http_req_receiving.............: avg=1.36ms  min=30.34µs med=1ms     max=3.88ms   p(90)=3ms      p(95)=3.46ms
+     http_req_sending...............: avg=71.51µs min=32.22µs med=57.79µs max=280.76µs p(90)=103.95µs p(95)=162.29µs
+     http_req_tls_handshaking.......: avg=1.79ms  min=0s      med=0s      max=32.22ms  p(90)=0s       p(95)=4.83ms
+     http_req_waiting...............: avg=30.53ms min=1.81ms  med=3.35ms  max=256.92ms p(90)=76.66ms  p(95)=246.74ms
+     http_reqs......................: 18      1.773708/s
+     iteration_duration.............: avg=1.12s   min=1s      med=1.01s   max=2.06s    p(90)=1.22s    p(95)=1.64s
+     iterations.....................: 9       0.886854/s
      vus............................: 1       min=1      max=1
      vus_max........................: 1       min=1      max=1
 ```
 
-```
-$ k6 run load.js
+**Load 테스트 결과**
 
+```
+// before
+✗ http_req_duration..............: avg=19.19s  min=30.07ms med=26.03s   max=40.4s   p(90)=36.35s  p(95)=37.01s
+
+// after
+✓ http_req_duration..............: avg=4.4ms   min=1.34ms  med=4.35ms   max=253.11ms p(90)=7.84ms  p(95)=9.38ms
+```
+
+```
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
     /  \/    \    |     (   /   ‾‾\
@@ -116,38 +132,46 @@ $ k6 run load.js
      script: load.js
      output: -
 
-  scenarios: (100.00%) 1 scenario, 46 max VUs, 6m30s max duration (incl. graceful stop):
-           * default: Up to 46 looping VUs for 6m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+  scenarios: (100.00%) 1 scenario, 46 max VUs, 3m30s max duration (incl. graceful stop):
+           * default: Up to 46 looping VUs for 3m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
-running (6m00.5s), 00/46 VUs, 4291 complete and 0 interrupted iterations
-default ↓ [======================================] 01/46 VUs  6m0s
+running (3m00.4s), 00/46 VUs, 5511 complete and 0 interrupted iterations
+default ↓ [======================================] 01/46 VUs  3m0s
 
      ✓ retrieved stations
      ✓ retrieved paths
 
-     checks.........................: 100.00% ✓ 8582      ✗ 0
-     data_received..................: 323 MB  895 kB/s
-     data_sent......................: 1.8 MB  4.9 kB/s
-     http_req_blocked...............: avg=91.73µs  min=150ns   med=326ns    max=534.16ms p(90)=584ns   p(95)=641ns
-     http_req_connecting............: avg=4.84µs   min=0s      med=0s       max=2.01ms   p(90)=0s      p(95)=0s
-   ✗ http_req_duration..............: avg=796.84ms min=31.49ms med=896.39ms max=2.32s    p(90)=1.31s   p(95)=1.38s
-       { expected_response:true }...: avg=796.84ms min=31.49ms med=896.39ms max=2.32s    p(90)=1.31s   p(95)=1.38s
-     http_req_failed................: 0.00%   ✓ 0         ✗ 8582
-     http_req_receiving.............: avg=2.58ms   min=23.72µs med=1.07ms   max=112.4ms  p(90)=6.19ms  p(95)=8.69ms
-     http_req_sending...............: avg=77.79µs  min=19.26µs med=51.65µs  max=6.24ms   p(90)=80.41µs p(95)=100.27µs
-     http_req_tls_handshaking.......: avg=25.15µs  min=0s      med=0s       max=14.57ms  p(90)=0s      p(95)=0s
-     http_req_waiting...............: avg=794.17ms min=29.75ms med=892.72ms max=2.32s    p(90)=1.31s   p(95)=1.38s
-     http_reqs......................: 8582    23.804515/s
-     iteration_duration.............: avg=2.59s    min=1.1s    med=2.89s    max=4.29s    p(90)=3.43s   p(95)=3.54s
-     iterations.....................: 4291    11.902257/s
+     checks.........................: 100.00% ✓ 11022     ✗ 0
+     data_received..................: 414 MB  2.3 MB/s
+     data_sent......................: 2.0 MB  11 kB/s
+     http_req_blocked...............: avg=19.26µs min=160ns   med=405ns    max=15.94ms  p(90)=584ns   p(95)=667ns
+     http_req_connecting............: avg=2.85µs  min=0s      med=0s       max=1.64ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=4.4ms   min=1.34ms  med=4.35ms   max=253.11ms p(90)=7.84ms  p(95)=9.38ms
+       { expected_response:true }...: avg=4.4ms   min=1.34ms  med=4.35ms   max=253.11ms p(90)=7.84ms  p(95)=9.38ms
+     http_req_failed................: 0.00%   ✓ 0         ✗ 11022
+     http_req_receiving.............: avg=1.26ms  min=14.91µs med=323.31µs max=28.57ms  p(90)=3.06ms  p(95)=4.04ms
+     http_req_sending...............: avg=76.16µs min=19.06µs med=44.48µs  max=8.31ms   p(90)=78.14µs p(95)=98.86µs
+     http_req_tls_handshaking.......: avg=15.22µs min=0s      med=0s       max=14.23ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.06ms  min=1.28ms  med=2.84ms   max=252.98ms p(90)=4.53ms  p(95)=6.08ms
+     http_reqs......................: 11022   61.093424/s
+     iteration_duration.............: avg=1.01s   min=1s      med=1.01s    max=1.47s    p(90)=1.01s   p(95)=1.01s
+     iterations.....................: 5511    30.546712/s
      vus............................: 1       min=1       max=46
      vus_max........................: 46      min=46      max=46
 ```
 
-```
-$ k6 run stress.js
+**Stress 테스트 결과**
 
+```
+// before
+✗ http_req_duration..............: avg=1.34s   min=0s      med=0s      max=28.38s   p(90)=6.38s    p(95)=7.94s
+
+// after
+✗ http_req_duration..............: avg=110.82ms min=0s     med=32.1ms  max=1.46s    p(90)=327.67ms p(95)=501.93ms
+```
+
+```
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
     /  \/    \    |     (   /   ‾‾\
@@ -162,29 +186,29 @@ $ k6 run stress.js
            * default: Up to 3680 looping VUs for 7m0s over 7 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
-running (2m15.2s), 0000/3680 VUs, 6556 complete and 288 interrupted iterations
-default ✗ [===========>--------------------------] 0086/3680 VUs  2m15.2s/7m00.0s
+running (2m51.4s), 0000/3680 VUs, 21200 complete and 426 interrupted iterations
+default ✗ [==============>-----------------------] 0297/3680 VUs  2m51.4s/7m00.0s
 
      ✓ retrieved stations
      ✓ retrieved paths
 
-     checks.........................: 100.00% ✓ 3463      ✗ 0
-     data_received..................: 144 MB  1.1 MB/s
-     data_sent......................: 3.4 MB  25 kB/s
-     http_req_blocked...............: avg=241.82µs min=0s       med=0s       max=28.69ms  p(90)=548ns   p(95)=749ns
-     http_req_connecting............: avg=2.99ms   min=0s       med=853.48µs max=49.12ms  p(90)=9.05ms  p(95)=14.55ms
-   ✗ http_req_duration..............: avg=1.23s    min=0s       med=3.87ms   max=21.88s   p(90)=5.23s   p(95)=6.71s
-       { expected_response:true }...: avg=2.96s    min=30.8ms   med=2.16s    max=21.88s   p(90)=6.89s   p(95)=7.54s
-     http_req_failed................: 58.60%  ✓ 4903      ✗ 3463
-     http_req_receiving.............: avg=1.04ms   min=0s       med=0s       max=84.82ms  p(90)=3.91ms  p(95)=5.16ms
-     http_req_sending...............: avg=2.02ms   min=0s       med=35.58µs  max=489.24ms p(90)=99.17µs p(95)=143.56µs
-     http_req_tls_handshaking.......: avg=1.69ms   min=0s       med=0s       max=73.41ms  p(90)=4.71ms  p(95)=12.14ms
-     http_req_waiting...............: avg=1.22s    min=0s       med=3.6ms    max=21.84s   p(90)=5.23s   p(95)=6.71s
-     http_reqs......................: 8366    61.888182/s
-     iteration_duration.............: avg=1.72s    min=897.84µs med=13.12ms  max=21.9s    p(90)=8.11s   p(95)=11.75s
-     iterations.....................: 6556    48.498556/s
-     vus............................: 287     min=1       max=287
-     vus_max........................: 3680    min=3680    max=3680
+     checks.........................: 100.00% ✓ 42740      ✗ 0
+     data_received..................: 1.6 GB  9.5 MB/s
+     data_sent......................: 10 MB   61 kB/s
+     http_req_blocked...............: avg=8.32ms   min=0s     med=381ns   max=699.2ms  p(90)=2.88µs   p(95)=65.93ms
+     http_req_connecting............: avg=657.53µs min=0s     med=0s      max=134.29ms p(90)=0s       p(95)=732.85µs
+   ✗ http_req_duration..............: avg=110.82ms min=0s     med=32.1ms  max=1.46s    p(90)=327.67ms p(95)=501.93ms
+       { expected_response:true }...: avg=110.85ms min=1.31ms med=32.08ms max=1.46s    p(90)=327.71ms p(95)=502.51ms
+     http_req_failed................: 0.16%   ✓ 72         ✗ 42740
+     http_req_receiving.............: avg=10.15ms  min=0s     med=1.4ms   max=884.36ms p(90)=25.16ms  p(95)=50.86ms
+     http_req_sending...............: avg=2.2ms    min=0s     med=38.49µs max=680.94ms p(90)=114.59µs p(95)=211.19µs
+     http_req_tls_handshaking.......: avg=7.12ms   min=0s     med=0s      max=296.91ms p(90)=0s       p(95)=57.58ms
+     http_req_waiting...............: avg=98.46ms  min=0s     med=24.9ms  max=1.38s    p(90)=303.97ms p(95)=443.69ms
+     http_reqs......................: 42812   249.831875/s
+     iteration_duration.............: avg=1.22s    min=3.17ms med=1.07s   max=2.83s    p(90)=1.7s     p(95)=1.99s
+     iterations.....................: 21200   123.713813/s
+     vus............................: 425     min=1        max=425
+     vus_max........................: 3680    min=3680     max=3680
 ```
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
