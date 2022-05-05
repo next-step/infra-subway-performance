@@ -1,0 +1,205 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 400 max VUs, 4m30s max duration (incl. graceful stop):
+           * default: Up to 400 looping VUs for 4m0s over 8 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0183] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:51798->13.209.243.144:443: read: connection reset by peer"
+WARN[0197] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:53194->13.209.243.144:443: read: connection reset by peer"
+WARN[0199] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:53764->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56154->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": read tcp 192.168.101.12:56152->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56150->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56356->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56352->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56348->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56350->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:56346->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:56344->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56342->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:56340->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:56338->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:56336->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56334->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56362->13.209.243.144:443: read: connection reset by peer"
+WARN[0209] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:56360->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": read tcp 192.168.101.12:56902->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": write tcp 192.168.101.12:57024->13.209.243.144:443: write: broken pipe"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57356->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57364->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": read tcp 192.168.101.12:57360->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57358->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57362->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57794->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57746->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57792->13.209.243.144:443: read: connection reset by peer"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0210] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": read tcp 192.168.101.12:57848->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": read tcp 192.168.101.12:57846->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:57816->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:57878->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:57876->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": read tcp 192.168.101.12:57874->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:57902->13.209.243.144:443: read: connection reset by peer"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//paths/?source=3&target=7\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr//path\": EOF"
+WARN[0211] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": EOF"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/\": read tcp 192.168.101.12:35780->13.209.243.144:443: read: connection reset by peer"
+WARN[0227] The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.  output=InfluxDBv1 t=1.403597156s
+WARN[0236] The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.  output=InfluxDBv1 t=1.089125388s
+
+running (4m01.0s), 000/400 VUs, 47169 complete and 0 interrupted iterations
+default ✗ [======================================] 000/400 VUs  4m0s
+
+     ✗ status is 200
+      ↳  99% — ✓ 141343 / ✗ 164
+
+     checks.........................: 99.88% ✓ 141343     ✗ 164
+     data_received..................: 182 MB 756 kB/s
+     data_sent......................: 11 MB  44 kB/s
+     errors.........................: 164    0.68056/s
+     http_req_blocked...............: avg=8.22ms  min=0s     med=337ns   max=789.87ms p(90)=472ns    p(95)=6.29µs
+     http_req_connecting............: avg=1.05ms  min=0s     med=0s      max=243.52ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=57.18ms min=0s     med=11.03ms max=1.93s    p(90)=184.95ms p(95)=277.31ms
+       { expected_response:true }...: avg=57.09ms min=1.88ms med=11.04ms max=1.93s    p(90)=184.69ms p(95)=277.1ms
+     http_req_failed................: 0.11%  ✓ 164        ✗ 141343
+     http_req_receiving.............: avg=2.2ms   min=0s     med=51.01µs max=279.78ms p(90)=3.45ms   p(95)=12.74ms
+     http_req_sending...............: avg=4.72ms  min=0s     med=28.54µs max=1.26s    p(90)=81.9µs   p(95)=209.93µs
+     http_req_tls_handshaking.......: avg=4.15ms  min=0s     med=0s      max=750.02ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=50.25ms min=0s     med=10.27ms max=1.42s    p(90)=165.24ms p(95)=254.18ms
+     http_reqs......................: 141507 587.219646/s
+     iteration_duration.............: avg=1.19s   min=1s     med=1.04s   max=3.39s    p(90)=1.59s    p(95)=1.78s
+     iterations.....................: 47169  195.739882/s
+     vus............................: 0      min=0        max=400
+     vus_max........................: 400    min=400      max=400

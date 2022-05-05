@@ -43,11 +43,24 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+[화면_응답_개선하기](./화면_응답_개선하기)
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요  
+- nginx에서 **gzip 설정**을 통해 텍스트 기반 파일들을 압축
+  - 그러나 gzip 설정 후 WebPageTest 의 `Cache Static Content` 지표가 C-> F 로 떨어졌었음 (이유는 모르겠음..)
+- nginx에서 **HTTP 캐시 설정**을 통해 불필요한 리소스 다운로드 요청을 제거
+- 서버에서 경로찾기 요청에 대한 결과를 **redis 에 캐싱**
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+**개선 지표**
+
+|       | Compress Transfer | Cache Static Content | (load test) http_req_duration (max) | (load test) http_req_duration (avg) | (stress test) error vuser |
+|-------|-------------------|----------------------|-------------------------------------|-------------------------|---------------------------|
+| AS-IS | F                 | C -> F               | 17.55s                              | 1.55s                   | 200                       |
+| TO-BE | A                 | A                    | 4.52s                               | 18.87s                  | 400                       |
+
 
 ---
+  
 
 ### 2단계 - 스케일 아웃
 
