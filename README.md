@@ -206,6 +206,24 @@ inner join tuning.employee as e on salary_top_5.employee_id = e.id
 inner join tuning.position as p on salary_top_5.employee_id = p.id
 where r.record_symbol = 'o' and p.end_date > now();
 ```
+```sql
+select salary_top_5.id, e.last_name, e.first_name, p.position_name, r.time, r.region, r.record_symbol
+from (
+    select s.id from tuning.salary as s
+    where s.id in (
+       select ed.employee_id from tuning.employee_department as ed
+       where ed.department_id in (
+         select id from tuning.department as d where d.note = 'active'
+       )
+    )
+    and s.end_date > now()
+    order by s.annual_income desc limit 5
+) as salary_top_5
+inner join tuning.record as r on salary_top_5.id = r.employee_id
+inner join tuning.employee as e on salary_top_5.id = e.id
+inner join tuning.position as p on salary_top_5.id = p.id
+where r.record_symbol = 'o' and p.end_date > now();
+```
 ---
 
 ### 4단계 - 인덱스 설계
