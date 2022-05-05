@@ -192,7 +192,20 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+```sql
+select salary_top_5.employee_id, e.last_name, e.first_name, p.position_name, r.time, r.region, r.record_symbol
+from (
+    select ed.employee_id from tuning.employee_department as ed
+    inner join tuning.department as d on ed.department_id = d.id
+    inner join tuning.salary as s on ed.employee_id = s.id
+    where d.note = 'active' and ed.end_date > now() and s.end_date > now()
+    order by s.annual_income desc limit 5
+) as salary_top_5
+inner join tuning.record as r on salary_top_5.employee_id = r.employee_id
+inner join tuning.employee as e on salary_top_5.employee_id = e.id
+inner join tuning.position as p on salary_top_5.employee_id = p.id
+where r.record_symbol = 'o' and p.end_date > now();
+```
 ---
 
 ### 4단계 - 인덱스 설계
