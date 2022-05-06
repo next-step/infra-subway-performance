@@ -74,7 +74,97 @@ $ stress -c 2
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [x] codding as a hobby 와 같은 결과 반환
+  ```sql
+  set @rowCount = (select count(hobby) from programmer);
+  select hobby,  round(COUNT( * ) / @rowCount * 100, 1) AS percentage from programmer
+  group by hobby DESC;
+  ```
+  hobby index로 지정 - full index scan으로 전환
+  ```sql
+  CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
+  실행 결과 966ms -> 64ms
 
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```sql
+  select c.id, h.name from programmer as p
+  inner join covid as c on c.programmer_id = p.id
+  inner join hospital as h on h.id = c.hospital_id;
+  ```
+
+  programmer, hospital id 키 unique 및 pk 지정
+  ```sql
+  ALTER TABLE `subway`.`hospital` 
+  CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+  
+  ALTER TABLE `subway`.`programmer` 
+  CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+  ```
+
+  covid programmer_id, hospital_id 복합 인덱스 키 지정
+  ```sql
+    CREATE INDEX `idx_covid_programmer_id_hospital_id`  ON `subway`.`covid` (programmer_id, hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
+
+  실행 결과 292ms -> 10ms
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  ```sql
+  select c.id, h.name, hobby as user_hobby, p.dev_type, p.years_coding from covid as c
+   inner join hospital h on c.hospital_id = h.id
+   inner join 
+      (select p.id, p.hobby, p.dev_type, p.years_coding from programmer as p where (hobby = 'Yes' and student = 'Yes') or years_coding = '0-2 years') as p 
+          ON p.id = c.programmer_id;
+  ```
+  ```sql
+  create index programmer_hobby_student_index
+      on programmer (hobby, student);
+  create index programmer_years_coding_index
+      on programmer (years_coding);
+  create index hospital_id_index
+      on hospital (id);
+  create index covid_hospital_id_index
+      on covid (hospital_id);
+  ```
+  실행 결과 928ms -> 8ms
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  ```sql
+  select c.stay, COUNT(c.id) from covid as c
+    inner join (select id from hospital where name = '서울대병원') as h on h.id = c.hospital_id
+    inner join (select id, age from member where age in (20, 21, 22, 23, 24) or age in (25, 26, 27, 28, 29)) as m on m.id = c.member_id
+    inner join (select id, country from programmer where country = 'india') as p on p.id = c.programmer_id
+  group by c.stay
+  ```
+  
+  ```sql
+  create index hospital_name_index
+      on hospital (name);
+  create index member_age_index
+      on member (age);
+  create index programmer_country_index
+      on programmer (country);
+  ```
+
+  실행 결과 1276ms -> 8ms
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  ```sql
+  select exercise, count(p.id) from programmer as p
+    inner join covid c on c.programmer_id = p.id
+    inner join (select id from hospital where name = '서울대병원') as h on h.id = c.hospital_id
+    inner join (select id, age from member where age in (30, 31, 32, 33, 34) or age in (35, 36, 37, 38, 39)) as m on m.id = c.member_id
+  group by p.exercise
+  ```
+
+  실행 결과 80ms
+
+  
 ---
 
 ### 추가 미션
