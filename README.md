@@ -50,18 +50,26 @@ npm run dev
   - [x] TLS, HTTP/2 설정
  
 - [] WAS 성능 개선
-  - [] Spring Data Cache
-    - [] Redis Server 세팅
-    - [] application.properties에 redis, cache 설정 추가
-    - [] build.gradle 의존성 추가
-    - [] 반복되는 작업에 캐쉬 적용하기
+  - [x] Spring Data Cache
+    - [x] Redis Server 세팅
+    - [x] application.properties에 redis, cache 설정 추가
+    - [x] build.gradle 의존성 추가
+    - [x] 반복되는 작업에 캐쉬 적용하기
+      - [x] line 조회 적용
+      - [x] Path 조회 적용
 
-  - [] 비동기 처리
-    - [] @Async 적용
-    - [] 적절한 Thread pool size 구하기
+  - [x] 비동기 처리
+    - [x] 적절한 Thread pool size 구하기
+      - Intel(R)Xeon(R) Platinum 8259CL CPU @2.50GHz
+      - Cpu Cores : 1
+      - physical id : 1
+      - processor : 2
   
-  - [] Thread pool 설정 
-    - [] 애플리케이션 상황에 맞게 Thread Pool 설정
+  - [x] Thread pool 설정 
+    - [x] 애플리케이션 상황에 맞게 Thread Pool 설정
+      - 기본 Thread 사이즈 : 1 
+      - 최대 Thread 사이즈 : 2
+      - MaxThread가 동작하는 경우 대기하는 Queue 사이즈 : 50
     
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
