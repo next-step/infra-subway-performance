@@ -44,10 +44,10 @@ npm run dev
 
 ## 1단계 - 화면 응답 개선하기
 ### 요구사항
-- [] Reverse Proxy 개선하기 (nginx)
-  - [] gzip 설정
-  - [] cache 설정
-  - [] TLS, HTTP/2 설정
+- [x] Reverse Proxy 개선하기 (nginx)
+  - [x] gzip 설정
+  - [x] cache 설정
+  - [x] TLS, HTTP/2 설정
  
 - [] WAS 성능 개선
   - [] Spring Data Cache
