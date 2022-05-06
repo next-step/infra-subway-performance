@@ -41,7 +41,49 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-### 1단계 - 쿼리 최적화
+
+## 1단계 - 화면 응답 개선하기
+### 요구사항
+- [] Reverse Proxy 개선하기 (nginx)
+  - [] gzip 설정
+  - [] cache 설정
+  - [] TLS, HTTP/2 설정
+ 
+- [] WAS 성능 개선
+  - [] Spring Data Cache
+    - [] Redis Server 세팅
+    - [] application.properties에 redis, cache 설정 추가
+    - [] build.gradle 의존성 추가
+    - [] 반복되는 작업에 캐쉬 적용하기
+
+  - [] 비동기 처리
+    - [] @Async 적용
+    - [] 적절한 Thread pool size 구하기
+  
+  - [] Thread pool 설정 
+    - [] 애플리케이션 상황에 맞게 Thread Pool 설정
+    
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+---
+
+### 2단계 - 스케일 아웃
+
+1. Launch Template 링크를 공유해주세요.
+
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
+```sh
+$ stress -c 2
+```
+
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+---
+
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -49,7 +91,7 @@ npm run dev
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
