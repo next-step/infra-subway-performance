@@ -66,29 +66,30 @@ $ k6 run --out influxdb=http://localhost:8086/myk6db smoke_path.js
            * default: 1 looping VUs for 15m0s (gracefulStop: 30s)
 
 
-running (15m00.1s), 0/1 VUs, 895 complete and 0 interrupted iterations
+running (15m00.5s), 0/1 VUs, 818 complete and 0 interrupted iterations
 default ↓ [======================================] 1 VUs  15m0s
 
      ✓ http status code 200
      ✓ stations is json path exist
 
-     checks.........................: 100.00% ✓ 1790     ✗ 0
-     data_received..................: 4.0 MB  4.4 kB/s
-     data_sent......................: 78 kB   86 B/s
-     http_req_blocked...............: avg=28.19µs  min=252ns   med=294ns    max=24.93ms  p(90)=378ns    p(95)=420ns
-     http_req_connecting............: avg=298ns    min=0s      med=0s       max=266.92µs p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=4.71ms   min=1.91ms  med=2.46ms   max=1.61s    p(90)=3.96ms   p(95)=5.57ms
-       { expected_response:true }...: avg=4.71ms   min=1.91ms  med=2.46ms   max=1.61s    p(90)=3.96ms   p(95)=5.57ms
-     http_req_failed................: 0.00%   ✓ 0        ✗ 895
-     http_req_receiving.............: avg=269.04µs min=46.53µs med=138.52µs max=28.24ms  p(90)=482.86µs p(95)=648.67µs
-     http_req_sending...............: avg=66.22µs  min=42.59µs med=62.75µs  max=472.14µs p(90)=77.74µs  p(95)=83.34µs
-     http_req_tls_handshaking.......: avg=14.03µs  min=0s      med=0s       max=12.55ms  p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=4.37ms   min=1.69ms  med=2.17ms   max=1.61s    p(90)=3.55ms   p(95)=5.05ms
-     http_reqs......................: 895     0.994362/s
-     iteration_duration.............: avg=1s       min=1s      med=1s       max=2.63s    p(90)=1s       p(95)=1s
-     iterations.....................: 895     0.994362/s
+     checks.........................: 100.00% ✓ 1636     ✗ 0
+     data_received..................: 4.3 MB  4.7 kB/s
+     data_sent......................: 97 kB   107 B/s
+     http_req_blocked...............: avg=22.97µs min=257ns   med=312ns   max=23.47ms  p(90)=482ns    p(95)=564ns
+     http_req_connecting............: avg=459ns   min=0s      med=0s      max=436.24µs p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=49.84ms min=1.23ms  med=5ms     max=171.16ms p(90)=105.48ms p(95)=115.37ms
+       { expected_response:true }...: avg=49.84ms min=1.23ms  med=5ms     max=171.16ms p(90)=105.48ms p(95)=115.37ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 1636
+     http_req_receiving.............: avg=91.9µs  min=23.12µs med=59.65µs max=4.73ms   p(90)=155.17µs p(95)=282.52µs
+     http_req_sending...............: avg=67.74µs min=29.7µs  med=63.58µs max=3.93ms   p(90)=79.94µs  p(95)=89.02µs
+     http_req_tls_handshaking.......: avg=9.23µs  min=0s      med=0s      max=12.7ms   p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=49.68ms min=1.17ms  med=4.9ms   max=166.35ms p(90)=105.28ms p(95)=115.23ms
+     http_reqs......................: 1636    1.816792/s
+     iteration_duration.............: avg=1.1s    min=1s      med=1.09s   max=1.19s    p(90)=1.11s    p(95)=1.12s
+     iterations.....................: 818     0.908396/s
      vus............................: 1       min=1      max=1
      vus_max........................: 1       min=1      max=1
+   ✓ waitingTimeOnCachedData........: avg=1.79ms  min=1.17ms  med=1.53ms  max=12.3ms   p(90)=2.33ms   p(95)=3.18ms
 ```
 
 **접속 빈도가 높은 페이지 ( 메인 페이지 )**
@@ -437,7 +438,7 @@ default ✓ [======================================] 000/750 VUs  15m0s
 애플리케이션 에서는  
 경로검색 결과를 얻을 때 많을 리소스를 사용하고 변경이 많지 않아  
 `Redis` 에 캐싱을 적용했습니다.  
-경로 검색 스트레스 테스트는 http_req_duration avg 가 572ms 에서  5.48ms 로 크게 효과를 보았습니다.   
+경로 검색 로드 테스트는 http_req_duration max 가 572ms 에서  5.48ms 로 크게 효과를 보았습니다.   
 
 `Nomad` 를 활용해 WAS 를 3대 추가로 띄워보긴 했는데
 인스턴스 하나에 올려서 그런지 효과가 거의 없었습니다.
