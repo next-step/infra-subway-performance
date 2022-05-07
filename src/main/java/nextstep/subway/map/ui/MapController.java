@@ -22,7 +22,6 @@ public class MapController {
         this.mapService = mapService;
     }
 
-    @Cacheable(value = "findPath", key = "#source-#target")
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         json.info("[경로검색] {}, {}", kv("출발지", source), kv("목적지", target));

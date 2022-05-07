@@ -21,7 +21,6 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @Cacheable(value = "stations")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
@@ -31,13 +30,12 @@ public class StationController {
     /**
      * 역 정보 또한 잘 바뀌지 않는 값이라 생각되어 캐싱처리 하였습니다.
      */
-    @Cacheable("stations")
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
-    @Cacheable(value = "stations", key = "#id")
+
     @DeleteMapping("/stations/{id}")
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
