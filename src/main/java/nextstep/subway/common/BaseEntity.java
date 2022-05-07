@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @CreatedDate
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedDate;
 
     public LocalDateTime getCreatedDate() {

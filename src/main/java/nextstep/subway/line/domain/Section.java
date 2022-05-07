@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ public class Section implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;

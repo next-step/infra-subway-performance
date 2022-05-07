@@ -27,7 +27,6 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @CacheEvict(value = "lines", allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -42,7 +41,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -51,23 +49,24 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Cacheable(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    @CacheEvict(value = "lines", allEntries = true)
+    @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "lines", allEntries = true)
+    @CachePut(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "lines", allEntries = true)
+    @CachePut(value = "line", key = "#lineId")
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -75,7 +74,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CacheEvict(value = "lines", allEntries = true)
+    @CachePut(value = "line", key = "#lineId")
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
