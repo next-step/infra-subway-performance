@@ -21,7 +21,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @Cacheable(value = "stations", key = "#id")
+    @Cacheable(value = "stations")
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
