@@ -67,13 +67,117 @@ npm run dev
   
   - [x] Thread pool 설정 
     - [x] 애플리케이션 상황에 맞게 Thread Pool 설정
-      - 기본 Thread 사이즈 : 1 
-      - 최대 Thread 사이즈 : 2
-      - MaxThread가 동작하는 경우 대기하는 Queue 사이즈 : 50
+      - 기본 Thread 사이즈 : 2 
+      - 최대 Thread 사이즈 : 4
+      - MaxThread가 동작하는 경우 대기하는 Queue 사이즈 : 100 
     
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- 목표 성능 (https://pagespeed.web.dev/ 참고하여 작성)
+ 
+| .   | FCP  | TTI  | SI   | LCP  | TBT    | CLS    |
+|-----|------|------|------|------|--------|--------|
+| 목표치 | 1.8초 | 3.8초 | 3.4초 | 2.5초 | 200밀리초 | 0.1 이하 |
+
+- 지난 주와 성능 비교
+
+| 사이트   | FCP    | TTI    | SI     | LCP    | TBT      | CLS     |
+|-------|--------|--------|--------|--------|----------|---------|
+| 개선 전  | 3.0초   | 3.0초   | 3.0초   | 3.0초   | 10 밀리초   | 0.000   |
+| 개선 후  | 1.2초   | 1.3초   | 1.8초   | 1.3초   | 70 밀리초   | 0.004   |
+| ----- | ------ | ------ | ------ | ------ | -------- | ------- |
+| 비교    | -1.8초  | -1.7초  | -1.2초  | -1.7초  | +60 밀리초  | +0.004  |
+
+- 부하테스트 (smoke, load, stress)
+지난 주와 결과 비교는 부하테스트 폴더 참고 부탁드립니다.
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선방안으로 nginx에서 gzip 압축과 cache, HTTP/2 설정을 추가했습니다.
+```
+  gzip on; ## http 블록 수준에서 gzip 압축 활성화
+  gzip_comp_level 9;
+  gzip_vary on;
+  gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
+```
+
+```
+## Proxy 캐시 파일 경로, 메모리상 점유할 크기, 캐시 유지기간, 전체 캐시의 최대 크기 등 설정
+  proxy_cache_path /tmp/nginx levels=1:2 keys_zone=mycache:10m inactive=10m max_size=200M;
+
+  ## 캐시를 구분하기 위한 Key 규칙
+  proxy_cache_key "$scheme$host$request_uri $cookie_user";
+
+    server {
+        location ~* \.(?:css|js|gif|png|jpg|jpeg)$ {
+            proxy_pass http://app;
+
+            ## 캐시 설정 적용 및 헤더에 추가
+            # 캐시 존을 설정 (캐시 이름)
+            proxy_cache mycache;
+            # X-Proxy-Cache 헤더에 HIT, MISS, BYPASS와 같은 캐시 적중 상태정보가 설정
+            add_header X-Proxy-Cache $upstream_cache_status;
+            # 200 302 코드는 20분간 캐싱
+            proxy_cache_valid 200 302 10m;
+            # 만료기간을 1 달로 설정
+            expires 1M;
+            # access log 를 찍지 않는다.
+            access_log off;
+        }
+    }
+```
+
+```
+events {}
+http {
+    upstream app {
+        server 172.17.0.1:8080;
+
+    }
+
+    server {
+        listen 80;
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        ssl_certificate /etc/letsencrypt/live/loopstudy.p-e.kr/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/loopstudy.p-e.kr/privkey.pem;
+
+        # Disable SSL
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+        # 통신과정에서 사용할 암호화 알고리즘
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+        # Enable HSTS
+        # client의 browser에게 http로 어떠한 것도 load 하지 말라고 규제합니다.
+        # 이를 통해 http에서 https로 redirect 되는 request를 minimize 할 수 있습니다.
+        add_header Strict-Transport-Security "max-age=31536000" always;
+
+        # SSL sessions
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        location / {
+          proxy_pass http://app;
+        }
+    }
+
+    # gzip
+    include /etc/nginx/gzip.conf;
+    # cache
+    include /etc/nginx/cache.conf;
+}
+```
+
+- WAS 성능 개선을 위해서 기존 조회에 오래 걸렸던 '역 조회', '경로 탐색'에 레디스를 적용하여 캐쉬처리했습니다.
+```
+    @Cacheable(value = "path", key = "{#source-#target}")
+    public PathResponse findPath(Long source, Long target) {
+        ....
+    }
+```
 
 ---
 
