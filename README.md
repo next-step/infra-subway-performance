@@ -66,8 +66,11 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+   1. https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0ef469cf9e3dd716d
+   2. 기존에 존재하는 Instance 를 Launch Template 으로 생성하였습니다.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   1. 
 
 ```sh
 $ stress -c 2
@@ -83,6 +86,29 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```sql
+SELECT sub_result.사원번호,
+       sub_result.이름,
+       sub_result.연봉,
+       p.position_name as '직급명',
+       r.time          as '입출입 시간',
+       r.region        as '지역',
+       r.record_symbol as '입출입구분'
+FROM (
+         SELECT employee.id as '사원번호', employee.last_name as '이름', s.annual_income as '연봉'
+         FROM tuning.employee
+                  INNER JOIN tuning.manager m on m.employee_id = employee.id AND m.end_date >= NOW()
+                  INNER JOIN tuning.department d on d.id = m.department_id AND d.note = 'active'
+                  INNER JOIN tuning.salary s on s.id = employee.id AND s.end_date > NOW()
+         ORDER BY annual_income DESC
+         LIMIT 5
+     ) as sub_result
+         INNER JOIN tuning.position p ON p.id = sub_result.사원번호 AND p.position_name = 'manager'
+         INNER JOIN tuning.record r ON r.employee_id = sub_result.사원번호 AND r.record_symbol = 'o';
+
+```
+현재 M1 사용중입니다. Explain 보면서 최대한 빠르게 쿼리를 구성했습니다.
+![img_4.png](img_4.png)
 ---
 
 ### 4단계 - 인덱스 설계
