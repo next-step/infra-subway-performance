@@ -31,7 +31,6 @@ public class LineController {
     /**
      * Line 에 관한 정보는 잘 변동되지 않을 것 같아 Cache 를 적용했습니다.
      */
-    @Cacheable(value = "allLines")
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
@@ -40,20 +39,17 @@ public class LineController {
     /**
      * 위의 설명과 같습니다.
      */
-    @Cacheable(value = "line", key = "#id")
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
-    @Cacheable(value = "line", key = "#id")
     @PutMapping("/{id}")
     public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
-    @Cacheable(value = "line", key = "#id")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
