@@ -1,0 +1,186 @@
+ubuntu@ip-192-168-13-44:~/search$ k6 run --out influxdb=http://localhost:8086/myk6db load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 280 max VUs, 3m40s max duration (incl. graceful stop):
+           * default: Up to 280 looping VUs for 3m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0168] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0170] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0170] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0170] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0170] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0170] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0171] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0171] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:42808->52.78.66.68:443: read: connection reset by peer"
+WARN[0171] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0171] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0171] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0172] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0172] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:42870->52.78.66.68:443: read: connection reset by peer"
+WARN[0172] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0172] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0172] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:42942->52.78.66.68:443: read: connection reset by peer"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:42950->52.78.66.68:443: read: connection reset by peer"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:42952->52.78.66.68:443: read: connection reset by peer"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:42958->52.78.66.68:443: read: connection reset by peer"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:42956->52.78.66.68:443: read: connection reset by peer"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0173] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43018->52.78.66.68:443: read: connection reset by peer"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43016->52.78.66.68:443: read: connection reset by peer"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43026->52.78.66.68:443: read: connection reset by peer"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0174] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0175] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43134->52.78.66.68:443: read: connection reset by peer"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43176->52.78.66.68:443: read: connection reset by peer"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0176] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43238->52.78.66.68:443: read: connection reset by peer"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43254->52.78.66.68:443: read: connection reset by peer"
+WARN[0177] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0178] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0178] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0178] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43332->52.78.66.68:443: read: connection reset by peer"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0179] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43516->52.78.66.68:443: read: connection reset by peer"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43518->52.78.66.68:443: read: connection reset by peer"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43514->52.78.66.68:443: read: connection reset by peer"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43524->52.78.66.68:443: read: connection reset by peer"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43528->52.78.66.68:443: read: connection reset by peer"
+WARN[0180] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43564->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43592->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43590->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43588->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43596->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43598->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43600->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43606->52.78.66.68:443: read: connection reset by peer"
+WARN[0181] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43608->52.78.66.68:443: read: connection reset by peer"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43632->52.78.66.68:443: read: connection reset by peer"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": read tcp 192.168.13.44:43670->52.78.66.68:443: read: connection reset by peer"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0182] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": read tcp 192.168.13.44:43716->52.78.66.68:443: read: connection reset by peer"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+WARN[0183] Request Failed                                error="Get \"https://saerang.r-e.kr//paths?source=3&target=7\": http: server closed idle connection"
+WARN[0184] Request Failed                                error="Get \"https://saerang.r-e.kr//path\": EOF"
+
+running (3m23.3s), 000/280 VUs, 2856 complete and 0 interrupted iterations
+default ✓ [======================================] 000/280 VUs  3m10s
+
+     ✗ retrieved path
+      ↳  96% — ✓ 2765 / ✗ 91
+     ✗ path res
+      ↳  96% — ✓ 2750 / ✗ 106
+
+     checks.........................: 96.55% ✓ 5515      ✗ 197
+     data_received..................: 9.8 MB 48 kB/s
+     data_sent......................: 1.0 MB 5.1 kB/s
+     http_req_blocked...............: avg=663.27µs min=0s     med=5.35µs   max=41.83ms  p(90)=4.29ms   p(95)=4.5ms
+     http_req_connecting............: avg=117.73µs min=0s     med=0s       max=9.53ms   p(90)=717.76µs p(95)=788.26µs
+   ✗ http_req_duration..............: avg=3.55s    min=0s     med=504.23ms max=30.57s   p(90)=12.89s   p(95)=14.63s
+       { expected_response:true }...: avg=3.67s    min=1.41ms med=603.2ms  max=27.37s   p(90)=12.93s   p(95)=14.68s
+     http_req_failed................: 3.44%  ✓ 197       ✗ 5515
+     http_req_receiving.............: avg=68.91µs  min=0s     med=68.29µs  max=341.67µs p(90)=91.7µs   p(95)=98.74µs
+     http_req_sending...............: avg=68.98µs  min=0s     med=15.81µs  max=23.58ms  p(90)=45.19µs  p(95)=50.85µs
+     http_req_tls_handshaking.......: avg=492.57µs min=0s     med=0s       max=24.02ms  p(90)=3.41ms   p(95)=3.57ms
+     http_req_waiting...............: avg=3.55s    min=0s     med=504.15ms max=30.57s   p(90)=12.89s   p(95)=14.63s
+     http_reqs......................: 5712   28.101378/s
+     iteration_duration.............: avg=8.11s    min=1s     med=7.38s    max=31.62s   p(90)=16.7s    p(95)=17.91s
+     iterations.....................: 2856   14.050689/s
+     vus............................: 7      min=1       max=280
+     vus_max........................: 280    min=280     max=280
+
+ERRO[0205] some thresholds have failed
