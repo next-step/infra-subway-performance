@@ -27,13 +27,17 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "stations")
     public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+        List<Station> stations = findStations();
 
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "stations")
+    public List<Station> findStations() {
+        return stationRepository.findAll();
     }
 
     @CacheEvict(value = "station", key = "#id")

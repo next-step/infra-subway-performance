@@ -35,7 +35,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class LineService {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
- 
+
     @CacheEvict(value = "line", key = "#id")
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
