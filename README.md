@@ -188,12 +188,13 @@ http {
 ### 요구사항
 - [x] springboot에 HTTP Cache, gzip 설정하기 
 - [x] AWS S3 배포스크립트 업로드 
-- [] Launch Template 작성하기
-- [] Auto Scaling Group 생성하기
-- [] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
-1. Launch Template 링크를 공유해주세요.
-
+1. Launch Template 링크를 공유해주세요
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f499bd554a10ac38
+ 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
@@ -201,7 +202,7 @@ $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+2단계 부하테스트 폴더 참고 부탁드립니다. 
 ---
 
 ### 3단계 - 쿼리 최적화
