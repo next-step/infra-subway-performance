@@ -4,6 +4,8 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +28,17 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    /**
+     * Line 에 관한 정보는 잘 변동되지 않을 것 같아 Cache 를 적용했습니다.
+     */
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    /**
+     * 위의 설명과 같습니다.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
