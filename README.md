@@ -45,7 +45,21 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+### stations 스모크 테스트  
+![img_1.png](img_1.png)
+
+### stations 로드 테스트
+![img_2.png](img_2.png)
+
+### stations 스트레스 테스트
+![img_3.png](img_3.png)
+
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+- 정적 파일 gzip 압축
+- bundle minimization
+- http1 -> http2
+- 잘 변하지 않고, 조회가 잦은 값에 cache 적용
 
 ---
 
