@@ -32,11 +32,6 @@ dependencies {
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
-	// Spring Actuator metric 수집
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE")
-	implementation("io.micrometer:micrometer-registry-cloudwatch")
-
 	// redis
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
   <head>
     <title>Running Map</title>
     <meta
@@ -24,10 +24,14 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/@mdi/font@5.0.45/css/materialdesignicons.min.css"
     />
+
+    <!-- 캐쉬 적용 -->
+    <link rel="stylesheet" href="{{staticUrls '/css/cache-test.css'}}">
+
   </head>
   <body>
     <div id="app"></div>
-    <script src="/js/vendors.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="{{staticUrls '/js/vendors.js'}}"></script>
+    <script src="{{staticUrls '/js/main.js'}}"></script>
   </body>
 </html>

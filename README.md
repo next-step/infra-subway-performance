@@ -92,6 +92,7 @@ npm run dev
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선방안으로 nginx에서 gzip 압축과 cache, HTTP/2 설정을 추가했습니다.
+gzip.conf
 ```
   gzip on; ## http 블록 수준에서 gzip 압축 활성화
   gzip_comp_level 9;
@@ -99,6 +100,7 @@ npm run dev
   gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
 ```
 
+cache.conf
 ```
 ## Proxy 캐시 파일 경로, 메모리상 점유할 크기, 캐시 유지기간, 전체 캐시의 최대 크기 등 설정
   proxy_cache_path /tmp/nginx levels=1:2 keys_zone=mycache:10m inactive=10m max_size=200M;
@@ -125,6 +127,7 @@ npm run dev
     }
 ```
 
+nginx.conf 
 ```
 events {}
 http {
@@ -181,7 +184,13 @@ http {
 
 ---
 
-### 2단계 - 스케일 아웃
+## 2단계 - 스케일 아웃
+### 요구사항
+- [x] springboot에 HTTP Cache, gzip 설정하기 
+- [x] AWS S3 배포스크립트 업로드 
+- [] Launch Template 작성하기
+- [] Auto Scaling Group 생성하기
+- [] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 
