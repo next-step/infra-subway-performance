@@ -42,14 +42,13 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineResponse(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
+    }
+
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
