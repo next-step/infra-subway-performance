@@ -54,6 +54,8 @@ npm run dev
 ### stations 스트레스 테스트
 ![img_6.png](img_6.png)
    - 기존에는 VUser 가 500 일때, max 가 15.98s 였으나 현재는 VUser 가 1000 일때도 max 가 3.93s 로 성능이 향상되었습니다.
+   - ![img_7.png](img_7.png)
+     - Spring 로그를 보다보니 HTTP 1.0 이라 나오는데, WebPage 에서는 AssetFile 들은 HTTP2 로 받아오던데, Spring 에서 응답하는 값도 HTTP2 로 보내기 위해서는 톰캣설정이 필요한건가요?
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
