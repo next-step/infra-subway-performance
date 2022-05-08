@@ -7,18 +7,20 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.station.domain.Station;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class StationResponse {
     private Long id;
     private String name;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime createdDate;
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private String createdDate;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime modifiedDate;
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private String modifiedDate;
 
     public static StationResponse of(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
@@ -30,8 +32,8 @@ public class StationResponse {
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+        this.createdDate = createdDate.format(DateTimeFormatter.ISO_DATE_TIME);
+        this.modifiedDate = modifiedDate.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public Long getId() {
@@ -42,11 +44,11 @@ public class StationResponse {
         return name;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public LocalDateTime getModifiedDate() {
+    public String getModifiedDate() {
         return modifiedDate;
     }
 }

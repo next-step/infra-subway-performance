@@ -26,7 +26,6 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     @Bean
     public CacheManager redisCacheManager() {
-
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
@@ -37,4 +36,14 @@ public class CacheConfig extends CachingConfigurerSupport {
         return redisCacheManager;
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper()
+                .findAndRegisterModules()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
 }
