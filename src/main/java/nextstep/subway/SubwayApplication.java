@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories
 @EnableJpaAuditing
-@EnableCaching
 @SpringBootApplication
 public class SubwayApplication {
 
