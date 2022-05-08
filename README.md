@@ -52,7 +52,8 @@ npm run dev
 ![img_2.png](img_2.png)
 
 ### stations 스트레스 테스트
-![img_3.png](img_3.png)
+![img_6.png](img_6.png)
+   - 기존에는 VUser 가 500 일때, max 가 15.98s 였으나 현재는 VUser 가 1000 일때도 max 가 3.93s 로 성능이 향상되었습니다.
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
