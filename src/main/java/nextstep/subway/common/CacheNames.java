@@ -7,4 +7,6 @@ public class CacheNames {
     public static final String LINES = "lines";
 
     public static final String FAVORITES = "favorites";
+
+    public static final String MEMBERS = "members";
 }
