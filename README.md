@@ -160,9 +160,67 @@ FROM (
         ```
    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
    ```sql
-   
+   select c.id, h.name, result.hobby, result.dev_type, result.years_coding
+    from covid as c
+    inner join hospital h on c.hospital_id = h.id
+    inner join
+    (
+    select p.id, p.hobby, p.dev_type, p.years_coding
+    from programmer as p
+    where (hobby = 'Yes' and student = 'Yes')
+    or years_coding = '0-2 years'
+    ) as result
+    ON result.id = c.programmer_id;
+    
+    SHOW INDEX FROM programmer;
+    
+    create index idx_hobby_student
+    on programmer (hobby, student);
+    
+    create index idx_years_coding
+    on programmer (years_coding);
    ```
+    
+   - Execute Time -> 160ms (M1 기준)
+   - 다만 하면서도 years_coding 의 cardinality 를 감안했을때 Index 를 거는게 Row 가 많아진다면 유의미할까? 라는 생각도 들긴 했습니다.
 
+   4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+   ```sql
+    EXPLAIN SELECT covid.stay, COUNT(*)
+    FROM covid
+    INNER JOIN programmer p on covid.programmer_id = p.id AND p.country = 'India'
+    INNER JOIN hospital h on covid.hospital_id = h.id AND h.id = 9
+    INNER JOIN member m on p.member_id = m.id AND m.age AND m.age BETWEEN 20 and 30
+    GROUP BY covid.stay
+    ORDER BY null;
+    
+    EXPLAIN SELECT covid.stay, COUNT(*)
+    FROM covid
+    INNER JOIN programmer p on covid.programmer_id = p.id AND p.country = 'India'
+    INNER JOIN hospital h on covid.hospital_id = h.id AND h.id = 9
+    inner join (select id from member where age in (20, 21, 22, 23, 24) or age in (25, 26, 27, 28, 29)) as m on m.id = covid.member_id
+    GROUP BY covid.stay
+    ORDER BY null;
+   ```
+   
+   - 더 이상 어느 부분을 최적화 해야할지 잘 감이 오질 않네요.
+       - 일단 돌려본 결과 BETWEEN 으로 돌렸을때(1.6 ~ 2.3s) / IN 절로 돌렸을때 (435ms) 차이를 보였으나 이유는 잘 모르겠습니다.
+       - ORDER BY NULL 을 통해 FileSort 를 없앴습니다.
+       - 아래 각 실행 계획입니다.
+         - BETWEEN
+           - ![img_8.png](img_8.png)
+         - IN
+           - ![img_9.png](img_9.png)
+   5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    ```sql
+    select exercise, count(p.id) from programmer as p
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on c.hospital_id = h.id AND h.id = 9
+    inner join (select id, age from member where age in (30, 31, 32, 33, 34) or age in (35, 36, 37, 38, 39)) as m on m.id = c.member_id
+    group by p.exercise
+    order by null;
+    ```
+   
 ---
 
 ### 추가 미션
