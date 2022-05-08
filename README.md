@@ -114,6 +114,51 @@ FROM (
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   1. codding as hobby
+      ```sql
+         SELECT hobby, COUNT(id) AS percentage
+         FROM programmer
+         GROUP BY hobby
+      ```
+     - 원래 실행시간 (2s 791ms)
+     - 원래 실행계획
+       - ![img_5.png](img_5.png)
+     - 인덱스 생성
+       ```sql
+          CREATE INDEX idx_hobby ON programmer (hobby);
+       ```
+       - hobby 의 카디널리티가 너무 높아 사실 인덱스를 만들어도 의미가 없을것 같습니다.
+     - 인덱스 생성 쿼리 결과
+       - 실행시간이 (4s 532ms) 로 증가하였습니다.
+       - 따라서 인덱스를 만드는 것보다 그냥 기존 방식으로 검색하거나 통계 자료라면 차라리 다른 테이블 혹은 다른 데이터베이스에 저장해두고 그 값을 캐싱해서 주는게 더 효율적이지 않을까 싶었습니다.
+   2. 프로그래머별로 해당하는 병원을 출력하시오 (covid.id, hospital.name)
+   ```sql
+   # programmer_id 당 hospital 이 두개 이상 있는 경우를 확인하는 작업  
+   SELECT programmer_id, COUNT(*) as c
+   FROM covid
+   WHERE programmer_id IS NOT NULL
+   GROUP BY programmer_id
+   HAVING c > 1;
+   # result = 0 따라서 1:1 맵핑임
+
+   SELECT c.id, h.name
+   FROM covid c
+   INNER JOIN hospital h on c.hospital_id = h.id; 
+   #(executeTime = 158ms) M1 의 경우라 두배(200ms 이하)로 지정
+   ```
+      - Primary Key 지정
+        - covid -> id is primary key
+        - programmer -> id is primary key
+        - hospital -> id is primary key
+        - member -> id is primary key
+      - 인덱스 생성
+        ```sql
+            CREATE UNIQUE INDEX unique_idx_programmer_id_hospital_id ON covid (programmer_id, hospital_id);
+        ```
+   3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+   ```sql
+   
+   ```
 
 ---
 
