@@ -48,6 +48,7 @@ public class LoggingAOP {
             log.info(sb.toString());
         }
         catch (Throwable throwable) {
+            log.error(throwable + "," + throwable.getMessage());
             log.error(sb.toString());
         }
         finally {
