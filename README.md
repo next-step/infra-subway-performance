@@ -60,6 +60,8 @@ npm run dev
    - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/joined/StressREADME.md)  
  
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+ - [WEB] 텍스트기반의 정적파일 gzip 압축, 정적파일 캐싱, http2 프로토콜 적용
+ - [WAS] redis를 이용한 캐시 적용
 
 ---
 
