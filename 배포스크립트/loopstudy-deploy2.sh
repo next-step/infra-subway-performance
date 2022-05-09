@@ -13,8 +13,8 @@ txtgra='\033[1;30m' # Gray
 
 REPOSITORY=/home/ubuntu/nextstep/infra-subway-performance
 JAR_REPOSITORY=${REPOSITORY}/build/libs
-BRANCH=$1
-PROFILE=$2
+BRANCH=loop-study
+PROFILE=prod
 
 ## 조건 설정
 if [ $# -ne 2 ]
@@ -34,6 +34,12 @@ fi
 ## gradle build
 ## 프로세스 pid를 찾고 종료하는 명령어
 ## 애플리케이션 배포 함수
+
+function clone() {
+    echo -e "${txtylw}=======================================${txtrst}"
+    git clone -b loop-step1-step2 --single-branch https://github.com/loop-study/infra-subway-performance.git
+    echo -e "${txtylw}=======================================${txtrst}"
+}
 
 function move() {
     echo -e "${txtylw}=======================================${txtrst}"
@@ -80,8 +86,9 @@ function startServer() {
     echo -e "${txtylw}=======================================${txtrst}"
 }
 
+clone;
 move;
-## pull;
+##pull;
 build;
 findPidAndKillPid;
 startServer;

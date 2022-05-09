@@ -187,6 +187,8 @@ http {
 ## 2단계 - 스케일 아웃
 ### 요구사항
 - [x] springboot에 HTTP Cache, gzip 설정하기 
+![](../../Documents/캡처폴더/인프라공방_3주차_2단계_정작자원_JS_노캐쉬적용.png)
+![](../../Documents/캡처폴더/인프라공방_3주차_2단계_정적자원_css_캐쉬적용.png)
 - [x] AWS S3 배포스크립트 업로드 
 - [x] Launch Template 작성하기
 - [x] Auto Scaling Group 생성하기
@@ -194,6 +196,28 @@ http {
 
 1. Launch Template 링크를 공유해주세요
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f499bd554a10ac38
+
+### 배포 명령어 
+```
+mkdir nextstep && cd nextstep
+sudo apt-get update
+sudo apt install default-jre -y
+sudo apt install default-jdk -y
+
+sudo apt install docker.io
+sudo docker pull redis
+sudo docker run -d -p 6379:6379 redis
+ 
+sudo apt install unzip 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+sudo -i -u ubuntu aws s3 cp s3://nextstep-infra-workshop/loopstudy-deploy.sh /home/ubuntu
+sudo -i -u ubuntu chmod 755 /home/ubuntu/loopstudy-deploy.sh
+sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy.sh
+```
+
  
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
