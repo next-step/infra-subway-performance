@@ -506,15 +506,276 @@ http{
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+[Launch Template](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplates:launch-template-name=shineoov-template)
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
+![이미지](./images/cloudwatch-autoscaling.png)
 
 ```sh
 $ stress -c 2
 ```
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+
+**Load Test**  
+경로 검색 max 응답시간  
+2.16s -> 220 ms  
+
+메인 페이지 max 응답시간  
+203 ms -> 93 ms  
+
+지하철역 등록 max 응답시간  
+699ms -> 55ms  
+
+**Stress Test**
+지하철역 등록 시나리오는  
+정상적인 등록 처리가 76% 였는데 99.99%로 개선 되었고
+메인 페이지 시니라오는  
+max 응답시간이 423ms 에서 225ms 으로 개선 되었습니다.  
+
+#### Smoke Test
+
+**데이터를 조회하는데 여러 데이터를 참조하는 페이지 - ( 경로검색 )**
+```
+running (15m01.0s), 0/1 VUs, 849 complete and 0 interrupted iterations
+default ↓ [======================================] 1 VUs  15m0s
+
+     ✓ http status code 200
+     ✓ stations is json path exist
+
+     checks.........................: 100.00% ✓ 1698     ✗ 0
+     data_received..................: 4.3 MB  4.8 kB/s
+     data_sent......................: 99 kB   110 B/s
+     http_req_blocked...............: avg=28.85µs min=248ns   med=307ns   max=48.36ms  p(90)=461ns   p(95)=552ns
+     http_req_connecting............: avg=149ns   min=0s      med=0s      max=253.5µs  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=30.07ms min=1.15ms  med=4.61ms  max=132.53ms p(90)=60.12ms p(95)=61.87ms
+       { expected_response:true }...: avg=30.07ms min=1.15ms  med=4.61ms  max=132.53ms p(90)=60.12ms p(95)=61.87ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 1698
+     http_req_receiving.............: avg=68.94µs min=22.49µs med=58.55µs max=4.59ms   p(90)=86.21µs p(95)=107.58µs
+     http_req_sending...............: avg=63.83µs min=24.17µs med=62.67µs max=1.73ms   p(90)=79.76µs p(95)=89.76µs
+     http_req_tls_handshaking.......: avg=10.6µs  min=0s      med=0s      max=18ms     p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=29.94ms min=0s      med=3.34ms  max=131.72ms p(90)=59.99ms p(95)=61.74ms
+     http_reqs......................: 1698    1.88449/s
+     iteration_duration.............: avg=1.06s   min=1s      med=1.06s   max=1.18s    p(90)=1.06s   p(95)=1.06s
+     iterations.....................: 849     0.942245/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+   ✓ waitingTimeOnCachedData........: avg=1.43ms  min=0s      med=1.37ms  max=8.82ms   p(90)=1.64ms  p(95)=1.81ms
+```
+
+**접속 빈도가 높은 페이지 ( 메인 페이지 )**
+```
+running (15m00.5s), 0/1 VUs, 877 complete and 0 interrupted iterations
+default ↓ [======================================] 1 VUs  15m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 1754     ✗ 0
+     data_received..................: 434 kB  481 B/s
+     data_sent......................: 263 kB  292 B/s
+     http_req_blocked...............: avg=35.04µs min=229ns   med=304ns   max=60.83ms  p(90)=494ns   p(95)=564ns
+     http_req_connecting............: avg=638ns   min=0s      med=0s      max=1.12ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=12.82ms min=10.36ms med=12.98ms max=75.06ms  p(90)=14.81ms p(95)=15.05ms
+       { expected_response:true }...: avg=12.82ms min=10.36ms med=12.98ms max=75.06ms  p(90)=14.81ms p(95)=15.05ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 1754
+     http_req_receiving.............: avg=96.82µs min=40.88µs med=59.22µs max=42.36ms  p(90)=82.35µs p(95)=115.49µs
+     http_req_sending...............: avg=66.89µs min=35.39µs med=67.67µs max=876.11µs p(90)=83.78µs p(95)=92.92µs
+     http_req_tls_handshaking.......: avg=11.88µs min=0s      med=0s      max=20.84ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=12.66ms min=10.25ms med=12.85ms max=74.92ms  p(90)=14.68ms p(95)=14.9ms
+     http_reqs......................: 1754    1.947894/s
+     iteration_duration.............: avg=1.02s   min=1.02s   med=1.02s   max=1.09s    p(90)=1.02s   p(95)=1.02s
+     iterations.....................: 877     0.973947/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+**데이터를 갱신 하는 페이지 ( 지하철역 등록 )**
+```
+running (15m00.0s), 0/1 VUs, 888 complete and 0 interrupted iterations
+default ↓ [======================================] 1 VUs  15m0s
+
+   ✓ Content Created................: 100.00% ✓ 888      ✗ 0
+     data_received..................: 265 kB  294 B/s
+     data_sent......................: 100 kB  111 B/s
+     http_req_blocked...............: avg=42.98µs min=256ns   med=297ns   max=37.88ms  p(90)=378ns   p(95)=524ns
+     http_req_connecting............: avg=1.28µs  min=0s      med=0s      max=1.14ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=12.67ms min=11.19ms med=12.49ms max=40.61ms  p(90)=13.08ms p(95)=13.43ms
+       { expected_response:true }...: avg=12.67ms min=11.19ms med=12.49ms max=40.61ms  p(90)=13.08ms p(95)=13.43ms
+   ✓ http_req_failed................: 0.00%   ✓ 0        ✗ 888
+     http_req_receiving.............: avg=65.49µs min=43.46µs med=59.98µs max=575.7µs  p(90)=76.98µs p(95)=88.69µs
+     http_req_sending...............: avg=80.33µs min=52.51µs med=72.37µs max=878.13µs p(90)=96.23µs p(95)=119.67µs
+     http_req_tls_handshaking.......: avg=25.12µs min=0s      med=0s      max=22.31ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=12.52ms min=11.07ms med=12.34ms max=40.45ms  p(90)=12.92ms p(95)=13.29ms
+     http_reqs......................: 888     0.986663/s
+     iteration_duration.............: avg=1.01s   min=1.01s   med=1.01s   max=1.05s    p(90)=1.01s   p(95)=1.01s
+     iterations.....................: 888     0.986663/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+#### Load Test
+
+**데이터를 조회하는데 여러 데이터를 참조하는 페이지 - ( 경로검색 )**
+```
+running (15m01.0s), 000/110 VUs, 46957 complete and 0 interrupted iterations
+default ✗ [======================================] 000/110 VUs  15m0s
+
+     ✓ http status code 200
+     ✓ stations is json path exist
+
+     checks.........................: 100.00% ✓ 93914      ✗ 0
+     data_received..................: 237 MB  263 kB/s
+     data_sent......................: 5.5 MB  6.2 kB/s
+     http_req_blocked...............: avg=13.36µs  min=159ns   med=299ns   max=52.84ms  p(90)=441ns    p(95)=532ns
+     http_req_connecting............: avg=977ns    min=0s      med=0s      max=5.2ms    p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=29.02ms  min=776.3µs med=3.27ms  max=220.65ms p(90)=74.14ms  p(95)=84.19ms
+       { expected_response:true }...: avg=29.02ms  min=776.3µs med=3.27ms  max=220.65ms p(90)=74.14ms  p(95)=84.19ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 93914
+     http_req_receiving.............: avg=129.91µs min=12.7µs  med=57.92µs max=53.09ms  p(90)=209.55µs p(95)=331.63µs
+     http_req_sending...............: avg=59.88µs  min=14.8µs  med=48.38µs max=9.56ms   p(90)=83.25µs  p(95)=113.45µs
+     http_req_tls_handshaking.......: avg=11.3µs   min=0s      med=0s      max=36.74ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=28.83ms  min=35.68µs med=3.13ms  max=220.54ms p(90)=73.83ms  p(95)=83.72ms
+     http_reqs......................: 93914   104.228084/s
+     iteration_duration.............: avg=1.05s    min=1s      med=1.06s   max=1.22s    p(90)=1.08s    p(95)=1.09s
+     iterations.....................: 46957   52.114042/s
+     vus............................: 7       min=1        max=110
+     vus_max........................: 110     min=110      max=110
+   ✓ waitingTimeOnCachedData........: avg=2.38ms   min=35.68µs med=2.72ms  max=46.22ms  p(90)=3.32ms   p(95)=3.92ms
+```
+
+**접속 빈도가 높은 페이지 ( 메인 페이지 )**
+```
+running (15m01.0s), 000/110 VUs, 48679 complete and 0 interrupted iterations
+default ✗ [======================================] 000/110 VUs  15m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+
+     checks.........................: 100.00% ✓ 97358      ✗ 0
+     data_received..................: 24 MB   27 kB/s
+     data_sent......................: 15 MB   16 kB/s
+     http_req_blocked...............: avg=13.13µs  min=149ns   med=299ns   max=50.64ms p(90)=448ns    p(95)=553ns
+     http_req_connecting............: avg=910ns    min=0s      med=0s      max=5.17ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.35ms  min=6.18ms  med=10.55ms max=93.44ms p(90)=13.16ms  p(95)=13.59ms
+       { expected_response:true }...: avg=10.35ms  min=6.18ms  med=10.55ms max=93.44ms p(90)=13.16ms  p(95)=13.59ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 97358
+     http_req_receiving.............: avg=141.64µs min=12.65µs med=58.5µs  max=45.14ms p(90)=239.87µs p(95)=359.6µs
+     http_req_sending...............: avg=71.96µs  min=16.78µs med=48.19µs max=55.88ms p(90)=121.87µs p(95)=165.69µs
+     http_req_tls_handshaking.......: avg=10.7µs   min=0s      med=0s      max=25.58ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=10.14ms  min=3.24ms  med=10.41ms max=93.34ms p(90)=13ms     p(95)=13.4ms
+     http_reqs......................: 97358   108.056434/s
+     iteration_duration.............: avg=1.02s    min=1.01s   med=1.02s   max=1.1s    p(90)=1.02s    p(95)=1.02s
+     iterations.....................: 48679   54.028217/s
+     vus............................: 0       min=0        max=110
+     vus_max........................: 110     min=110      max=110
+```
+
+**데이터를 갱신 하는 페이지 ( 지하철역 등록 )**
+```
+running (15m01.0s), 000/110 VUs, 49179 complete and 0 interrupted iterations
+default ↓ [======================================] 110/110 VUs  15m0s
+
+   ✓ Content Created................: 99.99% ✓ 49178     ✗ 1
+     data_received..................: 15 MB  17 kB/s
+     data_sent......................: 5.8 MB 6.5 kB/s
+     http_req_blocked...............: avg=25.29µs min=157ns   med=304ns   max=49.15ms p(90)=479ns    p(95)=579ns
+     http_req_connecting............: avg=1.74µs  min=0s      med=0s      max=3.2ms   p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.39ms min=6.77ms  med=10.41ms max=55.79ms p(90)=11.87ms  p(95)=12.79ms
+       { expected_response:true }...: avg=10.39ms min=6.77ms  med=10.41ms max=55.79ms p(90)=11.87ms  p(95)=12.79ms
+   ✓ http_req_failed................: 0.00%  ✓ 1         ✗ 49178
+     http_req_receiving.............: avg=89.95µs min=12.07µs med=59.64µs max=22.21ms p(90)=159.07µs p(95)=241.45µs
+     http_req_sending...............: avg=87.67µs min=18.87µs med=69.29µs max=13.6ms  p(90)=142.51µs p(95)=203.8µs
+     http_req_tls_handshaking.......: avg=21.16µs min=0s      med=0s      max=34.34ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=10.21ms min=5.65ms  med=10.25ms max=55.67ms p(90)=11.68ms  p(95)=12.57ms
+     http_reqs......................: 49179  54.582249/s
+     iteration_duration.............: avg=1.01s   min=1s      med=1.01s   max=1.07s   p(90)=1.01s    p(95)=1.01s
+     iterations.....................: 49179  54.582249/s
+     vus............................: 1      min=1       max=110
+     vus_max........................: 110    min=110     max=110
+```
+
+#### Stress Test
+
+**데이터를 조회하는데 여러 데이터를 참조하는 페이지 - ( 경로검색 )**
+```
+running (15m00.5s), 000/330 VUs, 74054 complete and 0 interrupted iterations
+default ↓ [======================================] 001/330 VUs  15m0s
+
+     ✓ http status code 200
+     ✓ stations is json path exist
+
+     checks.........................: 100.00% ✓ 148108     ✗ 0
+     data_received..................: 375 MB  416 kB/s
+     data_sent......................: 8.9 MB  9.8 kB/s
+     http_req_blocked...............: avg=24.09µs  min=146ns    med=288ns  max=120.61ms p(90)=406ns    p(95)=484ns
+     http_req_connecting............: avg=1.75µs   min=0s       med=0s     max=15.54ms  p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=269.15ms min=703.5µs  med=3.49ms max=3.39s    p(90)=1.44s    p(95)=1.58s
+       { expected_response:true }...: avg=269.15ms min=703.5µs  med=3.49ms max=3.39s    p(90)=1.44s    p(95)=1.58s
+     http_req_failed................: 0.00%   ✓ 0          ✗ 148108
+     http_req_receiving.............: avg=310.38µs min=12.42µs  med=59.8µs max=62.05ms  p(90)=434.82µs p(95)=1.1ms
+     http_req_sending...............: avg=54.7µs   min=15.78µs  med=40.3µs max=58.99ms  p(90)=75.06µs  p(95)=106.55µs
+     http_req_tls_handshaking.......: avg=21.04µs  min=0s       med=0s     max=87.85ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=268.79ms min=0s       med=3.35ms max=3.39s    p(90)=1.44s    p(95)=1.58s
+     http_reqs......................: 148108  164.469153/s
+     iteration_duration.............: avg=1.53s    min=1s       med=1.08s  max=4.39s    p(90)=2.58s    p(95)=2.63s
+     iterations.....................: 74054   82.234577/s
+     vus............................: 1       min=1        max=330
+     vus_max........................: 330     min=330      max=330
+   ✓ waitingTimeOnCachedData........: avg=3.36ms   min=393.67µs med=2.73ms max=1.5s     p(90)=4.33ms   p(95)=5.86ms
+```
+
+**접속 빈도가 높은 페이지 ( 메인 페이지 )**
+```
+running (15m00.2s), 000/330 VUs, 111568 complete and 0 interrupted iterations
+default ↓ [======================================] 001/330 VUs  15m0s
+
+     ✓ logged in successfully
+     ✓ retrie†
+     checks.........................: 100.00% ✓ 223136     ✗ 0
+     data_received..................: 56 MB   62 kB/s
+     data_sent......................: 34 MB   37 kB/s
+     http_req_blocked...............: avg=15.92µs  min=146ns   med=286ns   max=59.88ms  p(90)=409ns    p(95)=480ns
+     http_req_connecting............: avg=1.26µs   min=0s      med=0s      max=17.03ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.23ms  min=6.07ms  med=10.49ms max=225.61ms p(90)=13ms     p(95)=13.59ms
+       { expected_response:true }...: avg=10.23ms  min=6.07ms  med=10.49ms max=225.61ms p(90)=13ms     p(95)=13.59ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 223136
+     http_req_receiving.............: avg=137.66µs min=12.96µs med=43.52µs max=56.01ms  p(90)=187.59µs p(95)=267.67µs
+     http_req_sending...............: avg=60.94µs  min=17.57µs med=39.79µs max=21.56ms  p(90)=102.28µs p(95)=140.06µs
+     http_req_tls_handshaking.......: avg=13.72µs  min=0s      med=0s      max=19.86ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=10.04ms  min=1.03ms  med=10.38ms max=215.72ms p(90)=12.86ms  p(95)=13.39ms
+     http_reqs......................: 223136  247.860667/s
+     iteration_duration.............: avg=1.02s    min=1.01s   med=1.02s   max=1.38s    p(90)=1.02s    p(95)=1.02s
+     iterations.....................: 111568  123.930334/s
+     vus............................: 1       min=1        max=330
+     vus_max........................: 330     min=330      max=330
+
+```
+
+**데이터를 갱신 하는 페이지 ( 지하철역 등록 )**
+```
+running (15m00.8s), 000/750 VUs, 269644 complete and 0 interrupted iterations
+default ↓ [======================================] 001/750 VUs  15m0s
+
+   ✓ Content Created................: 99.99% ✓ 269642     ✗ 2
+     data_received..................: 84 MB  93 kB/s
+     data_sent......................: 32 MB  36 kB/s
+     http_req_blocked...............: avg=28.54µs  min=144ns   med=282ns   max=56.76ms  p(90)=398ns    p(95)=462ns
+     http_req_connecting............: avg=1.97µs   min=0s      med=0s      max=16.08ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.17ms  min=6.53ms  med=9.78ms  max=184.43ms p(90)=12.22ms  p(95)=14.01ms
+       { expected_response:true }...: avg=10.17ms  min=6.53ms  med=9.78ms  max=184.43ms p(90)=12.22ms  p(95)=14.01ms
+   ✓ http_req_failed................: 0.00%  ✓ 2          ✗ 269642
+     http_req_receiving.............: avg=157.46µs min=12.2µs  med=42.02µs max=38.37ms  p(90)=214.68µs p(95)=356.85µs
+     http_req_sending...............: avg=73.44µs  min=19.64µs med=40.1µs  max=41.97ms  p(90)=127.16µs p(95)=216.9µs
+     http_req_tls_handshaking.......: avg=25.47µs  min=0s      med=0s      max=24.2ms   p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=9.94ms   min=3.03ms  med=9.61ms  max=184.15ms p(90)=11.91ms  p(95)=13.41ms
+     http_reqs......................: 269644 299.326451/s
+     iteration_duration.............: avg=1.01s    min=1s      med=1.01s   max=1.24s    p(90)=1.01s    p(95)=1.01s
+     iterations.....................: 269644 299.326451/s
+     vus............................: 1      min=1        max=750
+     vus_max........................: 750    min=750      max=750
+```
 
 ---
 
