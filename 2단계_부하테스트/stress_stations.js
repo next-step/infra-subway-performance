@@ -3,12 +3,12 @@ import { check, group, sleep, fail } from 'k6';
 
 export let options = {
     stages: [
-        { duration: '1m', target: 600 }, // simulate ramp-up of traffic from 1 to 100 users over 5 minutes.
-        { duration: '1m', target: 700 }, // stay at 200 users for 10 minutes
-        { duration: '1m', target: 800 }, // stay at 300 users for 10 minutes
-        { duration: '1m', target: 900 }, // stay at 400 users for 10 minutes
-        { duration: '1m', target: 1000 }, // stay at 400 users for 10 minutes
+        { duration: '1m', target: 800 }, // simulate ramp-up of traffic from 1 to 100 users over 5 minutes.
+        { duration: '1m', target: 900 }, // stay at 200 users for 10 minutes
+        { duration: '1m', target: 1000 }, // stay at 300 users for 10 minutes
         { duration: '1m', target: 1100 }, // stay at 400 users for 10 minutes
+        { duration: '1m', target: 1200 }, // stay at 400 users for 10 minutes
+        { duration: '1m', target: 1300 }, // stay at 400 users for 10 minutes
         { duration: '10s', target: 0 }, // ramp-down to 0 users
     ],
     thresholds: {
@@ -16,7 +16,7 @@ export let options = {
     },
 };
 
-const BASE_URL = 'https://loopstudy.p-e.kr';
+const BASE_URL = 'https://loopstudy.kro.kr';
 
 export default function ()  {
 

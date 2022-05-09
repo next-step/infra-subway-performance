@@ -11,21 +11,10 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-REPOSITORY=/home/ubuntu/nextstep/infra-subway-performance
+REPOSITORY=/home/ubuntu/infra-subway-performance
 JAR_REPOSITORY=${REPOSITORY}/build/libs
 BRANCH=loop-study
 PROFILE=prod
-
-## 조건 설정
-if [ $# -ne 2 ]
-then
-    echo -e "${txtylw}=======================================${txtrst}"
-    echo -e "${txtgrn}  << 스크립트 🧐 >>${txtrst}"
-    echo -e ""
-    echo -e "${txtgrn} $0 브랜치이름 ${txtred}{ prod | dev }"
-    echo -e "${txtylw}=======================================${txtrst}"
-    exit
-fi
 
 ## ...
 
@@ -38,6 +27,9 @@ fi
 function clone() {
     echo -e "${txtylw}=======================================${txtrst}"
     git clone -b loop-step1-step2 --single-branch https://github.com/loop-study/infra-subway-performance.git
+
+    cd infra-subway-performance/src/test/java
+    rm -rf nextstep/
     echo -e "${txtylw}=======================================${txtrst}"
 }
 

@@ -1,4 +1,3 @@
-
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
     /  \/    \    |     (   /   ‾‾\
@@ -9,64 +8,63 @@
      script: stress_paths.js
      output: -
 
-  scenarios: (100.00%) 1 scenario, 1100 max VUs, 6m40s max duration (incl. graceful stop):
-           * default: Up to 1100 looping VUs for 6m10s over 7 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+  scenarios: (100.00%) 1 scenario, 1300 max VUs, 6m40s max duration (incl. graceful stop):
+           * default: Up to 1300 looping VUs for 6m10s over 7 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
-WARN[0312] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0312] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0313] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0313] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0313] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0314] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0314] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0314] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0314] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0315] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0316] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-WARN[0317] Request Failed                                error="Get \"https://loopstudy.p-e.kr/paths?source=1&target=3\": dial tcp 3.37.46.137:443: socket: too many open files"
-
-running (5m16.5s), 0000/1100 VUs, 154237 complete and 1027 interrupted iterations
-default ✗ [=============================>------] 0188/1100 VUs  5m16.5s/6m10.0s
+WARN[0192] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0192] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0193] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0193] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0193] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0194] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0194] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0194] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0194] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0194] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0195] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0196] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 52.78.14.53:443: socket: too many open files"
+WARN[0197] Request Failed                                error="Get \"https://loopstudy.kro.kr/paths?source=1&target=3\": dial tcp 3.35.59.64:443: socket: too many open files"
+^C
+running (3m16.4s), 0000/1300 VUs, 147461 complete and 1027 interrupted iterations
+default ✗ [==================>-----------------] 0179/1300 VUs  3m16.4s/6m10.0s
 
      ✗ paths in successfully
-      ↳  99% — ✓ 154642 / ✗ 34
+      ↳  99% — ✓ 148449 / ✗ 33
 
-     checks.........................: 99.97% ✓ 154642     ✗ 34
-     data_received..................: 744 MB 2.4 MB/s
-     data_sent......................: 93 MB  293 kB/s
-     http_req_blocked...............: avg=445.08ms min=0s     med=433.92ms max=4.47s    p(90)=802.4ms  p(95)=930.81ms
-     http_req_connecting............: avg=7.34ms   min=0s     med=1.47ms   max=3.04s    p(90)=12.38ms  p(95)=41.81ms
-   ✓ http_req_duration..............: avg=19.34ms  min=0s     med=10.04ms  max=3.51s    p(90)=22.4ms   p(95)=40.22ms
-       { expected_response:true }...: avg=19.34ms  min=1.86ms med=10.04ms  max=3.51s    p(90)=22.4ms   p(95)=40.23ms
-     http_req_failed................: 0.02%  ✓ 34         ✗ 154642
-     http_req_receiving.............: avg=825.6µs  min=0s     med=70.11µs  max=101.29ms p(90)=1.34ms   p(95)=3.26ms
-     http_req_sending...............: avg=5.86ms   min=0s     med=77.04µs  max=3.5s     p(90)=140.84µs p(95)=262.16µs
-     http_req_tls_handshaking.......: avg=435.05ms min=0s     med=415.78ms max=2.47s    p(90)=795.69ms p(95)=924.96ms
-     http_req_waiting...............: avg=12.64ms  min=0s     med=9.79ms   max=151.13ms p(90)=19.95ms  p(95)=31.62ms
-     http_reqs......................: 154676 488.663036/s
-     iteration_duration.............: avg=1.46s    min=1s     med=1.45s    max=5.49s    p(90)=1.81s    p(95)=1.96s
-     iterations.....................: 154237 487.276117/s
-     vus............................: 1026   min=10       max=1026
-     vus_max........................: 1100   min=1100     max=1100
+     checks.........................: 99.97% ✓ 148449     ✗ 33
+     data_received..................: 458 MB 2.3 MB/s
+     data_sent......................: 7.2 MB 36 kB/s
+     http_req_blocked...............: avg=37.77µs  min=0s     med=323ns   max=31.26ms p(90)=458ns    p(95)=529ns
+     http_req_connecting............: avg=6.69µs   min=0s     med=0s      max=16.96ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=3.17ms   min=0s     med=2.84ms  max=55.02ms p(90)=4.32ms   p(95)=5.91ms
+       { expected_response:true }...: avg=3.17ms   min=1.06ms med=2.84ms  max=55.02ms p(90)=4.32ms   p(95)=5.91ms
+     http_req_failed................: 0.02%  ✓ 33         ✗ 148449
+     http_req_receiving.............: avg=137.85µs min=0s     med=56.51µs max=19.16ms p(90)=208.82µs p(95)=309.98µs
+     http_req_sending...............: avg=50.74µs  min=0s     med=32.13µs max=17.33ms p(90)=67.53µs  p(95)=119.71µs
+     http_req_tls_handshaking.......: avg=29.59µs  min=0s     med=0s      max=21.44ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=2.98ms   min=0s     med=2.69ms  max=43.17ms p(90)=4.09ms   p(95)=5.41ms
+     http_reqs......................: 148482 756.093082/s
+     iteration_duration.............: avg=1s       min=1s     med=1s      max=1.05s   p(90)=1s       p(95)=1s
+     iterations.....................: 147461 750.893994/s
+     vus............................: 1026   min=14       max=1026
+     vus_max........................: 1300   min=1300     max=1300

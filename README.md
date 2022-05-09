@@ -198,13 +198,12 @@ http {
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f499bd554a10ac38
 
 ### 배포 명령어 
-```
-mkdir nextstep && cd nextstep
+``` 
 sudo apt-get update
 sudo apt install default-jre -y
 sudo apt install default-jdk -y
 
-sudo apt install docker.io
+sudo apt install docker.io -y
 sudo docker pull redis
 sudo docker run -d -p 6379:6379 redis
  
@@ -213,21 +212,17 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 
-sudo -i -u ubuntu aws s3 cp s3://nextstep-infra-workshop/loopstudy-deploy.sh /home/ubuntu
-sudo -i -u ubuntu chmod 755 /home/ubuntu/loopstudy-deploy.sh
-sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy.sh
+sudo -i -u ubuntu aws s3 cp s3://nextstep-infra-workshop/loopstudy-deploy2.sh /home/ubuntu
+sudo -i -u ubuntu chmod 755 /home/ubuntu/loopstudy-deploy2.sh
+sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy2.sh
 ```
-
  
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![ALB_부하테스트_실행결과.png](ALB_부하테스트_실행결과.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 2단계 부하테스트 폴더 참고 부탁드립니다. 
----
+--- 
 
 ### 3단계 - 쿼리 최적화
 
