@@ -119,9 +119,13 @@ FROM (
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
    1. codding as hobby
       ```sql
-         SELECT hobby, COUNT(id) AS percentage
-         FROM programmer
-         GROUP BY hobby
+       set @totalCount = (select count(hobby) from programmer);
+    
+       EXPLAIN SELECT no.count, yes.count FROM
+       programmer
+       INNER JOIN (SELECT hobby, round(COUNT(hobby) / @totalCount * 100, 1) AS count FROM programmer WHERE hobby = 'NO' GROUP BY hobby) as no
+       INNER JOIN (SELECT hobby, round(COUNT(hobby) / @totalCount * 100, 1) AS count FROM programmer WHERE hobby = 'YES' GROUP BY hobby) as yes
+       LIMIT 1;
       ```
      - 원래 실행시간 (2s 791ms)
      - 원래 실행계획
@@ -132,8 +136,8 @@ FROM (
        ```
        - hobby 의 카디널리티가 너무 높아 사실 인덱스를 만들어도 의미가 없을것 같습니다.
      - 인덱스 생성 쿼리 결과
-       - 실행시간이 (4s 532ms) 로 증가하였습니다.
-       - 따라서 인덱스를 만드는 것보다 그냥 기존 방식으로 검색하거나 통계 자료라면 차라리 다른 테이블 혹은 다른 데이터베이스에 저장해두고 그 값을 캐싱해서 주는게 더 효율적이지 않을까 싶었습니다.
+       - 커버링 인덱스로 생성 완료
+       - ![img_10.png](img_10.png)
    2. 프로그래머별로 해당하는 병원을 출력하시오 (covid.id, hospital.name)
    ```sql
    # programmer_id 당 hospital 이 두개 이상 있는 경우를 확인하는 작업  
@@ -186,31 +190,27 @@ FROM (
 
    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
    ```sql
-    EXPLAIN SELECT covid.stay, COUNT(*)
+    SELECT covid.stay, COUNT(*)
     FROM covid
     INNER JOIN programmer p on covid.programmer_id = p.id AND p.country = 'India'
-    INNER JOIN hospital h on covid.hospital_id = h.id AND h.id = 9
-    INNER JOIN member m on p.member_id = m.id AND m.age AND m.age BETWEEN 20 and 30
-    GROUP BY covid.stay
-    ORDER BY null;
-    
-    EXPLAIN SELECT covid.stay, COUNT(*)
-    FROM covid
-    INNER JOIN programmer p on covid.programmer_id = p.id AND p.country = 'India'
-    INNER JOIN hospital h on covid.hospital_id = h.id AND h.id = 9
+    INNER JOIN (SELECT id FROM hospital WHERE id = 9) as h on covid.hospital_id = h.id
     inner join (select id from member where age in (20, 21, 22, 23, 24) or age in (25, 26, 27, 28, 29)) as m on m.id = covid.member_id
     GROUP BY covid.stay
     ORDER BY null;
+    
+    CREATE UNIQUE INDEX uidx_pk ON covid (id);
+    CREATE UNIQUE INDEX uidx_pk ON programmer (id);
+    CREATE UNIQUE INDEX uidx_pk ON hospital (id);
+    CREATE UNIQUE INDEX uidx_pk ON member (id);
+    
+    CREATE INDEX idx_programmer_id ON covid (programmer_id);
+    CREATE INDEX idx_h_id ON covid (hospital_id);
+    CREATE INDEX idx_member_age ON member (id, age);
    ```
    
-   - 더 이상 어느 부분을 최적화 해야할지 잘 감이 오질 않네요.
-       - 일단 돌려본 결과 BETWEEN 으로 돌렸을때(1.6 ~ 2.3s) / IN 절로 돌렸을때 (435ms) 차이를 보였으나 이유는 잘 모르겠습니다.
-       - ORDER BY NULL 을 통해 FileSort 를 없앴습니다.
-       - 아래 각 실행 계획입니다.
-         - BETWEEN
-           - ![img_8.png](img_8.png)
-         - IN
-           - ![img_9.png](img_9.png)
+   - 리뷰받고 난뒤 인덱스 성능 개선
+     - ![img_11.png](img_11.png)
+     
    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
     ```sql
     select exercise, count(p.id) from programmer as p
