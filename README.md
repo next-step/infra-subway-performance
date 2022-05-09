@@ -143,8 +143,8 @@ http {
 
     server {
         listen 443 ssl http2;
-        ssl_certificate /etc/letsencrypt/live/loopstudy.p-e.kr/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/loopstudy.p-e.kr/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/loopstudy.kro.kr/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/loopstudy.kro.kr/privkey.pem;
 
         # Disable SSL
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
@@ -218,7 +218,7 @@ sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy2.sh
 ```
  
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-![ALB_부하테스트_실행결과.png](ALB_부하테스트_실행결과.png)
+![ALB_부하테스트_CPU_사용률.png](ALB_부하테스트_CPU_사용률.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 2단계 부하테스트 폴더 참고 부탁드립니다. 
