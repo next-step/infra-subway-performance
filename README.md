@@ -43,8 +43,8 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-load 테스트
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+load 테스트  
 ```shell
 [ubuntu@LOAD]:~$ k6 run --out influxdb=http://localhost:8086/myk6db cache_load.js
 
@@ -88,11 +88,11 @@ default ↓ [======================================] 03/60 VUs  12m10s
      vus_max........................: 60      min=60       max=60
 ```
 ![image](https://user-images.githubusercontent.com/87216027/167416366-8e6d77de-f40e-416b-97ce-096f2e6bf984.png)
-RPS 수치 확인 (595 에서도 응답시간도 빠르고 안정적이었다.)
+RPS 수치 확인 (595 에서도 응답시간도 빠르고 안정적이었다.)  
 ![image](https://user-images.githubusercontent.com/87216027/167416414-dc6e47d8-a321-4659-941f-b29ee159be80.png)
 
 
-stress 테스트
+stress 테스트  
 ```shell
 WARN[0783] Request Failed                                error="Get \"https://dibtp1221.kro.kr//paths?source=24&target=12\": EOF"
 ERRO[0783] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
@@ -127,43 +127,44 @@ default ✗ [==========================>-----------] 320/410 VUs  13m03.1s/18m20
 
 ```
 ![image](https://user-images.githubusercontent.com/87216027/167416891-f2d93629-69e6-4e9b-8d68-b375245cb8ad.png)
-RPS 수치 확인 (1300 까지도 괜찮아보인다..)
+RPS 수치 확인 (1300 까지도 괜찮아보인다..)  
 ![image](https://user-images.githubusercontent.com/87216027/167416914-1b3d1108-9977-4927-92a6-8e22a407b6fd.png)
 
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-   a. Nginx-gzip압축추가
-   https://dibtp1221.kro.kr PageSpeed (First View), webpage test 개선 전후 비교
-   사이트 3개 모두 TTI, TBT는 PageSpeed (데스크톱), 그 외 메트릭은  webpage test 수치 사용.
-   단위: 초(s)
-   |아무개선 없었을 때|Nginx-gzip압축추가|
-   |----------------|-------------------------------|
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요  
+   a. Nginx-gzip압축추가  
+   https://dibtp1221.kro.kr PageSpeed (First View), webpage test 개선 전후 비교  
+   사이트 3개 모두 TTI, TBT는 PageSpeed (데스크톱), 그 외 메트릭은  webpage test 수치 사용.  
+   단위: 초(s)  
+   ||아무개선 없었을 때|Nginx-gzip압축추가|
+   |----------------|-------------------------------|-------------------------------|
    |FCP|4.853|1.7|
    |TTI|2.8|1.4|
    |Speed Index|4.803|1.719|
    |LCP|4.885|1.712|
-   |TBT|0.005|0.07|
+   |TBT|0.05|0.07|
 
 ![image](https://user-images.githubusercontent.com/87216027/167415885-a705ec24-2cd8-4e18-adf2-2fb39613ec1c.png)
 
-b. Nginx - cache 사용
-PageSpeed, smoke test 에서 수치개선 없어보였다.
+b. Nginx - cache 사용  
+PageSpeed, smoke test 에서 수치개선 없어보였다.  
 
-c. Nginx - TLS, HTTP/2 설정
-smoke test에서 오히려 처음에는 시간이 더 걸리는 것으로 나왔고, 이후에는 비슷했다.
+c. Nginx - TLS, HTTP/2 설정  
+smoke test에서 오히려 처음에는 시간이 더 걸리는 것으로 나왔고, 이후에는 비슷했다.  
 ![image](https://user-images.githubusercontent.com/87216027/167415838-9780bba1-92f8-41fd-8cee-38bb545f168a.png)
 
 
-d. WAS - caching 적용
-역관리, 노선관리, 구간관리, 경로 검색에 caching 적용하였다.
+d. WAS - caching 적용  
+역관리, 노선관리, 구간관리, 경로 검색에 caching 적용하였다.  
 
-역관리 (역 list 나오는 화면)
-캐싱 적용 전
+캐싱 효과 확인을 위해 단일 요청 smoke test 를 진행해보았다.  
+역관리 (역 list 나오는 화면)  
+캐싱 적용 전  
 ![image](https://user-images.githubusercontent.com/87216027/167415999-fdb16ca1-ee66-4f8f-bb86-0e9e1d7cfc05.png)
-캐싱 적용 후
+캐싱 적용 후  
 ![image](https://user-images.githubusercontent.com/87216027/167416105-0862fa8d-77d7-4cc7-9798-09f3b5b3a816.png)
 
-캐싱 적용 후에 첫 요청 응답시간이 전에 비해서 컸지만, redis에 값을 넣느라 그런게 아닐까 생각한다.
+캐싱 적용 후에 첫 요청 응답시간이 전에 비해서 컸지만, redis에 값을 넣느라 그런게 아닐까 생각한다.  
 후에는 확실히 유의미하게 시간이 줄어든 것을 확인할 수 있다.
 
 ---
