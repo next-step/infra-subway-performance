@@ -216,6 +216,7 @@ sudo -i -u ubuntu aws s3 cp s3://nextstep-infra-workshop/loopstudy-deploy2.sh /h
 sudo -i -u ubuntu chmod 755 /home/ubuntu/loopstudy-deploy2.sh
 sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy2.sh
 ```
+
  
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 ![ALB_부하테스트_CPU_사용률.png](ALB_부하테스트_CPU_사용률.png)
@@ -227,9 +228,44 @@ sudo -i -u ubuntu /bin/bash /home/ubuntu/loopstudy-deploy2.sh
 ### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
-
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```
+select a.id as '사원번호',
+		a.last_name as '이름',
+        a.max_income as '급여',
+        a.position_name as '직급명',
+        r.time as '입출입시간',
+        r.region as '지역',
+        r.record_symbol as '입출입구분'
+from (
+	select e.id,
+			e.last_name,
+			s.max_income,
+			p.position_name
+	from employee as e
+	inner join (
+		select max(i_s.annual_income) as max_income, 
+				i_m.employee_id
+		from manager as i_m
+		inner join department as i_d on i_d.id = i_m.department_id and i_d.note = 'Active'
+		inner join salary as i_s on i_m.employee_id = i_s.id
+        where i_m.end_date  > now()
+		group by i_m.employee_id
+		order by max_income desc 
+		limit 0, 5
+	) as s on s.employee_id = e.id
+	inner join position as p on p.id = s.employee_id where position_name = 'Manager'
+) as a
+inner join record as r on a.id = r.employee_id and r.record_symbol = 'O';
+;
+``` 
 
+- 조회 시간
+![쿼리 결과](3단계_조회시간_개선.png)
+
+- explain
+![explain](3단계_쿼리_explain.png)
+![explain_view](3단계_쿼리_explain_view.png)
 ---
 
 ### 4단계 - 인덱스 설계
