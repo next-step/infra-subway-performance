@@ -800,6 +800,25 @@ INNER JOIN salary AS s ON s.id = e.id AND s.end_date > NOW()
 
 ```
 
+
+**position table 조인 추가(추가 수정)**
+
+```sql
+SELECT e.id AS '사원번호', e.last_name AS '이름', s.annual_income AS '연봉',  p.position_name AS '직급명', r.`time` AS '입출입시간', r.region AS '지역', r.record_symbol AS '입출입구분' 
+FROM employee AS e INNER JOIN (
+	SELECT employee_id FROM manager AS m 
+	INNER JOIN department AS d ON m.department_id = d.id AND d.note = 'ACTIVE'
+	INNER JOIN salary AS s ON m.employee_id = s.id AND s.end_date > NOW()
+	WHERE m.end_date > NOW()
+	ORDER BY s.annual_income DESC
+	LIMIT 5
+) b  ON e.id = b.employee_id
+INNER JOIN record AS r ON r.employee_id = e.id AND r.record_symbol = 'O'
+INNER JOIN salary AS s ON s.id = e.id AND s.end_date > NOW()
+INNER JOIN `position` AS p ON p.id = e.id AND p.end_date > NOW()
+
+```
+
 ---
 
 ### 4단계 - 인덱스 설계
