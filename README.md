@@ -406,6 +406,11 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#Lau
 $ stress -c 2
 ```
 
+![image](https://user-images.githubusercontent.com/37537207/167666040-a2e0aa29-52fd-4ea6-9d1f-a3d983cf2ac7.png)
+
+![image](https://user-images.githubusercontent.com/37537207/167666116-deb3d943-7167-4ca6-b662-7a7db5e5e559.png)
+
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 ---
