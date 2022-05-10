@@ -234,7 +234,7 @@ select a.id as '사원번호',
 		a.last_name as '이름',
         a.max_income as '급여',
         a.position_name as '직급명',
-        r.entry_time as '입출입시간',
+        r.time as '입출입시간',
         r.region as '지역',
         r.record_symbol as '입출입구분'
 from (
@@ -248,27 +248,24 @@ from (
 				i_m.employee_id
 		from manager as i_m
 		inner join department as i_d on i_d.id = i_m.department_id and i_d.note = 'Active'
-		inner join salary as i_s on i_m.employee_id = i_s.id and i_s.end_date > now()
+		inner join salary as i_s on i_m.employee_id = i_s.id
+        where i_m.end_date  > now()
 		group by i_m.employee_id
 		order by max_income desc 
 		limit 0, 5
 	) as s on s.employee_id = e.id
 	inner join position as p on p.id = s.employee_id where position_name = 'Manager'
 ) as a
-inner join (
-	select i_r.employee_id, i_r.region, max(i_r.time) as entry_time, i_r.record_symbol
-    from record as i_r
-        inner join manager as i_m on i_r.employee_id = i_m.employee_id
-        where i_r.record_symbol = 'O'
-        group by i_r.employee_id, i_r.region
-) as r on r.employee_id = a.id 
-order by a.max_income desc, r.region asc
+inner join record as r on a.id = r.employee_id and r.record_symbol = 'O';
 ;
 ``` 
 
 - 조회 시간
-![img.png](조회시간_결과.png)
+![쿼리 결과](3단계_조회시간_개선.png)
 
+- explain
+![explain](3단계_쿼리_explain.png)
+![explain_view](3단계_쿼리_explain_view.png)
 ---
 
 ### 4단계 - 인덱스 설계
