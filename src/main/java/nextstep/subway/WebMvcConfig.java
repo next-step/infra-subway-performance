@@ -9,8 +9,6 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
-
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
@@ -41,7 +39,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean filterRegistrationBean(){
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        Filter etagHeaderFilter = new ShallowEtagHeaderFilter();
+        ShallowEtagHeaderFilter etagHeaderFilter = new ShallowEtagHeaderFilter();
+        etagHeaderFilter.setWriteWeakETag(true);
         registration.setFilter(etagHeaderFilter);
         registration.addUrlPatterns(PREFIX_STATIC_RESOURCES + "/*");
         return registration;
