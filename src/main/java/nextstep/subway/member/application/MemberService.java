@@ -26,19 +26,19 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @Cacheable(value = MEMBERS, key = "#id")
+//    @Cacheable(value = MEMBERS, key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
-    @CachePut(value = MEMBERS, key = "#id")
+//    @CachePut(value = MEMBERS, key = "#id")
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
-    @CacheEvict(value = MEMBERS, key = "#id")
+//    @CacheEvict(value = MEMBERS, key = "#id")
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
