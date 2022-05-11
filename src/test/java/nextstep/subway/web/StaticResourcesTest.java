@@ -38,4 +38,27 @@ public class StaticResourcesTest {
                     .cacheControl(CacheControl.noCache().cachePrivate());
     }
 
+    @Test
+    void get_static_js_css() {
+        String jsUri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/main.js";
+
+        client
+            .get()
+            .uri(jsUri)
+            .exchange()
+                .expectStatus()
+                    .isOk()
+                .expectHeader()
+                    .cacheControl(CacheControl.noCache().cachePrivate());
+
+        String cssUri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/test.css";
+        client
+            .get()
+            .uri(cssUri)
+            .exchange()
+                .expectStatus()
+                    .isOk()
+                .expectHeader()
+                    .cacheControl(CacheControl.maxAge(60 * 60 * 24 * 365, TimeUnit.SECONDS));
+    }
 }
