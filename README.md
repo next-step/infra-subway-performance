@@ -44,8 +44,24 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ - 접속빈도가 높은 페이지(로그인 api, 내 정보 조회 api)  
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/frequently/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/frequently/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/frequently/StressREADME.md)  
 
+ - 데이터를 갱신하는 페이지(로그인 api, 내 정보 수정 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/updated/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/updated/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/updated/StressREADME.md)  
+
+ - 데이터를 조회하는 여러 데이터를 참조하는 페이지(로그인 api, 경로 검색 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/joined/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/joined/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6/joined/StressREADME.md)  
+ 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+ - [WEB] 텍스트기반의 정적파일 gzip 압축, 정적파일 캐싱, http2 프로토콜 적용
+ - [WAS] redis를 이용한 캐시 적용을 통해 DB로 쿼리 조회 최소화
 
 ---
 
