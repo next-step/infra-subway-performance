@@ -243,6 +243,69 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+``` sql
+select
+  m.employee_id as "사원번호",
+  e.last_name as "이름",
+  m.annual_income as "연봉",
+  m.position_name as "직급명",
+  r.time as "입출입시간",
+  r.region as "지역",
+  r.record_symbol as "입출입구분"
+from
+  (
+    select
+      m.employee_id, s.annual_income, m.position_name
+    from
+      salary as s,
+      (
+        select
+          m.employee_id, p.position_name
+        from
+          department as d,
+          position as p,
+          manager as m
+        where
+          d.id = m.department_id and d.note = "active" and
+          p.id = m.employee_id and p.position_name = "manager" and p.end_date > current_date()
+      ) as m
+    where
+      s.id = m.employee_id and
+      s.end_date > current_date()
+    order by s.annual_income desc
+    limit 5
+  ) as m,
+  record r,
+  employee e
+where
+  r.employee_id = m.employee_id and r.record_symbol = "O" and
+  e.id = m.employee_id
+```
+
+**결과**
+
+```
++----------+----------+--------+---------+---------------------+------+------------+
+| 사원번호   | 이름      | 연봉    | 직급명    | 입출입시간             | 지역  | 입출입구분    |
++----------+----------+--------+---------+---------------------+------+------------+
+|   110039 | Vishwani | 106491 | Manager | 2020-09-05 20:30:07 | a    | O          |
+|   110039 | Vishwani | 106491 | Manager | 2020-08-05 21:01:50 | b    | O          |
+|   110039 | Vishwani | 106491 | Manager | 2020-07-06 11:00:25 | d    | O          |
+|   111133 | Hauke    | 101987 | Manager | 2020-01-24 02:59:37 | a    | O          |
+|   111133 | Hauke    | 101987 | Manager | 2020-05-07 16:30:37 | b    | O          |
+|   110114 | Isamu    |  83457 | Manager | 2020-05-29 19:38:12 | a    | O          |
+|   110114 | Isamu    |  83457 | Manager | 2020-09-03 01:33:01 | b    | O          |
+|   110114 | Isamu    |  83457 | Manager | 2020-11-12 02:29:00 | c    | O          |
+|   110114 | Isamu    |  83457 | Manager | 2020-04-25 08:28:54 | d    | O          |
+|   110567 | Leon     |  74510 | Manager | 2020-10-17 19:13:31 | a    | O          |
+|   110567 | Leon     |  74510 | Manager | 2020-02-03 10:51:15 | b    | O          |
+|   110228 | Karsten  |  65400 | Manager | 2020-01-11 22:29:04 | d    | O          |
+|   110228 | Karsten  |  65400 | Manager | 2020-07-13 11:42:49 | a    | O          |
+|   110228 | Karsten  |  65400 | Manager | 2020-09-23 06:07:01 | b    | O          |
++----------+----------+--------+---------+---------------------+------+------------+
+14 rows in set (0.17 sec)
+```
+
 ---
 
 ### 4단계 - 인덱스 설계
