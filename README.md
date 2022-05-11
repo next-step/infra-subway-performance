@@ -825,6 +825,132 @@ INNER JOIN `position` AS p ON p.id = e.id AND p.end_date > NOW()
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 1-1) Coding as a Hobby 와 같은 결과를 반환하세요  
+
+##### 쿼리
+```sql
+SELECT hobby, CONCAT(ROUND(( COUNT(hobby)  / (SELECT COUNT(*) FROm programmer) * 100 ), 1), '%') AS total_cnt
+FROM programmer
+GROUP BY hobby
+ORDER BY hobby DESC
+```
+
+##### 인덱스 추가
+```sql
+CREATE INDEX ix_hobby ON programmer (hobby);
+```
+
+##### 쿼리 실행 시간 (m1)
+| 인덱스 적용전 | 인덱스 적용 후 |
+|---------|----------|
+| 4.094 s | 370ms    |
+
+#### 1-2) 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+##### 쿼리
+```sql
+SELECT c.id, h.name from programmer AS p
+INNER JOIN covid AS c ON c.programmer_id = p.id
+INNER JOIN hospital AS h ON h.id = c.hospital_id
+LIMIT 0, 1000
+```
+
+##### 인덱스 추가
+```sql
+CREATE UNIQUE INDEX ux_programmer_id ON covid (programmer_id)
+CREATE UNIQUE INDEX ux_id ON hospital (id)
+```
+
+##### 쿼리 실행 시간 (m1) 
+| 인덱스 적용전 | 인덱스 적용 후 |
+|---------|----------|
+| 3.469 s | 55 ms    |
+
+
+#### 1-3) 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)  
+
+##### 쿼리
+```sql
+SELECT c.id, h.`name`, p.hobby, p.dev_type, p.years_coding  FROM (
+	SELECT id FROM programmer USE INDEX ( ix_hobby_student_id )  WHERE hobby = 'YES' AND student LIKE 'Yes%'
+	UNION ALL
+	SELECT id FROm programmer WHERE years_coding = '0-2 years' 
+) a  
+INNER JOIN covid AS c ON c.programmer_id =  a.id
+INNER JOIN hospital AS h ON h.id = c.hospital_id
+INNER JOIN programmer AS p ON p.id = a.id
+LIMIT 0, 1000
+```
+##### 인덱스 추가
+```sql
+CREATE INDEX ix_hobby_student_id ON programmer ( hobby, student, id) 
+CREATE INDEX ix_years_conding_id ON programmer(years_coding, id)
+CREATE UNIQUE INDEX ux_id ON programmer (id)
+```
+##### 쿼리 실행 시간 (m1)
+| 인덱스 적용전 | 인덱스 적용 후 |
+|---------|----------|
+| -       | 376 ms   |
+
+#### 1-4) 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+##### 쿼리
+```sql
+SELECT c.stay, COUNT(c.id) AS cnt FROM covid  AS c
+INNER JOIN (
+	SELECT m.id 
+	FROM member AS m 
+	INNER JOIN programmer AS p ON p.member_id = m.id 
+	WHERE m.age BETWEEN 20 AND 29 AND p.country = 'India'
+) AS m ON m.id = c.member_id
+INNER JOIN hospital AS h ON h.id = c.hospital_id
+WHERE h.id  IN (
+	SELECT id FROM hospital WHERE `name` = '서울대병원'
+)
+GROUP BY c.stay
+```
+
+##### 인덱스 추가
+```sql
+CREATE INDEX ix_age_id ON member (age, id)
+CREATE INDEX ix_member_id_country ON programmer ( member_id, country )
+CREATE INDEX ix_member_id ON covid ( member_id )
+```
+
+##### 쿼리 실행 시간 (m1)
+| 인덱스 적용전 | 인덱스 적용 후 |
+|---------|----------|
+| -       | 312 ms   |
+
+#### 1-5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+##### 쿼리
+```sql
+SELECT p.exercise, COUNT(p.id) FROM programmer AS p 
+INNER JOIN (
+	SELECT programmer_id 
+	FROM covid  AS c
+	INNER JOIN `member` AS m ON m.id = c.member_id 
+	WHERE c.hospital_id IN (
+		SELECT id FROM hospital WHERE `name` = '서울대병원'
+	)  AND m.age BETWEEN 30 AND 39 
+) m ON m.programmer_id = p.id
+GROUP BY p.exercise
+```
+
+##### 인덱스 추가
+```sql
+CREATE INDEX ix_age_id ON member (age, id)
+CREATE INDEX ix_member_id ON covid (member_id)
+CREATE UNIQUE INDEX uk_name ON hospital ( `name` )
+CREATE UNIQUE INDEX uk_id ON programmer (id)
+```
+
+##### 쿼리 실행 시간 (m1)
+| 인덱스 적용전 | 인덱스 적용 후 |
+|---------|----------|
+| -       | 305 ms   |
+
 ---
 
 ### 추가 미션
