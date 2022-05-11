@@ -245,8 +245,8 @@ $ stress -c 2
 
 ``` sql
 select
-  m.id as "사원번호",
-  m.last_name as "이름",
+  m.employee_id as "사원번호",
+  e.last_name as "이름",
   m.annual_income as "연봉",
   m.position_name as "직급명",
   r.time as "입출입시간",
@@ -255,62 +255,31 @@ select
 from
   (
     select
-      r.employee_id, r.region, max(r.time) as time, r.record_symbol
-    from
-      record as r,
-      (
-        select
-          m.id
-        from
-          salary as s,
-          (
-            select
-              p.id
-            from
-              (select * from department where note = "active") as d,
-              (select * from position where position_name = "manager" and end_date > current_date()) as p,
-              manager as m
-            where
-              m.employee_id = p.id and m.department_id = d.id
-          ) as m
-        where
-          s.id = m.id and
-          s.end_date > current_date()
-        order by s.annual_income desc
-        limit 5
-      ) m
-    where
-      r.employee_id = m.id
-    group by
-      r.employee_id, r.region, r.record_symbol
-    having
-      r.record_symbol = "O"
-  ) r,
-  (
-    select
-      m.id, e.last_name, s.annual_income, m.position_name
+      m.employee_id, s.annual_income, m.position_name
     from
       salary as s,
       (
         select
-          p.id, p.position_name
+          m.employee_id, p.position_name
         from
-          (select * from department where note = "active") as d,
-          (select * from position where position_name = "manager" and end_date > current_date()) as p,
+          department as d,
+          position as p,
           manager as m
         where
-          m.employee_id = p.id and m.department_id = d.id
+          d.id = m.department_id and d.note = "active" and
+          p.id = m.employee_id and p.position_name = "manager" and p.end_date > current_date()
       ) as m
-        left join employee as e
-        on m.id = e.id
     where
-      s.id = m.id and
+      s.id = m.employee_id and
       s.end_date > current_date()
     order by s.annual_income desc
     limit 5
-  ) as m
+  ) as m,
+  record r,
+  employee e
 where
-  r.employee_id = m.id;
+  r.employee_id = m.employee_id and r.record_symbol = "O" and
+  e.id = m.employee_id
 ```
 
 **결과**
