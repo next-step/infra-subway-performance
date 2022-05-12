@@ -88,9 +88,8 @@ $ stress -c 2
 
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
   ```sql
-  select c.id, h.name from programmer as p
-  inner join covid as c on c.programmer_id = p.id
-  inner join hospital as h on h.id = c.hospital_id;
+  select c.id, h.name from programmer p, covid c, hospital h
+  where p.id = c.programmer_id and h.id = c.hospital_id;
   ```
 
   programmer, hospital id 키 unique 및 pk 지정
@@ -147,6 +146,8 @@ $ stress -c 2
       on hospital (name);
   create index member_age_index
       on member (age);
+  create index member_id_index
+      on member (id);
   create index programmer_country_index
       on programmer (country);
   ```
