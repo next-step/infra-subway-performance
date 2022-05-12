@@ -791,6 +791,71 @@ default ✗ [======================================] 000/250 VUs  6m0s
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```sql
+SELECT STRAIGHT_JOIN
+	tmp.employee_id
+    , tmp.last_name
+    , tmp.annual_income
+	, tmp.position_name
+    , tmp2.r_time
+    , tmp2.region
+    , tmp2.record_symbol
+FROM
+	(
+	SELECT STRAIGHT_JOIN
+		r.employee_id
+        , r.region
+        , MAX(r.time) r_time
+        , r.record_symbol
+    FROM
+		(
+		SELECT
+			m.employee_id
+		FROM
+			tuning.manager m
+			INNER JOIN tuning.department d ON m.department_id = d.id
+			INNER JOIN tuning.salary s ON m.employee_id = s.id
+		WHERE
+			m.end_date = "9999-01-01"
+			AND s.end_date = "9999-01-01"
+			AND LOWER(d.note) = "active"
+		ORDER BY
+			s.annual_income DESC
+		LIMIT 5
+		) tmp3
+		INNER JOIN tuning.record r ON r.employee_id = tmp3.employee_id
+	WHERE
+		r.record_symbol = "O"
+	GROUP BY
+		r.employee_id, r.region, r.record_symbol
+    ) tmp2,
+	(
+	SELECT
+		m.employee_id
+        , e.last_name
+        , s.annual_income
+        , p.position_name
+	FROM
+		tuning.manager m
+		INNER JOIN tuning.department d ON m.department_id = d.id
+		INNER JOIN tuning.salary s ON m.employee_id = s.id
+        INNER JOIN tuning.employee e ON m.employee_id = e.id
+        INNER JOIN tuning.position p ON p.id = m.employee_id
+	WHERE
+		m.end_date = "9999-01-01"
+		AND s.end_date = "9999-01-01"
+		AND LOWER(d.note) = "active"
+        AND p.end_date = "9999-01-01"
+	ORDER BY
+		s.annual_income DESC
+	LIMIT 5
+	) tmp
+WHERE
+	 tmp2.employee_id = tmp.employee_id
+ORDER BY
+	tmp.annual_income DESC
+```
+
 ---
 
 ### 4단계 - 인덱스 설계
