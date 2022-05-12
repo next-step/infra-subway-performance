@@ -171,16 +171,13 @@ d. WAS - caching 적용
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09e20aae02ac3fff8
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
+![image](https://user-images.githubusercontent.com/87216027/168099776-7a976237-d9a6-4c5e-9820-24dd7e885e19.png)
 
-```sh
-$ stress -c 2
-```
-
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
 Stress test
 ```shell
 ERRO[0892] cannot parse json due to an error at line 1, character 2 , error: invalid character '<' looking for beginning of value
