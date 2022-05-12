@@ -172,6 +172,7 @@ d. WAS - caching 적용
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09e20aae02ac3fff8
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
@@ -180,7 +181,83 @@ $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+Stress test
+```shell
+ERRO[0892] cannot parse json due to an error at line 1, character 2 , error: invalid character '<' looking for beginning of value
+running at reflect.methodValueCall (native)
+default at file:///home/ubuntu/cache_stress.js:37:30(55)
+        at native  executor=ramping-vus scenario=default source=stacktrace
 
+running (14m50.5s), 000/410 VUs, 74631 complete and 342 interrupted iterations
+default ✗ [=============================>--------] 080/410 VUs  14m50.5s/18m20.0s
+
+     ✓ correct path1
+     ✓ correct path2
+     ✓ correct lines1
+
+     checks.........................: 100.00% ✓ 219241     ✗ 0
+     data_received..................: 9.4 GB  11 MB/s
+     data_sent......................: 57 MB   64 kB/s
+     http_req_blocked...............: avg=13.37µs  min=139ns   med=305ns    max=136.68ms p(90)=430ns    p(95)=490ns
+     http_req_connecting............: avg=3.21µs   min=0s      med=0s       max=63.07ms  p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=145.43ms min=1.12ms  med=83.73ms  max=886.97ms p(90)=413.3ms  p(95)=521.52ms
+       { expected_response:true }...: avg=147.09ms min=1.12ms  med=85.5ms   max=886.97ms p(90)=415.49ms p(95)=523.41ms
+     http_req_failed................: 1.15%   ✓ 4271       ✗ 366686
+     http_req_receiving.............: avg=3.41ms   min=12.08µs med=514.02µs max=295.77ms p(90)=6.77ms   p(95)=19.33ms
+     http_req_sending...............: avg=83.77µs  min=14.07µs med=28.48µs  max=134.94ms p(90)=53.18µs  p(95)=85.9µs
+     http_req_tls_handshaking.......: avg=9.34µs   min=0s      med=0s       max=103.2ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=141.93ms min=0s      med=80.34ms  max=879.17ms p(90)=408.08ms p(95)=516.91ms
+     http_reqs......................: 370957  416.567914/s
+     iteration_duration.............: avg=1.69s    min=5.1ms   med=1.61s    max=3.21s    p(90)=2.55s    p(95)=2.64s
+     iterations.....................: 74631   83.807234/s
+     vus............................: 343     min=1        max=410
+     vus_max........................: 410     min=410      max=410
+
+ERRO[0892] some thresholds have failed
+```   
+
+Load test
+```shell
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: cache_load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 60 max VUs, 12m40s max duration (incl. graceful stop):
+           * default: Up to 60 looping VUs for 12m10s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (12m10.8s), 00/60 VUs, 28525 complete and 0 interrupted iterations
+default ↓ [======================================] 02/60 VUs  12m10s
+
+     ✓ correct path1
+     ✓ correct path2
+     ✓ correct lines1
+
+     checks.........................: 100.00% ✓ 85575      ✗ 0
+     data_received..................: 3.6 GB  5.0 MB/s
+     data_sent......................: 22 MB   30 kB/s
+     http_req_blocked...............: avg=3.32µs   min=140ns   med=297ns   max=26.78ms  p(90)=462ns   p(95)=542ns
+     http_req_connecting............: avg=602ns    min=0s      med=0s      max=9.25ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=9.27ms   min=1.09ms  med=4.19ms  max=299.53ms p(90)=22.7ms  p(95)=39.63ms
+       { expected_response:true }...: avg=9.27ms   min=1.09ms  med=4.19ms  max=299.53ms p(90)=22.7ms  p(95)=39.63ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 142625
+     http_req_receiving.............: avg=972.24µs min=14.42µs med=83.94µs max=109.62ms p(90)=1.83ms  p(95)=3.27ms
+     http_req_sending...............: avg=44.04µs  min=13.47µs med=29.54µs max=23.15ms  p(90)=61.4µs  p(95)=78.71µs
+     http_req_tls_handshaking.......: avg=2.06µs   min=0s      med=0s      max=15.75ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=8.26ms   min=0s      med=3.59ms  max=230.46ms p(90)=20.21ms p(95)=36.7ms
+     http_reqs......................: 142625  195.157263/s
+     iteration_duration.............: avg=1.04s    min=1.01s   med=1.02s   max=1.43s    p(90)=1.13s   p(95)=1.16s
+     iterations.....................: 28525   39.031453/s
+     vus............................: 2       min=1        max=60
+     vus_max........................: 60      min=60       max=60
+```
 ---
 
 ### 3단계 - 쿼리 최적화
