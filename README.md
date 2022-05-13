@@ -78,18 +78,18 @@ $ stress -c 2
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
  - 접속빈도가 높은 페이지(로그인 api, 내 정보 조회 api)  
    - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/SmokeREADME.md)  
-   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/frequently/LoadREADME.md)  
-   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/frequently/StressREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/StressREADME.md)  
 
  - 데이터를 갱신하는 페이지(로그인 api, 내 정보 수정 api)
-   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/SmokeREADME.md)  
-   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/LoadREADME.md)  
-   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/StressREADME.md)  
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/StressREADME.md)  
 
  - 데이터를 조회하는 여러 데이터를 참조하는 페이지(로그인 api, 경로 검색 api)
-   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/SmokeREADME.md)  
-   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/LoadREADME.md)  
-   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/StressREADME.md)  
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/StressREADME.md)  
 
 ---
 
