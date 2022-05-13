@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -11,14 +12,17 @@ public class Section implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
