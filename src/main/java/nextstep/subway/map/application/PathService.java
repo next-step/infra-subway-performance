@@ -1,5 +1,6 @@
 package nextstep.subway.map.application;
 
+import com.google.common.base.Preconditions;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.map.domain.SectionEdge;
 import nextstep.subway.map.domain.SubwayGraph;
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class PathService {
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
+        Preconditions.checkNotNull(source);
+        Preconditions.checkNotNull(target);
+
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
         graph.addVertexWith(lines);
         graph.addEdge(lines);
