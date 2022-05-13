@@ -1,0 +1,39 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 207 max VUs, 3m30s max duration (incl. graceful stop):
+           * default: Up to 207 looping VUs for 3m0s over 7 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (3m00.4s), 000/207 VUs, 6186 complete and 0 interrupted iterations
+default ✓ [======================================] 000/207 VUs  3m0s
+
+     ✓ status is < 500
+
+     checks.........................: 100.00% ✓ 18558      ✗ 0
+     data_received..................: 22 MB   124 kB/s
+     data_sent......................: 1.1 MB  6.0 kB/s
+     http_req_blocked...............: avg=48.95µs  min=182ns    med=342ns   max=63.08ms p(90)=466ns    p(95)=562ns
+     http_req_connecting............: avg=6.41µs   min=0s       med=0s      max=5.67ms  p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=740.2ms  min=1.06ms   med=2.27ms  max=29.43s  p(90)=2.66s    p(95)=4.18s
+       { expected_response:true }...: avg=740.2ms  min=1.06ms   med=2.27ms  max=29.43s  p(90)=2.66s    p(95)=4.18s
+     http_req_failed................: 0.00%   ✓ 0          ✗ 18558
+     http_req_receiving.............: avg=155.66µs min=12.14µs  med=52.45µs max=25.84ms p(90)=188.95µs p(95)=485.78µs
+     http_req_sending...............: avg=40.35µs  min=15.93µs  med=33.24µs max=5.16ms  p(90)=60.81µs  p(95)=71.65µs
+     http_req_tls_handshaking.......: avg=38.68µs  min=0s       med=0s      max=22.04ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=740ms    min=981.56µs med=2.15ms  max=29.43s  p(90)=2.66s    p(95)=4.18s
+     http_reqs......................: 18558   102.891957/s
+     iteration_duration.............: avg=3.22s    min=1s       med=1.9s    max=30.44s  p(90)=5.62s    p(95)=8.32s
+     iterations.....................: 6186    34.297319/s
+     vus............................: 2       min=2        max=207
+     vus_max........................: 207     min=207      max=207
+
+ERRO[0182] some thresholds have failed

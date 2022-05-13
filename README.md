@@ -64,15 +64,20 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
-
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+1. Launch Template 링크를 공유해주세요.  
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0250a7338852129eb
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
+   
 ```sh
 $ stress -c 2
 ```
+![img.png](img.png)
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+[스케일_아웃](./스케일_아웃)  
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+**요약**
+- 성능이 향상되었지만, 목표치(max 2초에 응답)은 한참 못미쳤다.
+- 처리량이 늘었다. (타임아웃을 유발하는 vuser 650 -> 850)
 
 ---
 

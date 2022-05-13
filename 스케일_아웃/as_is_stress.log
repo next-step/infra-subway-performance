@@ -1,0 +1,48 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 650 max VUs, 4m30s max duration (incl. graceful stop):
+           * default: Up to 650 looping VUs for 4m0s over 8 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0225] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=44&target=49\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=24&target=485\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=20&target=160\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=27&target=28\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=53&target=238\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=4&target=469\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=49&target=186\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=14&target=368\": request timeout"
+WARN[0226] Request Failed                                error="Get \"https://soongjamm-infra-web.p-e.kr/paths/?source=71&target=303\": request timeout"
+
+running (4m30.0s), 000/650 VUs, 1770 complete and 433 interrupted iterations
+default ✓ [======================================] 358/650 VUs  4m0s
+
+     ✓ status is < 500
+
+     checks.........................: 100.00% ✓ 6054     ✗ 0
+     data_received..................: 9.5 MB  35 kB/s
+     data_sent......................: 734 kB  2.7 kB/s
+     http_req_blocked...............: avg=482.29µs min=182ns  med=322ns   max=28.95ms p(90)=3.34ms   p(95)=4.57ms
+     http_req_connecting............: avg=72.75µs  min=0s     med=0s      max=15.77ms p(90)=350.23µs p(95)=744.43µs
+   ✗ http_req_duration..............: avg=21.37s   min=1.38ms med=18.06s  max=1m0s    p(90)=45.61s   p(95)=50.51s
+       { expected_response:true }...: avg=21.31s   min=1.38ms med=18.05s  max=59.96s  p(90)=45.41s   p(95)=50.37s
+     http_req_failed................: 0.14%   ✓ 9        ✗ 6045
+     http_req_receiving.............: avg=110.4µs  min=0s     med=59.35µs max=9.46ms  p(90)=159.09µs p(95)=262.61µs
+     http_req_sending...............: avg=61.71µs  min=15.7µs med=42.81µs max=3.25ms  p(90)=109.14µs p(95)=140.17µs
+     http_req_tls_handshaking.......: avg=388.88µs min=0s     med=0s      max=14.52ms p(90)=2.81ms   p(95)=3.64ms
+     http_req_waiting...............: avg=21.37s   min=1.31ms med=18.06s  max=1m0s    p(90)=45.61s   p(95)=50.51s
+     http_reqs......................: 6054    22.41891/s
+     iteration_duration.............: avg=1m5s     min=1.01s  med=1m5s    max=1m35s   p(90)=1m30s    p(95)=1m31s
+     iterations.....................: 1770    6.554587/s
+     vus............................: 418     min=20     max=650
+     vus_max........................: 650     min=650    max=650
+
+ERRO[0272] some thresholds have failed
