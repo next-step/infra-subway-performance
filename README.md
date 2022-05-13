@@ -68,7 +68,7 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+ - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-05226db0201f2f9d7
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
@@ -76,6 +76,20 @@ $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ - 접속빈도가 높은 페이지(로그인 api, 내 정보 조회 api)  
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/frequently/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/frequently/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/frequently/StressREADME.md)  
+
+ - 데이터를 갱신하는 페이지(로그인 api, 내 정보 수정 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/updated/StressREADME.md)  
+
+ - 데이터를 조회하는 여러 데이터를 참조하는 페이지(로그인 api, 경로 검색 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step1/k6_2/joined/StressREADME.md)  
 
 ---
 
