@@ -121,6 +121,9 @@ limit 5 ) t
 on r.employee_id = t.id
 where r.record_symbol = 'O';
 ```
+
+![image](https://user-images.githubusercontent.com/99663759/168315421-e137d2c9-10ac-4329-8114-3a828d9973db.png)
+
 ---
 
 ### 4단계 - 인덱스 설계
