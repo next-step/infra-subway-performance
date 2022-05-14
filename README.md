@@ -100,7 +100,6 @@ $ stress -c 2
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
 ```
-
 select t.id as '사원번호', (concat(t.last_name,'_', t.first_name)) as '이름', t.annual_income as '연봉', 
 t.position_name as '직급명', r.time as '입출입시간', r.region as '지역', r.record_symbol as '입출입구분' from record r
 inner join 
@@ -114,6 +113,7 @@ on e.id = s.id
 inner join position p
 on e.id = p.id 
 where note = 'active' 
+and m.end_date = '9999-01-01'
 and s.end_date = '9999-01-01'
 and p.end_date = '9999-01-01'
 order by annual_income desc
@@ -121,8 +121,9 @@ limit 5 ) t
 on r.employee_id = t.id
 where r.record_symbol = 'O';
 ```
+![image](https://user-images.githubusercontent.com/99663759/168427093-559db536-7ea4-4076-9301-fbe8f6ac5ea1.png)
 
-![image](https://user-images.githubusercontent.com/99663759/168315421-e137d2c9-10ac-4329-8114-3a828d9973db.png)
+![image](https://user-images.githubusercontent.com/99663759/168427101-09e61769-d8d7-49d7-8158-6c5041ccb804.png)
 
 ---
 
