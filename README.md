@@ -241,24 +241,23 @@ from (
 	select e.id,
 			e.last_name,
 			s.max_income,
-			p.position_name
-	from employee as e
+			p.position_name 
+	from (select id, last_name from employee) as e
 	inner join (
 		select max(i_s.annual_income) as max_income, 
 				i_m.employee_id
-		from manager as i_m
-		inner join department as i_d on i_d.id = i_m.department_id and i_d.note = 'Active'
+		from (select department_id, employee_id from manager where end_date > now()) as i_m
+		inner join (select id from department where note = 'Active') as i_d on i_d.id = i_m.department_id
 		inner join salary as i_s on i_m.employee_id = i_s.id
-        where i_m.end_date  > now()
 		group by i_m.employee_id
 		order by max_income desc 
 		limit 0, 5
-	) as s on s.employee_id = e.id
-	inner join position as p on p.id = s.employee_id where position_name = 'Manager'
+	) as s on s.employee_id = e.id 
+	inner join (select id, position_name from position where position_name = 'Manager') as p on p.id = s.employee_id
 ) as a
-inner join record as r on a.id = r.employee_id and r.record_symbol = 'O';
+inner join (select employee_id, time, region, record_symbol from record where record_symbol = 'O') as r on a.id = r.employee_id
 ;
-``` 
+```  
 
 - 조회 시간
 ![쿼리 결과](3단계_조회시간_개선.png)
@@ -268,11 +267,101 @@ inner join record as r on a.id = r.employee_id and r.record_symbol = 'O';
 ![explain_view](3단계_쿼리_explain_view.png)
 ---
 
-### 4단계 - 인덱스 설계
+## 4단계 - 인덱스 설계
+### 요구사항
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+``` 
+ALTER TABLE `subway`.`programmer` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
 
----
+CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+ 
+-- 0.036 sec / 0.0000088 sec
+select hobby as '취미', 
+round(count(1) / (select count(1) from programmer), 3) * 100 as '비율'
+from (select hobby from programmer) as p
+group by hobby
+;
+```
+![1번](인덱스설계_1번_explain.png)
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```
+ALTER TABLE `subway`.`hospital` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+
+ALTER TABLE `subway`.`covid` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+
+-- 0.0045 sec / 0.0021 sec
+select c.id, c.programmer_id, h.name
+from (select id, name from hospital) as h
+inner join (select id, programmer_id, hospital_id from covid) as c on h.id = c.hospital_id 
+inner join (select id from programmer) as p on c.programmer_id = p.id
+;
+```
+![2번](인덱스설계_2번_explain.png)
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, programmer.Hobby, programmer.DevType, programmer.YearsCoding)
+```
+-- 0.0043 sec / 0.015 sec
+select p.id, h.name, p.hobby, p.student, p.dev_type, p.years_coding
+from (select id, name from hospital) as h
+inner join (select hospital_id, programmer_id from covid) as c on h.id = c.hospital_id 
+inner join (select id, hobby, student, dev_type, years_coding from programmer where hobby = 'Yes' and (student like 'Yes%' or years_coding like '0%')) as p on p.id = c.programmer_id
+;
+```
+![3번](인덱스설계_3번_explain.png)
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```
+ALTER TABLE `subway`.`member` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+;
+
+CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+
+-- 0.088 sec / 0.0000088 sec
+select c.stay, count(1)
+from (select id from member where age like '2%') as m
+inner join (select stay, member_id, programmer_id, hospital_id from covid) as c on m.id = c.member_id  
+inner join (select id from programmer where country = 'India') as p on c.programmer_id = p.id
+inner join (select id from hospital where name = '서울대병원') as h on c.hospital_id = h.id
+group by c.stay
+order by null
+;
+```
+![4번](인덱스설계_4번_explain.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```
+-- 0.091 sec / 0.0000091 sec
+select p.exercise, count(1)
+from (select id from member where age like '3%') as m
+inner join (select member_id, programmer_id, hospital_id from covid) as c on m.id = c.member_id  
+inner join (select id from hospital where name = '서울대병원') as h on c.hospital_id = h.id
+inner join programmer as p on p.id = c.programmer_id
+group by p.exercise 
+order by null
+;
+```
+![5번](인덱스설계_5번_explain.png)
+
 
 ### 추가 미션
 
