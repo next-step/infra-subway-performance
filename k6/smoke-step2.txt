@@ -1,0 +1,63 @@
+smoke.js
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
+
+export let options = {
+  vus: 1,
+  duration: '10s',
+
+
+  thresholds: {
+    http_req_duration: ['p(99)<200'],
+  },
+};
+const BASE_URL = 'https://mincheolkk-1st-1step.kro.kr';
+export default function ()  {
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const stations = http.get(`${BASE_URL}/stations`, params).json();
+  check(stations, {
+    http_req_duration: (obj) => obj.length > 0,
+  });
+  const lines = http.get(`${BASE_URL}/lines`, params).json();
+  check(lines, {
+    http_req_duration: (obj) => obj.length > 0,
+  });
+  sleep(1);
+};
+
+# 1. HTTP Cache + Gzip + ASG
+execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.8s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ http_req_duration
+
+     checks.........................: 100.00% ✓ 20       ✗ 0
+     data_received..................: 1.2 MB  109 kB/s
+     data_sent......................: 3.6 kB  334 B/s
+     http_req_blocked...............: avg=1.59ms   min=3.93µs  med=5µs     max=31.85ms  p(90)=6.37µs  p(95)=1.59ms
+     http_req_connecting............: avg=32.5µs   min=0s      med=0s      max=650.09µs p(90)=0s      p(95)=32.5µs
+   ✗ http_req_duration..............: avg=34.9ms   min=8.61ms  med=16.38ms max=329.93ms p(90)=43.66ms p(95)=58.17ms
+       { expected_response:true }...: avg=34.9ms   min=8.61ms  med=16.38ms max=329.93ms p(90)=43.66ms p(95)=58.17ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 20
+     http_req_receiving.............: avg=6.03ms   min=2.54ms  med=4.88ms  max=25.16ms  p(90)=7.93ms  p(95)=9.6ms
+     http_req_sending...............: avg=61.25µs  min=17.22µs med=21.18µs max=720.59µs p(90)=52.97µs p(95)=135.03µs
+     http_req_tls_handshaking.......: avg=873.91µs min=0s      med=0s      max=17.47ms  p(90)=0s      p(95)=873.91µs
+     http_req_waiting...............: avg=28.8ms   min=6.05ms  med=12.29ms max=324.68ms p(90)=23.27ms p(95)=52.07ms
+     http_reqs......................: 20      1.856348/s
+     iteration_duration.............: avg=1.07s    min=1.02s   med=1.03s   max=1.38s    p(90)=1.12s   p(95)=1.25s
+     iterations.....................: 10      0.928174/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
