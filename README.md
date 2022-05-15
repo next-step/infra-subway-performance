@@ -877,6 +877,20 @@ GROUP BY
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
+```sql
+SELECT
+	p.id
+    , h.name
+FROM
+    subway.programmer p
+    INNER JOIN subway.covid c ON p.id = c.programmer_id
+    INNER JOIN subway.hospital h ON c.hospital_id = h.id
+```
+
+<img width="1411" alt="image" src="https://user-images.githubusercontent.com/37537207/168460348-bb82767a-a1a1-4dcd-953b-99618386bb27.png">
+
+> 기본적으로 programmer 테이블에 id 칼럼에 대한 인덱스가 있어서, programer 테이블이 마지막 드리븐 테이블로 조인되어 결과는 100ms 안쪽으로 떨어짐.
+
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
