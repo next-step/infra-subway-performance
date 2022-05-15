@@ -175,43 +175,57 @@ d. WAS - caching 적용
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09e20aae02ac3fff8
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
-![image](https://user-images.githubusercontent.com/87216027/168099776-7a976237-d9a6-4c5e-9820-24dd7e885e19.png)
+![image](https://user-images.githubusercontent.com/87216027/168458888-74188baa-142c-47e3-95d7-a72f115686b2.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
 Stress test
 ```shell
-ERRO[0892] cannot parse json due to an error at line 1, character 2 , error: invalid character '<' looking for beginning of value
-running at reflect.methodValueCall (native)
-default at file:///home/ubuntu/cache_stress.js:37:30(55)
-        at native  executor=ramping-vus scenario=default source=stacktrace
+[ubuntu@LOAD]:~$ k6 run --out influxdb=http://localhost:8086/myk6db cache_stress.js
 
-running (14m50.5s), 000/410 VUs, 74631 complete and 342 interrupted iterations
-default ✗ [=============================>--------] 080/410 VUs  14m50.5s/18m20.0s
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: cache_stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 410 max VUs, 18m50s max duration (incl. graceful stop):
+           * default: Up to 410 looping VUs for 18m20s over 10 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[1068] The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.  output=InfluxDBv1 t=1.066026348s
+
+running (18m20.7s), 000/410 VUs, 160533 complete and 0 interrupted iterations
+default ✓ [======================================] 000/410 VUs  18m20s
 
      ✓ correct path1
      ✓ correct path2
      ✓ correct lines1
 
-     checks.........................: 100.00% ✓ 219241     ✗ 0
-     data_received..................: 9.4 GB  11 MB/s
-     data_sent......................: 57 MB   64 kB/s
-     http_req_blocked...............: avg=13.37µs  min=139ns   med=305ns    max=136.68ms p(90)=430ns    p(95)=490ns
-     http_req_connecting............: avg=3.21µs   min=0s      med=0s       max=63.07ms  p(90)=0s       p(95)=0s
-   ✗ http_req_duration..............: avg=145.43ms min=1.12ms  med=83.73ms  max=886.97ms p(90)=413.3ms  p(95)=521.52ms
-       { expected_response:true }...: avg=147.09ms min=1.12ms  med=85.5ms   max=886.97ms p(90)=415.49ms p(95)=523.41ms
-     http_req_failed................: 1.15%   ✓ 4271       ✗ 366686
-     http_req_receiving.............: avg=3.41ms   min=12.08µs med=514.02µs max=295.77ms p(90)=6.77ms   p(95)=19.33ms
-     http_req_sending...............: avg=83.77µs  min=14.07µs med=28.48µs  max=134.94ms p(90)=53.18µs  p(95)=85.9µs
-     http_req_tls_handshaking.......: avg=9.34µs   min=0s      med=0s       max=103.2ms  p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=141.93ms min=0s      med=80.34ms  max=879.17ms p(90)=408.08ms p(95)=516.91ms
-     http_reqs......................: 370957  416.567914/s
-     iteration_duration.............: avg=1.69s    min=5.1ms   med=1.61s    max=3.21s    p(90)=2.55s    p(95)=2.64s
-     iterations.....................: 74631   83.807234/s
-     vus............................: 343     min=1        max=410
+     checks.........................: 100.00% ✓ 481599     ✗ 0
+     data_received..................: 21 GB   19 MB/s
+     data_sent......................: 106 MB  96 kB/s
+     http_req_blocked...............: avg=4.74µs  min=138ns   med=328ns    max=263.1ms  p(90)=420ns   p(95)=468ns
+     http_req_connecting............: avg=1.07µs  min=0s      med=0s       max=103.66ms p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=5.07ms  min=1.04ms  med=3.31ms   max=1.7s     p(90)=8.22ms  p(95)=13.68ms
+       { expected_response:true }...: avg=5.07ms  min=1.04ms  med=3.31ms   max=1.7s     p(90)=8.22ms  p(95)=13.68ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 802665
+     http_req_receiving.............: avg=1.05ms  min=12.51µs med=272.88µs max=154.85ms p(90)=1.9ms   p(95)=3.38ms
+     http_req_sending...............: avg=70.37µs min=13.24µs med=28.43µs  max=116.35ms p(90)=55.12µs p(95)=89.45µs
+     http_req_tls_handshaking.......: avg=3.1µs   min=0s      med=0s       max=158.84ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.94ms  min=0s      med=2.86ms   max=1.7s     p(90)=6.02ms  p(95)=9.62ms
+     http_reqs......................: 802665  729.224167/s
+     iteration_duration.............: avg=1.02s   min=1.01s   med=1.01s    max=4.17s    p(90)=1.04s   p(95)=1.06s
+     iterations.....................: 160533  145.844833/s
+     vus............................: 2       min=1        max=410
      vus_max........................: 410     min=410      max=410
-
-ERRO[0892] some thresholds have failed
 ```   
+![image](https://user-images.githubusercontent.com/87216027/168458856-2537cfd0-4b10-447e-8aae-ee6d03b7073f.png)
+![image](https://user-images.githubusercontent.com/87216027/168458860-d3facfba-08f7-4baf-a774-b0a635bb851f.png)
+
+Requests Per Second 최대 4,045 까지
 
 Load test
 ```shell
