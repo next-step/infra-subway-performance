@@ -363,6 +363,100 @@ order by null
 ![5번](인덱스설계_5번_explain.png)
 
 
-### 추가 미션
+## 추가 미션 - MySQL Replication
+### 요구사항
+- [x] 마스터 서버 세팅
+- [x] 슬레이브 서버 세팅
 
-1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+#### mysql-master 세팅
+```
+CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';  
+GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%';   
+``` 
+#### 마스터 상태
+```
+*************************** 1. row ***************************
+             File: binlog.000002
+         Position: 684
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+```
+
+#### mysql-slave 세팅 
+```
+SET GLOBAL server_id = 2;
+CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=684;  
+```
+ 
+#### 슬레이브 상태
+```
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for source to send event
+                  Master_Host: 172.17.0.1
+                  Master_User: replication_user
+                  Master_Port: 13306
+                Connect_Retry: 60
+              Master_Log_File: binlog.000002
+          Read_Master_Log_Pos: 684
+               Relay_Log_File: 846a75bce6b5-relay-bin.000002
+                Relay_Log_Pos: 323
+        Relay_Master_Log_File: binlog.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 684
+              Relay_Log_Space: 540
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 1
+                  Master_UUID: c28ba94c-d356-11ec-98c7-0242ac110002
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+```
+
+- 디비 실행 후 테이블 없는 상태
+![마스터](추가미션/디비_레플리케이션_01_테이블없는마스터.png)![슬레이브](추가미션/디비_레플리케이션_02_테이블없는슬레이브.png)
+
+- 앱 실행 후 생성된 테이블
+![앱실행](추가미션/디비_레플리케이션_03_앱실행.png)
+![마스터](추가미션/디비_레플리케이션_04_테이블생성된_마스터.png)![슬레이브](추가미션/디비_레플리케이션_05_마스터따라생성된슬레이브.png)
