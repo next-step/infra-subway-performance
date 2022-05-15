@@ -33,6 +33,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Cacheable(value = LOGINS, key = "#credentials")
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();

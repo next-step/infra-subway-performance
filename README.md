@@ -68,14 +68,28 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+ - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-05226db0201f2f9d7
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+![image](https://user-images.githubusercontent.com/99663759/168300026-3bb87655-7752-4a18-859e-caff82dbbbac.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ - 접속빈도가 높은 페이지(로그인 api, 내 정보 조회 api)  
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/frequently/StressREADME.md)  
+
+ - 데이터를 갱신하는 페이지(로그인 api, 내 정보 수정 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/updated/StressREADME.md)  
+
+ - 데이터를 조회하는 여러 데이터를 참조하는 페이지(로그인 api, 경로 검색 api)
+   - [smoke](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/SmokeREADME.md)  
+   - [load](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/LoadREADME.md)  
+   - [stress](https://github.com/exemeedys/infra-subway-performance/blob/step2/k6_2/joined/StressREADME.md)  
 
 ---
 
@@ -84,6 +98,32 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```
+select t.id as '사원번호', (concat(t.last_name,'_', t.first_name)) as '이름', t.annual_income as '연봉', 
+t.position_name as '직급명', r.time as '입출입시간', r.region as '지역', r.record_symbol as '입출입구분' from record r
+inner join 
+( select e.id, e.last_name, e.first_name, annual_income, p.position_name from department d
+inner join manager m
+on d.id = m.department_id
+inner join employee e
+on m.employee_id = e.id
+inner join salary s
+on e.id = s.id
+inner join position p
+on e.id = p.id 
+where note = 'active' 
+and m.end_date = '9999-01-01'
+and s.end_date = '9999-01-01'
+and p.end_date = '9999-01-01'
+order by annual_income desc
+limit 5 ) t
+on r.employee_id = t.id
+where r.record_symbol = 'O';
+```
+![image](https://user-images.githubusercontent.com/99663759/168427093-559db536-7ea4-4076-9301-fbe8f6ac5ea1.png)
+
+![image](https://user-images.githubusercontent.com/99663759/168427101-09e61769-d8d7-49d7-8158-6c5041ccb804.png)
 
 ---
 
