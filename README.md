@@ -893,6 +893,40 @@ FROM
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
+```sql
+SELECT STRAIGHT_JOIN
+	p.id
+FROM
+    ((
+    SELECT
+	id
+    FROM
+        subway.programmer
+    WHERE
+	hobby = "Yes"
+	AND years_coding = "0-2 years"
+    ) 
+    UNION
+    (
+    SELECT
+	id
+    FROM
+	subway.programmer
+    WHERE
+	hobby = "Yes"
+	AND dev_type = "Student"
+    )) p
+    INNER JOIN subway.covid c ON p.id = c.programmer_id
+    INNER JOIN subway.hospital h ON c.hospital_id = h.id
+ORDER BY
+    p.id;
+```
+
+<img width="1633" alt="image" src="https://user-images.githubusercontent.com/37537207/168563819-043736ea-c8c7-46c6-9323-9f784e3ffff0.png">
+
+> 관건은 p.id 로 order 하는 부분을 어떻게 효율적으로 처리할 것이나 인듯하여, hobby,years_coding,id / hobby,dev_type,id 복합 인덱스 2개를 생성하면 알아서 id로 정렬된 두개의 인덱스리스트를 merge sort 해줄 줄 알았으나... WHERE 절 하나에서 처리할 경우에는 그걸 두개의 인덱스를 사용해서 merge sort 할 정도로 옵티마이저가 똑똑하지는 않은 것으로 밝혀졌습니다.
+> 결국 각각 따로 SELECT 한뒤 UNION 하여서 ORDER BY 하니 100 ms 내외로 떨어지는것으로 보아 이제야 merge sort 로 처리한 듯 보입니다.
+
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
