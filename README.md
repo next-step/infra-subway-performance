@@ -929,6 +929,23 @@ ORDER BY
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
+```sql
+SELECT
+    c.stay
+    , COUNT(1)
+FROM
+    subway.member m
+    INNER JOIN subway.programmer p ON p.member_id = m.id
+    INNER JOIN subway.covid c ON c.member_id = m.id
+WHERE
+    m.age BETWEEN 20 AND 29
+    AND p.country = "India"
+GROUP BY
+    c.stay;
+```
+
+> 처음엔 group by 가 문제인 줄 알았으나, programmer 에 (country, member_id) 인덱스를 생성하고 using index 로 나오면서 100ms 안쪽으로 떨어지는 걸 보고 sequential access 가 문제였음을 깨달음..
+
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ---
