@@ -937,9 +937,11 @@ FROM
     subway.member m
     INNER JOIN subway.programmer p ON p.member_id = m.id
     INNER JOIN subway.covid c ON c.member_id = m.id
+    INNER JOIN subway.hospital h ON c.hospital_id = h.id
 WHERE
     m.age BETWEEN 20 AND 29
     AND p.country = "India"
+    AND h.name = "서울대병원"
 GROUP BY
     c.stay;
 ```
