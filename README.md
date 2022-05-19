@@ -950,6 +950,24 @@ GROUP BY
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+```sql
+SELECT
+    p.exercise
+    , COUNT(1)
+FROM
+    subway.member m
+    INNER JOIN subway.programmer p ON p.member_id = m.id
+    INNER JOIN subway.covid c ON c.member_id = m.id
+    INNER JOIN subway.hospital h ON c.hospital_id = h.id
+WHERE
+    m.age BETWEEN 30 AND 39
+    AND h.name = "서울대병원"
+GROUP BY
+    p.exercise;
+```
+
+> 현재 200ms 정도가 나오는 쿼리. 테이블 사이즈가 작은 hospital 을 제외한 모든 테이블을 커버링 인덱스로 타고 있다. 여기서 어떤 부분을 더 줄일 수 있을지...?
+
 ---
 
 ### 추가 미션
