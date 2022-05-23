@@ -171,16 +171,104 @@ d. WAS - caching 적용
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09e20aae02ac3fff8
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
+![image](https://user-images.githubusercontent.com/87216027/168458888-74188baa-142c-47e3-95d7-a72f115686b2.png)
 
-```sh
-$ stress -c 2
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+Stress test
+```shell
+[ubuntu@LOAD]:~$ k6 run --out influxdb=http://localhost:8086/myk6db cache_stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: cache_stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 410 max VUs, 18m50s max duration (incl. graceful stop):
+           * default: Up to 410 looping VUs for 18m20s over 10 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[1068] The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.  output=InfluxDBv1 t=1.066026348s
+
+running (18m20.7s), 000/410 VUs, 160533 complete and 0 interrupted iterations
+default ✓ [======================================] 000/410 VUs  18m20s
+
+     ✓ correct path1
+     ✓ correct path2
+     ✓ correct lines1
+
+     checks.........................: 100.00% ✓ 481599     ✗ 0
+     data_received..................: 21 GB   19 MB/s
+     data_sent......................: 106 MB  96 kB/s
+     http_req_blocked...............: avg=4.74µs  min=138ns   med=328ns    max=263.1ms  p(90)=420ns   p(95)=468ns
+     http_req_connecting............: avg=1.07µs  min=0s      med=0s       max=103.66ms p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=5.07ms  min=1.04ms  med=3.31ms   max=1.7s     p(90)=8.22ms  p(95)=13.68ms
+       { expected_response:true }...: avg=5.07ms  min=1.04ms  med=3.31ms   max=1.7s     p(90)=8.22ms  p(95)=13.68ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 802665
+     http_req_receiving.............: avg=1.05ms  min=12.51µs med=272.88µs max=154.85ms p(90)=1.9ms   p(95)=3.38ms
+     http_req_sending...............: avg=70.37µs min=13.24µs med=28.43µs  max=116.35ms p(90)=55.12µs p(95)=89.45µs
+     http_req_tls_handshaking.......: avg=3.1µs   min=0s      med=0s       max=158.84ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.94ms  min=0s      med=2.86ms   max=1.7s     p(90)=6.02ms  p(95)=9.62ms
+     http_reqs......................: 802665  729.224167/s
+     iteration_duration.............: avg=1.02s   min=1.01s   med=1.01s    max=4.17s    p(90)=1.04s   p(95)=1.06s
+     iterations.....................: 160533  145.844833/s
+     vus............................: 2       min=1        max=410
+     vus_max........................: 410     min=410      max=410
+```   
+![image](https://user-images.githubusercontent.com/87216027/168458856-2537cfd0-4b10-447e-8aae-ee6d03b7073f.png)
+![image](https://user-images.githubusercontent.com/87216027/168458860-d3facfba-08f7-4baf-a774-b0a635bb851f.png)
+
+Requests Per Second 최대 4,045 까지
+
+Load test
+```shell
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: cache_load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 60 max VUs, 12m40s max duration (incl. graceful stop):
+           * default: Up to 60 looping VUs for 12m10s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (12m10.8s), 00/60 VUs, 28525 complete and 0 interrupted iterations
+default ↓ [======================================] 02/60 VUs  12m10s
+
+     ✓ correct path1
+     ✓ correct path2
+     ✓ correct lines1
+
+     checks.........................: 100.00% ✓ 85575      ✗ 0
+     data_received..................: 3.6 GB  5.0 MB/s
+     data_sent......................: 22 MB   30 kB/s
+     http_req_blocked...............: avg=3.32µs   min=140ns   med=297ns   max=26.78ms  p(90)=462ns   p(95)=542ns
+     http_req_connecting............: avg=602ns    min=0s      med=0s      max=9.25ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=9.27ms   min=1.09ms  med=4.19ms  max=299.53ms p(90)=22.7ms  p(95)=39.63ms
+       { expected_response:true }...: avg=9.27ms   min=1.09ms  med=4.19ms  max=299.53ms p(90)=22.7ms  p(95)=39.63ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 142625
+     http_req_receiving.............: avg=972.24µs min=14.42µs med=83.94µs max=109.62ms p(90)=1.83ms  p(95)=3.27ms
+     http_req_sending...............: avg=44.04µs  min=13.47µs med=29.54µs max=23.15ms  p(90)=61.4µs  p(95)=78.71µs
+     http_req_tls_handshaking.......: avg=2.06µs   min=0s      med=0s      max=15.75ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=8.26ms   min=0s      med=3.59ms  max=230.46ms p(90)=20.21ms p(95)=36.7ms
+     http_reqs......................: 142625  195.157263/s
+     iteration_duration.............: avg=1.04s    min=1.01s   med=1.02s   max=1.43s    p(90)=1.13s   p(95)=1.16s
+     iterations.....................: 28525   39.031453/s
+     vus............................: 2       min=1        max=60
+     vus_max........................: 60      min=60       max=60
 ```
-
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
 ---
 
 ### 3단계 - 쿼리 최적화
