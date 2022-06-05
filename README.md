@@ -276,6 +276,43 @@ default ↓ [======================================] 02/60 VUs  12m10s
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```sql
+SELECT	salary.id `사원번호`, employee.last_name `이름`, salary.annual_income `연봉`, position.position_name `직급명`, record.time `입출입시간`, record.region `지역`, record.record_symbol `입출입구분`
+FROM	record
+INNER JOIN
+(
+	SELECT	salary.id, salary.annual_income
+	FROM	salary
+	INNER JOIN
+		(
+			SELECT	*
+			FROM	manager m INNER JOIN department d
+			ON	m.department_id = d.id
+			WHERE	d.note = 'active'
+			AND	m.end_date > sysdate()
+		) manager
+	ON	 salary.id = manager.employee_id
+	WHERE	 salary.end_date > sysdate()
+	ORDER BY salary.annual_income DESC
+	LIMIT	 5
+) salary
+ON record.employee_id = salary.id AND record.record_symbol = 'O'
+INNER JOIN employee
+ON employee.id = salary.id
+INNER JOIN position
+ON position.id = salary.id AND position.end_date > sysdate()
+```
+![image](https://user-images.githubusercontent.com/87216027/172054712-7e0fd971-19bb-4875-9184-1330dcf01455.png)
+3번 수행하여 0.375 , 0.375, 0.390 초 나왔습니다.  
+
++ 쿼리가 정답이 아닌데, 컴퓨터 사양에 따라서 달라져서 1s 미만으로 수행된 거일까봐 추가합니다. (제가 컴퓨터 사양이 결과에 어느정도 미치는지를 모릅니다..)  
+일단 그냥 컴퓨터 사양 적자면  
+    - CPU Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz   2.11 GHz
+    - RAM 16.0GB
+    - 도커 RAM 2.45GB 라고 나옵니다.
+    - `sys.memory_global_total` 는 제가 tuning db 계정 user 계정밖에 모르고, user 계정은 sys 테이블 조회 권한 없어서 해보지 못했습니다.
+
+감사합니다!
 
 ---
 
