@@ -285,7 +285,7 @@ INNER JOIN
 	FROM	salary
 	INNER JOIN
 		(
-			SELECT	*
+			SELECT	m.employee_id
 			FROM	manager m INNER JOIN department d
 			ON	m.department_id = d.id
 			WHERE	d.note = 'active'
