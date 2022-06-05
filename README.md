@@ -278,7 +278,7 @@ default ↓ [======================================] 02/60 VUs  12m10s
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 ```sql
 SELECT	salary.id `사원번호`, employee.last_name `이름`, salary.annual_income `연봉`, position.position_name `직급명`, record.time `입출입시간`, record.region `지역`, record.record_symbol `입출입구분`
-FROM	record
+FROM	(SELECT employee_id, time, region, record_symbol FROM record WHERE record.record_symbol = 'O') record
 INNER JOIN
 (
 	SELECT	salary.id, salary.annual_income
@@ -299,8 +299,8 @@ INNER JOIN
 ON record.employee_id = salary.id AND record.record_symbol = 'O'
 INNER JOIN employee
 ON employee.id = salary.id
-INNER JOIN position
-ON position.id = salary.id AND position.end_date > sysdate()
+INNER JOIN (SELECT position.id, position_name FROM position WHERE position.end_date > sysdate()) position
+ON position.id = salary.id
 ```
 ![image](https://user-images.githubusercontent.com/87216027/172054712-7e0fd971-19bb-4875-9184-1330dcf01455.png)
 3번 수행하여 0.375 , 0.375, 0.390 초 나왔습니다.  
