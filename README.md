@@ -299,18 +299,11 @@ INNER JOIN
 ON record.employee_id = salary.id AND record.record_symbol = 'O'
 INNER JOIN employee
 ON employee.id = salary.id
-INNER JOIN (SELECT position.id, position_name FROM position WHERE position.end_date > sysdate()) position
+STRAIGHT_JOIN (SELECT position.id, position_name FROM position WHERE position.end_date > sysdate()) position
 ON position.id = salary.id
 ```
-![image](https://user-images.githubusercontent.com/87216027/172054712-7e0fd971-19bb-4875-9184-1330dcf01455.png)
-3번 수행하여 0.375 , 0.375, 0.390 초 나왔습니다.  
-
-+ 쿼리가 정답이 아닌데, 컴퓨터 사양에 따라서 달라져서 1s 미만으로 수행된 거일까봐 추가합니다. (제가 컴퓨터 사양이 결과에 어느정도 미치는지를 모릅니다..)  
-일단 그냥 컴퓨터 사양 적자면  
-    - CPU Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz   2.11 GHz
-    - RAM 16.0GB
-    - 도커 RAM 2.45GB 라고 나옵니다.
-    - `sys.memory_global_total` 는 제가 tuning db 계정 user 계정밖에 모르고, user 계정은 sys 테이블 조회 권한 없어서 해보지 못했습니다.
+![image](https://user-images.githubusercontent.com/87216027/172057897-462abfbc-0c73-4949-886b-d7c6c7f2e6bd.png)
+3번 수행하여 0.203 , 0.188, 0.188 초 나왔습니다.  
 
 감사합니다!
 
