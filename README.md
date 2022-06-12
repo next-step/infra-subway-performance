@@ -276,6 +276,36 @@ default ↓ [======================================] 02/60 VUs  12m10s
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```sql
+SELECT	salary.id `사원번호`, employee.last_name `이름`, salary.annual_income `연봉`, position.position_name `직급명`, record.time `입출입시간`, record.region `지역`, record.record_symbol `입출입구분`
+FROM	(SELECT employee_id, time, region, record_symbol FROM record WHERE record.record_symbol = 'O') record
+INNER JOIN
+(
+	SELECT	salary.id, salary.annual_income
+	FROM	salary
+	INNER JOIN
+		(
+			SELECT	m.employee_id
+			FROM	manager m INNER JOIN department d
+			ON	m.department_id = d.id
+			WHERE	d.note = 'active'
+			AND	m.end_date > sysdate()
+		) manager
+	ON	 salary.id = manager.employee_id
+	WHERE	 salary.end_date > sysdate()
+	ORDER BY salary.annual_income DESC
+	LIMIT	 5
+) salary
+ON record.employee_id = salary.id AND record.record_symbol = 'O'
+INNER JOIN employee
+ON employee.id = salary.id
+STRAIGHT_JOIN (SELECT position.id, position_name FROM position WHERE position.end_date > sysdate()) position
+ON position.id = salary.id
+```
+![image](https://user-images.githubusercontent.com/87216027/172057897-462abfbc-0c73-4949-886b-d7c6c7f2e6bd.png)
+3번 수행하여 0.203 , 0.188, 0.188 초 나왔습니다.  
+
+감사합니다!
 
 ---
 
