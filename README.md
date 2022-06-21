@@ -46,6 +46,10 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+   - nginx-gzip 압축 설정 추가
+   - nginx cache 사용
+   - http2 설정
+   - was cache
 
 ---
 

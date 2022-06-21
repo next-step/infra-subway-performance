@@ -58,8 +58,8 @@ public class LineService {
 
     @Caching(put = @CachePut(value = "line", key = "#id"),
             evict = {
-                    @CacheEvict(value = "allLine"),
-                    @CacheEvict(value = "path")
+                    @CacheEvict(value = "allLine", allEntries = true),
+                    @CacheEvict(value = "path", allEntries = true)
             })
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -68,8 +68,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = "line", key = "#id"),
-            @CacheEvict(value = "allLine"),
-            @CacheEvict(value = "path")
+            @CacheEvict(value = "allLine", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
     })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);

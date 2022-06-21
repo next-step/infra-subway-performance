@@ -1,6 +1,5 @@
 package nextstep.subway.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -17,8 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
 
-    @Autowired
     private RedisConnectionFactory connectionFactory;
+
+    public CacheConfig(RedisConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     @Bean
     public CacheManager redisCacheManager() {
