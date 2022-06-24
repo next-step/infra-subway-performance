@@ -48,11 +48,18 @@ npm run dev
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
-- 미적용
-
+- 성능 개선 미적용
+  - [smoke](https://github.com/june2/infra-subway-performance/blob/step1/docs/smoke/1.png)
+  - [load](https://github.com/june2/infra-subway-performance/blob/step1/docs/load/1.png)
+  - [stress](https://github.com/june2/infra-subway-performance/blob/step1/docs/stress/1.png)
 - web proxy 개선
-
-- web+was 개선
+  - [smoke](https://github.com/june2/infra-subway-performance/blob/step1/docs/smoke/2.web.png)
+  - [load](https://github.com/june2/infra-subway-performance/blob/step1/docs/load/2.web.png)
+  - [stress](https://github.com/june2/infra-subway-performance/blob/step1/docs/stress/2.web.png)
+- web + was 개선
+  - [smoke](https://github.com/june2/infra-subway-performance/blob/step1/docs/smoke/3.web.was.png)
+  - [load](https://github.com/june2/infra-subway-performance/blob/step1/docs/load/3.web.was.png)
+  - [stress](https://github.com/june2/infra-subway-performance/blob/step1/docs/stress/3.web.was.png)
 
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
@@ -63,12 +70,14 @@ npm run dev
    b. WAS 성능 개선
      - Redis Spring Data Cache
 
- ** 결과 **
+ - 결과
+   - web(nginx) 성능 개선으로 웹페이지 로딩 속도 감축
+   - was(redis-cache) 데이터 응답 실패율 감소
   |         | FCP  |  TTI |  SI  |  TBT  |  LCP   |   CLS   |   Score  |
   |---------|------|------|------|-------|--------| ------- |  :-----: |
   | 미적용    |2.7s  | 2.8  | 2.7s | 70ms  |  2.8s  |  0.004  |    67    |
   | web개선  |1.2s  | 1.3  | 1.6s | 50ms  |  1.3s  |  0.004  |    92    |
-  | web개선  |1.2s  | 1.2  | 1.7s | 50ms  |  1.2s  |  0.004  |    92    |
+  | was개선  |1.2s  | 1.2  | 1.7s | 50ms  |  1.2s  |  0.004  |    92    |
      
 
 ---
