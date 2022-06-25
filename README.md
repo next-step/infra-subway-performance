@@ -114,6 +114,10 @@ npm run dev
       | 경로검색   | 95                | 1.0        | 1.3        | 
 
    - Http Request Duration 평균 :  116 -> 106 ms (stress 기준)
+    
+- 번외 
+    - hikari connection-timeout 30 -> 10초, maximum-pool-size 20 -> 10 설정
+    - Http Request Duration 평균 :  106 -> 113 ms (stress 기준) 오히려 증가 
 ---
 
 ### 2단계 - 스케일 아웃
