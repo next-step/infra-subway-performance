@@ -1,6 +1,5 @@
 package nextstep.subway.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -17,8 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
 
-    @Autowired
-    RedisConnectionFactory connectionFactory;
+    private final RedisConnectionFactory connectionFactory;
+
+    public CacheConfig(RedisConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     @Bean
     public CacheManager redisCacheManager() {
@@ -26,11 +28,9 @@ public class CacheConfig extends CachingConfigurerSupport {
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
-        RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
+        return RedisCacheManager.RedisCacheManagerBuilder
             .fromConnectionFactory(connectionFactory)
             .cacheDefaults(redisCacheConfiguration)
             .build();
-
-        return redisCacheManager;
     }
 }
