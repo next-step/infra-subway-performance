@@ -44,9 +44,80 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- Before ([경로](/result/before))
+    - Http Request Duration 평균
+        - Smoke  : 7.1ms
+        - Load   : 7.65ms
+        - Stress : 138.6ms
+    - VUser 263 부터 오류발생
+    - LightHouse
+         | Desktop  | Lighthouse 성능    | FCP(s) | TTI(s) |
+         | :------- | ------------------| ---------- | ----------- |
+         | 메인      | 70                | 2.5        | 2.6         |
+         | 역관리     | 42                | 2.6       | 3.5         |
+         | 노선관리   | 68                | 2.6        | 2.8         |
+         | 구간관리   | 65                | 3.0        | 3.2         |
+         | 경로검색   | 66                | 2.7        | 2.8        | 
+      
+- After ([경로](/result/after))
+    - Http Request Duration 평균
+        - Smoke  : 6.42ms (-약 9%)
+        - Load   : 6.85ms (-약 10%)
+        - Stress : 106.83ms (-약 20% )
+    - VUser 258 부터 오류발생
+        - LightHouse ()
+          | Desktop  | Lighthouse 성능    | FCP(s) | TTI(s) |
+          | :------- | ------------------| ---------- | ----------- |
+          | 메인      | 97  (+20)         | 0.9        | 1.1         |
+          | 역관리    | 70  (+28)          | 1.0        | 2.0         |
+          | 노선관리   | 89  (+21)         | 1.0        | 1.5         |
+          | 구간관리   | 94  (+29)          | 1.0        | 1.3         |
+          | 경로검색   | 95  (+29)          | 1.0        | 1.3        |
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요 
+
+- Reverse Proxy 개선 - nginx Gzip encode 설정
+    - LightHouse
+      | Desktop  | Lighthouse 성능    | FCP(s) | TTI(s) |
+      | :------- | ------------------| ---------- | ----------- |
+      | 메인      | 93                | 1.2        | 1.3         |
+      | 역관리     | 63               | 1.3        | 2.1         |
+      | 노선관리   | 87                | 1.3        | 1.6         |
+      | 구간관리   | 94                | 1.0        | 1.3         |
+      | 경로검색   | 90                | 1.4        | 1.4        |
+
+   - 메인페이지 기준 2.6 MB -> 648 KB 네트워크 전송 감소
+   - Http Request Duration 평균 :  138 -> 130 ms (stress 기준)
+    
+- Reverse Proxy 개선 - cache & http2 설정
+    - LightHouse
+      | Desktop  | Lighthouse 성능    | FCP(s) | TTI(s) |
+      | :------- | ------------------| ---------- | ----------- |
+      | 메인      | 97                | 0.9        | 1.1         |
+      | 역관리     | 70               | 1.0        | 2.0         |
+      | 노선관리   | 95                | 1.0        | 1.3         |
+      | 구간관리   | 94                | 1.0        | 1.3         |
+      | 경로검색   | 95                | 1.0        | 1.3        |
+
+  - Http Request Duration 평균 :  130 -> 116 ms (stress 기준)
+    
+- WAS 성능 개선하기 - Redis Cache 설정
+    - 지하철, 노선, 즐겨찾기 목록 조회 및 구간 조회 Cache 설정
+    - LightHouse
+      | Desktop  | Lighthouse 성능    | FCP(s) | TTI(s) |
+      | :------- | ------------------| ---------- | ----------- |
+      | 메인      | 97                | 0.9        | 1.1         |
+      | 역관리     | 70               | 1.0        | 2.0         |
+      | 노선관리   | 89 (- 6)          | 1.0        | 1.5         |
+      | 구간관리   | 94                | 1.0        | 1.3         |
+      | 경로검색   | 95                | 1.0        | 1.3        | 
+
+   - Http Request Duration 평균 :  116 -> 106 ms (stress 기준)
+    
+- 번외 
+    - hikari connection-timeout 30 -> 10초, maximum-pool-size 20 -> 10 설정
+    - Http Request Duration 평균 :  106 -> 113 ms (stress 기준) 오히려 증가 
 ---
 
 ### 2단계 - 스케일 아웃
