@@ -1,9 +1,13 @@
 package nextstep.subway.favorite.dto;
 
+import java.io.Serializable;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
-public class FavoriteResponse {
+public class FavoriteResponse implements Serializable {
+
+    private static final long serialVersionUID = 679739828007623062L;
+
     private Long id;
     private StationResponse source;
     private StationResponse target;
