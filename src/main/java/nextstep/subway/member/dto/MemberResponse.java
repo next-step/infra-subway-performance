@@ -2,9 +2,7 @@ package nextstep.subway.member.dto;
 
 import nextstep.subway.member.domain.Member;
 
-import java.io.Serializable;
-
-public class MemberResponse implements Serializable {
+public class MemberResponse {
     private Long id;
     private String email;
     private Integer age;
