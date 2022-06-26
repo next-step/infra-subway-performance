@@ -45,10 +45,10 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 웹사이트 성능 비교
-전
+- 전:
 ![img.png](img.png)
 
-후
+- 후:
 ![img_1.png](img_1.png)
 
 smoke 비교
