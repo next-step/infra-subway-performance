@@ -117,7 +117,9 @@ npm run dev
     
 - 번외 
     - hikari connection-timeout 30 -> 10초, maximum-pool-size 20 -> 10 설정
-    - Http Request Duration 평균 :  106 -> 113 ms (stress 기준) 오히려 증가 
+    - Http Request Duration 평균 :  ~~106 -> 113 ms (stress 기준) 오히려 증가~~
+      -> 재시도 1차 107ms, 2차 108ms 차이없는 것으로 정정
+      -> Redis Cache를 사용하고 있어 DB Connection이 많지 않아 성능 차이 없는 것으로 확인
 ---
 
 ### 2단계 - 스케일 아웃
