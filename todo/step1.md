@@ -15,5 +15,5 @@
   - TLS, HTTP/2는 성능 개선 전 해둔 상태
 - [x] WAS 성능 개선하기
   - [x] redis로 cache 처리 
-- [ ] 성능 개선 후 smoke, stress, load 테스트 결과 확인
+- [x] 성능 개선 후 smoke, stress, load 테스트 결과 확인
 - [ ] README에 답변 추가하기
