@@ -16,3 +16,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: masterpw
+  redis:
+    host: localhost
+    port: 6379
