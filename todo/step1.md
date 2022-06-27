@@ -4,8 +4,8 @@
   - 개선 전 / 후를 직접 계측하여 확인
 
 ### 📚 Todo List 📚
-- [ ] yaml 파일 구성하기
+- [x] yaml 파일 구성하기
 - [ ] 성능 개선 전 smoke, stress, load 테스트 결과 확인 
 - [ ] Reverse Proxy 개선하기
 - [ ] WAS 성능 개선하기
-- [ ] README에 답변 추가하기
+- [ ] README에 답변 추가하
