@@ -29,7 +29,7 @@ public class LineService {
     }
 
 
-    @Caching(evict = {@CacheEvict(value = "path"), @CacheEvict(value = "lines")})
+    @Caching(evict = {@CacheEvict(value = "path"), @CacheEvict(value = "lines"),  @CacheEvict(value = "line")})
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
