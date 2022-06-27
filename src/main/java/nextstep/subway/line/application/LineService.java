@@ -7,6 +7,10 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,50 +28,71 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
+    })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(
+                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        return persistLines.stream().map(LineResponse::of).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "lines", cacheManager = "linesCacheManager")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
+    @Cacheable(value = "line", key = "#id", cacheManager = "lineCacheManager")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @Caching(
+            put = @CachePut(value = "line", key = "#id", cacheManager = "lineCacheManager"),
+            evict = {
+                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
+            }
+    )
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
+            @CacheEvict(value = "line", key = "#id", cacheManager = "lineCacheManager")
+    })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Caching(evict = {
+                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
+                    @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager")
+    })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
+    @Caching(evict = {
+                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
+                    @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager")
+    })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
