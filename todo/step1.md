@@ -5,7 +5,10 @@
 
 ### 📚 Todo List 📚
 - [x] yaml 파일 구성하기
-- [ ] 성능 개선 전 smoke, stress, load 테스트 결과 확인 
+- [x] 성능 개선 전 smoke, stress, load 테스트 결과 확인
+  - [stress.js](https://github.com/mond-page/infra-subway-monitoring/blob/step3/todo/stress/stress.js)
+  - [smoke.js](https://github.com/mond-page/infra-subway-monitoring/blob/step3/todo/smoke/smoke.js)
+  - [load.js](https://github.com/mond-page/infra-subway-monitoring/blob/step3/todo/load/load.js)
 - [ ] Reverse Proxy 개선하기
 - [ ] WAS 성능 개선하기
-- [ ] README에 답변 추가하
+- [ ] README에 답변 추가하기
