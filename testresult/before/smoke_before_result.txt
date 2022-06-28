@@ -1,0 +1,40 @@
+$ k6 run smoke.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 40s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 10s (gracefulStop: 30s)
+
+
+running (10.2s), 0/1 VUs, 10 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  10s
+
+     ✓ mainPage successfully
+     ✓ logged in successfully
+     ✓ getPath successfully
+
+     checks.........................: 100.00% ✓ 30       ✗ 0
+     data_received..................: 33 kB   3.3 kB/s
+     data_sent......................: 5.1 kB  499 B/s
+     http_req_blocked...............: avg=1.41ms   min=1.48µs  med=2.06µs  max=42.21ms  p(90)=5.56µs  p(95)=10.47µs
+     http_req_connecting............: avg=10.38µs  min=0s      med=0s      max=311.44µs p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=4.01ms   min=1.93ms  med=2.48ms  max=26.8ms   p(90)=5.05ms  p(95)=6.13ms
+       { expected_response:true }...: avg=2.51ms   min=1.93ms  med=2.29ms  max=6.97ms   p(90)=2.64ms  p(95)=3.21ms
+     http_req_failed................: 33.33%  ✓ 10       ✗ 20
+     http_req_receiving.............: avg=46.76µs  min=23.93µs med=45.74µs max=73.92µs  p(90)=64.37µs p(95)=68.92µs
+     http_req_sending...............: avg=18.61µs  min=7.06µs  med=13.41µs max=143.69µs p(90)=25.03µs p(95)=26.27µs
+     http_req_tls_handshaking.......: avg=401.24µs min=0s      med=0s      max=12.03ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.94ms   min=1.9ms   med=2.42ms  max=26.71ms  p(90)=4.99ms  p(95)=6.07ms
+     http_reqs......................: 30      2.948768/s
+     iteration_duration.............: avg=1.01s    min=1s      med=1.01s   max=1.07s    p(90)=1.02s   p(95)=1.04s
+     iterations.....................: 10      0.982923/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
