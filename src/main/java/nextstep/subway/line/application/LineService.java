@@ -28,9 +28,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
-    })
+    @Caching(evict = { @CacheEvict(value = "lines", key = "'lines'", cacheManager = "linesCacheManager"), })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -44,7 +42,7 @@ public class LineService {
         return persistLines.stream().map(LineResponse::of).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", cacheManager = "linesCacheManager")
+    @Cacheable(value = "lines", key = "'lines'", cacheManager = "linesCacheManager")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -59,29 +57,21 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Caching(
-            put = @CachePut(value = "line", key = "#id", cacheManager = "lineCacheManager"),
-            evict = {
-                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
-            }
-    )
+    @Caching(put = @CachePut(value = "line", key = "#id", cacheManager = "lineCacheManager"),
+            evict = { @CacheEvict(value = "lines", cacheManager = "linesCacheManager"), })
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
-            @CacheEvict(value = "line", key = "#id", cacheManager = "lineCacheManager")
-    })
+    @Caching(evict = { @CacheEvict(value = "lines", key = "'lines'", cacheManager = "linesCacheManager"),
+            @CacheEvict(value = "line", key = "#id", cacheManager = "lineCacheManager") })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @Caching(evict = {
-                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
-                    @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager")
-    })
+    @Caching(evict = { @CacheEvict(value = "lines", key = "'lines'", cacheManager = "linesCacheManager"),
+            @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager") })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findById(request.getUpStationId());
@@ -89,10 +79,8 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @Caching(evict = {
-                    @CacheEvict(value = "lines", allEntries = true, cacheManager = "linesCacheManager"),
-                    @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager")
-    })
+    @Caching(evict = { @CacheEvict(value = "lines", key = "'lines'", cacheManager = "linesCacheManager"),
+            @CacheEvict(value = "line", key = "#lineId", cacheManager = "lineCacheManager") })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
