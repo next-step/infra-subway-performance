@@ -38,15 +38,16 @@ public class FavoriteService {
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(
-                it,
-                StationResponse.of(stations.get(it.getSourceStationId())),
-                StationResponse.of(stations.get(it.getTargetStationId()))))
-            .collect(Collectors.toList());
+                        .map(it -> FavoriteResponse.of(
+                                it,
+                                StationResponse.of(stations.get(it.getSourceStationId())),
+                                StationResponse.of(stations.get(it.getTargetStationId()))))
+                        .collect(Collectors.toList());
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(id)
+                                              .orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
             throw new HasNotPermissionException(loginMember.getId() + "는 삭제할 권한이 없습니다.");
         }
@@ -55,8 +56,9 @@ public class FavoriteService {
 
     private Map<Long, Station> extractStations(List<Favorite> favorites) {
         Set<Long> stationIds = extractStationIds(favorites);
-        return stationRepository.findAllById(stationIds).stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
+        return stationRepository.findAllById(stationIds)
+                                .stream()
+                                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     private Set<Long> extractStationIds(List<Favorite> favorites) {

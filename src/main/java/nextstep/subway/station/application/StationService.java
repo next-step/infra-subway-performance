@@ -29,8 +29,8 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                       .map(StationResponse::of)
+                       .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
@@ -38,6 +38,7 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+                                .orElseThrow(RuntimeException::new);
     }
 }
