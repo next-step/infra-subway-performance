@@ -3,16 +3,10 @@ import { check, group, sleep, fail } from 'k6';
 
 export let options = {
     stages: [
-        { duration: '1m', target: 150 },
+        { duration: '1m', target: 100 },
         { duration: '1m', target: 200 },
         { duration: '1m', target: 300 },
-        { duration: '1m', target: 300 },
-        { duration: '1m', target: 400 },
-        { duration: '1m', target: 500 },
-        { duration: '1m', target: 600 },
-        { duration: '1m', target: 700 },
-        { duration: '1m', target: 500 },
-        { duration: '1m', target: 0 }
+        { duration: '1m', target: 400 }
     ],
     thresholds: {
         http_req_duration: ['p(99)<1000'], // 99% of requests must complete below 1s
@@ -29,9 +23,6 @@ export default function ()  {
 
     // 로그인
     let token = login();
-
-    // 나의 정보 수정
-    changeMember(token);
 
     // 경로 검색
     getPath(15, 27);
@@ -64,27 +55,6 @@ function login() {
     });
 
     return loginRes.json('accessToken');
-}
-
-function changeMember(token) {
-
-    var payload = JSON.stringify({
-        email: USERNAME,
-        password: PASSWORD,
-        age: 32
-    });
-
-    var params = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    };
-
-    let changeMemberRes = http.put(`${BASE_URL}/members/me`, payload, params);
-    check(changeMemberRes, {
-        'changeMember successfully': (response) => response.status === 200
-    });
 }
 
 function getPath(source, target) {

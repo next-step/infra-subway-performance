@@ -4,10 +4,8 @@ import { check, group, sleep, fail } from 'k6';
 export let options = {
     stages: [
         { duration: '1m', target: 24 },
-        { duration: '3m', target: 24 },
-        { duration: '6m', target: 96 },
-        { duration: '6m', target: 96 },
-        { duration: '3m', target: 24 },
+        { duration: '1m', target: 24 },
+        { duration: '2m', target: 96 },
         { duration: '1m', target: 24 }
     ],
     thresholds: {
@@ -25,9 +23,6 @@ export default function ()  {
 
     // 로그인
     let token = login();
-
-    // 나의 정보 수정
-    changeMember(token);
 
     // 경로 검색
     getPath(15, 27);
@@ -60,27 +55,6 @@ function login() {
     });
 
     return loginRes.json('accessToken');
-}
-
-function changeMember(token) {
-
-    var payload = JSON.stringify({
-        email: USERNAME,
-        password: PASSWORD,
-        age: 32
-    });
-
-    var params = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    };
-
-    let changeMemberRes = http.put(`${BASE_URL}/members/me`, payload, params);
-    check(changeMemberRes, {
-        'changeMember successfully': (response) => response.status === 200
-    });
 }
 
 function getPath(source, target) {
