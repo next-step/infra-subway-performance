@@ -45,7 +45,24 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+- load.js, smoke.js, stress.js는 step1에 링크되어 있습니다.
+- **성능 개선 전 (load, smoke, stress)**
+![load_before_tuning](todo/images/load_before_tuning.png)
+![smoke_before_tuning](todo/images/smoke_before_tuning.png)
+![stress_before_tuning](todo/images/stress_before_tuning.png)
+- **성능 개선 후 (load, smoke, stress)**
+![load_after_tuning](todo/images/load_after_tuning.png)
+![smoke_after_tuning](todo/images/smoke_after_tuning.png)
+![stress_after_tuning](todo/images/stress_after_tuning.png)
+- http_req_duration p(95) 결과보기 
+  - load : 5.96s -> 47.89ms
+  - smoke : 91.58ms -> 8.66ms
+  - stress : 4.2s -> 222.64ms
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- nginx에 9단계로 gzip 압축 진행하였습니다.
+- nging에 cache를 두었습니다.
+- redis를 통해 경로조회, 지하철역 조회, 노선조회에 cache 처리하였습니다. 
 
 ---
 
