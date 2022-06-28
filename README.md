@@ -44,7 +44,54 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- 성능 개선 타겟 : 조회시_여러_데이터_참조_페이지 : 경로조회 요청
+- threshold : p(99) < 1500
+- VUs : 50
 
+---
+### smoke
+- http_req_duration : 215.03ms -> 9.13ms
+
+**_before_**
+
+![smoke before](/step1/k6/before/step1_smoke_before.png)
+
+**_after_**
+
+![smoke after](/step1/k6/after/step1_smoke_after.png)
+
+
+
+### load
+- http_req_duration : 2.11s -> 48.38ms
+
+**_before_**
+
+![load_before](/step1/k6/before/step1_load_before.png)
+
+**_after_**
+
+![load_after](/step1/k6/after/step1_load_after.png)
+
+
+### stress
+- http_req_duration : 2.06s -> 39.83ms
+
+**_before_**
+
+![stress_before](/step1/k6/before/step1_stress_before.png)
+
+**_after_**
+
+![stress_after](/step1/k6/after/step1_stress_after.png)
+
+
+**failed condition**
+- 50VUs -> 250VUs
+
+![stress_after_failed](/step1/k6/after/step1_stress_after_fail_250VUs.png)
+
+---
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - [X] reverse proxy 개선 : gzip 압축
 ```text
@@ -86,7 +133,7 @@ http {
 ```
 ![gzip, cache](/step1/step_1_gzip_cache.png)
 
-- [ ] was 성능 개선 : Cache (redis 적용)
+- [X] was 성능 개선 : Cache (redis 적용)
 
 ---
 
