@@ -44,8 +44,30 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- http_req_duration 기준
+* Smoke Test
+  - before : max=26.8ms
+  - after : max=5.39ms
+  - **약 79.8% 향상**
 
+* Load Test
+  - before : max=410.86ms 
+  - after :max=31.53ms
+  - **약 92.3% 향상**
+
+* stress
+  - before : max=1.83s
+  - after : max=1.03s
+  - **43.7% 향상**
+  
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- nginx 설정
+  - gzip 압축
+  - cache 설정
+  - http2 설정
+
+- Was 성능 개선
+  - redis 캐시 적용
 
 ---
 
