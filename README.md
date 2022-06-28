@@ -46,6 +46,47 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- [X] reverse proxy 개선 : gzip 압축
+```text
+# gzip Settings
+http {
+    gzip on; ## http 블록 수준에서 gzip 압축 활성화
+    gzip_comp_level 9;
+    gzip_vary on;
+    gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype;
+}
+```
+- [X] reverse proxy 개선 : cache
+```text
+http {
+  ## Proxy 캐시 파일 경로, 메모리상 점유할 크기, 캐시 유지기간, 전체 캐시의 최대 크기 등 설정
+  proxy_cache_path /tmp/nginx levels=1:2 keys_zone=mycache:10m inactive=10m max_size=200M;
+
+  ## 캐시를 구분하기 위한 Key 규칙
+  proxy_cache_key "$scheme$host$request_uri $cookie_user";
+
+  server {
+    location ~* \.(?:css|js|gif|png|jpg|jpeg)$ {
+      proxy_pass http://app;
+      
+      ## 캐시 설정 적용 및 헤더에 추가
+      # 캐시 존을 설정 (캐시 이름)
+      proxy_cache mycache;
+      # X-Proxy-Cache 헤더에 HIT, MISS, BYPASS와 같은 캐시 적중 상태정보가 설정
+      add_header X-Proxy-Cache $upstream_cache_status;
+      # 200 302 코드는 20분간 캐싱
+      proxy_cache_valid 200 302 10m;    
+      # 만료기간을 1 달로 설정
+      expires 1M;
+      # access log 를 찍지 않는다.
+      access_log off;
+    }
+  }
+}
+```
+![gzip, cache](/step1/step_1_gzip_cache.png)
+
+- [ ] was 성능 개선 : Cache
 
 ---
 
