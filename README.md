@@ -63,12 +63,17 @@ npm run dev
   - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/smoke_K6.png)
   - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/load_K6.png)
   - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/stress_K6.png)
+- 비동기식 적용 후
+  - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/4_async/smoke_K6.png)
+  - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/4_async/load_K6.png)
+  - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/4_async/stress_K6.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - gzip 압축
    - cache 설정
    - TLS, HTTP/2 설정
    - Redis - Spring Data Cache
+   - 비동기식 적용 테스트
 
 ---
 
