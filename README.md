@@ -86,7 +86,7 @@ http {
 ```
 ![gzip, cache](/step1/step_1_gzip_cache.png)
 
-- [ ] was 성능 개선 : Cache
+- [ ] was 성능 개선 : Cache (redis 적용)
 
 ---
 
