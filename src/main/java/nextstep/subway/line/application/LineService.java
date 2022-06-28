@@ -7,6 +7,10 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,10 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Caching(
+            put = @CachePut(value = "line", key = "result.id"),
+            evict = @CacheEvict(value = "lines", allEntries = true)
+    )
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -31,6 +39,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "allLine", unless = "#result.isEmpty()")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -52,11 +61,21 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Caching(put = @CachePut(value = "line", key = "#id"),
+            evict = {
+                    @CacheEvict(value = "allLine", allEntries = true),
+                    @CacheEvict(value = "path", allEntries = true)
+            })
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "line", key = "#id"),
+            @CacheEvict(value = "allLine", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
