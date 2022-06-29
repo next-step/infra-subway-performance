@@ -15,5 +15,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/")
                 .setCacheControl(CacheControl.noCache()
                                              .cachePrivate());
+
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/static/js/**")
+                .addResourceLocations("classpath:/static/js/")
+                .setCacheControl(CacheControl.noCache()
+                                             .cachePrivate());
+
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/static/css/**")
+                .addResourceLocations("classpath:/static/css/")
+                .setCachePeriod(60 * 60 * 24 * 365);
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.concurrent.TimeUnit;
+
 import static nextstep.subway.config.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -19,7 +21,7 @@ public class StaticResourcesTest {
     private WebTestClient client;
 
     @Test
-    void get_static_resources() {
+    void get_static_resources_js() {
         String uri = PREFIX_STATIC_RESOURCES + "/static/js/main.js";
         EntityExchangeResult<String> response = client
                 .get()
@@ -28,8 +30,41 @@ public class StaticResourcesTest {
                 .expectStatus()
                 .isOk()
                 .expectHeader()
-                .cacheControl(CacheControl.noCache()
-                                          .cachePrivate())
+                .cacheControl(CacheControl.noCache().cachePrivate())
+                .expectBody(String.class)
+                .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+    }
+
+    @Test
+    void get_static_resources_images() {
+        String uri = PREFIX_STATIC_RESOURCES + "/static/images/main_logo.png";
+        EntityExchangeResult<String> response = client
+                .get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .cacheControl(CacheControl.noCache().cachePrivate())
+                .expectBody(String.class)
+                .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+    }
+
+    @Test
+    void get_static_resources_css() {
+        String uri = PREFIX_STATIC_RESOURCES + "/static/css/test.css";
+        EntityExchangeResult<String> response = client
+                .get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .expectBody(String.class)
                 .returnResult();
 
