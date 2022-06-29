@@ -21,3 +21,7 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+logging:
+  level:
+    root: DEBUG
