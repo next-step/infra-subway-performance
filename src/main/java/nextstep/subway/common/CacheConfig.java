@@ -18,6 +18,6 @@ class CacheConfig {
         return RedisCacheConfiguration.defaultCacheConfig()
                                       .serializeKeysWith(fromSerializer(StringRedisSerializer.UTF_8))
                                       .serializeValuesWith(fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                                      .entryTtl(Duration.ofMinutes(1));
+                                      .entryTtl(Duration.ofHours(1L));
     }
 }
