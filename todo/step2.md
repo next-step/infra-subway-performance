@@ -20,7 +20,7 @@ Content-Length: 1000
 Date: Wed, 29 Jun 2022 12:13:07 GMT
 ````
   - [ ] cache 설정
-- [ ] LaunchTemplate 작성
+- [x] LaunchTemplate 작성
 - [ ] Auto Scaling Group 생성하기
 - [ ] smoke, stress, load 테스트 실행
 - [ ] README 답 작성
