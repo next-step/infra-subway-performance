@@ -8,7 +8,19 @@
 ### 📚 Todo List 📚
 - [x] 리뷰사항 반영
 - [ ] SpringBoot gzip, Cache 설정
+  - [x] gzip 설정
+````shell
+> curl -i http://localhost:8080
+
+HTTP/1.1 200
+vary: accept-encoding
+Content-Type: text/html;charset=UTF-8
+Content-Language: ko-KR
+Content-Length: 1000
+Date: Wed, 29 Jun 2022 12:13:07 GMT
+````
+  - [ ] cache 설정
 - [ ] LaunchTemplate 작성
 - [ ] Auto Scaling Group 생성하기
 - [ ] smoke, stress, load 테스트 실행
-- [ ] README 답변 작성
+- [ ] README 답 작성
