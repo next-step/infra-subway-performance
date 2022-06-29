@@ -10,7 +10,5 @@ RUN ./gradlew bootJar
 RUN apk add --no-cache bash
 
 FROM openjdk:8-jdk-alpine
-# copy arthas
-COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 COPY --from=builder build/libs/*.jar app.jar
 ENTRYPOINT ["nohup","java","-jar","-Dspring.profiles.active=prod","/app.jar"]
