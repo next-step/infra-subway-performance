@@ -88,15 +88,19 @@ npm run dev
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-098c4a0f25c3dbf85
 
 3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- [인스턴스 현황](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/cloudwatch1.png)
+- [cpu 사용률](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/cloudwatch2.png)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-- [smoke](https://github.com/june2/infra-subway-performance/blob/step1/docs/smoke/1.png)
-- [load](https://github.com/june2/infra-subway-performance/blob/step1/docs/load/1.png)
-- [stress](https://github.com/june2/infra-subway-performance/blob/step1/docs/stress/1.png)
+- [smoke](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/smoke.png)
+- [load](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/load.png)
+- [stress](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/stress.png)
+- [stress 2배](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/stress-2.png)
+- [stress 4배](https://github.com/june2/infra-subway-performance/blob/step2/docs/ASG/stress-3.png)
 
 ---
 
