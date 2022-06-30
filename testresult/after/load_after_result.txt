@@ -1,0 +1,40 @@
+$ k6 run load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 96 max VUs, 5m30s max duration (incl. graceful stop):
+           * default: Up to 96 looping VUs for 5m0s over 4 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (5m00.9s), 00/96 VUs, 12830 complete and 0 interrupted iterations
+default ✗ [======================================] 00/96 VUs  5m0s
+
+     ✓ mainPage successfully
+     ✓ logged in successfully
+     ✓ getPath successfully
+
+     checks.........................: 100.00% ✓ 38490      ✗ 0
+     data_received..................: 34 MB   114 kB/s
+     data_sent......................: 2.9 MB  9.6 kB/s
+     http_req_blocked...............: avg=8.71µs  min=154ns   med=268ns   max=19.17ms p(90)=318ns   p(95)=345ns
+     http_req_connecting............: avg=790ns   min=0s      med=0s      max=1.68ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=3.47ms  min=1.73ms  med=2.72ms  max=31.53ms p(90)=5.39ms  p(95)=6.24ms
+       { expected_response:true }...: avg=2.58ms  min=1.73ms  med=2.37ms  max=31.53ms p(90)=3.21ms  p(95)=3.94ms
+     http_req_failed................: 33.33%  ✓ 12830      ✗ 25660
+     http_req_receiving.............: avg=41.89µs min=9.74µs  med=28.18µs max=9.18ms  p(90)=58.14µs p(95)=111.44µs
+     http_req_sending...............: avg=44.64µs min=13.4µs  med=34.04µs max=5.25ms  p(90)=69.86µs p(95)=101.16µs
+     http_req_tls_handshaking.......: avg=6.99µs  min=0s      med=0s      max=11.97ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.38ms  min=893.5µs med=2.62ms  max=26.77ms p(90)=5.3ms   p(95)=6.15ms
+     http_reqs......................: 38490   127.904675/s
+     iteration_duration.............: avg=1.01s   min=1s      med=1.01s   max=1.05s   p(90)=1.01s   p(95)=1.01s
+     iterations.....................: 12830   42.634892/s
+     vus............................: 25      min=1        max=96
+     vus_max........................: 96      min=96       max=96

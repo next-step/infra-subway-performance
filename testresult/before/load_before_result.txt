@@ -1,0 +1,40 @@
+$ k6 run stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 200 max VUs, 4m30s max duration (incl. graceful stop):
+           * default: Up to 200 looping VUs for 4m0s over 4 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (4m00.6s), 000/200 VUs, 20735 complete and 0 interrupted iterations
+default ✗ [======================================] 000/200 VUs  4m0s
+
+     ✓ mainPage successfully
+     ✓ logged in successfully
+     ✓ getPath successfully
+
+     checks.........................: 100.00% ✓ 62205      ✗ 0
+     data_received..................: 61 MB   252 kB/s
+     data_sent......................: 9.8 MB  41 kB/s
+     http_req_blocked...............: avg=14.21µs min=643ns   med=1.59µs max=51.95ms  p(90)=3.81µs  p(95)=4.79µs
+     http_req_connecting............: avg=1.05µs  min=0s      med=0s     max=4.63ms   p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=5.08ms  min=1.7ms   med=2.83ms max=410.86ms p(90)=6.85ms  p(95)=10.9ms
+       { expected_response:true }...: avg=4.11ms  min=1.7ms   med=2.34ms max=410.55ms p(90)=4.76ms  p(95)=8.33ms
+     http_req_failed................: 33.33%  ✓ 20735      ✗ 41470
+     http_req_receiving.............: avg=36.09µs min=10.96µs med=25.7µs max=12.62ms  p(90)=51.51µs p(95)=74.96µs
+     http_req_sending...............: avg=19.01µs min=3.64µs  med=8.09µs max=22.09ms  p(90)=24.01µs p(95)=37.08µs
+     http_req_tls_handshaking.......: avg=9.82µs  min=0s      med=0s     max=38.23ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=5.02ms  min=1.68ms  med=2.76ms max=410.8ms  p(90)=6.79ms  p(95)=10.79ms
+     http_reqs......................: 62205   258.511812/s
+     iteration_duration.............: avg=1.01s   min=1s      med=1.01s  max=1.65s    p(90)=1.01s   p(95)=1.02s
+     iterations.....................: 20735   86.170604/s
+     vus............................: 1       min=1        max=200
+     vus_max........................: 200     min=200      max=200

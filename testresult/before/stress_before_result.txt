@@ -1,0 +1,26 @@
+default ✗ [======================================] 000/400 VUs  4m0s
+
+     ✗ mainPage successfully
+      ↳  99% — ✓ 42698 / ✗ 21
+     ✗ logged in successfully
+      ↳  99% — ✓ 42701 / ✗ 18
+     ✗ getPath successfully
+      ↳  99% — ✓ 42692 / ✗ 9
+
+     checks.........................: 99.96% ✓ 128091     ✗ 48
+     data_received..................: 132 MB 548 kB/s
+     data_sent......................: 21 MB  87 kB/s
+     http_req_blocked...............: avg=4.01ms  min=0s     med=1.48µs  max=942.43ms p(90)=3.15µs   p(95)=5.02µs
+     http_req_connecting............: avg=15.56µs min=0s     med=0s      max=99.41ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=40.71ms min=0s     med=5.73ms  max=1.83s    p(90)=105.73ms p(95)=232.9ms
+       { expected_response:true }...: avg=40.65ms min=1.71ms med=4ms     max=1.83s    p(90)=106.59ms p(95)=231.89ms
+     http_req_failed................: 33.36% ✓ 42749      ✗ 85390
+     http_req_receiving.............: avg=47.37µs min=0s     med=23.82µs max=52.69ms  p(90)=51.13µs  p(95)=91.56µs
+     http_req_sending...............: avg=4.13ms  min=0s     med=7.67µs  max=1.04s    p(90)=25.07µs  p(95)=77.94µs
+     http_req_tls_handshaking.......: avg=557.5µs min=0s     med=0s      max=825.31ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=36.53ms min=0s     med=5.66ms  max=1.05s    p(90)=93.53ms  p(95)=220.16ms
+     http_reqs......................: 128139 531.315462/s
+     iteration_duration.............: avg=1.12s   min=4.92ms med=1.01s   max=2.97s    p(90)=1.42s    p(95)=1.8s
+     iterations.....................: 42719  177.130032/s
+     vus............................: 38     min=2        max=399
+     vus_max........................: 400    min=400      max=400
