@@ -125,14 +125,22 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+ - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-07e9e261e1e67b04d
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+   
+    ![cpu](/step2/cpu_stress_cloudwatch.png)
+   
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+    - 결과 이미지(k6, grafana)([경로](/step/3))
+    - Http Request Duration 평균
+        - Smoke  : 6.38ms
+        - Load   : 5.93ms 
+        - Stress : 7.32ms (auto scaling EC2 3대 기준)
 
 ---
 ### [추가] 1단계 - 쿠버네티스로 구성하기
