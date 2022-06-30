@@ -40,6 +40,11 @@ dependencies {
 	//flyway
 	implementation 'org.flywaydb:flyway-core'
 
+	//ehcache
+	implementation 'org.ehcache:ehcache:3.8.0'
+	implementation 'javax.cache:cache-api:1.0.0'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
