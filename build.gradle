@@ -35,9 +35,6 @@ dependencies {
 	//mysql
 	implementation 'mysql:mysql-connector-java'
 
-	//redis
-	implementation'org.springframework.boot:spring-boot-starter-data-redis'
-
 	//flyway
 	implementation 'org.flywaydb:flyway-core'
 
