@@ -20,6 +20,8 @@ Content-Length: 1000
 Date: Wed, 29 Jun 2022 12:13:07 GMT
 ````
   - [x] cache 설정
+    - [x] 모든 정적 자원에 대해 no-store 와 no-cache가 같이 가능한가?
+      - 헤더에 no-store, no-cache를 설정해주면 가능하다. ([참고링크](https://www.lesstif.com/software-architect/http-https-browser-caching-http-header-20775788.html))
 ```shell
 HTTP/1.1 200 OK
 Accept-Ranges: bytes
@@ -32,5 +34,6 @@ Content-Type: text/css
 ```
   - [x] LaunchTemplate 작성
   - [x] Auto Scaling Group 생성하기
-  - [ ] smoke, stress, load 테스트 실행
+    - 동적 크기 조건 : 평균 CPU 50% 유지
+  - [x] smoke, stress, load 테스트 실행
   - [ ] README 답 작성
