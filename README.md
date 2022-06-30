@@ -47,13 +47,13 @@ npm run dev
 
 - load.js, smoke.js, stress.js는 step1에 링크되어 있습니다.
 - **성능 개선 전 (load, smoke, stress)**
-![load_before_tuning](todo/images/load_before_tuning.png)
-![smoke_before_tuning](todo/images/smoke_before_tuning.png)
-![stress_before_tuning](todo/images/stress_before_tuning.png)
+![load_before_tuning](todo/images/step1/load_before_tuning.png)
+![smoke_before_tuning](todo/images/step1/smoke_before_tuning.png)
+![stress_before_tuning](todo/images/step1/stress_before_tuning.png)
 - **성능 개선 후 (load, smoke, stress)**
-![load_after_tuning](todo/images/load_after_tuning.png)
-![smoke_after_tuning](todo/images/smoke_after_tuning.png)
-![stress_after_tuning](todo/images/stress_after_tuning.png)
+![load_after_tuning](todo/images/step1/load_after_tuning.png)
+![smoke_after_tuning](todo/images/step1/smoke_after_tuning.png)
+![stress_after_tuning](todo/images/step1/stress_after_tuning.png)
 - http_req_duration p(95) 결과보기 
   - load : 5.96s -> 47.89ms
   - smoke : 91.58ms -> 8.66ms

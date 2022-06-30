@@ -13,6 +13,7 @@ GIT_CLONE_PATH="https://github.com/mond-page/infra-subway-performance.git"
 EXECUTION_PATH="$(pwd)/infra-subway-performance"
 EXECUTION_PORT="8080"
 JAR_FILE_NAME="subway-0.0.1-SNAPSHOT.jar"
+PHASE="prod"
 
 ## Git Clone 함수
 function cloneGit() {
@@ -26,6 +27,7 @@ function checkoutBranch() {
         echo -e "${txtylw}==========  Git Checkout 시작 ==========${txtrst}"
         cd ${EXECUTION_PATH}
         git checkout -t origin/step2
+        git pull
         echo -e "${txtylw}==========  Git Checkout 종료 ==========${txtrst}"
 }
 
@@ -49,7 +51,7 @@ function pidKill() {
 ## 서버 시작 함수
 function startServer() {
         echo -e "${txtgrn}========== Subway 서버 시작 ==========${txtrst}"
-        local JAR_EXE="sudo java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=${phase} -jar ${EXECUTION_PATH}/build/libs/${JAR_FILE_NAME}"
+        local JAR_EXE="sudo java -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=${PHASE} -jar ${EXECUTION_PATH}/build/libs/${JAR_FILE_NAME}"
         nohup ${JAR_EXE} 1> sudo ${EXECUTION_PATH}/null 2>&1
 }
 
