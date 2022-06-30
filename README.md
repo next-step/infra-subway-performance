@@ -50,9 +50,9 @@ npm run dev
   - [stress] : ./docs/before/before_stress.PNG
 
 - 개선후
-  - [smoke] : ./docs/after/before_smoke.PNG
-  - [load] : ./docs/after/before_load.PNG
-  - [stress] : ./docs/after/before_stress.PNG
+  - [smoke] : ./docs/after/after_smoke.PNG
+  - [load] : ./docs/after/after_load.PNG
+  - [stress] : ./docs/after/after_stress.PNG
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - nginx 리버시 프록시 개선
