@@ -1,4 +1,3 @@
-:wqimport http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
 
 export let options = {
