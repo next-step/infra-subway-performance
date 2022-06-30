@@ -144,7 +144,29 @@ http {
 **실습**
 - [X] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
 - [X] 확장자가 css인 경우 max-age를 1년, js인 경우는 no-cache, private를 설정합니다.
-- [ ] 모든 정적자원에 대해 no-cache, no-store 설정을 한다. 가능한가??
+- [X] 모든 정적자원에 대해 no-cache, no-store 설정을 한다. 가능한가??
+```text
+  가능한지 불가능한지로 본다면 "가능하다" 라고 답할 수 있을 것 같습니다.
+  우선 두가지 설정을 함께 쓰려고 하는 목적부터 알아봐야 할 것 같습니다.
+  
+  - no-store를 설정한다는 것은 Cache를 사용하지 않는다는 의미이고
+  - no-cache로 설정하면 Cache는 허용하되 매번 리소스의 유효성을 판단해서 유효하다고 할 때만 Cache를 하는 것입니다. 
+  
+  즉, no-store를 사용한다는 것은 캐시를 무효화 하고자 하는 목저이라 생각됩니다.  
+  no-store를 통해 캐시를 무효화 할 수 있겠지만 HTTP 스펙은 모든 상황을 완벽히 정의하지 못하고 디테일하게는 모호한 점들이 있다고 합니다.
+  다양한 이슈로 no-store 만으로 해결하지 못하는 것들이 있을 수 있어 함께 사용하기도 합니다. 
+  구글이나 네이버 등의 주요 사이트를 보면 no-cache, no-store, must-revalidate를 함께 가져가는 것을 볼 수 있습니다.
+  
+    Cache-Control: no-cache, no-store, must-revalidate
+    Pragma: no-cache
+    Expires: 0
+   
+  Cache-Control은 HTTP 1.1 사양을 따른다.
+  Pragma는 HTTP 1.0 사양을 따른다.
+  Expires 는 HTTP 1.0 및 1.1 사양을 따른다. 
+  
+  참고. https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+```
 ---
 - [ ] SpringBoot에 HTTP Cache, gzip 설정하기
 - [ ] Launch Template 작성하기
