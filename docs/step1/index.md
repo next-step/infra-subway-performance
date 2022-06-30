@@ -31,13 +31,13 @@
 
 #### Before
 
-- ![img before-stress-grafana](./stress/before/before-stress-grafana.png)
-- ![img before-stress-k6](./stress/before/before-stress-k6.png)
+- ![img before-stress-grafana](./stress/before/before-stress-grafana-v2.png)
+- ![img before-stress-k6](./stress/before/before-stress-k6-v2.png)
 
 #### After
 
-- ![img after-stress-grafana](./stress/after/after-stress-grafana.png)
-- ![img after-stress-k6](./stress/after/after-stress-k6.png)
+- ![img after-stress-grafana](./stress/after/after-stress-grafana-v2.png)
+- ![img after-stress-k6](./stress/after/after-stress-k6-v2.png)
 
 ### 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
