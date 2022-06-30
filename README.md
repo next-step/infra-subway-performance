@@ -170,7 +170,7 @@ http {
     https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
 ```
 ---
-- [ ] SpringBoot에 HTTP Cache, gzip 설정하기
+- [X] SpringBoot에 HTTP Cache, gzip 설정하기
 - [ ] Launch Template 작성하기
 - [ ] Auto Scaling Group 생성하기
 - [ ] 테스트 후 결과 공유하기
