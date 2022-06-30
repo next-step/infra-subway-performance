@@ -14,16 +14,6 @@ EXECUTION_PATH="$(pwd)/infra-subway-performance"
 EXECUTION_PORT="8080"
 JAR_FILE_NAME="subway-0.0.1-SNAPSHOT.jar"
 
-## init 함수
-function init() {
-        # java 설치
-        echo -e "${txtylw}========== Java 설치 시작 ==========${txtrst}"
-        sudo apt update
-        sudo apt install default-jre
-        sudo apt install default-jdk
-        echo -e "${txtylw}========== Java 설치 종료 ==========${txtrst}"
-}
-
 ## Git Clone 함수
 function cloneGit() {
         echo -e "${txtylw}========== Git clone 시작 ==========${txtrst}"
@@ -63,7 +53,6 @@ function startServer() {
         nohup ${JAR_EXE} 1> sudo ${EXECUTION_PATH}/null 2>&1
 }
 
-init;
 cloneGit;
 checkoutBranch;
 buildGradle;
