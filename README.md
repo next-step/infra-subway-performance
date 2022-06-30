@@ -94,6 +94,9 @@ $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- [smoke](https://github.com/june2/infra-subway-performance/blob/step1/docs/smoke/1.png)
+- [load](https://github.com/june2/infra-subway-performance/blob/step1/docs/load/1.png)
+- [stress](https://github.com/june2/infra-subway-performance/blob/step1/docs/stress/1.png)
 
 ---
 
