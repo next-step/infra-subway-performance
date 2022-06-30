@@ -47,6 +47,13 @@ npm run dev
   - 목표 요청시간(http_req_duration) = 0.1s
   - 목표 최대 RPS = 75
 
+### 2단계 
+- [X] springboot에 HTTP Cache, gzip 설정하기
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성하기
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+
+
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### 개선 이전
@@ -93,10 +100,16 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
+1. springboot에 HTTP Cache, gzip 설정하기 
+    - 미션 3에 대한 답변 : no cache와 no store를 동시에 할 수는 없다. 
+      - 우선 CacheControl에서 중복 설정이 불가능하다
+      - no cache는 항상 ETag로 확인한 후 문제가 없는 경우 저장된 자원을 사용한다.
+      - 문제는 no store인 경우 사용할 수 있는 자원이 없다는 것이다. 
+      - 따라서 둘 중 하나만 선택해서 써야한다.
 
-1. Launch Template 링크를 공유해주세요.
+2. Launch Template 링크를 공유해주세요.
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
