@@ -27,7 +27,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    @Cacheable(value = PATH, key = "{#source, #target}")
+    @Cacheable(value = PATH, key = "#source + '_' + #target")
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
