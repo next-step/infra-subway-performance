@@ -93,6 +93,7 @@ npm run dev
 
 ---
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- [X] TLS, HTTP/2 설정하기
 - [X] reverse proxy 개선 : gzip 압축
 ```text
 # gzip Settings
@@ -132,6 +133,8 @@ http {
 }
 ```
 ![gzip, cache](/step1/step_1_gzip_cache.png)
+![TLS, HTTP/2](/step1/step_1_http_2.png)
+
 
 - [X] was 성능 개선 : Cache (redis 적용)
 
