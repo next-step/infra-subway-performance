@@ -1,0 +1,18 @@
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+    <cache-template name="defaultTemplate">
+        <expiry>
+            <ttl unit="minutes">60</ttl>
+        </expiry>
+        <resources>
+            <!-- 캐시에 최대 몇개 까지 유지할지 -->
+            <heap unit="entries">400</heap>
+        </resources>
+    </cache-template>
+    <cache alias="path" uses-template="defaultTemplate"/>
+    <cache alias="allLine" uses-template="defaultTemplate"/>
+    <cache alias="allStation" uses-template="defaultTemplate"/>
+    <cache alias="lines" uses-template="defaultTemplate"/>
+    <cache alias="line" uses-template="defaultTemplate"/>
+</config>
