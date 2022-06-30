@@ -24,6 +24,7 @@ dependencies {
 
 	// log
 	implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.1'
 
 	// jgraph
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
@@ -41,9 +42,9 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 
 	//ehcache
-	implementation 'org.ehcache:ehcache:3.8.0'
-	implementation 'javax.cache:cache-api:1.0.0'
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.ehcache:ehcache:3.10.0'
+	implementation 'javax.cache:cache-api:1.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.0'
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

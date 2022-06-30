@@ -7,7 +7,7 @@ create table favorite
     source_station_id bigint,
     target_station_id bigint,
     primary key (id)
-) engine=InnoDB;
+) ;
 
 create table line
 (
@@ -17,7 +17,7 @@ create table line
     color         varchar(255),
     name          varchar(255),
     primary key (id)
-) engine=InnoDB;
+) ;
 
 create table member
 (
@@ -28,7 +28,7 @@ create table member
     email         varchar(255),
     password      varchar(255),
     primary key (id)
-) engine=InnoDB;
+) ;
 
 create table section
 (
@@ -38,7 +38,7 @@ create table section
     line_id         bigint,
     up_station_id   bigint,
     primary key (id)
-) engine=InnoDB;
+) ;
 
 create table station
 (
@@ -47,7 +47,7 @@ create table station
     modified_date datetime(6),
     name          varchar(255),
     primary key (id)
-) engine=InnoDB;
+) ;
 
 alter table line
     add constraint UK_9ney9davbulf79nmn9vg6k7tn unique (name);

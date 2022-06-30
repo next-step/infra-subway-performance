@@ -29,7 +29,7 @@ public class LineService {
     }
 
     @Caching(
-            put = @CachePut(value = "line", key = "result.id"),
+            put = @CachePut(value = "line", key = "#result.id"),
             evict = @CacheEvict(value = "lines", allEntries = true)
     )
     public LineResponse saveLine(LineRequest request) {
