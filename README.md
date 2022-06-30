@@ -69,14 +69,30 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+[mond-page_template](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0ee1831f0ea025fce)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
-
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+**Smoke**
+![smoke_using_load_balancer](todo/images/step2/smoke_using_load_balancer.png)
+![smoke_cloud_watch](todo/images/step2/smoke_cloud_watch.png)
+
+**load**
+![load_using_load_balancer](todo/images/step2/load_using_load_balancer.png)
+![load_cloud_watch](todo/images/step2/load_cloud_watch.png)
+
+**stress**
+VUser : 440
+![stress_normal_using_load_balancer](todo/images/step2/stress_normal_using_load_balancer.png)
+![stress_normal_cloud_watch](todo/images/step2/stress_normal_cloud_watch.png)
+
+VUser : 880
+![stress_double_using_load_balancer](todo/images/step2/stress_double_using_load_balancer.png)
+![stress_double_cloud_watch](todo/images/step2/stress_double_cloud_watch.png)
+
+VUser : 1400
+![stress_triple_using_load_balancer](todo/images/step2/stress_triple_using_load_balancer.png)
+![stress_triple_cloud_watch](todo/images/step2/stress_triple_cloud_watch.png)
 
 ---
 

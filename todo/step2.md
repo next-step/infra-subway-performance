@@ -36,4 +36,4 @@ Content-Type: text/css
   - [x] Auto Scaling Group 생성하기
     - 동적 크기 조건 : 평균 CPU 50% 유지
   - [x] smoke, stress, load 테스트 실행
-  - [ ] README 답 작성
+  - [x] README 답 작성
