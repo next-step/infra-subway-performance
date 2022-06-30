@@ -165,7 +165,9 @@ http {
   Pragma는 HTTP 1.0 사양을 따른다.
   Expires 는 HTTP 1.0 및 1.1 사양을 따른다. 
   
-  참고. https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+  참고. 
+    https://www.inflearn.com/questions/112647
+    https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
 ```
 ---
 - [ ] SpringBoot에 HTTP Cache, gzip 설정하기
