@@ -7,7 +7,7 @@
 
 ### 📚 Todo List 📚
 - [x] 리뷰사항 반영
-- [ ] SpringBoot gzip, Cache 설정
+- [x] SpringBoot gzip, Cache 설정
   - [x] gzip 설정
 ````shell
 > curl -i http://localhost:8080
@@ -19,8 +19,18 @@ Content-Language: ko-KR
 Content-Length: 1000
 Date: Wed, 29 Jun 2022 12:13:07 GMT
 ````
-  - [ ] cache 설정
-- [x] LaunchTemplate 작성
-- [ ] Auto Scaling Group 생성하기
-- [ ] smoke, stress, load 테스트 실행
-- [ ] README 답 작성
+  - [x] cache 설정
+```shell
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Cache-Control: max-age=31536000
+Vary: Origin
+Last-Modified: Thu, 30 Jun 2022 07:36:07 GMT
+Content-Length: 26
+Date: Thu, 30 Jun 2022 08:45:38 GMT
+Content-Type: text/css
+```
+  - [x] LaunchTemplate 작성
+  - [ ] Auto Scaling Group 생성하기
+  - [ ] smoke, stress, load 테스트 실행
+  - [ ] README 답 작성
