@@ -31,6 +31,6 @@ Date: Thu, 30 Jun 2022 08:45:38 GMT
 Content-Type: text/css
 ```
   - [x] LaunchTemplate 작성
-  - [ ] Auto Scaling Group 생성하기
+  - [x] Auto Scaling Group 생성하기
   - [ ] smoke, stress, load 테스트 실행
   - [ ] README 답 작성
