@@ -29,7 +29,6 @@ public class LineService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "line_stations", allEntries = true),
             @CacheEvict(value = "path", allEntries = true)
     })
@@ -48,12 +47,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
@@ -66,8 +63,6 @@ public class LineService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "line", key = "#id"),
-            @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "line_station", key = "#id"),
             @CacheEvict(value = "line_stations", allEntries = true)
     })
@@ -78,8 +73,6 @@ public class LineService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "line", key = "#id"),
-            @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "line_station", key = "#id"),
             @CacheEvict(value = "line_stations", allEntries = true),
             @CacheEvict(value = "path", allEntries = true)
