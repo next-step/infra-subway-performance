@@ -45,14 +45,14 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
    - 개선전
-     - [smoke](./docs/before/smoke_result.txt)
-     - [load](./docs/before/load_result.txt)
-     - [stress](./docs/before/stress_result.txt)
+     - [smoke](docs/step1/before/smoke_result.txt)
+     - [load](docs/step1/before/load_result.txt)
+     - [stress](docs/step1/before/stress_result.txt)
        - 실패
    - 개선후
-     - [smoke](./docs/after/smoke_result.txt)
-     - [load](./docs/after/load_result.txt)
-     - [stress](./docs/after/stress_result.txt)
+     - [smoke](docs/step1/after/smoke_result.txt)
+     - [load](docs/step1/after/load_result.txt)
+     - [stress](docs/step1/after/stress_result.txt)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - nginx-gzip 압축 설정 추가
@@ -65,14 +65,24 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+    - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0140434017d0691da
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   ![cpu](./docs/step2/image/cpu.png)
+   ![instance](./docs/step2/image/instance.png)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+    - [smoke](./docs/step2/test_result/smoke_result.txt)
+    - [load](./docs/step2/test_result/load_result.txt)
+    - [stress](./docs/step2/test_result/stress_result.txt)
+      - 기존 테스트 보다 부하 2배치 상승시켜 진행
+      - 3~4배 상승 시, 스트레스 테스트 실패
+        - 인스턴스 수를 3대로 제한하여 3개의 인스턴 스케일 아웃까지 확인해볼 수 있었음.  
+          ![scaleOut](./docs/step2/image/scaleout.png)
+
 
 ---
 ### [추가] 1단계 - 쿠버네티스로 구성하기
