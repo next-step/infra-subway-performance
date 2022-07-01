@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import static nextstep.subway.config.cache.CacheKey.LINE;
 import static nextstep.subway.config.cache.CacheKey.LINES;
+import static nextstep.subway.config.cache.CacheKey.PATH;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = LINE, key = "#id"),
-            @CacheEvict(value = LINES)
+            @CacheEvict(value = LINES),
+            @CacheEvict(value = PATH)
     })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
@@ -73,7 +75,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = LINE, key = "#id"),
-            @CacheEvict(value = LINES)
+            @CacheEvict(value = LINES),
+            @CacheEvict(value = PATH)
     })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
@@ -82,7 +85,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = LINE, key = "#id"),
-            @CacheEvict(value = LINES)
+            @CacheEvict(value = LINES),
+            @CacheEvict(value = PATH)
     })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
@@ -93,7 +97,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = LINE, key = "#id"),
-            @CacheEvict(value = LINES)
+            @CacheEvict(value = LINES),
+            @CacheEvict(value = PATH)
     })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);

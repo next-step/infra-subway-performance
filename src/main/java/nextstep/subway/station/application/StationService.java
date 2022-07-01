@@ -31,9 +31,7 @@ public class StationService {
     @Caching(evict = {
             @CacheEvict(value = STATIONS),
             @CacheEvict(value = STATION, key = "#id"),
-            @CacheEvict(value = PATH),
-            @CacheEvict(value = LINES),
-            @CacheEvict(value = LINE, key = "#id")
+            @CacheEvict(value = PATH)
     })
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
@@ -53,9 +51,7 @@ public class StationService {
     @Caching(evict = {
             @CacheEvict(value = STATIONS),
             @CacheEvict(value = STATION, key = "#id"),
-            @CacheEvict(value = PATH),
-            @CacheEvict(value = LINES),
-            @CacheEvict(value = LINE, key = "#id")
+            @CacheEvict(value = PATH)
     })
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
