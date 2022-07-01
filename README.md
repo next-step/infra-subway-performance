@@ -44,8 +44,22 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- 개선 전
+  - k6/scenario_smoke.log
+  - k6/scenario_load.log
+  - k6/scenario_stress.log
+- 개선 후
+  - k6/scenario_smoke_after.log
+  - k6/scenario_load_after.log
+  - k6/scenario_stress_after.log
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선
+  - gzip 압축
+  - 캐싱
+  - HTTP2 적용
+- Application 개선
+  - Spring Redis Cache 적용
 
 ---
 
