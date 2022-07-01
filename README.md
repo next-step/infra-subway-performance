@@ -45,13 +45,18 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
-#### 개선전
+#### 개선 전
 
 1. Smoke Test(http://3.35.223.220/d/bvXIAmq7z/k6-smoke-testing-results?orgId=1&from=1656599880000&to=1656600599000)
 2. Load Test(http://3.35.223.220/d/080n0mqnz/k6-load-testing-results?orgId=1&from=1656597900000&to=1656599100000)
-3.
-4.
+3. Stress Test(http://3.35.223.220/d/TMFSAmq7k/k6-stress-test-result?orgId=1&from=1656598800000&to=1656599699000)
 
+#### 개선 후
+1. Smoke Test(http://3.35.223.220/d/bvXIAmq7z/k6-smoke-testing-results?orgId=1&from=1656668640000&to=1656669299000)
+2. Load Test(http://3.35.223.220/d/080n0mqnz/k6-load-testing-results?orgId=1&from=1656669300000&to=1656670200000)
+3. Stress Test(http://3.35.223.220/d/TMFSAmq7k/k6-stress-test-result?orgId=1&from=1656667140000&to=1656667920000)
+
+#### 성능 비교 표(pageSpeed)
 
 | https://jhsong2580.kro.kr/ | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:--------------------------:|:--------:|:--------:|:--------:|:---------:|
@@ -60,15 +65,23 @@ npm run dev
 
 | https://jhsong2580.kro.kr/stations | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:--------------------------:|:--------:|:--------:|:--------:|:---------:|
-|            개선전             |   16.7   |   16.7   |   25.7   |   8510    |
-|      1차 개선 (캐싱/Gzip설정)       |   7.1    |   7.1    |   17.1   |   9720    |
+|            개선전             |   16.7   |   16.7   |   25.7   |   8_510   |
+|      1차 개선 (캐싱/Gzip설정)       |   7.1    |   7.1    |   17.1   |   9_720   |
+|      2차 개선 (redis 캐싱설정)       |   6.8    |   6.8    |   13.4   |   6_330   |
 
 | https://jhsong2580.kro.kr/lines | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:-------------------------------:|:--------:|:--------:|:--------:|:---------:|
-|               개선전               |   16.2   |   16.2   |   17.9   |   1210    |
-|        1차 개선 (캐싱/Gzip설정)        |   6.8    |   6.8    |   8.3    |   1240    |
-|            2차 개선 ()             |   6.8    |   6.8    |   8.3    |   1240    |
+|               개선전               |   16.2   |   16.2   |   17.9   |   1_210   |
+|        1차 개선 (캐싱/Gzip설정)        |   6.8    |   6.8    |   8.3    |   1_240   |
+|       2차 개선 (redis 캐싱설정)        |   6.8    |   6.8    |   8.0    |   1_040   |
 
+#### 성능비교 표(K6)
+| testType |                      개선전                      |                      개선후                      | 
+|:--------:|:---------------------------------------------:|:---------------------------------------------:|
+|  smoke   | <img src="readmeSource/step1/개선전_smoke.png">  | <img src="readmeSource/step1/개선후_smoke.png">  |   
+|   load   |  <img src="readmeSource/step1/개선전_load.png">  |  <img src="readmeSource/step1/개선후_load.png">  |   
+|  stress  | <img src="readmeSource/step1/개선전_stress.png"> | <img src="readmeSource/step1/개선후_stress.png"> |   
+ 
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    0. 점검
@@ -76,6 +89,8 @@ npm run dev
    1. 1차 개선
       1. Gzip : 가장 높은 압축률(9)로 압축 설정
       2. Proxy Cache 설정 : css,이미지들을 한달간 캐싱한다.
+   2. 2차개선 (/lines, /stations)
+      1. line.findAll(), station.findAll()에 대해 캐싱한다
 
 
 ---
@@ -111,3 +126,17 @@ $ stress -c 2
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+
+
+
+
+
+
+
+
+
+
+
+
+
