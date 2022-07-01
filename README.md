@@ -171,19 +171,44 @@ http {
 ```
 ---
 - [X] SpringBoot에 HTTP Cache, gzip 설정하기
-- [ ] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성하기
-- [ ] 테스트 후 결과 공유하기
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
+- [X] 테스트 후 결과 공유하기
 
 1. Launch Template 링크를 공유해주세요.
-
+   - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-059dc4c724258e3c0
+   
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
 ```sh
 $ stress -c 2
 ```
+- cpu 부하 실행에 따른 cpu 사용량 증가 모니터 결과
 
+![CPU 부하](/step2/cpu_stress.png)
+
+- cpu 부하에 따라 추가된 인스턴스
+
+![추가생성된 EC2](/step2/auto_scailing.png)
+
+- Cloudwatch 
+
+![오토스케일링](/step2/auto_scaling_monitor.png)
+  
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- 성능 개선 타겟 : 조회시_여러_데이터_참조_페이지 : 경로조회 요청
+
+smoke
+- threshold : p(99) < 1500, VUs : 50
+- ![smoke](/step2/step2_smoke.png)
+
+load
+- threshold : p(99) < 1500, VUs : 50
+- ![load](/step2/step2_load.png)
+
+stress
+- 성능개선 및 오토스케일 그룹 적용 전 실패 조건 : threshold : p(99) < 1500, VUs : 250
+- stress 테스트 진행 조건 : threshold : p(99) < 1500, VUs : 1000
+- ![stress](/step2/step2_hard_stress_1000VUs.png)
 
 ---
 
