@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "line_stations", allEntries = true),
@@ -63,6 +64,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "line", key = "#id"),
             @CacheEvict(value = "lines", allEntries = true),
@@ -74,6 +76,7 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "line", key = "#id"),
             @CacheEvict(value = "lines", allEntries = true),
@@ -85,6 +88,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "line_station", key = "#id"),
             @CacheEvict(value = "line_stations", allEntries = true),
@@ -97,6 +101,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "line_station", key = "#lineId"),
             @CacheEvict(value = "line_stations", allEntries = true),
