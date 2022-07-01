@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @CacheEvict(value = "line", allEntries = true, beforeInvocation = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -66,7 +67,7 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "line", key = "#id")
+    @CacheEvict(value = "line", allEntries = true)
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
