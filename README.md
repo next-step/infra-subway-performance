@@ -58,6 +58,13 @@ npm run dev
 
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+#### proxy server
+- gzip 압축 설정
+- cache 설정
+- http2 설정
+
+#### was
+- redis cache 적용
 
 ---
 
