@@ -44,8 +44,71 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+#### before
+- [smoke](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/smoke/before_smoke_result.png)
+- [smoke_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/smoke/before_smoke_grafana.png)
+
+- [load](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/load/before_load_result.png)
+- [load_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/load/before_load_grafana.png)
+
+
+- [stress](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/stress/before_stress_result.png)
+- [stress_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/before/stress/before_stress_grafana.png)
+
+#### after web
+- [smoke](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/smoke/after_smoke_result.png)
+- [smoke_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/smoke/after_smoke_grafana.png)
+
+- [load](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/load/after_smoke_result.png)
+- [load_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/load/after_smoke_grafana.png)
+
+- [stress](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/stress/after_stress_result.png)
+- [stress_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/stress/after_stress_grafana.png)
+
+#### after web, was
+- [smoke](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/smoke/after2_smoke_result.png)
+- [smoke_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/smoke/after2_smoke_grafana.png)
+
+- [load](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/load/after2_smoke_result.png)
+- [load_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/load/after2_smoke_grafana.png)
+
+- [stress](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/stress/after2_stress_result.png)
+- [stress_grafana](https://github.com/kwonyongil/infra-subway-performance/blob/step1/docs/after/stress/after2_stress_grafana.png)
+
+
+- [지난 부하테스트 목표설정](https://github.com/kwonyongil/infra-subway-monitoring/blob/step2/README.md)
+
+#### stress 테스트 기준 개선전 
+- http_req_duration : 1.7s, 
+- 30.28%통과
+#### stress 테스트 기준 web 개선후
+- http_req_duration : 1.1s,
+- 97,4%통과
+#### stress 테스트 기준 web, was 개선후
+- http_req_duration : 29.39ms,
+- 99%통과
+
+- 1.7s -> 29.29ms
+
+
+#### load 테스트 기준 개선전
+- http_req_duration : 145.2ms
+#### load 테스트 기준 web 개선후
+- http_req_duration : 23.03ms
+#### load 테스트 기준 web, was 개선후
+- http_req_duration : 4.29ms
+
+
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+#### web 개선
+gzip 압축,
+cache, 
+TLS 적용
+HTTP/2 설정
+
+#### was 개선
+레디스 캐시 적용
 
 ---
 
