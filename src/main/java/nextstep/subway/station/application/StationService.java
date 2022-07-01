@@ -36,6 +36,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = "stations", allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
