@@ -45,9 +45,38 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+- `Smoke` 개선 전
+![](k6/smoke/smoke.png)
+
+- `Smoke` 개선 후
+![](k6/smoke/smoke_after.png)
+
+- `Load` 개선 전
+![](k6/load/load.png)
+
+- `Load` 개선 후
+![](k6/load/load_after.png)
+
+- `Stress` 개선 전
+![](k6/stress/stress.png)
+
+- `Stress` 개선 후
+![](k6/stress/stress_after.png)
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
----
+- Reverse Proxy 개선하기
+  - gzip 압축
+  - cache
+  - TLS, HTTP/2 설정
+- WAS 성능 개선하기 
+  - Spring Data Cache
+
+#### 확인
+|      | TTI | FCP   | [Speed Index](https://docs.webpagetest.org/metrics/speedindex/) | [LCP](https://www.webpagetest.org/vitals.php?test=220622_BiDc7X_EFY&run=2&cached=0#lcp) | [CLS](https://www.webpagetest.org/vitals.php?test=220622_BiDc7X_EFY&run=2&cached=0#cls) | [TBT](https://www.webpagetest.org/vitals.php?test=220622_BiDc7X_EFY&run=2&cached=0#tbt) | 
+|------|----- |-------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 개선 전 | 2.9 | 9.269 | 9.328 | 9.518 | 0.058  | 0.018  |
+| 개선 전 | 1.3 | 1.2   | 1.3   | 1.3   | 0.004  | 0.0003 |
 
 ### 2단계 - 스케일 아웃
 
