@@ -300,9 +300,9 @@ npm run dev
   ```
 - ### 그라파나 대시보드
 - Smoke
-![img_3.png](img_1.png)
+![img_3.png](img_3.png)
 - Load
-![img.png](img.png)
+![img_1.png](img_1.png)
 - Stress
 ![img_2.png](img_2.png)
 
