@@ -24,4 +24,4 @@ cd docker
 docker build -t subway-performance --build-arg PROFILE="$PROFILE" .
 docker-compose up -d
 
-cp nginx/cache/sung-jin.o-r.kr_location /nginx/vhost.d
+cp nginx/sung-jin.o-r.kr_location /nginx/vhost.d
