@@ -56,6 +56,13 @@ npm run dev
       - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/load_K6.png)
       - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/stress_K6.png)
 
+## 🚀 2단계 - 스케일 아웃 (with ASG)
+### 요구사항
+- [ ] springboot에 HTTP Cache, gzip 설정하기
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성하기
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
