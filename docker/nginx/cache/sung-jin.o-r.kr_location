@@ -1,0 +1,6 @@
+proxy_buffering on;
+proxy_cache mycache;
+add_header X-Proxy-Cache $upstream_cache_status;
+proxy_cache_valid 200 302 10m;
+expires 1M;
+access_log off;
