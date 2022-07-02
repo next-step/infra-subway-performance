@@ -15,5 +15,5 @@ $ docker run -d -p 23306:3306 brainbackdoor/data-tuning:0.0.3
 ![step3_image1.png](images/step3/step3_image1.png)
 
 ### 📚 Todo List 📚
-- [ ] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회
-- [ ] 인덱스 추가 설정하지 않고 1s 이하로 반환 
+- [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회
+- [x] 인덱스 추가 설정하지 않고 1s 이하로 반환 
