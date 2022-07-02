@@ -117,20 +117,26 @@ HTTP/2 설정
 - [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
 - [x]  미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
 - [x]  미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
-가능합니다. https://www.inflearn.com/questions/112647
-두 자원을 사용하는 것에 대한 의문이 위 글에 있는 것 같습니다.
-  ResourceHandlerRegistry 에서는 둘 중 하나만 선택 가능하도록 되어있습니다.
-
+가능합니다. 
+- [참고글] https://www.inflearn.com/questions/112647
+두 자원을 모두 사용하는 것에 대한 의문이 있었고
+위 링크에 있는 것처럼 모호한 부분이 있어 모두 사용하는 경우가 있다고 이해하였습니다.
+- ResourceHandlerRegistry 에서는 둘 중 하나만 선택 가능하도록 되어있습니다.
 - Cache-Control : no-cache : 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용
 - Cache-Control : no-store : 캐시는 클라이언트 요청 혹은 서버 응답에 관해서 어떤 것도 저장해서는 안됩니다.
 - public : 응답이 어떤 캐시에 의해서든 캐시된다는 것을 나타냅니다.
 - private : 응답이 단일 사용자를 위한 것이며 공유 캐시에 의해 저장되지 않아야 한다는 것을 나타냅니다. 사설 캐시는 응답을 저장할 수도 있습니다.
-1. Launch Template 링크를 공유해주세요.
 
+1. Launch Template 링크를 공유해주세요.
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09fef10a8a405a586
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
+- [cpu](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/cloudwatch_cpu.png)
+- [instance](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/cloudwatch_instance.png)
+
+
 ```sh
-$ stress -c 2
+$ stress -c 4
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
