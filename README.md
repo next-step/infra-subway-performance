@@ -61,19 +61,23 @@ npm run dev
 | https://jhsong2580.kro.kr/ | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:--------------------------:|:--------:|:--------:|:--------:|:---------:|
 |            개선전             |   14.8   |   15.3   |   15.4   |    510    |
-|      1차 개선 (캐싱/Gzip설정)       |   5.4    |   6.0    |   6.1    |    560    |
+|     1차 개선 (캐싱/Gzip설정)      |   5.4    |   6.0    |   6.1    |    560    |
+|      3차 개선 (Http2설정)       |   5.2    |   5.7    |   5.7    |    400    |
+
 
 | https://jhsong2580.kro.kr/stations | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:--------------------------:|:--------:|:--------:|:--------:|:---------:|
 |            개선전             |   16.7   |   16.7   |   25.7   |   8_510   |
 |      1차 개선 (캐싱/Gzip설정)       |   7.1    |   7.1    |   17.1   |   9_720   |
 |      2차 개선 (redis 캐싱설정)       |   6.8    |   6.8    |   13.4   |   6_330   |
+|      3차 개선 (Http2설정)       |   6.8    |   6.8    |   12.9   |   5_950   |
 
 | https://jhsong2580.kro.kr/lines | FCP(Sec) | LCP(Sec) | TTI(Sec) | TBT(mSec) |
 |:-------------------------------:|:--------:|:--------:|:--------:|:---------:|
 |               개선전               |   16.2   |   16.2   |   17.9   |   1_210   |
 |        1차 개선 (캐싱/Gzip설정)        |   6.8    |   6.8    |   8.3    |   1_240   |
 |       2차 개선 (redis 캐싱설정)        |   6.8    |   6.8    |   8.0    |   1_040   |
+|       3차 개선 (Http2설정)         |   6.7    |   6.8    |   7.9    |   1_030   |
 
 #### 성능비교 표(K6)
 | testType |                      개선전                      |                      개선후                      | 
@@ -82,6 +86,13 @@ npm run dev
 |   load   |  <img src="readmeSource/step1/개선전_load.png">  |  <img src="readmeSource/step1/개선후_load.png">  |   
 |  stress  | <img src="readmeSource/step1/개선전_stress.png"> | <img src="readmeSource/step1/개선후_stress.png"> |   
  
+###개선 전 후 vuser 수용 가능량
+
+|      | 수용 가능한 vuser |                  Cloudwatch                  |                  비고                  |
+|:----:|:------------:|:--------------------------------------------:|:------------------------------------:|
+| 개선 전 |     338      | <img src="readmeSource/step1/개선전_vuser.png"> | vuser 338명 이후로 급격하게 요청시간이 늘어남을 알수 있다 |
+| 개선 후 |     360      | <img src="readmeSource/step1/개선후_vuser.png"> | vuser 360명 이후로 급격하게 요청시간이 늘어남을 알수 있다 |
+
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    0. 점검
@@ -91,6 +102,7 @@ npm run dev
       2. Proxy Cache 설정 : css,이미지들을 한달간 캐싱한다.
    2. 2차개선 (/lines, /stations)
       1. line.findAll(), station.findAll()에 대해 캐싱한다
+   3. 3차개선 (Http2 설정)
 
 
 ---
@@ -135,7 +147,11 @@ $ stress -c 2
 
 
 
-
+### study
+http2 protocol
+1. 헤더를 압축해서 보낸다
+2. Connection 1개로 여러개의 요청을 처리할수 있다(비동기적)
+3. 리소스간 의존관계에 따른 우선 순위를 설정하여, 리소스 로드문제를 해결할수 있다
 
 
 
