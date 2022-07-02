@@ -84,6 +84,27 @@ npm run dev
 - ./docs/step2/stress-v-user-1100
 
 
+
+### 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? 
+
+https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+
+```
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+response.setHeader("Expires", "0"); // Proxies.
+```
+검색해보았을때 위와 같은 설정을 통해 가능하다고 생각됩니다!
+`response.setHeader("Pragma", "no-cache"); // HTTP 1.0.` 옵션을 주는 이유는  
+HTTP1.0 에서의 캐시설정이고 HTTP1.1 이후 부터는 Cache-Control 을 이용해서 캐시 설정을 할 수 있는것으로 확인됩니다.
+
+`Cache-Control: no-cache, no-store, must-revalidate` 에 no-store 만으로 사용하지 않고 저 셋을 다 사용하는 이유에 대해서는  
+브라우저의 호환성, 여러 프록시 서버, 기타 버그들이 엮여있어 no-store 만으로 사용하지 않고  
+여러 옵션을 같이 사용한다고 확인했습니다.
+
+브라우저의 호환성, HTTP 버전문제 등으로 인하여 위 옵션을 모두 같이 사용하면  
+모든 정적자원에 대해 no-cache, no-store 설정이 가능하다고 판단했습니다!
+
 ---
 
 ### 1단계 - 쿼리 최적화
