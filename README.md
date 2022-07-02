@@ -110,14 +110,33 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+   https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-090ddf89b23bf5e3c
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+   <img src="readmeSource/step2/scaleout결과.png">
+  
+   1. 세션별 Reverse proxy기능을 위해 Target Group에 대해 Stickiness옵션 설정
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+### 개선 전/후 vuser 수용 가능량
+
+|                        | 수용 가능한 vuser |                       Cloudwatch                       |                  비고                   |
+|:----------------------:|:------------:|:------------------------------------------------------:|:-------------------------------------:|
+|          개선 전          |     338      | <img width=350 src="readmeSource/step1/개선전_vuser.png"> | vuser 338명 이후로 급격하게 요청시간이 늘어남을 알수 있다  |
+|      개선 후(step1)       |     360      | <img width=350 src="readmeSource/step1/개선후_vuser.png"> | vuser 360명 이후로 급격하게 요청시간이 늘어남을 알수 있다  |
+| 개선 후(step2 - scaleOut) |     1340     | <img width=350 src="readmeSource/step2/개선후_vuser.png"> | vuser 1340명 이후로 급격하게 요청시간이 늘어남을 알수 있다 |
+
+
+
+#### 성능비교 표(K6)
+| testType |                      개선전                      |                      개선후                      | 
+|:--------:|:---------------------------------------------:|:---------------------------------------------:|
+|  smoke   | <img src="readmeSource/step1/개선전_smoke.png">  | <img src="readmeSource/step2/개선후_smoke.png">  |   
+|   load   |  <img src="readmeSource/step1/개선전_load.png">  |  <img src="readmeSource/step2/개선후_load.png">  |   
+|  stress  | <img src="readmeSource/step2/개선전_stress.png"> | <img src="readmeSource/step2/개선후_stress.png"> | 
 
 ---
 
