@@ -12,7 +12,7 @@ export let options = {
         { duration: '10s', target: 300 },
         { duration: '10s', target: 250 },
         { duration: '10s', target: 200 },
-        { duration: '10s', target: 100 },
+        { duration: '10s', target: 100 }
     ],
 
     thresholds: {
