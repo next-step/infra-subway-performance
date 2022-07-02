@@ -9,6 +9,6 @@ do
 
   mkdir -p "$OUTPUT_PATH/before"
 #  mkdir -p "$OUTPUT_PATH/after"
-  k6 run --out influxdb=http://localhost:8086/myk6db "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/before/$NAME.log"
-#  k6 run --out influxdb=http://localhost:8086/myk6db "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/after/$NAME.log"
+  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/before/$NAME.log"
+#  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/after/$NAME.log"
 done
