@@ -85,24 +85,67 @@ $ stress -c 2
 
 
 ---
-### [추가] 1단계 - 쿠버네티스로 구성하기
-1. 클러스터를 어떻게 구성했는지 알려주세요~ (마스터 노드 : n 대, 워커 노드 n대)
+### 1단계 - 쿼리 최적화
 
-2. 스트레스 테스트 결과를 공유해주세요 (기존에 container 한대 운영시 한계점도 같이 공유해주세요)
+1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
-3. 현재 워커노드에서 몇대의 컨테이너를 운영중인지 공유해주세요
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```sql
+select r.employee_id as "사원번호",
+       filter.name as "이름",
+       filter.income as "연봉",
+       filter.position as "직급명",
+       r.region as "지역",
+       r.record_symbol as "입출입구분",
+       r.time as "입출입시간"
+       from record r
+inner join (
+    select m.employee_id as id,
+           e.last_name as name,
+           s.annual_income as income,
+           p.position_name as position from manager m
+    inner join employee e on m.employee_id = e.id and m.end_date > sysdate()
+    inner join department d on m.department_id = d.id and d.note = 'active'
+    inner join position p on m.employee_id = p.id and position_name = 'Manager'
+    inner join salary s on m.employee_id = s.id and s.end_date > sysdate()
+    order by s.annual_income desc
+    limit 5
+    ) filter
+on filter.id = r.employee_id
+where r.record_symbol = 'O';
+```
+result   
+
+|사원번호|이름|연봉|직급명|지역|입출입구분|입출입시간|
+|---|---|---|---|---|---|---|
+| 110039 | Vishwani | 106491 | Manager | a | O | 2020-09-05 20:30:07 |
+| 110039 | Vishwani | 106491 | Manager | b | O | 2020-08-05 21:01:50 |
+| 110039 | Vishwani | 106491 | Manager | d | O | 2020-07-06 11:00:25 |
+| 111133 | Hauke | 101987 | Manager | a | O | 2020-01-24 02:59:37 |
+| 111133 | Hauke | 101987 | Manager | b | O | 2020-05-07 16:30:37 |
+| 110114 | Isamu | 83457 | Manager | a | O | 2020-05-29 19:38:12 |
+| 110114 | Isamu | 83457 | Manager | b | O | 2020-09-03 01:33:01 |
+| 110114 | Isamu | 83457 | Manager | c | O | 2020-11-12 02:29:00 |
+| 110114 | Isamu | 83457 | Manager | d | O | 2020-04-25 08:28:54 |
+| 110567 | Leon | 74510 | Manager | a | O | 2020-10-17 19:13:31 |
+| 110567 | Leon | 74510 | Manager | b | O | 2020-02-03 10:51:15 |
+| 110228 | Karsten | 65400 | Manager | a | O | 2020-07-13 11:42:49 |
+| 110228 | Karsten | 65400 | Manager | b | O | 2020-09-23 06:07:01 |
+| 110228 | Karsten | 65400 | Manager | d | O | 2020-01-11 22:29:04 |
+
+```
+[2022-07-02 17:32:52] 14 rows retrieved starting from 1 in 266 ms (execution: 249 ms, fetching: 17 ms)
+```
 
 ---
 
-### [추가] 2단계 - 클러스터 운영하기
-1. kibana 링크를 알려주세요
+### 2단계 - 인덱스 설계
 
-2. grafana 링크를 알려주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-3. 지하철 노선도는 어느정도로 requests를 설정하는게 적절한가요?
+---
 
-4. t3.large로 구성할 경우 Node의 LimitRange, ResourceQuota는 어느정도로 설정하는게 적절한가요?
+### 추가 미션
 
-5. 부하테스트를 고려해볼 때 Pod은 몇대정도로 구성해두는게 좋다고 생각하나요?
-
-6. Spinaker 링크를 알려주세요.
+1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
