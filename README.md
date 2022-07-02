@@ -74,11 +74,21 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 #### 미션 요구사항
-- [ ] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-
-- [ ] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-
-- [ ] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+만약 원하는 동작이 브라우저에게 캐시를 확실히 무효화 시키고 싶을때는 아래와 같이 사용 가능 합니다.
+- Cache-Control: no-cache, no-store, must-revalidate
+  - 확실한 캐시 무효화 응답
+  
+- Cache-Control: no-cache
+  - 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용(이름에 주의!) 
+- Cache-Control: no-store 
+  - 데이터에 민감한 정보가 있으므로 저장하면 안됨 (메모리에서 사용하고 최대한 빨리 삭제)
+- Cache-Control: must-revalidate
+  - 캐시 만료후 최초 조회시 원 서버에 검증해야함
+  - 원 서버 접근 실패시 반드시 오류가 발생해야함 - 504(Gateway Timeout) 
+  - must-revalidate는 캐시 유효 시간이라면 캐시를 사용함
 
 - [ ] springboot에 HTTP Cache, gzip 설정하기
 - [ ] Launch Template 작성하기
