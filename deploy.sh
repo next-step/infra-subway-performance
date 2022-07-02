@@ -11,7 +11,7 @@ PID="";
 BRANCH=$1
 PROFILE=$2
 TODAY=`date "+%Y%m%d"`
-LOGFILE="logs/server_${TODAY}.log"
+LOGFILE="server_${TODAY}.log"
 echo "today is ${TODAY}!"
 
 if [ $# -ne 2 ]
