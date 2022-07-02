@@ -109,7 +109,7 @@ SELECT employee_id AS '사원번호',
        record_symbol AS '입출입구분',
        time AS '입출입시간'
   FROM record
-       INNER JOIN ( SELECT e.id, e.last_name, p.position_name, s.annual_income, d.department_name
+       INNER JOIN ( SELECT e.id, e.last_name, p.position_name, s.annual_income
                       FROM employee e
                            INNER JOIN employee_department ed
                            ON         e.id = ed.employee_id
@@ -134,7 +134,7 @@ SELECT employee_id AS '사원번호',
  WHERE record_symbol = 'O';
 ```
 - 실행시간 결과
-> 0.242sec / 0.000011sec (Duration / Fetch Time)
+> 0.242sec / 0.000011sec (Duration / Fetch Time) 
 
 ![query_result](todo/images/step3/step3_image2_query_result.png)
 ---
