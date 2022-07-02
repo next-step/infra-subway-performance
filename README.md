@@ -117,20 +117,35 @@ npm run dev
     
 - 번외 
     - hikari connection-timeout 30 -> 10초, maximum-pool-size 20 -> 10 설정
-    - Http Request Duration 평균 :  106 -> 113 ms (stress 기준) 오히려 증가 
+    - Http Request Duration 평균 :  ~~106 -> 113 ms (stress 기준) 오히려 증가~~
+      -> 재시도 1차 107ms, 2차 108ms 차이없는 것으로 정정
+      -> Redis Cache를 사용하고 있어 DB Connection이 많지 않아 성능 차이 없는 것으로 확인
 ---
 
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+ - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-07e9e261e1e67b04d
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+   
+    ![cpu](/step2/cpu_stress_cloudwatch.png)
+   
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+    - 결과 이미지(k6, grafana)([경로](/step/3))
+    - Http Request Duration 평균
+        - Smoke  : 6.38ms
+        - Load   : 5.93ms 
+        - Stress : 7.32ms (auto scaling EC2 3대 기준)
+    
+0. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+   - 실제 사용은 가능하지만 CacheControl 클래스 특성상 no-cache, no-store 새로운 객체 반환하므로 설정 할 수 없다. 
+     - no-cache : 캐시는 사용하나 사용할 때 마다 서버에 재검증이 필요
+     - no-store : 캐시 사용하지 않음
 
 ---
 ### [추가] 1단계 - 쿠버네티스로 구성하기
