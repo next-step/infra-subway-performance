@@ -1,0 +1,34 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./check/main_load.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 184 max VUs, 6m40s max duration (incl. graceful stop):
+           * default: Up to 184 looping VUs for 6m10s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+     ✓ response ok
+
+     checks.........................: 100.00% ✓ 11921 ✗ 0    
+     data_received..................: 19 MB   52 kB/s
+     data_sent......................: 4.4 MB  12 kB/s
+     http_req_blocked...............: avg=189.27µs min=0s     med=1µs     max=249.13ms p(90)=1µs   p(95)=1µs  
+     http_req_connecting............: avg=40.44µs  min=0s     med=0s      max=9.03ms   p(90)=0s    p(95)=0s   
+   ✗ http_req_duration..............: avg=1.04s    min=4.76ms med=33.26ms max=8.63s    p(90)=4.18s p(95)=4.21s
+       { expected_response:true }...: avg=1.04s    min=4.76ms med=33.26ms max=8.63s    p(90)=4.18s p(95)=4.21s
+     http_req_failed................: 0.00%   ✓ 0     ✗ 23842
+     http_req_receiving.............: avg=151.04µs min=36µs   med=116µs   max=10.97ms  p(90)=217µs p(95)=299µs
+     http_req_sending...............: avg=152µs    min=27µs   med=120µs   max=7.11ms   p(90)=290µs p(95)=355µs
+     http_req_tls_handshaking.......: avg=145.48µs min=0s     med=0s      max=209.7ms  p(90)=0s    p(95)=0s   
+     http_req_waiting...............: avg=1.04s    min=2.91ms med=32.84ms max=8.63s    p(90)=4.18s p(95)=4.21s
+     http_reqs......................: 23842   64.279543/s
+     iteration_duration.............: avg=3.08s    min=1.04s  med=2.42s   max=9.64s    p(90)=5.22s p(95)=5.26s
+     iterations.....................: 11921   32.139772/s
+     vus............................: 25      min=1   max=184
+     vus_max........................: 184     min=184 max=184
+
