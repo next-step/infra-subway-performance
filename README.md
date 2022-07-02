@@ -141,6 +141,11 @@ $ stress -c 2
         - Smoke  : 6.38ms
         - Load   : 5.93ms 
         - Stress : 7.32ms (auto scaling EC2 3대 기준)
+    
+0. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+   - 실제 사용은 가능하지만 CacheControl 클래스 특성상 no-cache, no-store 새로운 객체 반환하므로 설정 할 수 없다. 
+     - no-cache : 캐시는 사용하나 사용할 때 마다 서버에 재검증이 필요
+     - no-store : 캐시 사용하지 않음
 
 ---
 ### [추가] 1단계 - 쿠버네티스로 구성하기
