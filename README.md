@@ -299,14 +299,14 @@ npm run dev
   vus_max........................: 500     min=500      max=500
   ```
 - ### 그라파나 대시보드
-  - Smoke
-  ![img_1.png](img_1.png)
-  - Load
-  ![img.png](img.png)
-  - Stress
+- Smoke
+![img_3.png](img_1.png)
+- Load
+![img.png](img.png)
+- Stress
+![img_2.png](img_2.png)
 
-
-3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - nginx 프록시 개선
   - gzip 설정
   - cache 설정
