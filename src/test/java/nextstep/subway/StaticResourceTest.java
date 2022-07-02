@@ -1,7 +1,6 @@
 package nextstep.subway;
 
 import io.restassured.RestAssured;
-import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.Test;
 
 public class StaticResourceTest extends AcceptanceTest {
