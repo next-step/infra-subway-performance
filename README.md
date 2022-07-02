@@ -47,10 +47,10 @@ npm run dev
 - 이전 미션 성능테스트 결과 및 전제조건
   - https://github.com/next-step/infra-subway-monitoring/tree/ssamzag
 - ### 웹 성능 테스트 
-|      |FCP|TTI|SI|TBT| LCP |CLS|
-|------|---|---|---|---|---|---|
-| 개선 전 |3.1s|3.1s|3.0s|3.0s|10ms|0|
-| 개선 후 |1.5s|1.5s|1.6s|1.5s|0ms|0|
+|      | FCP  | TTI  | SI   | TBT  | LCP |CLS|
+|------|------|------|------|------|---|---|
+| 개선 전 | 3.1s | 3.1s | 3.0s | 3.0s |10ms|0|
+| 개선 후 | 1.3s | 1.3s | 1.5s | 1.3s |0ms|0|
 
 - ### k6 테스트 전/후
 - Smoke
