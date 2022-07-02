@@ -45,14 +45,14 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - 개선전
-  - [smoke] : ./docs/before/before_smoke.PNG
-  - [load] : ./docs/before/before_load.PNG
-  - [stress] : ./docs/before/before_stress.PNG
+  - [smoke] : ./docs/step1/before/before_smoke.PNG
+  - [load] : ./docs/step1/before/before_load.PNG
+  - [stress] : ./docs/step1/before/before_stress.PNG
 
 - 개선후
-  - [smoke] : ./docs/after/after_smoke.PNG
-  - [load] : ./docs/after/after_load.PNG
-  - [stress] : ./docs/after/after_stress.PNG
+  - [smoke] : ./docs/step1/after/after_smoke.PNG
+  - [load] : ./docs/step1/after/after_load.PNG
+  - [stress] : ./docs/step1/after/after_stress.PNG
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - nginx 리버시 프록시 개선
@@ -68,11 +68,13 @@ npm run dev
 
 1. Launch Template 링크를 공유해주세요.
 
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-063fd4ece17528ff6
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+- ./docs/step2/auto-scaling/autoScaling-instance.PNG
+- ./docs/step2/auto-scaling/autoScaling-monitoring.PNG
+
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
