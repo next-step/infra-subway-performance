@@ -84,6 +84,29 @@ class StaticResourceTest {
         assertThat(main_logo.statusCode()).isEqualTo(HttpStatus.NOT_MODIFIED.value());
     }
 
+    @DisplayName("정적리소스(css) 조회 테스트")
+    @Test
+    void get_static_resources_css() {
+        //given
+        String test_css_uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/test.css";
+
+        //when
+        String test_css_etag = NO_CACHE_조회하기(test_css_uri).header("etag");
+
+        //then
+        assertThat(test_css_etag).isNotBlank();
+
+        //when
+        ExtractableResponse<Response> test_css = NONE_MATCH_조회하기(test_css_uri, test_css_etag);
+        String cacheControl = test_css.header("Cache-Control");
+
+        //then
+        assertThat(test_css.statusCode()).isEqualTo(HttpStatus.NOT_MODIFIED.value());
+        assertThat(cacheControl).isEqualTo("max-age=31536000");
+
+
+    }
+
 
     private ExtractableResponse<Response> NONE_MATCH_조회하기(String uri, String etag) {
         return RestAssured
