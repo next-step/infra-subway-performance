@@ -3,6 +3,7 @@ package nextstep.subway;
 import static nextstep.subway.config.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
 import java.time.Duration;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class StaticResourcesTest {
     @Autowired
     private WebTestClient client;
 
+    @DisplayName("js 정적 리소스의 캐시정책은 noCache, cachePrivate 이다")
     @Test
     void get_static_resources_js() {
         String uri = PREFIX_STATIC_RESOURCES + "/static/js/main.js";
@@ -49,6 +51,7 @@ public class StaticResourcesTest {
             .isNotModified();
     }
 
+    @DisplayName("css 정적 리소스의 cache max-age 는 1년이다")
     @Test
     void get_static_resources_css() {
         String uri = PREFIX_STATIC_RESOURCES + "/static/css/index.css";
