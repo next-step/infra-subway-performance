@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,12 +58,16 @@ public class LineService {
     }
 
     @CachePut(value = "line", key = "#id")
+    @CacheEvict(value = "path", allEntries = true)
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "line", key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "line", key = "#id"),
+            @CacheEvict(value = "path", allEntries = true)
+    })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
