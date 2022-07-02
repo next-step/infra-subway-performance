@@ -102,34 +102,34 @@ VUser : 1400
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 ```sql
 SELECT employee_id AS '사원번호',
-	   last_name AS '이름',
+       last_name AS '이름',
        annual_income AS '연봉',
-	   position_name AS '직급명',
+       position_name AS '직급명',
        region AS '지역', 
        record_symbol AS '입출입구분',
        time AS '입출입시간'
   FROM record
        INNER JOIN ( SELECT e.id, e.last_name, p.position_name, s.annual_income, d.department_name
-					  FROM employee e
-						   INNER JOIN employee_department ed
-						   ON         e.id = ed.employee_id
-						   AND        ed.end_date = '9999-01-01'
-						   INNER JOIN department d
-						   ON          ed.department_id = d.id
-						   AND         d.note = 'active'
-						   INNER JOIN manager m
-						   ON         m.employee_id = e.id
-						   AND        m.department_id = d.id
-						   AND        m.end_date = '9999-01-01'
-						   INNER JOIN salary s
-						   ON         m.employee_id = s.id
-						   AND        s.end_date = '9999-01-01'
-						   INNER JOIN position p
-						   ON         e.id = p.id
+                      FROM employee e
+                           INNER JOIN employee_department ed
+                           ON         e.id = ed.employee_id
+                           AND        ed.end_date = '9999-01-01'
+                           INNER JOIN department d
+                           ON          ed.department_id = d.id
+                           AND         d.note = 'active'
+                           INNER JOIN manager m
+                           ON         m.employee_id = e.id
+                           AND        m.department_id = d.id
+                           AND        m.end_date = '9999-01-01'
+                           INNER JOIN salary s
+                           ON         m.employee_id = s.id
+                           AND        s.end_date = '9999-01-01'
+                           INNER JOIN position p
+                           ON         e.id = p.id
                            AND        p.position_name = 'Manager'
-						   AND        p.end_date = '9999-01-01'
-					 ORDER BY s.annual_income DESC
-					 LIMIT 5 ) filter_table
+                           AND        p.end_date = '9999-01-01'
+                     ORDER BY s.annual_income DESC
+                     LIMIT 5 ) filter_table
        ON filter_table.id = record.employee_id
  WHERE record_symbol = 'O';
 ```
