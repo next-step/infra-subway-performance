@@ -149,13 +149,3 @@ result
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-
-2. grafana 링크를 알려주세요
-
-3. 지하철 노선도는 어느정도로 requests를 설정하는게 적절한가요?
-
-4. t3.large로 구성할 경우 Node의 LimitRange, ResourceQuota는 어느정도로 설정하는게 적절한가요?
-
-5. 부하테스트를 고려해볼 때 Pod은 몇대정도로 구성해두는게 좋다고 생각하나요?
-
-6. Spinaker 링크를 알려주세요.
