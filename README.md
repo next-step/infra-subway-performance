@@ -272,15 +272,217 @@ where r.record_symbol = 'O'
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 **환경 : M1** 
-- [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
-- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+- [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+---
+
+[**Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.**
+
+**query**
+```sql
+select count(*) / (select count(*) from programmer) * 100 as percent
+from programmer
+group by hobby;
+```
+
+**인덱스 추가하기**
+- Group By 컬럼인 hobby 에 대해 인덱스 추가
+    ```sql
+    create index idx_programmer_hobby on programmer (hobby);
+    ```
+
+**result**
+```sql
+# M1 환경에서 응답조건을 두배로 정의합니다.
+duration : 0.254 sec
+```
+
+---
+
+**프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
+
+**query**
+
+```sql
+select c.id as covid_id, h.name as hospital_name
+from covid c
+join hospital h on c.hospital_id = h.id;
+```
+
+**인덱스 추가하기**
+
+- hospital, covid 테이블의 id 컬럼을 pk 로 정의
+- covid 테이블의 fk 컬럼인 hospital_id 컬럼을 index로 추가
+    ```sql
+    alter table hospital add primary key (id);
+    alter table covid add primary key (id);
+    create index idx_covid_hospital_id on covid (hospital_id);
+    ```
 
 
+**result**
+
+```sql
+# M1 환경에서 응답조건을 두배로 정의합니다.
+duration : 0.019sec
+```
+
+**plan**
+- ![2번_플랜](/step4/step4_2_add_index_plan_new.png)
+
+---
+**프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.**
+**(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
+
+**query**
+
+```sql
+select c.id, c.name, p.hobby, p.student, p.dev_type, p.years_coding
+from (
+	select c.id, h.name
+	from covid c
+	join hospital h on c.hospital_id = h.id
+) c
+join (
+	select id, hobby, student, dev_type, years_coding
+    from programmer p
+    where p.hobby = 'Yes' 
+		and (student like 'Yes%' or p.years_coding = '0-2 years')
+) p
+on c.id = p.id;
+```
+
+**인덱스 추가하기**
+
+- programmer 테이블 hobby 인덱스 추가
+- hospital, programmer, covid 테이블 id pk 추가
+- 각 테이블의 fk 컬럼을 index로 추가
+
+    ```sql
+        alter table programmer add primary key (id);
+        alter table hospital add primary key (id);
+        alter table covid add primary key (id);
+        create index idx_programmer_hobby on programmer (hobby);
+        create index idx_covid_hospital_id on covid (hospital_id);
+        create index idx_covid_programmer_id on covid (programmer_id);
+    ```
+
+**result**
+
+```sql
+# M1 환경에서 응답조건을 두배로 정의합니다.
+duration : 0.038sec
+```
+
+**plan**
+- ![3번_플랜](/step4/step4_3_add_index_plan_new.png)
+
+---
+**서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
+
+**query**
+
+```sql
+select c.stay, count(c.stay)
+from hospital h
+join covid c on c.hospital_id = h.id
+join (
+	select m.id
+		from member m
+		join programmer p on m.id = p.id
+		where (m.age between 20 and 29)
+		and p.country = 'India'
+) m
+on c.id = m.id
+where h.id = 9
+group by c.stay;
+;
+```
+
+**인덱스 추가하기**
+
+- hospital, member, covid 테이블의 id 컬럼 PK 추가
+- 각 테이블의 fk 컬럼에 대한 index 추가
+- programmer 테이블의 country 컬럼 index 추가
+- member 테이블의 age 컬럼 index 추가
+
+    ```sql
+        alter table member add primary key (id);
+        alter table hospital add primary key (id);
+        alter table covid add primary key (id);
+  
+        create index idx_member_age on member (age);
+        create index idx_programmer_country on programmer (country);
+  
+        create index idx_programmer_member_id on programmer (member_id);
+        create index idx_covid_hospital_id on covid (hospital_id);
+        create index idx_covid_member_id on covid (member_id);
+    ```
+
+**result**
+
+```sql
+# M1 환경에서 응답조건을 두배로 정의합니다.
+duration : 0.129 sec
+```
+
+**plan**
+- ![4번_플랜](/step4/step4_4_add_index_plan_new.png)
 
 
+---
+**서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+
+**query**
+
+```sql
+select p.exercise, count(p.exercise)
+from programmer p
+join member m on p.id = m.id
+join (
+	select c.id 
+	from covid c
+	join hospital h on h.id = c.hospital_id
+	where h.id = 9
+) cv
+on p.id = cv.id
+where m.age between 20 and 29
+group by p.exercise;
+```
+
+**인덱스 추가하기**
+
+- hospital, member, programmer, covid 테이블의 id 컬럼 PK 추가
+- 각 테이블의 fk 컬럼을 index로 추가
+- programmer 테이블의 exercise 컬럼 index 추가
+- member 테이블의 age 컬럼 index 추가
+
+    ```sql
+        alter table programmer add primary key (id);
+        alter table member add primary key (id);
+        alter table hospital add primary key (id);
+        alter table covid add primary key (id);
+  
+        create index idx_member_age on member (age);
+        create index idx_programmer_exercise on programmer (exercise);
+  
+        create index idx_programmer_member_id on programmer (member_id);
+        create index idx_covid_hospital_id on covid (hospital_id);
+        create index idx_covid_programmer_id on covid (programmer_id);
+    ```
+**result**
+
+```sql
+# M1 환경에서 응답조건을 두배로 정의합니다.
+duration : 0.159 sec
+```
+
+**plan**
+- ![5번_플랜](/step4/step4_5_add_index_plan.png)
 
 
 ---
