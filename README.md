@@ -145,6 +145,19 @@ group by hobby;
 ```
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+alter table programmer add primary key (id);
+alter table hospital add primary key (id);
+alter table covid add primary key (id);
+
+create unique index idx_hospital_name on hospital (name)
+create index idx_covid_programmer_id on covid (programmer_id);
+create index idx_covid_hospital_id on covid (hospital_id);
+
+select c.id, h.name from covid c
+inner join programmer p on c.programmer_id = p.id
+inner join hospital h on c.hospital_id = h.id;
+```
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
