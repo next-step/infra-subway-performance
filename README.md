@@ -138,6 +138,15 @@ $ stress -c 2
 |   load   |  <img src="readmeSource/step1/개선전_load.png">  |  <img src="readmeSource/step2/개선후_load.png">  |   
 |  stress  | <img src="readmeSource/step2/개선전_stress.png"> | <img src="readmeSource/step2/개선후_stress.png"> | 
 
+
+#### 리뷰어님 코멘트
+##### CDN? (Content Delivery Network)
+ - 서버와 사용자 사이의 물리적인 거리를 줄여 콘텐츠 로딩에 소요되는 시간을 감소시킴
+ - 각 지역의 캐시 서버를 분산 배치에 근접한 사용자의 요청에 원본 서버가 아닌 캐시서버가 콘텐츠를 전
+
+##### 분산서버 형태에서 Redis에 Session 저장 (https://dev-setung.tistory.com/39)
+ - 세션을 관리하는 Redis서버를 별도로 두어, 어느 서버로 접근하던 Redis서버에서 세션을 참조한다.
+
 ---
 
 ### 1단계 - 쿼리 최적화
