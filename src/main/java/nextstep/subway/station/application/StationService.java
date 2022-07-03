@@ -21,35 +21,27 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @CacheEvict(value = "stations", allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
-    // 메서드 실행 전에 캐시를 확인하여 최소 하나의 캐시가 존재한다면 값을 반환한다.
-    // SpEL 표현식을 활용하여 조건부 캐싱이 가능하다.
-    @Cacheable(value = "station")
+    @Cacheable(value = "stations", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                       .map(StationResponse::of)
+                       .collect(Collectors.toList());
     }
 
-    // 캐시를 제거할 때 사용한다.
-    @CacheEvict(value = "station", key = "#id")
+    @CacheEvict(value = "stations", allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
-    @Cacheable(value = "station", key="#id")
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    @Cacheable(value = "station", key="#id")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
