@@ -25,6 +25,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: masterpw
+  cache.type: redis
+  redis:
+    host: 172.17.0.1
+    prot: 6379
 
 ---
 
@@ -35,3 +39,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: masterpw
+  cache.type: redis
+  redis:
+    host: 192.168.16.46
+    prot: 6379
