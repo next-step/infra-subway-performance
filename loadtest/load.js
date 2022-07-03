@@ -3,9 +3,9 @@ import { check, group, sleep, fail } from 'k6';
 
 export let options = {
     stages: [
-        { duration: '1m', target: 4 },
         { duration: '1m', target: 22 },
-        { duration: '1m', target: 4 },
+        { duration: '5m', target: 22 },
+        { duration: '1m', target: 0 },
     ],
     thresholds: {
         http_req_duration: ['p(99)<1500'] // 99% of requests must complete below 1.5s
