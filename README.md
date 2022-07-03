@@ -128,7 +128,7 @@ HTTP/2 설정
 - private : 응답이 단일 사용자를 위한 것이며 공유 캐시에 의해 저장되지 않아야 한다는 것을 나타냅니다. 사설 캐시는 응답을 저장할 수도 있습니다.
 
 1. Launch Template 링크를 공유해주세요.
-   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09fef10a8a405a586
+- [LaunchTemplate] https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09fef10a8a405a586
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 - [cpu](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/cloudwatch_cpu.png)
@@ -140,6 +140,19 @@ $ stress -c 4
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+- [smoke](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/step2_smoke.png)
+- [load](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/step2_load.png)
+  - http_req_duration : 4.29ms(step1개선) -> 3.44ms
+- [stress](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/step2_stress.png)
+  - http_req_duration : 29.29ms(step1개선) -> 4.41ms
+
+- [stress 800](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/step2_stress_800.png)
+  - http_req_duration : 45.51ms
+
+- [stress 1400](https://github.com/kwonyongil/infra-subway-performance/blob/step2/docs/step2/step2_stress_1400.png)
+    - http_req_duration : 
+
 
 ---
 
