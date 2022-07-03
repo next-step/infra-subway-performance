@@ -39,7 +39,7 @@ public class StationService {
     }
 
     // 캐시를 제거할 때 사용한다.
-    @CacheEvict(value = "line", key = "#id")
+    @CacheEvict(value = "station", key = "#id")
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
