@@ -9,7 +9,7 @@ import nextstep.subway.station.domain.Station;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class StationResponse implements Serializable {
+public class StationResponse {
     private Long id;
     private String name;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
