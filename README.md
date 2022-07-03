@@ -164,21 +164,25 @@ $ stress -c 2
            , rec.region as 지역
            , rec.record_symbol as 입출입구분 
     from (                
-            select straight_join mgr.employee_id, emp.last_name, sal.annual_income, pos.position_name 
+            select straight_join mgr.employee_id
+            , emp.last_name
+            , sal.annual_income
+            , pos.position_name 
             from (select employee_id, department_id from manager where end_date > now()) mgr
-            inner join (select id from department where upper(note) = 'ACTIVE') dep 
-                on mgr.department_id = dep.id
-            inner join (select id, last_name from employee) emp 
-                on mgr.employee_id = emp.id 
-            inner join (select id, position_name from position where end_date > now()) pos 
-                on mgr.employee_id = pos.id
-            inner join (select id, annual_income from salary where end_date > now()) sal 
-                on mgr.employee_id = sal.id
+                inner join (select id from department where upper(note) = 'ACTIVE') dep 
+                    on mgr.department_id = dep.id
+                inner join (select id, last_name from employee) emp 
+                    on mgr.employee_id = emp.id 
+                inner join (select id, position_name from position where end_date > now()) pos 
+                    on mgr.employee_id = pos.id
+                inner join (select id, annual_income from salary where end_date > now()) sal 
+                    on mgr.employee_id = sal.id
             order by sal.annual_income desc limit 5
     ) top5 
-    inner join record rec on top5.employee_id = rec.employee_id
+        inner join record rec 
+            on top5.employee_id = rec.employee_id
     where
-    record_symbol = 'O';
+        record_symbol = 'O';
 ```
 
 ---
