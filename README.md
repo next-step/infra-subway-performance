@@ -161,7 +161,6 @@ inner join hospital h on c.hospital_id = h.id;
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```sql
--- 방법 1
 select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
 inner join covid c on c.programmer_id = p.id
 inner join hospital h on c.hospital_id = h.id
