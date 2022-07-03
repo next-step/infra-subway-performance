@@ -41,9 +41,39 @@ GROUP BY hobby;
   - 인덱스 적용 후
   > 0.040sec / 0.000007sec ( Duration / Fetch Time )
 
-  ![question_after_index](images/step4/step4_image3_question1_after_index.png)
+  ![question1_after_index](images/step4/step4_image3_question1_after_index.png)
 
-- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - 실핼 Query
+```sql
+SELECT c.id,
+       h.name
+  FROM covid c
+       INNER JOIN programmer p
+       ON        c.programmer_id = p.id
+       INNER JOIN hospital h
+       ON        c.hospital_id = h.id;
+```
+  - 인덱스 적용 전
+  > 0.122sec / 2.049sec ( Duration / Fetch Time )
+
+  ![question2_before_index](images/step4/step4_image4_question2_before_index.png)
+
+  - 개선 작업
+```sql
+-- covid
+PRIMARY KEY (`id`),
+  KEY `idx_covid_programmer_id` (`programmer_id`),
+  KEY `idx_covid_hospital_id` (`hospital_id`)
+
+-- hospital
+  PRIMARY KEY (`id`)
+```
+  - 인덱스 적용 후 
+  > 0.013sec / 0.512sec ( Duration / Fetch Time )
+
+  ![question2_after_index](images/step4/step4_image5_question2_after_index.png)
+
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
