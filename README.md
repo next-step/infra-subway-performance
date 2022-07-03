@@ -44,8 +44,8 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-   - [after](/docs/after)
-   - [before](/docs/before)
+   - [after](/docs/step1/after)
+   - [before](/docs/step1/before)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -58,15 +58,20 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-037f5f6c39cc0e207
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+   - [stress 1100 VUs](./docs/step2/ec2_smoke1100.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   - [smoke](./docs/step2/smoke.png)
+   - [load](./docs/step2/load.png)
+   - [stress 350 VUs](./docs/step2/stress350.png)
+   - [stress 700 VUs](./docs/step2/stress700.png)
+   - [stress 1100 VUs](./docs/step2/stress1100.png)
 ---
 
 ### 1단계 - 쿼리 최적화
