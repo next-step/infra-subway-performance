@@ -49,9 +49,22 @@ npm run dev
     
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+   - load
+     - 개선전
+       - smoke
+        ![before_smoke.png](step1/before_smoke.png)
+       - load
+        ![before_load.png](step1/before_smoke.png)
+       - stress
+        ![before_stress.png](step1/before_smoke.png)
+        
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+    1. https 변경
+    - http_req_duration  avg: 28ms
+    2. redis cache 
+    - http_req_duration: avg= 24ms
+    3. 
 ---
 
 ### 2단계 - 스케일 아웃
