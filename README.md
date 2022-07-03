@@ -124,6 +124,91 @@ select 사원번호, 이름, 연봉, 직급명, r.time as 입출입시간, regio
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+
+각 테이블 내 인덱스, PK 추가함.
+```
+programmer
+  PRIMARY KEY (`id`),
+  KEY `idx_programmer_hobby` (`hobby`),
+  KEY `idx_programmer_member_id` (`member_id`)
+  
+member
+   PRIMARY KEY (`id`)
+
+hospital
+   PRIMARY KEY (`id`)
+   
+covid
+   PRIMARY KEY (`id`),
+   KEY `idx_covid_hospital_id` (`hospital_id`)        
+
+```
+
+1.1
+
+`0.034 sec / 0.000010 sec`
+
+```
+select Truncate((count(hobby) * 100) / (select count(*) from programmer), 1) as total, hobby 
+from programmer 
+group by hobby;
+```
+
+1.2
+
+`0.023 sec / 0.016 sec`
+
+``` sql
+select c.id, h.name 
+from programmer p, hospital h, covid c 
+where p.id = c.programmer_id 
+and h.id = c.hospital_id;
+```
+
+
+1.3
+
+`0.011 sec / 0.079 sec`
+
+``` sql
+select p.student, c.id, h.name, p.hobby, p.dev_type, p.years_coding 
+from programmer p, hospital h, covid c 
+where p.id = c.programmer_id 
+and h.id = c.hospital_id and hobby='Yes'
+and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'));
+```
+
+1.4
+
+`0.097 sec / 0.000011 sec`
+
+``` sql
+select c.stay, count(c.stay) 
+from programmer p, covid c, member m 
+where m.id = c.member_id
+and p.member_id = m.id 
+and c.member_id = p.member_id
+and c.hospital_id = (select id from hospital where name = '서울대병원') 
+and p.country = 'India'
+and m.age between 20 and 29 
+group by c.stay;
+```
+
+1.5
+
+`0.095 sec / 0.0000081 sec`
+
+``` sql
+select p.exercise, count(p.exercise) 
+from programmer p, covid c, member m 
+where m.id = c.member_id 
+and p.member_id = m.id 
+and c.member_id = p.member_id
+and c.hospital_id = (select id from hospital where name = '서울대병원') 
+and m.age between 30 and 39 
+group by p.exercise;
+```
+
 ---
 
 ### 추가 미션
