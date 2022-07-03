@@ -10,7 +10,7 @@ export let options = {
   },
 };
 
-const BASE_URL = 'https://aws.coffee-con.xyz';
+const BASE_URL = 'https://aws2.coffee-con.xyz';
 const USERNAME = 'k.connor614@gmail.com';
 const PASSWORD = '1234';
 

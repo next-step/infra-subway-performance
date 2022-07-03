@@ -3,19 +3,19 @@ import {check, group, sleep, fail} from 'k6';
 
 export let options = {
   stages: [
-    {duration: '1m', target: 60},
-    {duration: '1m', target: 120},
-    {duration: '2m', target: 180},
-    {duration: '2m', target: 360},
-    {duration: '1m', target: 60},
-    {duration: '0m', target: 6},
+    {duration: '30s', target: 60},
+    {duration: '30s', target: 120},
+    {duration: '30s', target: 180},
+    {duration: '15m', target: 360},
+    {duration: '30s', target: 60},
+    {duration: '30s', target: 6},
   ],
   thresholds: {
     http_req_duration: ['p(99)<100'],
   },
 };
 
-const BASE_URL = 'https://aws.coffee-con.xyz';
+const BASE_URL = 'https://aws2.coffee-con.xyz';
 const USERNAME = 'k.connor614@gmail.com';
 const PASSWORD = '1234';
 
