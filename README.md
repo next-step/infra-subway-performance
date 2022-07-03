@@ -164,9 +164,9 @@ inner join hospital h on c.hospital_id = h.id;
 -- 방법 1
 select c.id, h.name, filter.hobby, filter.dev_type, filter.years_coding from covid c
 inner join (
-select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
-where (p.hobby = 'yes' and p.student like 'Yes%') or (p.years_coding = '0-2 years')) filter
-on c.programmer_id = filter.id
+    select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
+    where (p.hobby = 'yes' and p.student like 'Yes%') or (p.years_coding = '0-2 years')
+) filter on c.programmer_id = filter.id
 inner join hospital h on c.hospital_id = h.id
 order by c.id;
 
