@@ -106,7 +106,6 @@ select 사원번호, 이름, 연봉, 직급명, r.time as 입출입시간, regio
    and salary.id = manager.employee_id
    and manager.employee_id = employee_department.employee_id
    and employee_department.department_id in ( select id from department where note = 'Active')
-   and position.position_name = 'Manager'
    and position.start_date = manager.start_date
    and position.end_date = manager.end_date
    and manager.end_date = '9999-01-01'
