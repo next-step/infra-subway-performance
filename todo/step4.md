@@ -34,6 +34,7 @@ GROUP BY hobby;
 
   - 개선 작업
 ```sql
+-- hobby
   PRIMARY KEY (`id`),
   KEY `idx_programmer_hobby` (`hobby`)
 ```
@@ -63,8 +64,8 @@ SELECT c.id,
 ```sql
 -- covid
 PRIMARY KEY (`id`),
-  KEY `idx_covid_programmer_id` (`programmer_id`),
-  KEY `idx_covid_hospital_id` (`hospital_id`)
+KEY `idx_covid_programmer_id` (`programmer_id`),
+KEY `idx_covid_hospital_id` (`hospital_id`)
 
 -- hospital
   PRIMARY KEY (`id`)
@@ -79,10 +80,10 @@ PRIMARY KEY (`id`),
 ```sql
 SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
   FROM programmer p
-	   LEFT JOIN covid c
-	   ON        p.id = c.programmer_id
+	   INNER JOIN covid c
+	   ON         p.id = c.programmer_id
        INNER JOIN hospital h
-       ON        c.hospital_id = h.id
+       ON         c.hospital_id = h.id
  WHERE (hobby = 'Yes' and student <> 'No')
     OR years_coding = '0-2 years'
  ORDER BY p.id;
@@ -93,5 +94,45 @@ SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
 
   ![question3_before_index](images/step4/step4_image6_question3_before_index.png)
 
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 실행 Query
+```sql
+SELECT c.stay,
+       count(*) as 'COUNT'
+  FROM member m
+       INNER JOIN programmer p
+	   ON         m.id = p.member_id
+       AND        p.country = 'India'
+       INNER JOIN covid c
+       ON         m.id = c.member_id
+       INNER JOIN hospital h
+       ON         c.hospital_id = h.id
+       AND        h.name = '서울대병원'
+ WHERE m.age BETWEEN 20 AND 29
+ GROUP BY c.stay;
+```
+  
+  - 인덱스 적용 전
+  > 25.663sec / 0.00006sec ( Duration / Fetch Time )
+
+  ![question4_before_index](images/step4/step4_image7_question4_before_index.png)
+
+  - 개선작업
+```sql
+-- member
+PRIMARY KEY (`id`)
+
+-- hospital
+KEY `idx_hospital_name` (`name`)
+
+-- programmer
+KEY `idx_programmer_member_id_country` (`member_id`,`country`)
+
+```
+ 
+  - 인덱스 적용 후
+  > 0.0045sec / 0.00001sec ( Duration / Fetch Time )
+
+  ![question4_after_index](images/step4/step4_image8_question4_after_index.png)
+
+  - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
