@@ -112,9 +112,34 @@ $ stress -c 2
 ### 1단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+  - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+    1. 일단 조회해보자 (평균 소요시간 : 0.45sec)
+       select e.id as 사원번호, e.last_name as 이름, e.annual_income as 연봉, "Manager" as 직급명, r.time as 입출입시간, r.region as 지역, 'O' as 입출입구분 from (
+           select e.*, s.annual_income from employee as e
+               join (
+                   select employee_id from manager
+                       where end_date ="9999-01-01"
+                           and employee_id in (select  id from position where position_name="manager") ##POSITION이 manager
+                           and employee_id in (select employee_id from employee_department where department_id in (select id from department where note="active"))
+               ) as m on m.employee_id = e.id
+               join (
+                   select id as salary_id, annual_income from salary where end_date ="9999-01-01"
+               ) as s on s.salary_id = e.id
+               order by s.annual_income desc 
+               limit 0,5
+        ) as e
+        join (
+            select employee_id, time, region  from record
+                where record_symbol="O"
+                    and region <> ""
+        ) as r on r.employee_id = e.id
+        order by 연봉 desc, 지역;
 
+       1. 1차 조회 결과(정상, 평균 0.43sec)
+          ![img.png](./readmeSource/step3/쿼리_조회결과.png)
+       2. 실행계획
+          ![img.png](./readmeSource/step3/1차_쿼리조회_실행계획.png)
 ---
 
 ### 2단계 - 인덱스 설계
