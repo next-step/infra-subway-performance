@@ -180,6 +180,7 @@ $ stress -c 2
           ![img.png](./readmeSource/step3/쿼리_조회결과.png)
        2. 실행계획
           ![img.png](./readmeSource/step3/1차_쿼리조회_실행계획.png)
+          1. Manager과 Record에서 풀스캔 발생
 ---
 
 ### 2단계 - 인덱스 설계
