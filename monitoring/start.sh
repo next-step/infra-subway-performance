@@ -7,8 +7,8 @@ do
   NAME="$(basename "$MONITORING_SCRIPT_FILE" .js)"
   OUTPUT_PATH=$(dirname "$MONITORING_SCRIPT_FILE")
 
-  mkdir -p "$OUTPUT_PATH/before"
-#  mkdir -p "$OUTPUT_PATH/after"
-  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/before/$NAME.log"
-#  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/after/$NAME.log"
+#  mkdir -p "$OUTPUT_PATH/before"
+  mkdir -p "$OUTPUT_PATH/after"
+#  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/before/$NAME.log"
+  k6 run "$MONITORING_SCRIPT_FILE" > "$OUTPUT_PATH/after/$NAME.log"
 done
