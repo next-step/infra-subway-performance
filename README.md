@@ -138,17 +138,51 @@ npm run dev
 - Smoke(p95) : 33ms -> 26ms (20% 개선)
 - Load(p95) : 40 ms -> 17ms (60% 개선)
 - Stress(p95) : 376ms -> 192ms (50% 개선)
+
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+#### 답변
+- 실행 계획
+  ![step3_explain](capture/step3_explain.png)
+- 쿼리
+    ```sql
+    SELECT R.employee_id AS '사원번호'
+           , V3.last_name AS '이름'
+           , V3.annual_income AS '연봉'
+           , V3.position_name AS '직급명'
+           , MAX(time) AS '입출입시간'
+           , region AS '지역'
+           , record_symbol AS '입출입구분'
+    FROM record R
+    JOIN (SELECT id, last_name, annual_income, position_name 
+          FROM ( SELECT id, annual_income, last_name, position_name 
+                 FROM salary S
+                 JOIN  (SELECT employee_id, last_name, position_name FROM manager M 
+                          JOIN (SELECT id FROM department WHERE lower(note) = 'active') D 
+                            ON M.department_id = D.id AND M.end_date = '9999-01-01'
+                          JOIN (SELECT id, last_name FROM employee) E
+                            ON M.employee_id = E.id
+                          JOIN (SELECT id, position_name FROM position) P
+                            ON M.employee_id = P.id AND P.position_name = 'Manager'
+                        ) V1
+                 ON S.id = V1.employee_id AND S.end_date = '9999-01-01'
+                 ORDER BY S.annual_income DESC
+                 LIMIT 5 
+               ) V2
+         ) V3
+    ON R.employee_id = V3.id AND R.record_symbol = 'O'
+    GROUP BY employee_id, region, record_symbol, V3.last_name, V3.annual_income, V3.position_name 
+    ORDER BY V3.annual_income DESC, R.region
+    ;
+    ```
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
