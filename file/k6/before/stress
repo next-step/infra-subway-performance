@@ -1,0 +1,35 @@
+$ k6 run --out influxdb=http://localhost:8086/k6 stress.js
+
+...
+
+running (6m00.9s), 000/326 VUs, 20647 complete and 0 interrupted iterations
+default ✓ [======================================] 000/326 VUs  6m0s
+
+     ✗ 랜딩 페이지 점검
+      ↳  65% — ✓ 13523 / ✗ 7124
+     ✗ 로그인 토큰 점검
+      ↳  68% — ✓ 14207 / ✗ 6440
+     ✗ 지하철역 개수 점검
+      ↳  94% — ✓ 13389 / ✗ 818
+     ✗ 지하철 길찾기 점검
+      ↳  93% — ✓ 12506 / ✗ 883
+     ✗ 지하철 즐겨찾기 점검
+      ↳  97% — ✓ 12222 / ✗ 284
+
+     checks.........................: 80.89% ✓ 65847      ✗ 15549
+     data_received..................: 112 MB 309 kB/s
+     data_sent......................: 21 MB  59 kB/s
+     http_req_blocked...............: avg=12.99ms  min=0s    med=2.64µs   max=409.23ms p(90)=53.66ms p(95)=99.89ms
+     http_req_connecting............: avg=3.26ms   min=0s    med=0s       max=222.42ms p(90)=7.89ms  p(95)=23.49ms
+   ✗ http_req_duration..............: avg=331.36ms min=0s    med=93.92ms  max=6.73s    p(90)=1.08s   p(95)=1.4s
+       { expected_response:true }...: avg=407.01ms min=1ms   med=173.74ms max=6.73s    p(90)=1.21s   p(95)=1.46s
+     http_req_failed................: 19.10% ✓ 15549      ✗ 65847
+     http_req_receiving.............: avg=219.89µs min=0s    med=43.08µs  max=218ms    p(90)=79.27µs p(95)=97.76µs
+     http_req_sending...............: avg=1.65ms   min=0s    med=15.91µs  max=541.74ms p(90)=96.93µs p(95)=1.65ms
+     http_req_tls_handshaking.......: avg=9.78ms   min=0s    med=0s       max=326.71ms p(90)=35.24ms p(95)=81.43ms
+     http_req_waiting...............: avg=329.48ms min=0s    med=89.83ms  max=6.73s    p(90)=1.08s   p(95)=1.39s
+     http_reqs......................: 81396  225.525231/s
+     iteration_duration.............: avg=1.97s    min=4.4ms med=1.43s    max=13.39s   p(90)=4.78s   p(95)=5.86s
+     iterations.....................: 20647  57.206981/s
+     vus............................: 2      min=1        max=326
+     vus_max........................: 326    min=326      max=326
