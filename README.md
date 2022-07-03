@@ -68,10 +68,6 @@ npm run dev
 ![stress_after.png](stress_after.png)
 
 
-- load
-
-
-
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 #### proxy server
 - gzip 압축 설정
@@ -84,6 +80,13 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
+
+#### 요구사항
+
+- [ ] springboot에 HTTP Cache, gzip 설정하기
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성하기
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 
