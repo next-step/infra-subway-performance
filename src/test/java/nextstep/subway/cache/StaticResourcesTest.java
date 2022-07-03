@@ -24,6 +24,34 @@ class StaticResourcesTest {
     private WebTestClient client;
 
     @Test
+    void get_default_resources() {
+        Cachecontrol defaultCacheControl = new Cachecontrol();
+        defaultCacheControl.setNoCache(true);
+        defaultCacheControl.setNoStore(true);
+        defaultCacheControl.setCachePrivate(true);
+
+        String uri = "/js/vendors.js.LICENSE.txt";
+        EntityExchangeResult<String> response = client
+                .get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .cacheControl(defaultCacheControl.toHttpCacheControl())
+                .expectBody(String.class)
+                .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response
+                .getResponseHeaders()
+                .getETag();
+
+        assertThat(etag).isNull();
+    }
+
+    @Test
     void get_css_resources() {
         String uri = "/css/test.css";
         EntityExchangeResult<String> response = client
