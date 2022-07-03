@@ -187,11 +187,19 @@ select c.stay, count(c.stay) from hospital h
 inner join covid c on c.hospital_id = h.id and h.name = '서울대병원'
 inner join member m on c.member_id = m.id and m.age between 20 and 29
 inner join programmer p on c.programmer_id = p.id and p.country = 'India'
-group by c.stay;
+group by c.stay
+order by c.stay;
 ````
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-
+````sql
+select p.exercise, count(p.exercise) from hospital h
+inner join covid c on c.hospital_id = h.id and h.name = '서울대병원'
+inner join member m on c.member_id = m.id and m.age between 30 and 39
+inner join programmer p on c.programmer_id = p.id 
+group by p.exercise
+order by exercise;
+````
 ---
 
 ### 추가 미션
