@@ -80,8 +80,8 @@ KEY `idx_covid_hospital_id` (`hospital_id`)
 ```sql
 SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
   FROM programmer p
-	   INNER JOIN covid c
-	   ON         p.id = c.programmer_id
+       INNER JOIN covid c
+       ON         p.id = c.programmer_id
        INNER JOIN hospital h
        ON         c.hospital_id = h.id
  WHERE (hobby = 'Yes' and student <> 'No')
@@ -89,7 +89,7 @@ SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
  ORDER BY p.id;
 ```
 
-  - 인덱스 적용 전 (전 문제에서 적용하여 추가할 인덱스 없음)
+  - 인덱스 적용 전 (이전 문제에서 적용하여 추가할 인덱스 없음)
   > 0.025sec / 0.823sec ( Duration / Fetch Time )
 
   ![question3_before_index](images/step4/step4_image6_question3_before_index.png)
@@ -101,7 +101,7 @@ SELECT c.stay,
        count(*) as 'COUNT'
   FROM member m
        INNER JOIN programmer p
-	   ON         m.id = p.member_id
+       ON         m.id = p.member_id
        AND        p.country = 'India'
        INNER JOIN covid c
        ON         m.id = c.member_id
@@ -135,4 +135,24 @@ KEY `idx_programmer_member_id_country` (`member_id`,`country`)
 
   ![question4_after_index](images/step4/step4_image8_question4_after_index.png)
 
-  - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - 실행 Query
+```sql
+SELECT exercise,
+       count(*) as 'COUNT'
+  FROM member m
+       INNER JOIN programmer p
+       ON         m.id = p.member_id
+       INNER JOIN covid c
+       ON         m.id = c.member_id
+       INNER JOIN hospital h
+       ON         c.hospital_id = h.id
+       AND        h.name = '서울대병원'
+ WHERE m.age BETWEEN 30 AND 39
+ GROUP BY exercise;
+```
+
+  - 인덱스 적용 전 (이전 문제에서 적용하여 추가할 인덱스 없음)
+  > 0.098sec / 0.000001sec ( Duration / Fetch Time )
+
+  ![question5_before_index](images/step4/step4_image9_question5_before_index.png)
