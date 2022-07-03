@@ -39,7 +39,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: masterpw
-  cache.type: redis
-  redis:
-    host: 192.168.16.46
-    prot: 6379
+#  cache.type: redis
+#  redis:
+#    host: 192.168.16.46
+#    prot: 6379
