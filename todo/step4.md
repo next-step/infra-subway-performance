@@ -44,7 +44,7 @@ GROUP BY hobby;
   ![question1_after_index](images/step4/step4_image3_question1_after_index.png)
 
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-  - 실핼 Query
+  - 실행 Query
 ```sql
 SELECT c.id,
        h.name
@@ -74,6 +74,24 @@ PRIMARY KEY (`id`),
 
   ![question2_after_index](images/step4/step4_image5_question2_after_index.png)
 
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - 실행 Query
+```sql
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+  FROM programmer p
+	   LEFT JOIN covid c
+	   ON        p.id = c.programmer_id
+       INNER JOIN hospital h
+       ON        c.hospital_id = h.id
+ WHERE (hobby = 'Yes' and student <> 'No')
+    OR years_coding = '0-2 years'
+ ORDER BY p.id;
+```
+
+  - 인덱스 적용 전 (전 문제에서 적용하여 추가할 인덱스 없음)
+  > 0.025sec / 0.823sec ( Duration / Fetch Time )
+
+  ![question3_before_index](images/step4/step4_image6_question3_before_index.png)
+
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
