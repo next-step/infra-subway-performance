@@ -28,7 +28,7 @@ public class StationService {
 
     // 메서드 실행 전에 캐시를 확인하여 최소 하나의 캐시가 존재한다면 값을 반환한다.
     // SpEL 표현식을 활용하여 조건부 캐싱이 가능하다.
-    @Cacheable(value = "station", unless = "#result == null")
+    @Cacheable(value = "station")
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
@@ -44,12 +44,12 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    @Cacheable(value = "station", key = "#id", unless = "#result == null")
+    @Cacheable(value = "station", key="#id")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "station", key = "#id", unless = "#result == null")
+    @Cacheable(value = "station", key="#id")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }

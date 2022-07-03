@@ -24,7 +24,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @Cacheable(value = "member", key = "#id", unless = "#result == null")
+    @Cacheable(value = "member", key = "#id")
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
