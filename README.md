@@ -101,8 +101,16 @@ $ stress -c 2
 
 ![Cloudwatch 캡쳐](./loadtest/sacleout/asg_cloudwatch.png)
 
-
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+* Smoke
+  ![Smoke](./loadtest/sacleout/smoke.png)
+
+* Load
+  ![Load](./loadtest/sacleout/load.png)
+
+* Stress
+  ![Stress](./loadtest/sacleout/stress.png)
 
 ---
 
