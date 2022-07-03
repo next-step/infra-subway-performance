@@ -44,8 +44,20 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- http_req_duration P(95) 기준
+  - smoke : 4.66ms -> 4.1ms
+    - 스크린샷 : /docs/smoke
+  - load : 87.78ms -> 89.7ms
+    - 스크린샷 : /docs/load
+  - stress : 343.08ms -> 337.8ms
+    - 스크린샷 : /docs/stress
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선 (/docs/nginx.conf)
+  - gzip 압축
+  - cache
+- Spring Data Cache 설정
+  - Redis Server 설정
 
 ---
 
