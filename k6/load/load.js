@@ -115,9 +115,15 @@ function findMyInfo(authHeaders) {
 }
 
 function findPath() {
-    const res = http.get(`${BASE_URL}/paths?source=167&target=392`);
+    const source = randomRange(1, 438);
+    const target = randomRange(1, 438);
+    const res = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`);
 
     check(res, {
         'findPath() status is 200': (resp) => resp.status === 200,
     });
+}
+
+function randomRange(n1, n2) {
+    return Math.floor( (Math.random() * (n2 - n1 + 1)) + n1 );
 }
