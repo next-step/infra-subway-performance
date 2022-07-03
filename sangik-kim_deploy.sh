@@ -85,8 +85,16 @@ function check_df() {
   fi
 }
 
-check_df
-pull
+function clone() {
+  echo -e ""
+  echo -e ">> 저장소에서 다운로드 중 🏃..."
+  git clone -b $BRANCH --single-branch https://github.com/sangik-kim/infra-subway-performance.git
+}
+
+clone
+
+cd infra-subway-performance
+
 build
 terminate
 start
