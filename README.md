@@ -19,33 +19,71 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+* Smoke
+    * 개선전
+      ![개선전 Smoke 결과](./loadtest/before/smoke_before.png)
+    * 1차 개선 후 (Reverse Proxy 개선)
+      ![1차_개선 Smoke 결과](./loadtest/after1/smoke_after1.png)
+    * 2차 개선 후 (Spring DAta Cache 적용)
+      ![2차_개선 Smoke 결과](./loadtest/after2/smoke_after2.png)
+* Load
+    * 개선전
+      ![개선전 Load 결과](./loadtest/before/load_before.png)
+    * 1차 개선 후 (Reverse Proxy 개선)
+      ![1차_개선 Load 결과](./loadtest/after1/load_after1.png)
+    * 2차 개선 후 (Spring DAta Cache 적용)
+      ![2차_개선 Load 결과](./loadtest/after2/load_after2.png)
+* Stress
+    * 개선전
+      ![개선전 Stress 결과](./loadtest/before/stress_before.png)
+    * 1차 개선 후 (Reverse Proxy 개선)
+      ![1차_개선 Stress 결과](./loadtest/after1/stress_after1.png)
+    * 2차 개선 후 (Spring DAta Cache 적용)
+      ![2차_개선 Stress 결과](./loadtest/after2/stress_after2.png)
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+* Reverse Proxy 개선
+    * gzip 압축
+    * cache
+    * http/2 설정
+* WAS 성능 개선
+    * Spring Data Cache
+        * 가장 많이 쓰이는 최단 경로 조회 기능에 적용
 
 ---
 
