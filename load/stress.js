@@ -3,10 +3,10 @@ import { subwayLoadTestSenarios } from "./senarios.js";
 
 export const options = {
   stages: [
-    { duration: "1m", target: 20 },
-    { duration: "1m", target: 50 },
-    { duration: "1m", target: 100 },
-    { duration: "1m", target: 200 },
+    { duration: "4m", target: 20 },
+    { duration: "4m", target: 50 },
+    { duration: "4m", target: 100 },
+    { duration: "4m", target: 200 },
     { duration: "1m", target: 0 },
   ],
   thresholds: {

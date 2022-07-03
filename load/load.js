@@ -3,7 +3,7 @@ import { subwayLoadTestSenarios } from "./senarios.js";
 
 export const options = {
   stages: [
-    { duration: "1m", target: 17 },
+    { duration: "3m", target: 17 },
     { duration: "5m", target: 17 },
     { duration: "10s", target: 0 },
   ],

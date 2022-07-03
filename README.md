@@ -47,23 +47,30 @@ npm run dev
   - 목표 요청시간(http_req_duration) = 0.1s
   - 목표 최대 RPS = 75
 
+### 2단계 
+- [X] springboot에 HTTP Cache, gzip 설정하기
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
+
+
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### 개선 이전
   - Smoke
-    ![개선전](load/result/smoke_result_grafana_before_improve.png)
+    ![smoke_before](load/result/step1/smoke_result_grafana_before_improve.png)
   - Load
-    ![개선전](load/result/load_result_grafana_before_improve.png)
+    ![load_before](load/result/step1/load_result_grafana_before_improve.png)
   - Stress
-    ![개선전](load/result/stress_result_grafana_before_improve.png)
+    ![stress_before](load/result/step1/stress_result_grafana_before_improve.png)
 
 #### 개선 이후
   - Smoke
-    ![개선후](load/result/smoke_result_grafana_after_improve.png)
+    ![smoke_after](load/result/step1/smoke_result_grafana_after_improve.png)
   - Load
-    ![개선전](load/result/load_result_grafana_after_improve.png)
+    ![load_after](load/result/step1/load_result_grafana_after_improve.png)
   - Stress
-    ![개선전](load/result/stress_result_k6_after_improve.png)
+    ![stress_after](load/result/step1/stress_result_k6_after_improve.png)
 
 #### 요약 (약 20~30퍼센트 성능개선)
   - Smoke(p95) : 63ms -> 33ms
@@ -72,7 +79,7 @@ npm run dev
 
 #### 특이사항
   - Stress 테스트 결과가 성능 개선 시도 전보다 더 악화되어 나온 경우가 있었음
-    ![실패](load/result/stress_result_grafana_after_improve_fail.png)
+    ![실패](load/result/step1/stress_result_grafana_after_improve_fail.png)
     - 테스트 진행 중에 `top` 명령어로 살펴보니 `load(EC2 Instance)`에 있는 `influxDB`의 메모리 사용율이 90퍼센트까지 올라가는걸 발견
     - grafana를 끄고 재시도한 Stress 테스트의 결과는 개선된걸로 나옴
   - redis를 새로 시작한 직후에 시도한 smoke 테스트는 성능 개선 전보다 지표가 좋지 않았음.
@@ -88,20 +95,49 @@ npm run dev
 #### 애플리케이션
 - 조회 서비스(역정보, 경로검색 등)에 Radis 캐시를 적용해서 의미없는 DB 접근 최소화
 
+3. http2 적용
+   ![http2](capture/http2.png)
 ---
 
 ### 2단계 - 스케일 아웃
+1. springboot에 HTTP Cache, gzip 설정하기 
+    - 미션 3에 대한 답변 : no cache와 no store를 동시에 할 수는 없다. 
+      - 우선 CacheControl에서 중복 설정이 불가능하다
+      - no cache는 항상 ETag로 확인한 후 문제가 없는 경우 저장된 자원을 사용한다.
+      - 문제는 no store인 경우 사용할 수 있는 자원이 없다는 것이다. 
+      - 따라서 둘 중 하나만 선택해서 써야한다.
 
-1. Launch Template 링크를 공유해주세요.
+2. Launch Template 링크를 공유해주세요.
+    - https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0263eacae6f8bcae2
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+    - stress 테스트 진행중 VUser가 200일때 인스턴스가 최대치까지 급격하게 오르는 걸 확인 했습니다. 
+    - ![auto_scale](load/result/step2/stress_asg_scaleout.png)
 
-```sh
-$ stress -c 2
+4. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 ```
+* 이전단계와의 차이점 
+- 부하테스트 서버 자체의 부하가 심해져서 t3-xlarge로 scale-up 한 후 진행하였음
+- 인스턴스 warm up 시간을 고려해, 부하테스트시 VUser lamp-up 시간을 늘려 주었음 ( 부하테스트에 소요되는 시간 증가) 
+```
+#### 개선 내역
+    - 정적 리소스에 대한 Cache Control
+    - WAS단에서 GZIP응답 
+    - 부하테스트용 EC2 인스턴스 스펙 업
+    - Auto Scale Group과 Application LoadBalancer를 통한 부하 분산
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+#### 개선 결과
+- Smoke
+  ![smoke_after_load_balance](load/result/step2/smoke_result_grafana_load_balance.png)
+- Load
+  ![load_after_load_balance](load/result/step2/load_result_grafana_load_balance.png)
+- Stress
+  ![stress_after_load_balance](load/result/step2/stress_result_grafana_load_balance.png)
 
+#### 요약
+- Smoke(p95) : 33ms -> 26ms (20% 개선)
+- Load(p95) : 40 ms -> 17ms (60% 개선)
+- Stress(p95) : 376ms -> 192ms (50% 개선)
 ---
 
 ### 1단계 - 쿼리 최적화
