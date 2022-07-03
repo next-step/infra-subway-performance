@@ -42,7 +42,8 @@ function pull() {
 function build() {
   echo -e ""
   echo -e ">> Build"
-  ./gradlew clean build
+  #./gradlew clean build
+  ./gradlew clean build -x test
 }
 
 ## 프로세스 종료
