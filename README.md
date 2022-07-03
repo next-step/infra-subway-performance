@@ -148,24 +148,51 @@ $ stress -c 2
      - no-store : 캐시 사용하지 않음
 
 ---
-### [추가] 1단계 - 쿠버네티스로 구성하기
-1. 클러스터를 어떻게 구성했는지 알려주세요~ (마스터 노드 : n 대, 워커 노드 n대)
 
-2. 스트레스 테스트 결과를 공유해주세요 (기존에 container 한대 운영시 한계점도 같이 공유해주세요)
+### 1단계 - 쿼리 최적화
 
-3. 현재 워커노드에서 몇대의 컨테이너를 운영중인지 공유해주세요
+1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```
+    select top5.employee_id as 사원번호
+           , top5.last_name as 이름
+           , top5.annual_income as 연봉
+           , top5.position_name as 직급명
+           , rec.time as 입출입시간
+           , rec.region as 지역
+           , rec.record_symbol as 입출입구분 
+    from (                
+            select straight_join mgr.employee_id
+            , emp.last_name
+            , sal.annual_income
+            , pos.position_name 
+            from (select employee_id, department_id from manager where end_date > now()) mgr
+                inner join (select id from department where upper(note) = 'ACTIVE') dep 
+                    on mgr.department_id = dep.id
+                inner join (select id, last_name from employee) emp 
+                    on mgr.employee_id = emp.id 
+                inner join (select id, position_name from position where end_date > now()) pos 
+                    on mgr.employee_id = pos.id
+                inner join (select id, annual_income from salary where end_date > now()) sal 
+                    on mgr.employee_id = sal.id
+            order by sal.annual_income desc limit 5
+    ) top5 
+        inner join record rec 
+            on top5.employee_id = rec.employee_id
+    where
+        record_symbol = 'O';
+```
 
 ---
 
-### [추가] 2단계 - 클러스터 운영하기
-1. kibana 링크를 알려주세요
+### 2단계 - 인덱스 설계
 
-2. grafana 링크를 알려주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-3. 지하철 노선도는 어느정도로 requests를 설정하는게 적절한가요?
+---
 
-4. t3.large로 구성할 경우 Node의 LimitRange, ResourceQuota는 어느정도로 설정하는게 적절한가요?
+### 추가 미션
 
-5. 부하테스트를 고려해볼 때 Pod은 몇대정도로 구성해두는게 좋다고 생각하나요?
-
-6. Spinaker 링크를 알려주세요.
+1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
