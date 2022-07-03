@@ -17,7 +17,7 @@ git checkout -t origin/step1-container-http
 - 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
   
 ### 요구사항
-- [] springboot에 HTTP Cache, gzip 설정하기
-- [] Launch Template 작성하기
-- [] Auto Scaling Group 생성하기
-- [] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
