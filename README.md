@@ -160,8 +160,35 @@ inner join hospital h on c.hospital_id = h.id;
 ```
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+-- 방법 1
+select c.id, h.name, filter.hobby, filter.dev_type, filter.years_coding from covid c
+inner join (
+select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
+where (p.hobby = 'yes' and p.student like 'Yes%') or (p.years_coding = '0-2 years')) filter
+on c.programmer_id = filter.id
+inner join hospital h on c.hospital_id = h.id
+order by c.id;
+
+-- 방법 2
+select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
+inner join covid c on c.programmer_id = p.id
+inner join hospital h on c.hospital_id = h.id
+where (p.hobby = 'yes' and p.student like 'Yes%') or (p.years_coding = '0-2 years')
+order by p.id;
+```
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+````sql
+alter table member add primary key (id);
+create index idx_covid_member_id on covid (member_id);
+
+select c.stay, count(c.stay) from hospital h
+inner join covid c on c.hospital_id = h.id and h.name = '서울대병원'
+inner join member m on c.member_id = m.id and m.age between 20 and 29
+inner join programmer p on c.programmer_id = p.id and p.country = 'India'
+group by c.stay;
+````
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
