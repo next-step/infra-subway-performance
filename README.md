@@ -84,6 +84,10 @@ npm run dev
 #### 요구사항
 
 - [ ] springboot에 HTTP Cache, gzip 설정하기
+  - [ ] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+  - [ ] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+  - [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+    - no-cache, no-store를 동시에 적용할 수 있는가? 가 질문이라면, 두 개의 내용이 상반되기 때문에 불가능 합니다.
 - [ ] Launch Template 작성하기
 - [ ] Auto Scaling Group 생성하기
 - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
