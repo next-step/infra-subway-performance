@@ -111,8 +111,8 @@ select c.stay, count(c.stay)
 from (select id, member_id from programmer where country = 'India') as indian
 join (select id from member where age between 20 and 29) as twenties
 on twenties.id = indian.member_id
-join (select id, hospital_id, programmer_id, stay from covid) c
-on twenties.id = c.programmer_id
+join (select id, hospital_id, member_id, stay from covid) c
+on twenties.id = c.member_id
 join (select id from hospital where name = '서울대병원') as h
 on c.hospital_id = h.id
 group by c.stay;
