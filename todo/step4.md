@@ -19,7 +19,30 @@ $ docker run -d -p 13306:3306 brainbackdoor/data-subway:0.0.3
   - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ### 📚 Todo List 📚
-- [ ] Coding as a Hobby와 같은 결과 반환
+- [x] Coding as a Hobby와 같은 결과 반환
+  - 실행 Query
+```sql
+SELECT hobby,
+       count(*) * 100 / (SELECT count(*) FROM programmer) as 'percentage'
+FROM programmer
+GROUP BY hobby;
+```
+  - 인덱스 적용 전
+  > 2.577sec / 0.000026sec ( Duration / Fetch Time )
+
+  ![question1_before_index](images/step4/step4_image2_question1_before_index.png)
+
+  - 개선 작업
+```sql
+  PRIMARY KEY (`id`),
+  KEY `idx_programmer_hobby` (`hobby`)
+```
+  
+  - 인덱스 적용 후
+  > 0.040sec / 0.000007sec ( Duration / Fetch Time )
+
+  ![question_after_index](images/step4/step4_image3_question1_after_index.png)
+
 - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
