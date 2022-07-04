@@ -46,22 +46,22 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 - `Smoke` 개선 전
-![](k6/smoke/smoke.png)
+![](k6/step1/smoke/smoke.png)
 
 - `Smoke` 개선 후
-![](k6/smoke/smoke_after.png)
+![](k6/step1/smoke/smoke_after.png)
 
 - `Load` 개선 전
-![](k6/load/load.png)
+![](k6/step1/load/load.png)
 
 - `Load` 개선 후
-![](k6/load/load_after.png)
+![](k6/step1/load/load_after.png)
 
 - `Stress` 개선 전
-![](k6/stress/stress.png)
+![](k6/step1/stress/stress.png)
 
 - `Stress` 개선 후
-![](k6/stress/stress_after.png)
+![](k6/step1/stress/stress_after.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
