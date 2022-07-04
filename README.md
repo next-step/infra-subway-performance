@@ -43,18 +43,13 @@ npm run dev
 - README 에 있는 질문에 답을 추가한 후 PR을 보내고 리뷰요청을 합니다.
 - [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선 
   - 개선 전 / 후를 직접 계측하여 확인
-    - 성능 개선 전
-      - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/smoke_K6.png)
-      - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/load_K6.png)
-      - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/stress_K6.png)
-    - ngnix proxy 개선 후
-      - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/smoke_K6.png)
-      - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/load_K6.png)
-      - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/stress_K6.png)
-    - was 개선 후
-      - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/smoke_K6.png)
-      - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/load_K6.png)
-      - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/stress_K6.png)
+
+## 🚀 2단계 - 스케일 아웃 (with ASG)
+### 요구사항
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ## 미션
 
@@ -63,22 +58,39 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   - 성능 개선 전
+     - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/smoke_K6.png)
+     - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/load_K6.png)
+     - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/1_before/stress_K6.png)
+   - ngnix proxy 개선 후
+     - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/smoke_K6.png)
+     - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/load_K6.png)
+     - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/2_proxy/stress_K6.png)
+   - was 개선 후
+     - smoke(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/smoke_K6.png)
+     - load(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/load_K6.png)
+     - stress(https://github.com/tyakamyz/infra-subway-performance/blob/step1/performance/3_was/stress_K6.png)
+     
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+   - gzip 압축
+   - cache 설정
+   - TLS, HTTP/2 설정
+   - Redis - Spring Data Cache
 
 ---
 
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+   - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-01796a4cbdd222dce
+   
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![img.png](./performance/step2/instances.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+   - smoke (https://github.com/tyakamyz/infra-subway-performance/blob/step2/performance/step2/smoke_K6.png)
+   - load (https://github.com/tyakamyz/infra-subway-performance/blob/step2/performance/step2/load_K6.png)
+   - stress (https://github.com/tyakamyz/infra-subway-performance/blob/step2/performance/step2/stress_K6.png)
 
 ---
 
