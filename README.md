@@ -43,9 +43,16 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+url: https://yang-infra-subway.p-e.kr/  
+결과: mission/step1 디렉토리에 첨부
+
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선
+  - gzip 압축, Cache, TLS, HTTP/2 설정
+- WAS 성능 개선
+    - Redis Spring Data Cache
 
 ---
 
