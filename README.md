@@ -185,6 +185,92 @@ npm run dev
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### 실행 결과 
+![result](capture/result_duration_2.png)
+
+#### 문항 1 : Coding as a Hobby 와 같은 결과를 반환하세요.
+```roomsql
+-- #1 programmer : INDEX(hobby)
+SELECT hobby, CONCAT(CONVERT(TRUNCATE(COUNT(hobby) /(SELECT COUNT(hobby) FROM programmer) * 100, 1), char), '%') AS 'percent'
+FROM programmer
+GROUP BY hobby
+ORDER BY hobby DESC;
+```
+![p1](capture/p1_explain.png)
+
+#### 문항 2 :프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```roomsql
+-- #1 programmer : INDEX(hobby)
+-- #2 programmer : UNIQ_INDEX(member_id)
+-- #2 covid : INDEX(programmer_id, hospital_id)
+-- #2 hospital : UNIQ_INDEX(id)
+SELECT member_id, name FROM hospital H
+JOIN (SELECT P.member_id, C.hospital_id FROM programmer P 
+      JOIN covid C 
+      ON P.member_id = C.programmer_id
+	 ) V
+ON H.id = V.hospital_id;
+```
+![p2](capture/p2_explain.png)
+
+
+#### 문항 3 : 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```roomsql
+-- #2 programmer : UNIQ_INDEX(member_id)
+-- #3 programmer : PRIMARY(id) , INDEX(hobby,student), INDEX(years_coding)
+-- #2 covid : INDEX(programmer_id, hospital_id)
+-- #2 hospital : UNIQ_INDEX(id)
+SELECT V.id, H.name FROM hospital H
+JOIN (SELECT P.id, C.hospital_id FROM programmer P 
+      JOIN covid C ON P.member_id = C.programmer_id
+	  WHERE (hobby = 'Yes' AND student LIKE 'Yes%') OR years_coding LIKE '0-2%'
+     ) V
+ON H.id = V.hospital_id
+ORDER BY V.id;
+```
+![p3](capture/p3_explain.png)
+
+#### 문항 4 : 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```roomsql
+-- #2 programmer : UNIQ_INDEX(member_id)
+-- #3 programmer : PRIMARY(id) , INDEX(hobby,student), INDEX(years_coding)
+-- #4 programmer : INDEX(country, member_id)
+-- #2 covid : INDEX(programmer_id, hospital_id)
+-- #4 covid : INDEX(member_id, hospital_id, stay)
+-- #2 hospital : UNIQ_INDEX(id)
+-- #4 member : PRIMARY(id), INDEX(age)
+SELECT C.stay, COUNT(M.id) FROM member M 
+JOIN covid C
+ON M.id = C.member_id
+JOIN programmer P 
+ON P.member_id = M.id AND (M.age >= 20 AND M.age < 30 AND P.country = 'India') 
+JOIN hospital H
+ON H.id = C.hospital_id AND H.name = '서울대병원'
+GROUP BY C.stay; 
+```
+![p4](capture/p4_explain.png)
+
+#### 문항 5 : 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```roomsql
+-- #2 programmer : UNIQ_INDEX(member_id)
+-- #3 programmer : PRIMARY(id) , INDEX(hobby,student), INDEX(years_coding)
+-- #4 programmer : INDEX(country, member_id)
+-- #2 covid : INDEX(programmer_id, hospital_id)
+-- #4 covid : INDEX(member_id, hospital_id, stay)
+-- #2 hospital : UNIQ_INDEX(id)
+-- #2 hospital : INDEX(name)
+-- #4 member : PRIMARY(id), INDEX(age)
+SELECT P.exercise, COUNT(M.id) FROM member M 
+JOIN programmer P 
+ON P.member_id = M.id AND (M.age >= 30 AND M.age < 40) 
+JOIN (SELECT member_id, hospital_id, H.id FROM covid C 
+	  JOIN hospital H 
+      ON H.id = C.hospital_id AND H.name = '서울대병원'
+     ) V
+ON M.id = V.member_id
+GROUP BY P.exercise;
+```
+![p5](capture/p5_explain.png)
 
 ---
 
