@@ -292,6 +292,7 @@ group by hobby;
 
 => 적용
 - where 조건 절 추가 ver -> Duration : 0.365 sec
+- ![플랜_1](/step4/step4_1_where.png)
 ```sql
 select count(*) / (select count(*) from programmer) * 100 as percent 
 from programmer 
@@ -299,6 +300,7 @@ where hobby = 'yes' or hobby = 'no'
 group by hobby;
 ```
 - group by having절 추가 ver -> Duration : 0.270 sec
+- ![플랜_2](/step4/step4_1_having.png)
 ```sql
 select count(*) / (select count(*) from programmer) * 100 as percent 
 from programmer 
