@@ -4,19 +4,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import nextstep.subway.LocalDateTimePersistenceConverter;
 import nextstep.subway.station.domain.Station;
 
+import javax.persistence.Convert;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class StationResponse implements Serializable {
     private Long id;
     private String name;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Convert(converter = LocalDateTimePersistenceConverter.class)  // <- @Converter를 지정 해줘야 한다.
     private LocalDateTime createdDate;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Convert(converter = LocalDateTimePersistenceConverter.class)  // <- @Converter를 지정 해줘야 한다.
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
