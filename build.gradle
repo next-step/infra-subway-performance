@@ -43,8 +43,6 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
-
 	runtimeOnly 'com.h2database:h2'
 }
 
