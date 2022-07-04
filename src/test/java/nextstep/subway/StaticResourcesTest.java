@@ -79,4 +79,33 @@ public class StaticResourcesTest {
             .expectStatus()
             .isNotModified();
     }
+
+    @DisplayName("image 정적 리소스의 캐시정책은 noCache, cachePrivate 이다")
+    @Test
+    void get_static_resources_image() {
+        String uri = PREFIX_STATIC_RESOURCES + "/static/images/logo_small.png";
+        EntityExchangeResult<String> response = client
+            .get()
+            .uri(uri)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .cacheControl(CacheControl.noCache().cachePrivate())
+            .expectBody(String.class)
+            .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response.getResponseHeaders()
+            .getETag();
+
+        client
+            .get()
+            .uri(uri)
+            .header("If-None-Match", etag)
+            .exchange()
+            .expectStatus()
+            .isNotModified();
+    }
 }
