@@ -17,11 +17,13 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdDate;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime modifiedDate;
 
     public LineResponse() {
