@@ -94,11 +94,35 @@ $ stress -c 2
        CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
        
        -- query
-       SELECT hobby,
-       count(*) * 100 / (SELECT count(*) FROM programmer) as '비율'
+       SELECT 
+          hobby,
+          count(*) * 100 / (SELECT count(*) FROM programmer) as '비율'
        FROM programmer
        GROUP BY hobby;
        ```
+   - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+     - 인덱스 추가 전 (Duration / fetch) 
+       - 0.043 sec / 6.754 sec
+     - 인덱스 추가 후 (Duration / fetch)
+       - 0.026 sec / 1.841 sec
+     ```sql
+      -- 인덱스 추가
+      ALTER TABLE `subway`.`hospital` ADD PRIMARY KEY (`id`);
+      ALTER TABLE `subway`.`covid` ADD PRIMARY KEY (`id`);
+   
+      CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+      CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+   
+      -- query
+      SELECT
+         c.id as 'covid 일련번호',
+         h.name as '병원 이름'
+      FROM covid as c
+      INNER JOIN programmer as p
+         ON p.id = c.programmer_id
+      INNER JOIN hospital as h
+         ON h.id = c.hospital_id;
+     ```
 
 ---
 
