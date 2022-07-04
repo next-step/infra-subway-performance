@@ -1,0 +1,42 @@
+$ k6 run --out influxdb=http://localhost:8086/k6 load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 61 max VUs, 18m30s max duration (incl. graceful stop):
+           * default: Up to 61 looping VUs for 18m0s over 6 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (18m00.6s), 00/61 VUs, 44177 complete and 0 interrupted iterations
+default ✓ [======================================] 00/61 VUs  18m0s
+
+     ✓ 랜딩 페이지 점검
+     ✓ 로그인 토큰 점검
+     ✓ 지하철역 개수 점검
+     ✓ 지하철 길찾기 점검
+     ✓ 지하철 즐겨찾기 점검
+
+     checks.........................: 100.00% ✓ 220885     ✗ 0
+     data_received..................: 162 MB  150 kB/s
+     data_sent......................: 23 MB   21 kB/s
+     http_req_blocked...............: avg=6.69µs  min=157ns    med=326ns   max=35.59ms p(90)=471ns   p(95)=545ns
+     http_req_connecting............: avg=956ns   min=0s       med=0s      max=4.67ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=23.82ms min=965.17µs med=13.83ms max=1.58s   p(90)=50.17ms p(95)=71.89ms
+       { expected_response:true }...: avg=23.82ms min=965.17µs med=13.83ms max=1.58s   p(90)=50.17ms p(95)=71.89ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 220885
+     http_req_receiving.............: avg=76.63µs min=12.47µs  med=38.15µs max=37.04ms p(90)=70.46µs p(95)=113.07µs
+     http_req_sending...............: avg=53.52µs min=14.6µs   med=41.69µs max=19.98ms p(90)=68.74µs p(95)=83.39µs
+     http_req_tls_handshaking.......: avg=4.93µs  min=0s       med=0s      max=27.9ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=23.69ms min=0s       med=13.72ms max=1.58s   p(90)=49.98ms p(95)=71.71ms
+     http_reqs......................: 220885  204.414922/s
+     iteration_duration.............: avg=1.12s   min=1.04s    med=1.08s   max=4.6s    p(90)=1.22s   p(95)=1.3s
+     iterations.....................: 44177   40.882984/s
+     vus............................: 1       min=1        max=61
+     vus_max........................: 61      min=61       max=61
