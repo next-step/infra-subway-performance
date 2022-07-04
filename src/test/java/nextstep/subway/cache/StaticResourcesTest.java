@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Cache.Cachecontrol;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.CacheControl;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,11 +24,6 @@ class StaticResourcesTest {
 
     @Test
     void get_default_resources() {
-        Cachecontrol defaultCacheControl = new Cachecontrol();
-        defaultCacheControl.setNoCache(true);
-        defaultCacheControl.setNoStore(true);
-        defaultCacheControl.setCachePrivate(true);
-
         String uri = "/js/vendors.js.LICENSE.txt";
         EntityExchangeResult<String> response = client
                 .get()
@@ -38,7 +32,7 @@ class StaticResourcesTest {
                 .expectStatus()
                 .isOk()
                 .expectHeader()
-                .cacheControl(defaultCacheControl.toHttpCacheControl())
+                .cacheControl(CacheControl.noCache().cachePrivate())
                 .expectBody(String.class)
                 .returnResult();
 
@@ -82,10 +76,6 @@ class StaticResourcesTest {
 
     @Test
     void get_js_resources() {
-        Cachecontrol jsCacheControl = new Cachecontrol();
-        jsCacheControl.setCachePrivate(true);
-        jsCacheControl.setNoCache(true);
-
         String uri = "/js/main.js";
         EntityExchangeResult<String> response = client
                 .get()
@@ -94,7 +84,7 @@ class StaticResourcesTest {
                 .expectStatus()
                 .isOk()
                 .expectHeader()
-                .cacheControl(jsCacheControl.toHttpCacheControl())
+                .cacheControl(CacheControl.noCache().cachePrivate())
                 .expectBody(String.class)
                 .returnResult();
 
