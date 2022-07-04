@@ -174,6 +174,30 @@ $ stress -c 2
              where p.id in (select programmer_id from covid where hospital_id in (select id from hospital where name = "서울대병원"))
              and p.id in (select id from member where age >= 30 and age <= 39)
              group by exercise;
+   2. 인덱스 설정을 해본다
+      1. 설정 조건
+         1. 테이블 내 데이터 양이 많고 조건 검색을 하는경우
+         2. WHERE문, 결합 , ORDER BY문을 이용하는 경우
+         3. NULL값이 많은 데이터로 부터 NULL이외의 값을 검색하는 경우
+      2. 인덱스가 사용될때
+         1. 컬럼값을 정수와 비교할때
+         2. 컬럼값 전체로 JOIN할때
+         3. 컬럼값의 범위를 요구할때
+         4. LIKE로 문자열의 선두가 고정일때
+         5. MIN(),MAX()
+         6. ORDER BY, GROUP BY
+      3. 인덱스가 사용 안될때
+         1. LIKE문이 와일드 카드(*)로 시작될때
+         2. DB전체를 읽는것이 빠르다고 MySQL이 판단할때
+         3. WHERE과 ORDER BY의 컬럼이 다를때에는 한쪽만 사용
+      4. 설정 대상 
+         1. where문 , 다량의 테이블
+            1. covid - programmer_id, hospital_id
+            2. hospital - id
+         2. group by 테이블 - 컬럼 
+            1. covid - stay
+            2. programmer - exercise
+   3. 
 ---
 
 ### 추가 미션
