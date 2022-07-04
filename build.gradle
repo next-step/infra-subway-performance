@@ -32,13 +32,13 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 	// redis
-	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	runtimeOnly 'com.h2database:h2'
-	implementation("mysql:mysql-connector-java")
+	implementation 'mysql:mysql-connector-java'
 }
 
 test {

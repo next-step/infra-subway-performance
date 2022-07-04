@@ -6,6 +6,7 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "station")
+    @Cacheable(value = "stations")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -36,7 +37,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "station", key = "#id")
+    @Caching(evict = {@CacheEvict(value = "stations", allEntries = true), @CacheEvict(value = "station", key = "#id")})
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

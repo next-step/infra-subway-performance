@@ -1,5 +1,6 @@
 package nextstep.subway.common;
 
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -26,10 +27,13 @@ public class CacheConfig extends CachingConfigurerSupport {
     public CacheManager redisCacheManager() {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                .entryTtl(Duration.ofSeconds(600L));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
-                fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
+                fromConnectionFactory(connectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
         return redisCacheManager;
     }
 }

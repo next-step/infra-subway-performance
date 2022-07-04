@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Cacheable(value = "line")
+    @Cacheable(value = "lines")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -42,12 +43,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "line")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
@@ -64,7 +63,7 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict(value = "line", key = "#id")
+    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "line", key = "#id")})
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
