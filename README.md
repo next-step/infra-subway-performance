@@ -86,44 +86,64 @@ $ stress -c 2
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-   - Coding as a Hobby 와 같은 결과를 반환하세요.
-     - 인덱스 추가 전 / 후 : 4.912 sec / 0.267 sec
-       ```sql
-       --인덱스 추가
-       CREATE UNIQUE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id);
-       CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
+   1. **Coding as a Hobby 와 같은 결과를 반환하세요.**
+      - 인덱스 추가 전 / 후 : 4.912 sec / 0.267 sec
+        ```sql
+        --인덱스 추가
+        CREATE UNIQUE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id);
+        CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
        
-       -- query
-       SELECT 
-          hobby,
-          count(*) * 100 / (SELECT count(*) FROM programmer) as '비율'
-       FROM programmer
-       GROUP BY hobby;
+        -- query
+        SELECT 
+           hobby,
+           count(*) * 100 / (SELECT count(*) FROM programmer) as '비율'
+        FROM programmer
+        GROUP BY hobby;
+        ```
+   2. **프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
+       - 인덱스 추가 전 (duration / fetch) 
+         - 0.043 sec / 6.754 sec
+       - 인덱스 추가 후 (duration / fetch)
+         - 0.026 sec / 1.841 sec
+       ```sql
+        -- 인덱스 추가
+        ALTER TABLE `subway`.`hospital` ADD PRIMARY KEY (`id`);
+        ALTER TABLE `subway`.`covid` ADD PRIMARY KEY (`id`);
+   
+        CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+        CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+   
+        -- query
+        SELECT
+           c.id as 'covid 일련번호',
+           h.name as '병원 이름'
+        FROM covid as c
+        INNER JOIN programmer as p
+           ON p.id = c.programmer_id
+        INNER JOIN hospital as h
+           ON h.id = c.hospital_id;
        ```
-   - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-     - 인덱스 추가 전 (Duration / fetch) 
-       - 0.043 sec / 6.754 sec
-     - 인덱스 추가 후 (Duration / fetch)
-       - 0.026 sec / 1.841 sec
-     ```sql
-      -- 인덱스 추가
-      ALTER TABLE `subway`.`hospital` ADD PRIMARY KEY (`id`);
-      ALTER TABLE `subway`.`covid` ADD PRIMARY KEY (`id`);
-   
-      CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
-      CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
-   
-      -- query
-      SELECT
+   3. **프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
+      - 쿼리 속도 (duration / fetch)
+        - 0.023 sec / 0.0031 sec
+      - 인덱스 개선 사항 없음.
+      ```sql
+      SELECT 
          c.id as 'covid 일련번호',
-         h.name as '병원 이름'
+         h.name as '병원 이름',
+         p.hobby as '프로그래밍 취미 여부',
+         p.dev_type as '개발 분야',
+         p.years_coding as '개발 경력 년차'
       FROM covid as c
       INNER JOIN programmer as p
          ON p.id = c.programmer_id
       INNER JOIN hospital as h
-         ON h.id = c.hospital_id;
-     ```
-
+         ON h.id = c.hospital_id
+      WHERE
+         (p.hobby = 'YES' AND p.student <> 'NO')
+         OR p.years_coding = '0-2 years'
+      ORDER BY p.id;
+      ```
 ---
 
 ### 추가 미션
