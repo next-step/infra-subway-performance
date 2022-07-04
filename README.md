@@ -172,7 +172,26 @@ $ stress -c 2
          and p.country = 'India'  
       GROUP BY c.stay;
       ```
-  
+   5. **서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+      - 쿼리 속도 (duration / fetch)
+         - 0.230 sec / 0.000014 sec
+      - 인덱스 개선 사항 없음.
+      ```sql
+      SELECT 
+         p.exercise as '운동 횟수',
+         count(*) as '환자 수'
+      FROM covid as c
+      INNER JOIN programmer as p
+         ON p.id = c.programmer_id
+      INNER JOIN hospital as h
+         ON h.id = c.hospital_id
+      INNER JOIN member as m
+         ON m.id = p.member_id
+      WHERE 
+         m.age BETWEEN 30 AND 39
+         and h.name = '서울대병원'
+      GROUP BY p.exercise;
+      ```
 ---
 
 ### 추가 미션
