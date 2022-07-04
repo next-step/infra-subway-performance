@@ -181,6 +181,31 @@ $ stress -c 2
        2. 실행계획
           ![img.png](./readmeSource/step3/1차_쿼리조회_실행계획.png)
           1. Manager과 Record에서 풀스캔 발생
+
+    2. 쿼리 개선(0.432sec)
+       1. 서브쿼리가 아닌 join으로 변경하는것이 좋다(update와 delete문은 서브쿼리가 활성화되지 않는다)
+       2. 가독성과 Join Table 의 Column값의 자유로운 사용을 위해 depth 1을 까지만 join하도록 노력한다.
+select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 연봉, m.position_name as 직급명, r.region as 지역, r.record_symbol as 입출입구분, r.time as 입출입시간  
+    from (
+        select m.employee_id, e.last_name, s.annual_income, p.position_name from manager as m
+            join position as p on (m.end_date="9999-01-01" and p.position_name="manager" and m.employee_id = p.id)
+            join department as d on (d.note="active" and d.id = m.department_id)
+            join salary as s on (s.end_date = "9999-01-01" and s.id = m.employee_id)
+            join employee as e on (m.employee_id = e.id)
+            order by s.annual_income desc
+            limit 0, 5
+        ) as m
+    join record as r on (r.record_symbol="O" and r.region <> "" and r.employee_id = m.employee_id)
+    order by m.annual_income desc, r.region;
+       3. 실행계획
+          ![img.png](./readmeSource/step3/쿼리개선후_실행계획.png)
+          1. 서브쿼리를 없앤 후 Join을 통해서 쿼리 하니 All scan이 사라지고 key lookup으로 개선된걸 확인할수 있었음
+          2. 최대한 낮은 depth로 쿼리를 작성하니, 중간에 불필요한 tmp table을 생성/유지하기위한 메모리를 절약할수 있었음
+    3. db 서버 튜닝 (튜닝결과 : 효과 미미함)
+       1. innodb buffer pool size 
+       2. key_buffer
+       3. tmp_table_size
+       4. max_heap_table_size
 ---
 
 ### 2단계 - 인덱스 설계
@@ -206,7 +231,23 @@ http2 protocol
 1. 헤더를 압축해서 보낸다
 2. Connection 1개로 여러개의 요청을 처리할수 있다(비동기적)
 3. 리소스간 의존관계에 따른 우선 순위를 설정하여, 리소스 로드문제를 해결할수 있다
-
-
-
+4. db 서버 튜닝
+    1. innodb buffer pool size 수정
+        1. buffer memory 가 가득 차면 swap 메모리에 침범하여, 전반적인 서버 performance를 낮추는 결과를 초래하여, buffer사이즈를 충분히 늘려야한다
+        2. 현재 도커 물리(가상) 메모리 : 8G
+        3. 권장 pool size : 물리메모리의 80% (6.4G) / 최대 512M
+           mysql> select @@innodb_buffer_pool_size/1024/1024/1024;
+           +------------------------------------------+
+           | @@innodb_buffer_pool_size/1024/1024/1024 |
+           +------------------------------------------+
+           |                           0.625000000000 |
+           +------------------------------------------+
+    2. key_buffer
+        1. index를 캐싱하는데 사용하는 버퍼
+        2. 전체 물리 메모리의 20%정도 할당함 (해당 서버가 오직 DB서버로만 운용될때)
+    3. tmp_table_size
+        1. 내부 메모리 내에 임시 테이블 최대 크기
+        2. group by 를 사용한 쿼리가 많으면 늘려주는게 좋다. 메모리 여유가 있다면 max_heap_table_size도 같이 늘려준다
+    4. max_heap_table_size
+        1. 사용자가 생성한 memory가 증가할수 있는 최대 크기
 
