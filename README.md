@@ -45,13 +45,13 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - 개선 전
-  - k6/scenario_smoke.log
-  - k6/scenario_load.log
-  - k6/scenario_stress.log
+  - k6/step1/scenario_smoke.log
+  - k6/step1/scenario_load.log
+  - k6/step1/scenario_stress.log
 - 개선 후
-  - k6/scenario_smoke_after.log
-  - k6/scenario_load_after.log
-  - k6/scenario_stress_after.log
+  - k6/step1/scenario_smoke_after.log
+  - k6/step1/scenario_load_after.log
+  - k6/step1/scenario_stress_after.log
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선
@@ -65,15 +65,28 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+Q. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?  
+
+A. 가능합니다. 여러 브라우저나 HTTP 1.0 또는 캐시 업체들과의 호환성을 위해 다음과 같은 옵션을 minimum set으로 추가한다고 하네요.
+[참고](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
+
+> Cache-Control: no-cache, no-store, must-revalidate  
+> Pragma: no-cache  
+> Expires: 0
+
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f0adb84a2755ca9c
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+![인스턴스_변화](인스턴스_변화.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- k6/step2/scaleout_smoke.log
+- k6/step2/scaleout_load.log
+- k6/step2/scaleout_stress.log
 
 ---
 
