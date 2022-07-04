@@ -43,9 +43,20 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stres 테스트 결과)
+- Smoke Test : http_req_duration (p95) 355ms → 15ms 개선
+- Load Test : http_req_duration (p95) 11s → 8ms 개선
+- Stress Test : ttp_req_duration (p95) 6s → 7ms 개선
+  - Stress Test Fail건수 43196건 (전체 47833건) → 0건 개선
+- PageSpeed Test : 데스크톱 버전 성능점수 68점 → 95점 개선
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- WebServer
+  - gzip 압축 적용, 정적 파일 캐시 적용, HTTP 2.0 적용하였습니다.
+  - PageSpeed Test 점수가 크게 개선되었습니다.
+- WAS
+  - 경로탐색에 대해 Redis Cache  적용하였습니다.
+  - K6 Test 결과가 크게 개선되었습니다.
 
 ---
 
