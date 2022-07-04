@@ -45,26 +45,54 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
   * 1단계 요구사항
     부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
-    - [ ] 개선 전 / 후를 직접 계측하여 확인
+    - [X] 개선 전 / 후를 직접 계측하여 확인
     
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-   - load
-     - 개선전
-       - smoke
-        ![before_smoke.png](step1/before_smoke.png)
-       - load
-        ![before_load.png](step1/before_smoke.png)
-       - stress
-        ![before_stress.png](step1/before_smoke.png)
-        
+   * ###FCP 
+      - 개선전 : 2.6초
+      - web 서버 성능 개선 : 1.2초
+      - was 개선 : 1.2초
+     
+   * ###Smoke
+     * 개선전 
+     ![개선전](step1/before/smoke.png)
+     * web 서버 성능 개선 
+     ![web](step1/after-1/smoke.png)
+     * was 서버 성능 개선
+     ![was](step1/after-2/smoke.png)
+   * ###Load
+     * 개선전
+     ![개선전](step1/before/load.png)
+     * web 서버 성능 개선
+     ![web](step1/after-1/load.png)
+     * was 서버 성능 개선
+     ![was](step1/after-2/load.png)
+   * ###Stress
+     * 개선전
+     ![개선전](step1/before/stress.png)
+     * web 서버 성능 개선
+     ![web](step1/after-1/stress.png)
+     * was 서버 성능 개선 
+     ![was](step1/after-2/stress.png)
+   
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-    1. https 변경
-    - http_req_duration  avg: 28ms
-    2. redis cache 
-    - http_req_duration: avg= 24ms
-    3. 
+   1. web 서버 성능 개선 
+      - gzip 압축 활성화
+      - 웹 cache 설정  
+      - http2 설정
+   2. was 서버 개선
+      - 경로조회 API 부분 Redis Cache 적용
+      - spring boot gzip 적용 
+
+   > 전반적으로 성능개선을 진행하면서 WEB 서버를 개선했을때 속도 측면에서는 제일 많이
+   > 개선 되었습니다.  
+   > WAS 레디스와 gizp 설정으로 속도적인 측면에서는 오히려 늘어난감이 있었는데 Stress 테스트시  
+   > 더 많은 성공율을 보여주네요 
+
+    
+
 ---
 
 ### 2단계 - 스케일 아웃
