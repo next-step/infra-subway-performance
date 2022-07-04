@@ -86,6 +86,19 @@ $ stress -c 2
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   - Coding as a Hobby 와 같은 결과를 반환하세요.
+     - 인덱스 추가 전 / 후 : 4.912 sec / 0.267 sec
+       ```sql
+       --인덱스 추가
+       CREATE UNIQUE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id);
+       CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby);
+       
+       -- query
+       SELECT hobby,
+       count(*) * 100 / (SELECT count(*) FROM programmer) as '비율'
+       FROM programmer
+       GROUP BY hobby;
+       ```
 
 ---
 
