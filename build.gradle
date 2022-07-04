@@ -34,6 +34,14 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// jdbc
+	implementation("mysql:mysql-connector-java")
+
+	// redis
+	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
+
 	runtimeOnly 'com.h2database:h2'
 }
 
