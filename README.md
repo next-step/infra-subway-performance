@@ -168,13 +168,16 @@ from programmer
 group by hobby;
 
 ```
+
 `0.047sec`
 
 #### 추가한 인덱스
+
 - `alter table programmer add primary key(id);`
 - `alter table programmer add index idx_programmer_02(hobby);`
 
 #### 쿼리 실행시간 / 실행계획
+
 - ./docs/step4/1-1-time.PNG
 - ./docs/step4/1-1-explain.png
 
@@ -194,12 +197,14 @@ FROM covid c
 `0.015sec`
 
 #### 추가한 인덱스
+
 - `alter table covid add primary key(id);`
 - `alter table covid add index idx_covid_01(hospital_id);`
 - `alter table covid add index idx_covid_03(programmer_id);`
 - `alter table hospital add primary key(id);`
 
 #### 쿼리 실행시간 / 실행계획
+
 - ./docs/step4/1-2-time.PNG
 - ./docs/step4/1-2-explain.png
 
@@ -224,15 +229,19 @@ FROM programmer p
 WHERE 1 = 1
   and p.hobby = 'YES'
   and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'))
+order by p.id
 ;
 ```
+
 `0.015sec`
 
 #### 추가한 인덱스
+
 - `alter table member add primary key(id);`
 - `alter table programmer add index idx_programmer_01(member_id);`
 
 #### 쿼리 실행시간 / 실행계획
+
 - ./docs/step4/1-3-time.PNG
 - ./docs/step4/1-3-explain.png
 
@@ -255,12 +264,15 @@ WHERE 1 = 1
   and m.age BETWEEN 20 and 29
 group by c.stay;
 ```
+
 `0.032sec`
 
 #### 추가한 인덱스
+
 - `alter table covid add index idx_covid_02(member_id);`
 
 #### 쿼리 실행시간 / 실행계획
+
 - ./docs/step4/1-4-time.PNG
 - ./docs/step4/1-4-explain.png
 
@@ -288,6 +300,7 @@ group by exercise;
 이전 단계에서 필요한 인덱스가 이미 추가되었음
 
 #### 쿼리 실행시간 / 실행계획
+
 - ./docs/step4/1-5-time.PNG
 - ./docs/step4/1-5-explain.png
 
