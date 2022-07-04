@@ -101,9 +101,9 @@ $ stress -c 2
         GROUP BY hobby;
         ```
    2. **프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
-       - 인덱스 추가 전 (duration / fetch) 
+       - 인덱스 개선 전 (duration / fetch) 
          - 0.043 sec / 6.754 sec
-       - 인덱스 추가 후 (duration / fetch)
+       - 인덱스 개선 후 (duration / fetch)
          - 0.026 sec / 1.841 sec
        ```sql
         -- 인덱스 추가
@@ -144,6 +144,35 @@ $ stress -c 2
          OR p.years_coding = '0-2 years'
       ORDER BY p.id;
       ```
+   4. **서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
+      - 인덱스 개선 전 (duration / fetch)
+        - 12.159 sec / 0.000033 sec
+      - 인덱스 개선 후 (duration / fetch)
+        - 0.230 sec / 0.000013 sec
+      ```sql
+      -- 인덱스 추가
+      CREATE INDEX `idx_programmer_id_country`  ON `subway`.`programmer` (id, country);
+      ALTER TABLE `subway`.`member` ADD PRIMARY KEY (`id`);
+      CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name);
+
+      -- query
+      SELECT
+         c.stay as '머문 기간',
+         count(*) as '환자 수'
+      FROM covid as c
+      INNER JOIN programmer as p
+         ON p.id = c.programmer_id
+      INNER JOIN hospital as h
+         ON h.id = c.hospital_id
+      INNER JOIN member as m
+         ON m.id = p.member_id
+      WHERE 
+         age BETWEEN 20 AND 29
+         and h.name = '서울대병원'
+         and p.country = 'India'  
+      GROUP BY c.stay;
+      ```
+  
 ---
 
 ### 추가 미션
