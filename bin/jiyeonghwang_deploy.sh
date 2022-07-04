@@ -1,4 +1,6 @@
 #!/bin/bash
+sudo apt install -y default-jre
+sudo apt install -y default-jdk
 
 ## 변수 설정
 
@@ -38,7 +40,7 @@ function build() {
     echo -e "${txtgrn}<< build >>${txtrst}"
     echo -e "${txtylw}=======================================${txtrst}"
 
-    ./gradlew clean build
+    ./gradlew clean build -x test
 
 }
 
