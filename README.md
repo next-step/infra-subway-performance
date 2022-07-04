@@ -44,9 +44,30 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+#### Smoke
+- before  
+![](img/smoke-before.png)
+- after  
+![](img/smoke_after.png)
+#### Load
+http_req_waiting avg 148.9ms -> 21.15ms
+- before  
+![](img/load-before.png)
+- after  
+![](img/load_after.png)
+#### Stress
+에러가 나는 지점 vsu 238 -> 272
+- before  
+![](img/stress-before.png)
+- after  
+![](img/stress-after.png)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- Reverse Proxy 개선
+  - gzip 압축 types: text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
+  - cache: css | js | gif | png | jpg | jpeg
+  - http2
+- WAS 성능 개선
+  - Redis cache 사용: 역 목록, 노선 목록, 경로 검색
 ---
 
 ### 2단계 - 스케일 아웃
