@@ -42,7 +42,7 @@ public class StationService {
     }
 
     @Caching(
-            evict = { @CacheEvict(value = "stations"), @CacheEvict(value = "station", key = "#id"), @CacheEvict(value = "path") }
+            evict = { @CacheEvict(value = "stations"), @CacheEvict(value = "station", key = "#id"), @CacheEvict(value = "pathResponse") }
     )
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);

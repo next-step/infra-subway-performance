@@ -30,7 +30,7 @@ public class LineService {
 
     @Caching(
             cacheable = { @Cacheable(value = "lineResponse", key = "#result.id") },
-            evict = { @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "allLine"), @CacheEvict(value = "path") }
+            evict = { @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "pathResponse") }
     )
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
@@ -47,12 +47,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "allLine", unless = "#result.isEmpty()")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
-    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
@@ -65,8 +63,7 @@ public class LineService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "allLine"), @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "path"),
-                    @CacheEvict(value = "line", key = "#id"), @CacheEvict(value = "lineResponse", key = "#id")
+                    @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "pathResponse"),  @CacheEvict(value = "lineResponse", key = "#id")
             }
     )
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -75,7 +72,7 @@ public class LineService {
     }
 
     @Caching(
-            evict = { @CacheEvict(value = "line", key = "#id"), @CacheEvict(value = "lineResponse", key = "#id"), @CacheEvict(value = "path") }
+            evict = { @CacheEvict(value = "lineResponse", key = "#id"), @CacheEvict(value = "pathResponse") }
     )
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
@@ -83,8 +80,7 @@ public class LineService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "allLine"), @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "path"),
-                    @CacheEvict(value = "line", key = "#lineId"), @CacheEvict(value = "lineResponse", key = "#lineId")
+                    @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "pathResponse"), @CacheEvict(value = "lineResponse", key = "#lineId")
             }
     )
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -96,8 +92,7 @@ public class LineService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "allLine"), @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "path"),
-                    @CacheEvict(value = "line", key = "#lineId"), @CacheEvict(value = "lineResponse", key = "#lineId")
+                    @CacheEvict(value = "allLineResponse"), @CacheEvict(value = "pathResponse"), @CacheEvict(value = "lineResponse", key = "#lineId")
             }
     )
     public void removeLineStation(Long lineId, Long stationId) {
