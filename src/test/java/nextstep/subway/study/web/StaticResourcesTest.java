@@ -66,8 +66,6 @@ public class StaticResourcesTest {
                 .expectBody(String.class)
                 .returnResult();
 
-        logger.debug("body : {}", response.getResponseBody());
-
         String etag = response.getResponseHeaders()
                 .getETag();
 

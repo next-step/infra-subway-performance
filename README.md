@@ -89,6 +89,12 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+* 미션 요구사항
+    * [X] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+    * [X] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+    * [X] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+        * 데이터 유출을 막을 필요(no-store)가 있고 최신 상태로 유지할 필요(no-cache)가 있다면 가능합니다!
+
 1. Launch Template 링크를 공유해주세요.
 
 * https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-07d5024625b8e0525
@@ -100,6 +106,9 @@ $ stress -c 2
 ```
 
 ![Cloudwatch 캡쳐](./loadtest/sacleout/asg_cloudwatch.png)
+
+* Target Group Health Check 이슈 수정 결과
+  ![sangik-kim-tg](./loadtest/sacleout/sangik-kim-tg.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
