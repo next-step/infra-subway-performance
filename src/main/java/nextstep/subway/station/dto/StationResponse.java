@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class StationResponse implements Serializable {
     private Long id;
     private String name;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)  // <- @Converter를 지정 해줘야 한다.
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdDate;
-    @Convert(converter = LocalDateTimePersistenceConverter.class)  // <- @Converter를 지정 해줘야 한다.
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
