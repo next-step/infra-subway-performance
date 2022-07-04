@@ -174,6 +174,10 @@ group by hobby;
 - `alter table programmer add primary key(id);`
 - `alter table programmer add index idx_programmer_02(hobby);`
 
+#### 쿼리 실행시간 / 실행계획
+- ./docs/step4/1-1-time.PNG
+- ./docs/step4/1-1-explain.png
+
 <hr>
 
 - [X] __프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)__
@@ -194,6 +198,10 @@ FROM covid c
 - `alter table covid add index idx_covid_01(hospital_id);`
 - `alter table covid add index idx_covid_03(programmer_id);`
 - `alter table hospital add primary key(id);`
+
+#### 쿼리 실행시간 / 실행계획
+- ./docs/step4/1-2-time.PNG
+- ./docs/step4/1-2-explain.png
 
 <hr>
 
@@ -224,6 +232,10 @@ WHERE 1 = 1
 - `alter table member add primary key(id);`
 - `alter table programmer add index idx_programmer_01(member_id);`
 
+#### 쿼리 실행시간 / 실행계획
+- ./docs/step4/1-3-time.PNG
+- ./docs/step4/1-3-explain.png
+
 <hr>
 
 - [X] __서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)__
@@ -248,6 +260,10 @@ group by c.stay;
 #### 추가한 인덱스
 - `alter table covid add index idx_covid_02(member_id);`
 
+#### 쿼리 실행시간 / 실행계획
+- ./docs/step4/1-4-time.PNG
+- ./docs/step4/1-4-explain.png
+
 <hr>
 
 - [X] __서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)__
@@ -270,6 +286,10 @@ group by exercise;
 `0.031sec`
 
 이전 단계에서 필요한 인덱스가 이미 추가되었음
+
+#### 쿼리 실행시간 / 실행계획
+- ./docs/step4/1-5-time.PNG
+- ./docs/step4/1-5-explain.png
 
 ---
 
