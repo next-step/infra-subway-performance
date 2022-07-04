@@ -73,16 +73,43 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+#### 미션 요구사항
+- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+만약 원하는 동작이 브라우저에게 캐시를 확실히 무효화 시키고 싶을때는 아래와 같이 사용 가능 합니다.
+- Cache-Control: no-cache, no-store, must-revalidate
+  - 확실한 캐시 무효화 응답
+  
+- Cache-Control: no-cache
+  - 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용
+- Cache-Control: no-store 
+  - 데이터에 민감한 정보가 있으므로 저장하면 안됨
+- Cache-Control: must-revalidate
+  - 캐시 만료후 최초 조회시 원 서버에 검증해야함
+  - 원 서버 접근 실패시 반드시 오류가 발생해야함 - 504(Gateway Timeout) 
+  - must-revalidate는 캐시 유효 시간이라면 캐시를 사용함
+
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0dff23b666dae89f6
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+![img.png](testresult/captures/asg_cloudwatch_instance.png)
+![img_1.png](testresult/captures/asg_cloudwatch_instance_list.png)
+![img_2.png](testresult/captures/asg_cloudwatch_cpu.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   - [smoke rsult](testresult/asg_result/smoke_result.txt)
+   - [load rsult](testresult/asg_result/load_result.txt)
+   - [stress rsult](testresult/asg_result/stress_result.txt)
 ---
 
 ### 1단계 - 쿼리 최적화
