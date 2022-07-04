@@ -68,10 +68,6 @@ npm run dev
 ![stress_after.png](stress_after.png)
 
 
-- load
-
-
-
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 #### proxy server
 - gzip 압축 설정
@@ -85,16 +81,45 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+#### 요구사항
+
+- [x] springboot에 HTTP Cache, gzip 설정하기
+  - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+  - [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+  - [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+    - no-cache, no-store를 동시에 적용할 수 있는가? 가 질문이라면, 두 개의 내용이 상반되기 때문에 불가능 합니다.
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
+   https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c26235b6417afc54
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+![cpu.png](cpu.png)
+
+![instance.png](instance.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+- 성능 개선을 위해, 네트워크 입력 크기를 이용해, 인스턴스의 양을 조절하도록 했습니다.
+
+#### smoke
+![auto_scailing_smoke.png](auto_scailing_smoke.png)
+#### load
+![auto_scailing_load.png](auto_scailing_load.png)
+
+#### stress
+
+- 지난 코멘트를 참고 해 동시 요청자가 250명이 넘어가게 되면 실패가 되는 것을 확인했습니다.
+- 실패 지점을 찾은 후에, 해당 부하의 강도로 지속시킨 후, 부하를 낮추는 방식으로 스트레스 테스트 진행했습니다.
+
+![auto_scailing_stress](auto_scailing_stress.png)
+![auto_scailing_stress2.png](auto_scailing_stress2.png)
 ---
 
 ### 1단계 - 쿼리 최적화
