@@ -164,6 +164,41 @@ $ stress -c 4
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```roomsql
+select 
+    a.employee_id as '사원번호', 
+    a.last_name as '이름', 
+    a.annual_income as '연봉', 
+    a.position_name as '직급명', 
+    r.region as '지역', 
+    r.record_symbol as '입출입 구분', 
+    MAX(r.time) as '입출입 시간'
+from record r
+join (
+	select 
+		m.employee_id, 
+		p.position_name,
+		e.last_name, 
+		s.annual_income
+	from manager m
+	inner join department d on m.department_id = d.id and d.note = 'active'
+	inner join position p on m.employee_id = p.id and p.position_name = 'manager'
+	inner join employee e on m.employee_id = e.id and m.start_date <= now() and m.end_date > now()
+	inner join salary s on m.employee_id = s.id and s.start_date <= now() and s.end_date > now()
+	order by s.annual_income desc
+	limit 5
+) a
+on a.employee_id = r.employee_id
+where r.record_symbol = 'O'
+group by a.employee_id, a.last_name, a.annual_income, a.position_name, r.region, r.record_symbol
+```
+
+- [result](https://github.com/kwonyongil/infra-subway-performance/blob/step3/docs/step3/step3_result.png)
+- [time](https://github.com/kwonyongil/infra-subway-performance/blob/step3/docs/step3/step3_execution_time.png)
+- [plan](https://github.com/kwonyongil/infra-subway-performance/blob/step3/docs/step3/step3_execution_plan.png)
+
+
+
 ---
 
 ### 2단계 - 인덱스 설계
