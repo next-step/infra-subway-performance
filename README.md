@@ -81,17 +81,28 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#AutoScalingGroupDetails:id=jiyeonghwang-asg2;view=details
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![img.png](k6/step2/img.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- Smoke
+![](k6/step2/smoke/smoke.png)
+- Load
+![](k6/step2/load/load.png)
+- Stress
+![](k6/step2/stress/stress.png)
 
----
+3-1. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
 
+아래처럼 설정 시 가능할 것 같습니다!
+다만 효율성 측면에서 특별한 경우가 아니라면 지양해야 한다고 생각됩니다.
+
+```js
+spring.resources.cache.cachecontrol.no-store=true
+spring.resources.cache.cachecontrol.must-revalidate=true
+spring.resources.cache.cachecontrol.no-cache=true
+```
 ### 1단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
