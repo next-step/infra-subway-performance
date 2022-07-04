@@ -288,6 +288,23 @@ select count(*) / (select count(*) from programmer) * 100 as percent
 from programmer
 group by hobby;
 ```
+=> 피드백 : 쿼리 실행 시 모든 rows 를 조회하고 있는데요, where 절에 hobby = yes, hobby = no 와 같은 조건절을 추가하면 rows 를 줄여볼 수 있을 것 같아요
+
+=> 적용
+- where 조건 절 추가 ver -> Duration : 0.365 sec
+```sql
+select count(*) / (select count(*) from programmer) * 100 as percent 
+from programmer 
+where hobby = 'yes' or hobby = 'no' 
+group by hobby;
+```
+- group by having절 추가 ver -> Duration : 0.270 sec
+```sql
+select count(*) / (select count(*) from programmer) * 100 as percent 
+from programmer 
+group by hobby 
+having hobby = 'yes' or hobby = 'no';
+```
 
 **인덱스 추가하기**
 - Group By 컬럼인 hobby 에 대해 인덱스 추가
