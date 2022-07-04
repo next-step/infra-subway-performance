@@ -1,21 +1,21 @@
-insert into station(id, name) values (1, '강남역');
-insert into station(id, name) values (2, '양재역');
-insert into station(id, name) values (3, '판교역');
-insert into station(id, name) values (4, '정자역');
-insert into station(id, name) values (5, '미금역');
-insert into station(id, name) values (6, '수지구청역');
-insert into station(id, name) values (7, '성복역');
-insert into station(id, name) values (8, '상현역');
-insert into station(id, name) values (9, '광교중앙역');
-insert into station(id, name) values (10, '성남역');
-insert into station(id, name) values (11, '이매역');
-insert into station(id, name) values (12, '광주역');
-insert into station(id, name) values (13, '곤지암역');
-insert into station(id, name) values (14, '이천역');
-insert into station(id, name) values (15, '여주역');
+insert into station(id, name, createdDate, modifiedDate) values (1, '강남역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (2, '양재역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (3, '판교역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (4, '정자역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (5, '미금역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (6, '수지구청역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (7, '성복역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (8, '상현역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (9, '광교중앙역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (10, '성남역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (11, '이매역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (12, '광주역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (13, '곤지암역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (14, '이천역', now(), now());
+insert into station(id, name, createdDate, modifiedDate) values (15, '여주역', now(), now());
 
-insert into line(id, name, color) values (1, '신분당선', 'yellow');
-insert into line(id, name, color) values (2, '경강선', 'blue');
+insert into line(id, name, color, createdDate, modifiedDate) values (1, '신분당선', 'yellow', now(), now());
+insert into line(id, name, color, createdDate, modifiedDate) values (2, '경강선', 'blue', now(), now());
 
 insert into section(id, line_id, up_station_id, down_station_id, distance) values (1, 1, 1, 2, 10);
 insert into section(id, line_id, up_station_id, down_station_id, distance) values (2, 1, 2, 3, 10);
