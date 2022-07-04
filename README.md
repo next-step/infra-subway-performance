@@ -310,7 +310,9 @@ duration : 0.254 sec
 ```sql
 select c.id as covid_id, h.name as hospital_name
 from covid c
-join hospital h on c.hospital_id = h.id;
+join hospital h on c.hospital_id = h.id
+join programmer p on c.programmer_id = p.id
+;
 ```
 
 **인덱스 추가하기**
