@@ -44,7 +44,7 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-- Before ([경로](/result/before))
+- Before ([경로](result/before))
     - Http Request Duration 평균
         - Smoke  : 7.1ms
         - Load   : 7.65ms
@@ -59,7 +59,7 @@ npm run dev
          | 구간관리   | 65                | 3.0        | 3.2         |
          | 경로검색   | 66                | 2.7        | 2.8        | 
       
-- After ([경로](/result/after))
+- After ([경로](result/after))
     - Http Request Duration 평균
         - Smoke  : 6.42ms (-약 9%)
         - Load   : 6.85ms (-약 10%)
@@ -129,14 +129,14 @@ npm run dev
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
    
-    ![cpu](/step2/cpu_stress_cloudwatch.png)
+    ![cpu](step2/2/cpu_stress_cloudwatch.png)
    
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-    - 결과 이미지(k6, grafana)([경로](/step/3))
+    - 결과 이미지(k6, grafana)([경로](step/3))
     - Http Request Duration 평균
         - Smoke  : 6.38ms
         - Load   : 5.93ms 
@@ -184,6 +184,46 @@ $ stress -c 2
     where
         record_symbol = 'O';
 ```
+- 피드백 쿼리 (query cost : 23132 )
+```  
+select e.id, 
+		e.last_name, 
+        high_salary.annual_income, 
+        p.position_name, 
+        r.time, 
+        r.region, 
+        r.record_symbol
+from employee e
+inner join (
+			select 	s.id as employee_id,
+					s.annual_income 
+			from salary s
+			where id in (
+				select employee_id 
+                from manager 
+				where department_id in (SELECT id 
+										FROM tuning.department 
+										where note = 'Active')
+				and start_date <= now()
+				and end_date >= now()
+			)
+			and start_date <= now()
+			and end_date >= now()
+			order by s.annual_income desc limit 5
+			) high_salary
+	on high_salary.employee_id = e.id
+inner join position p
+	on p.id = e.id
+	and p.start_date <= now()
+	and p.end_date >= now()
+inner join record r
+	on r.employee_id = e.id
+	and r.record_symbol = 'O';
+```
+- 비교, 분석
+    - start_date 에 대한 조건 추가 : cost 354018 -> 141613  감소
+    - from 절에 모든 inner join 처리하는 드라이빙 테이블의 position 테이블을 외부로 변경 : cost 14613 -> 23132
+        - 드라이빙 테이블에서 처리하지 않아도 되는 부분을 바깥쪽 join 으로 분리시켜서 cost 감소시킬 수 있었음
 
 ---
 
@@ -191,7 +231,152 @@ $ stress -c 2
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
----
+
+#### Coding as a Hobby 와 같은 결과를 반환하세요.
+ - 인덱스 설정 ( duration 0.172 sec -> 0.047 sec, cost : 28384 )
+
+```
+    ALTER TABLE `subway`.`programmer` ADD INDEX `idx_hobby` (`hobby` ASC);
+    
+    explain select 
+      round(count(case when hobby = 'YES' then 1 end) / count(hobby)*100,1) as YES
+    , round(count(case when hobby = 'NO' then 1 end) / count(hobby)*100,1) as NO
+     from programmer;
+     
+```
+
+![](step4/1/1-1.png)
+
+![](step4/1/1-2.png)
+
+
+
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 인덱스 설정 ( duration 0.360 sec -> 0.016 sec, cost : 610143 )
+
+```
+    ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+    ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+    ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL , ADD PRIMARY KEY (`id`);
+    
+    
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_programmer_id` (`programmer_id` ASC);
+    
+    select cov.id, hos.name 
+    from ( select id from programmer ) pro
+     inner join ( select id, hospital_id, programmer_id from covid ) cov 
+        on cov.programmer_id = pro.id
+     inner join hospital hos
+        on hos.id = cov.hospital_id;
+```
+
+![](step4/2/2-1.png)
+
+![](step4/2/2-2.png)
+
+
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 인덱스 설정 ( duration 107 sec ->  0.016 sec, cost : 432880 )
+
+```
+    ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+    ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+    ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL , ADD PRIMARY KEY (`id`);
+    
+    
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_programmer_id` (`programmer_id` ASC);
+    
+    select cov.id, hos.name, user.hobby, user.dev_type, user.years_coding  
+     from ( 
+             select id, hobby, dev_type, years_coding from programmer
+             where 1=1
+             and hobby = 'Yes'
+             and (student like 'Yes%' OR years_coding = '0-2 years')
+     ) user
+     inner join covid cov 
+        on cov.programmer_id = user.id 
+     inner join hospital hos 
+        on hos.id = cov.hospital_id;
+```
+
+![](step4/3/3-1.png)
+
+![](step4/3/3-2.png)
+
+
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 인덱스 설정 ( duration 17 sec ->  0.031 sec, cost : 28844  )
+
+```
+    ALTER TABLE `subway`.`member` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    
+    
+    ALTER TABLE `subway`.`member` ADD INDEX `idx_age_id` (`age` ASC, `id` ASC);
+    
+    ALTER TABLE `subway`.`programmer` ADD INDEX `idx_country_id` (`country` ASC, `id` ASC);
+    ALTER TABLE `subway`.`programmer` ADD INDEX `idx_member_id` (`member_id` ASC);
+    
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_member_id` (`member_id` ASC);
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_hospital_id` (`hospital_id` ASC);
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_stay` (`stay` ASC);
+    
+    ALTER TABLE `subway`.`hospital` ADD UNIQUE INDEX `name_UNIQUE` (`name` ASC);
+    
+    select cov.stay, count(cov.stay) 
+    from ( select member_id, hospital_id, stay from covid ) cov
+    inner join ( select id from member where age >= 20 and age <= 29 ) mem
+        on mem.id = cov.member_id
+    inner join ( select member_id from programmer where country = 'India' ) pro
+        on pro.member_id = cov.member_id
+    inner join ( select id from hospital where name = '서울대병원' ) hos
+        on  hos.id = cov.hospital_id
+    group by cov.stay;
+
+``` 
+
+![](step4/4/4-1.png)
+
+![](step4/4/4-2.png)
+
+
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 인덱스 설정 ( duration 300 sec 이상 -> 0.031 sec, cost : 24024 )
+
+```
+    ALTER TABLE `subway`.`member` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL , ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    
+    ALTER TABLE `subway`.`member` ADD INDEX `idx_age` (`age` ASC);
+    
+    ALTER TABLE `subway`.`programmer` ADD INDEX `idx_member_id` (`member_id` ASC);
+    ALTER TABLE `subway`.`programmer` ADD INDEX `idx_exercise` (`exercise` ASC);
+    
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_hosptial_id` (`hospital_id` ASC);
+    ALTER TABLE `subway`.`covid` ADD INDEX `idx_member_id` (`member_id` ASC);
+    
+    ALTER TABLE `subway`.`hospital` ADD UNIQUE INDEX `name_UNIQUE` (`name` ASC);
+    
+     select exercise, count(exercise)
+     from (select id from member where age >= 30 AND age <= 39) mem
+     inner join (select id, hospital_id from covid) cov
+        on cov.id = mem.id
+     inner join (select member_id, exercise from programmer) pro
+        on pro.member_id = mem.id 
+     inner join (select id from hospital where name = '서울대병원') hos
+        on hos.id = cov.hospital_id
+    group by exercise;
+
+```
+
+![](step4/5/5-1.png)
+
+![](step4/5/5-2.png)
+
 
 ### 추가 미션
 
