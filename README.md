@@ -43,7 +43,7 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-[step1](./docs/step1.md)
+[step1](docs/step1/step1.md)
 
 ---
 
