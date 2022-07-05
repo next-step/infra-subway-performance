@@ -65,8 +65,7 @@ url: https://yang-infra-subway.p-e.kr/
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
 [서버자원사용](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/cloudwatch%20%EC%84%9C%EB%B2%84%EC%9E%90%EC%9B%90%EC%82%AC%EC%9A%A9.png)  
 [인스턴스생성](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A6%9D%EA%B0%80.png)
-
-/mission/step2/cloudwatch 인스턴스증가.png에 추가하였습니다.
+[cloudwatch인스턴스증가](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/cloudwatch%20%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A6%9D%EA%B0%80.png)
 
 ```sh
 $ stress -c 2
