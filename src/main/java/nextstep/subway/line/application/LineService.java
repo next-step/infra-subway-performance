@@ -28,8 +28,8 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allLine"),
-            @CacheEvict(value = "path")
+            @CacheEvict(value = "allLine", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
     })
     @Transactional
     public LineResponse saveLine(LineRequest request) {
@@ -39,7 +39,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Cacheable(value = "allLine")
+    @Cacheable(value = "allLine", unless = "#result.isEmpty()")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -62,8 +62,8 @@ public class LineService {
     }
 
     @Caching(evict = {
-                    @CacheEvict(value = "allLine"),
-                    @CacheEvict(value = "path")
+                    @CacheEvict(value = "allLine", allEntries = true),
+                    @CacheEvict(value = "path", allEntries = true)
             })
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -72,8 +72,8 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allLine"),
-            @CacheEvict(value = "path")
+            @CacheEvict(value = "allLine", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
     })
     @Transactional
     public void deleteLineById(Long id) {
