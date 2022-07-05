@@ -6,9 +6,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.station.domain.Station;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class StationResponse {
+public class StationResponse implements Serializable {
     private Long id;
     private String name;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
