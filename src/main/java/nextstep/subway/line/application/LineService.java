@@ -40,6 +40,7 @@ public class LineService {
                            .collect(Collectors.toList());
     }
 
+    @Transactional
     @Cacheable(value = CacheConfig.LINE, unless = "#result == null or #result.isEmpty()")
     public List<Line> findLines() {
         return lineRepository.findAll();
