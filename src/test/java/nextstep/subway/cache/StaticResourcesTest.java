@@ -55,7 +55,7 @@ class StaticResourcesTest {
                 .expectStatus()
                 .isOk()
                 .expectHeader()
-                .cacheControl(CacheControl.maxAge(60 * 60 * 24 * 365, TimeUnit.SECONDS))
+                .cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .expectBody(String.class)
                 .returnResult();
 

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -20,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/**/*.css")
                 .addResourceLocations("classpath:/static/")
-                .setCachePeriod(60 * 60 * 24 * 365);
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
 
         registry.addResourceHandler("/**/*.js")
                 .addResourceLocations("classpath:/static/")
