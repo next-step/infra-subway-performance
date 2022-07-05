@@ -316,9 +316,9 @@ create index idx_programmer_country_member_id on programmer (country, member_id)
 ```
 - [x] (5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 - 실행시간
-- [4_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_time_after.png)
+- [5_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_time_after.png)
 - 실행계획
-- [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
+- [5_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
 
 ```roomsql
 
