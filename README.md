@@ -151,53 +151,60 @@ $ stress -c 2
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-   1. 일단 조회해본다
-      1. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)(0.414sec)
-         select c.programmer_id, h.name from hospital as h
-             join (select id, hospital_id, programmer_id from covid) as c on c.hospital_id = h.id
-             join (select id from programmer) as p on c.programmer_id = p.id;
-      2. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) (0.391sec)
-         select name, hospital_id, programmer_id from hospital as h
-             join (select hospital_id, programmer_id from covid as c where c.programmer_id in (select  id from programmer where years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time") and hobby = "Yes"))) as pc
-             on pc.hospital_id = h.id
-             order by programmer_id;
+    1. key, foreign key 매핑하기
+       1. alter table covid add primary key (id);
+       2. alter table hospital add primary key(id);
+       3. alter table programmer add primary key(id);
+       4. alter table hospital modify column id bigint(20);
+       5. alter table covid add foreign key(hospital_id) references hospital(id);
+       6. alter table covid add foreign key(programmer_id) references programmer(id);
+   
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+       1. 일단 조회하기(4.14sec)
+          select c.programmer_id, h.name from hospital as h
+              join covid as c on c.hospital_id = h.id
+              join programmer as p on c.programmer_id = p.id;
+       2. indexing 후 쿼리(0.0053sec)
+          1. alter TABLE hospital ADD UNIQUE(id); -> 데이터가 많은 hospital에, join되는 키값인 hospital.id 를 인덱싱
+             alter TABLE programmer ADD UNIQUE(id); -> 데이터가 많은 programmer에, join되는 키값인 programmer.id 를 인덱싱
 
-      3. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)(0.351sec)
-         select c.stay, count(c.stay) from covid as c where
-             c.hospital_id = (select id from hospital where name = "서울대병원")
-             and programmer_id in (select id from programmer where country = "India")
-             and member_id in (select id from member where age >= 20 and age <= 29)
-             group by c.stay;
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+       1. 일단 조회하기(0.823sec)
+          1. 특이사항 : 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
+       select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p    -- and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time")) and
+           join covid as c on (c.programmer_id is not null and hobby = "Yes" and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time"))) and p.id = c.programmer_id)
+           join hospital as h on h.id = c.hospital_id
+           order by c.programmer_id;
+       2. indexing 후 쿼리 (0.304sex)
+          1. create index covid_programmer_id on subway.covid(programmer_id); -> 데이터가 많은 covid에 join되는 키값인 programmer.id를 인덱싱
+             create index covid_hospital_id on subway.covid(hospital_id); -> 데이터가 많은 covid에 join되는 키값인 horpital.id를 인덱싱
+             create index programmer_id on subway.programmer(id); -> 데이터가 많은 programmer에 join되는 키값 인덱싱
+    
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+       1. 일단 조회하기(1.210sec)
+       select c.stay, count(c.stay) from covid as c where
+          c.hospital_id = (select id from hospital where name = "서울대병원")
+          and programmer_id in (select id from programmer where country = "India")
+          and member_id in (select id from member where age >= 20 and age <= 29)
+          group by c.stay;
+       2. indexing 후 쿼리(0.073sec)
+          1. create index covid_stay on subway.covid(stay); -> groupby 조건은 indexing을 하는것이 효율적이다
+             create index programmer_id on subway.programmer(id); -> 데이터가 많은 테이블의 join을 하는 key값은 index을 하는것이 효율적이다
+             create index member_id on subway.member(id); -> 데이터가 많은 테이블의 join을 하는 key값은 index을 하는것이 효율적이다
+    
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       1. 일단 조회하기(0.495sec)
+          select exercise, count(exercise) from programmer as p
+              where p.id in (select programmer_id from covid where hospital_id in (select id from hospital where name = "서울대병원"))
+              and p.id in (select id from member where age >= 30 and age <= 39)
+              group by exercise;
+       2. indexing후 쿼리(0.055sec)
+          1. create index member_id_age on subway.member(id, age); -> age의 범위로 찾기위해 인덱싱. 효율적인 탐색을 위해 key값 인덱스에 추가
+             create index programmer_id on subway.programmer(id);  -> 데이터가 많은 covid 테이블에, join key로 사용되는 programmer_id 추가 
+             create index programmer_exercise on subway.programmer(exercise); -> groupby 조건은 indexing을 하는것이 효율적이다.
 
-      4. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) (0.375sec)
-         select exercise, count(exercise) from programmer as p
-             where p.id in (select programmer_id from covid where hospital_id in (select id from hospital where name = "서울대병원"))
-             and p.id in (select id from member where age >= 30 and age <= 39)
-             group by exercise;
-   2. 인덱스 설정을 해본다
-      1. 설정 조건
-         1. 테이블 내 데이터 양이 많고 조건 검색을 하는경우
-         2. WHERE문, 결합 , ORDER BY문을 이용하는 경우
-         3. NULL값이 많은 데이터로 부터 NULL이외의 값을 검색하는 경우
-      2. 인덱스가 사용될때
-         1. 컬럼값을 정수와 비교할때
-         2. 컬럼값 전체로 JOIN할때
-         3. 컬럼값의 범위를 요구할때
-         4. LIKE로 문자열의 선두가 고정일때
-         5. MIN(),MAX()
-         6. ORDER BY, GROUP BY
-      3. 인덱스가 사용 안될때
-         1. LIKE문이 와일드 카드(*)로 시작될때
-         2. DB전체를 읽는것이 빠르다고 MySQL이 판단할때
-         3. WHERE과 ORDER BY의 컬럼이 다를때에는 한쪽만 사용
-      4. 설정 대상 
-         1. where문 , 다량의 테이블
-            1. covid - programmer_id, hospital_id
-            2. hospital - id
-         2. group by 테이블 - 컬럼 
-            1. covid - stay
-            2. programmer - exercise
-   3. 
+
+    6. 
 ---
 
 ### 추가 미션
@@ -213,11 +220,26 @@ $ stress -c 2
 
 
 ### study
-http2 protocol
+#### http2 protocol
 1. 헤더를 압축해서 보낸다
 2. Connection 1개로 여러개의 요청을 처리할수 있다(비동기적)
 3. 리소스간 의존관계에 따른 우선 순위를 설정하여, 리소스 로드문제를 해결할수 있다
 
-
-
-
+#### mysql indexing
+1. 인덱스 설정을 해본다
+   1. 설정 조건
+      1. 테이블 내 데이터 양이 많고 조건 검색을 하는경우
+      2. WHERE문, 결합 , ORDER BY문을 이용하는 경우
+      3. NULL값이 많은 데이터로 부터 NULL이외의 값을 검색하는 경우
+      4. 인덱스 시 테이블 엑세스를 최소화 하기 위해 인덱스에 primary key를 추가 (가장 앞에)
+   2. 인덱스가 사용될때
+      1. 컬럼값을 정수와 비교할때
+      2. 컬럼값 전체로 JOIN할때
+      3. 컬럼값의 범위를 요구할때
+      4. LIKE로 문자열의 선두가 고정일때
+      5. MIN(),MAX()
+      6. ORDER BY, GROUP BY
+   3. 인덱스가 사용 안될때
+      1. LIKE문이 와일드 카드(*)로 시작될때
+      2. DB전체를 읽는것이 빠르다고 MySQL이 판단할때
+      3. WHERE과 ORDER BY의 컬럼이 다를때에는 한쪽만 사용
