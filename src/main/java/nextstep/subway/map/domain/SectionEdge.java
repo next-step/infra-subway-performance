@@ -3,7 +3,9 @@ package nextstep.subway.map.domain;
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class SectionEdge extends DefaultWeightedEdge {
+import java.io.Serializable;
+
+public class SectionEdge extends DefaultWeightedEdge implements Serializable {
     private Section section;
     private Long lineId;
 
@@ -33,5 +35,13 @@ public class SectionEdge extends DefaultWeightedEdge {
     @Override
     protected double getWeight() {
         return this.section.getDistance();
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEdge{" +
+                "section=" + section +
+                ", lineId=" + lineId +
+                '}';
     }
 }

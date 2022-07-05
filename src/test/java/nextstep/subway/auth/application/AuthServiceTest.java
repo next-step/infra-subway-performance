@@ -3,6 +3,7 @@ package nextstep.subway.auth.application;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,16 +30,18 @@ public class AuthServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private MemberService memberService;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(memberRepository, jwtTokenProvider);
+        authService = new AuthService(memberRepository, jwtTokenProvider, memberService);
     }
 
     @Test
     void login() {
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
+        when(memberService.findByEmail(anyString())).thenReturn(new Member(EMAIL, PASSWORD, AGE));
 
         TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
 

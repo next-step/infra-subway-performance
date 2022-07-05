@@ -1,0 +1,42 @@
+$ k6 run --out influxdb=http://localhost:8086/k6 load.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 61 max VUs, 18m30s max duration (incl. graceful stop):
+           * default: Up to 61 looping VUs for 18m0s over 6 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (18m00.2s), 00/61 VUs, 44664 complete and 0 interrupted iterations
+default ✓ [======================================] 00/61 VUs  18m0s
+
+     ✓ 랜딩 페이지 점검
+     ✓ 로그인 토큰 점검
+     ✓ 지하철역 개수 점검
+     ✓ 지하철 길찾기 점검
+     ✓ 지하철 즐겨찾기 점검
+
+     checks.........................: 100.00% ✓ 223320     ✗ 0
+     data_received..................: 182 MB  169 kB/s
+     data_sent......................: 45 MB   41 kB/s
+     http_req_blocked...............: avg=9.05µs  min=764ns    med=2.24µs  max=26.06ms  p(90)=4.03µs  p(95)=4.93µs
+     http_req_connecting............: avg=1.08µs  min=0s       med=0s      max=18.71ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=21.4ms  min=996.04µs med=12.01ms max=856.11ms p(90)=46.36ms p(95)=88.59ms
+       { expected_response:true }...: avg=21.4ms  min=996.04µs med=12.01ms max=856.11ms p(90)=46.36ms p(95)=88.59ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 223320
+     http_req_receiving.............: avg=54.05µs min=11.13µs  med=43.22µs max=17.74ms  p(90)=75.49µs p(95)=91.27µs
+     http_req_sending...............: avg=20.97µs min=4.81µs   med=13.83µs max=15.38ms  p(90)=27.53µs p(95)=34.37µs
+     http_req_tls_handshaking.......: avg=4.58µs  min=0s       med=0s      max=18.28ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=21.33ms min=949.66µs med=11.95ms max=856.06ms p(90)=46.29ms p(95)=88.5ms
+     http_reqs......................: 223320  206.732613/s
+     iteration_duration.............: avg=1.1s    min=1.03s    med=1.05s   max=2.88s    p(90)=1.3s    p(95)=1.42s
+     iterations.....................: 44664   41.346523/s
+     vus............................: 1       min=1        max=61
+     vus_max........................: 61      min=61       max=61

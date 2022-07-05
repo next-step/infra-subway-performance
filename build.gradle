@@ -31,6 +31,15 @@ dependencies {
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.4.0'
+
+	// mysql
+	implementation 'mysql:mysql-connector-java:8.0.22'
+
+	// redis
+	implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
