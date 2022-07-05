@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-EXECUTION_PATH=$(pwd)
 SHELL_SCRIPT_PATH=$(dirname $0)
 BRANCH=$1
 PROFILE=$2
@@ -41,7 +39,7 @@ function build(){
 
 function app_start(){
   echo -e ">> app start"
-  nohup java -jar -Dspring.profiles.active=$PROFILE $EXECUTION_PATH/build/libs/*.jar 1> subway.log 2>&1 &
+  nohup java -jar -Dspring.profiles.active=$PROFILE $(find ./* -name "*.jar" | head -n 1) 1> subway.log 2>&1 &
 }
 
 echo -e ">> make directory"
