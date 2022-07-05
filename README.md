@@ -147,65 +147,101 @@ $ stress -c 2
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
 ---
+---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
     1. key, foreign key 매핑하기
-       1. alter table covid add primary key (id);
-       2. alter table hospital add primary key(id);
-       3. alter table programmer add primary key(id);
-       4. alter table hospital modify column id bigint(20);
-       5. alter table covid add foreign key(hospital_id) references hospital(id);
-       6. alter table covid add foreign key(programmer_id) references programmer(id);
-   
-    2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+       ```
+       alter table covid add primary key (id);
+       alter table hospital add primary key(id);
+       alter table programmer add primary key(id);
+       alter table hospital modify column id bigint(20);
+       alter table covid add foreign key(hospital_id) references hospital(id);
+       alter table covid add foreign key(programmer_id) references programmer(id);
+       ```
+
+    3. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
        1. 일단 조회하기(4.14sec)
+          ```
           select c.programmer_id, h.name from hospital as h
               join covid as c on c.hospital_id = h.id
               join programmer as p on c.programmer_id = p.id;
-       2. indexing 후 쿼리(0.0053sec)
+          ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.0053sec)
           1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
        3. 개선 전 실행계획
-          [img](/readmeSource/step4/개선전_1.png)
-       4. 
 
+          ![img.png](./readmeSource/step4/개선전_1.png)
+       4. 개선 후 실행계획
+       
+          ![img.png](./readmeSource/step4/개선후_1.png)
+          1. covid - hospital foreign key 에 의한 indexing
+          2. hospital primary key 에 대한 indexing
 
-    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+    4. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
        1. 일단 조회하기(조회불가)
           1. 특이사항 : 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
+       ```
        select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p    -- and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time")) and
            join covid as c on (c.programmer_id is not null and hobby = "Yes" and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time"))) and p.id = c.programmer_id)
            join hospital as h on h.id = c.hospital_id
            order by c.programmer_id;
-       2. indexing 후 쿼리 (0.304sec)
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도 (0.304sec)
           1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
-          
-    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+       3. 개선전 실행계획(추출불가)
+       4. 개선 후 실행계획
+          ![img.png](./readmeSource/step4/개선후_2.png)
+          1. programmer의 Hobby에 대한 indexing 
+          2. covid - programmer foreign key에 의한 indexing
+          3. covid - hospital foreign key 에 의한 indexing
+       
+    5. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
        1. 일단 조회하기(조회불가)
+       ```
        select c.stay, count(c.stay) from covid as c where
           c.hospital_id = (select id from hospital where name = "서울대병원")
           and programmer_id in (select id from programmer where country = "India")
           and member_id in (select id from member where age >= 20 and age <= 29)
           group by c.stay;
-       2. indexing 후 쿼리(0.073sec)
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.073sec)
           1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
-          2. create index programmer_country on subway.programmer(id, country);
+          ```
+          create index programmer_country on subway.programmer(id, country);
              create index member_age on subway.member(id, age);
+          ```
+       3. 개선 전 실행계획(추출불가)
+       4. 개선 후 실행계획
+          ![img.png](./readmeSource/step4/개선후_3.png)
+          1. hospital의 name에 대한 indexing
+          2. programmer의 primary key에 대한 indexing
+          3. member의 primary key에 대한 indexing 
        
-    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    6. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
        1. 일단 조회하기(0.495sec)
+       ```
           select exercise, count(exercise) from programmer as p
               where p.id in (select programmer_id from covid where hospital_id in (select id from hospital where name = "서울대병원"))
               and p.id in (select id from member where age >= 30 and age <= 39)
               group by exercise;
-       2. indexing후 쿼리(0.055sec)
-          1. create index member_id_age on subway.member(id, age); -> age의 범위로 찾기위해 인덱싱. 효율적인 탐색을 위해 key값 인덱스에 추가
-             create index programmer_id on subway.programmer(id);  -> 데이터가 많은 covid 테이블에, join key로 사용되는 programmer_id 추가 
-             create index programmer_exercise on subway.programmer(exercise); -> groupby 조건은 indexing을 하는것이 효율적이다.
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.055sec)
+       ```
+          create index member_id_age on subway.member( age);
+       ```
+       3. 개선 전 실행계획(추출불가)
+       4. 개선 후 실행계획
+          ![img.png](./readmeSource/step4/개선후_4.png)
+          1. hospital의 name에 대한 indexing
+          2. programmer의 primary key에 대한 indexing
+          3. member의 primary key에 대한 indexing
 
 
-    6. 
+
+
 ---
 
 ### 추가 미션
