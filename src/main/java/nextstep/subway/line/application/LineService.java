@@ -9,6 +9,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,8 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @CacheEvict(value = "findPath", allEntries = true)
+    
+    @CacheEvict (value = {"findPath","findLine"}, allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -41,6 +43,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "findLine")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
