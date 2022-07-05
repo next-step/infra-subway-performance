@@ -91,11 +91,12 @@ $ stress -c 2
 #### smoke
 ![](img/step2/smoke.png)
 #### load
-http_req_waiting avg 21.15ms -> 4.34ms
-iteration_duration avg 187.36ms -> 24.15ms
+http_req_duration avg 기준 `21.35ms` -> `5.28ms`
+http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
+iteration_duration avg 기준 `187.36ms` -> `24.15ms`
 ![](img/step2/load.png)
 #### stress
-에러가 나는 지점 vsu 272 -> 1050
+에러가 나는 지점 vsu `272` -> `1,050`
 ![](img/step2/stress.png)
 ---
 
