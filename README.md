@@ -208,15 +208,15 @@ group by a.employee_id, a.last_name, a.annual_income, a.position_name, r.region,
 ### step4 요구사항
 #### 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
-- [] Coding as a Hobby 와 같은 결과를 반환하세요.
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
 - 실행시간 개선전
-- [1_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_time_before.png)
+- [1_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_before.png)
 - 실행시간 개선후
-- [1_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_time_after.png)
+- [1_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_after.png)
 - 실행계획
-- [1_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_plan.png)
+- [1_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_plan.png)
 - 실행결과
-- [1_result](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_plan.png)
+- [1_result](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_plan.png)
 
 ```roomsql
 SELECT  p.hobby,
@@ -230,16 +230,44 @@ alter table programmer add primary key (id);
 create index idx_programmer_hobby on programmer (hobby);
 ```
 
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 실행시간 개선전
+- [2_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_before.png)
+- 실행시간 개선후
+- [2_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_after.png)
+- 실행계획
+- [2_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_plan.png)
 
-
-- [] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-
+```roomsql  
+SELECT  c.id,
+        h.name
+FROM covid c
+INNER JOIN programmer p
+ON p.id = c.programmer_id
+INNER JOIN hospital h
+ON h.id = c.hospital_id;
+```
+```roomsql  
+alter table hospital add primary key (id);
+alter table covid add primary key (id);
+create index idx_covid_hospital_id on covid (hospital_id);
+create index idx_covid_programmer_id on covid (programmer_id);
+```
 - [] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-
+```roomsql  
+```
+```roomsql  
+```
 - [] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-
+```roomsql  
+```
+```roomsql  
+```
 - [] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-
+```roomsql  
+```
+```roomsql  
+```
 ---
 
 ---
