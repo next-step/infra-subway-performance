@@ -1,4 +1,4 @@
-package nextstep.subway.common;
+package nextstep.subway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
