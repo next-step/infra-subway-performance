@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class StationService {
     private StationRepository stationRepository;
 
@@ -22,13 +22,13 @@ public class StationService {
     }
 
     @CacheEvict(cacheNames = "allStation")
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
     @Cacheable(value = "allStation")
-    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -38,6 +38,7 @@ public class StationService {
     }
 
     @CacheEvict(value = "allStation")
+    @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
