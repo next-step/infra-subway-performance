@@ -10,7 +10,10 @@ $ stress -c 2
 
 ## 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - smoke
+![smoke](smoke-k6.png)
 
 - load
+![load](load-k6.png)
 
 - stress
+![stress](stress.png)
