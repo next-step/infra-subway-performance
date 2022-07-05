@@ -16,11 +16,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
-    private final RedisConnectionFactory connectionFactory;
 
-    public CacheConfig(RedisConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
+    @Autowired
+    RedisConnectionFactory connectionFactory;
+
 
     @Bean
     public CacheManager redisCacheManager() {
@@ -28,9 +27,8 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
-        return RedisCacheManager.RedisCacheManagerBuilder
-                .fromConnectionFactory(connectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
+        RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
+                fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
+        return redisCacheManager;
     }
 }
