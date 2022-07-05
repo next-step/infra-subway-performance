@@ -133,31 +133,25 @@ $ stress -c 2
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
 ```sql
-select
-    wm.id as 사원번호,
-    wm.name as 이름,
-    wm.income as 연봉 ,
-    wm.position_name as 직급명,
-    r.time as 입출입시간,
-    r.region as 지역,
-    r.record_symbol as 입출입구분
-from
-    record r
-        inner join(
-        select
-            e.id as id,
-            e.last_name as name,
-            p.position_name as position_name,
-            s.annual_income as income
-        from manager m
-                 inner join salary s on m.employee_id = s.id and s.end_date > now()
-                 inner join department d on m.department_id = d.id and d.note = 'active'
-                 inner join employee e on m.employee_id = e.id and m.end_date > now()
-                 inner join position p on m.employee_id = p.id and p.end_date > now()
-        order by s.annual_income desc
-            limit 5
-    ) wm
-                  on r.employee_id = wm.id and r.record_symbol = 'O';
+select wm.id            as 사원번호,
+       wm.name          as 이름,
+       wm.income        as 연봉,
+       wm.position_name as 직급명,
+       r.time           as 입출입시간,
+       r.region         as 지역,
+       r.record_symbol  as 입출입구분
+from record r
+         inner join(select e.id            as id,
+                           e.last_name     as name,
+                           p.position_name as position_name,
+                           s.annual_income as income
+                    from manager m
+                             inner join salary s on m.employee_id = s.id and s.end_date > now()
+                             inner join department d on m.department_id = d.id and d.note = 'active'
+                             inner join employee e on m.employee_id = e.id and m.end_date > now()
+                             inner join position p on m.employee_id = p.id and p.end_date > now()
+                    order by s.annual_income desc limit 5) wm
+                   on r.employee_id = wm.id and r.record_symbol = 'O';
 
 ```
 
@@ -172,6 +166,34 @@ from
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```sql
+select hobby, round(count(*) / (select count(*) from programmer) * 100, 1)
+from programmer
+group by hobby;
+```
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+select c.id, h.name
+from covid c
+         inner join programmer p on c.programmer_id = p.id
+         inner join hospital h on c.hospital_id = h.id;
+```
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+
+```
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ---
 
