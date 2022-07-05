@@ -46,21 +46,21 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### Smoke
 - before  
-![](img/smoke-before.png)
+![](img/step1/smoke-before.png)
 - after  
-![](img/smoke_after.png)
+![](img/step1/smoke_after.png)
 #### Load
 http_req_waiting avg 148.9ms -> 21.15ms
 - before  
-![](img/load-before.png)
+![](img/step1/load-before.png)
 - after  
-![](img/load_after.png)
+![](img/step1/load_after.png)
 #### Stress
 에러가 나는 지점 vsu 238 -> 272
 - before  
-![](img/stress-before.png)
+![](img/step1/stress-before.png)
 - after  
-![](img/stress-after.png)
+![](img/step1/stress-after.png)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선
   - gzip 압축 types: text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
@@ -71,17 +71,33 @@ http_req_waiting avg 148.9ms -> 21.15ms
 ---
 
 ### 2단계 - 스케일 아웃
-
-1. Launch Template 링크를 공유해주세요.
-
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+  - [x] 로드밸런서 생성
+  - [x] 타겟 대상 생성
+  - [x] 임계값 설정
+  - [x] 종료 정책 구성
+- [x] DNS, TLS 설정
+1. Launch Template 링크를 공유해주세요.  
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c761492b2914af82
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+![](img/step2/cloudwatch.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+#### smoke
+![](img/step2/smoke.png)
+#### load
+http_req_duration avg 기준 `21.35ms` -> `5.28ms`
+http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
+iteration_duration avg 기준 `187.36ms` -> `24.15ms`
+![](img/step2/load.png)
+#### stress
+에러가 나는 지점 vsu `272` -> `1,050`
+![](img/step2/stress.png)
 ---
 
 ### 1단계 - 쿼리 최적화
