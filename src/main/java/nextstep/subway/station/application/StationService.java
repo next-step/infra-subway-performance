@@ -1,5 +1,6 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.config.CacheConfig;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -25,8 +26,8 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    @Cacheable(value = "stations", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
+    @Cacheable(value = CacheConfig.STATION, unless = "#result == null or #result.size() == 0")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -39,10 +40,12 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
+    @Cacheable(value = CacheConfig.STATION, key = "#id", unless = "#result == null")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Cacheable(value = CacheConfig.STATION, key = "#id", unless = "#result == null")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
