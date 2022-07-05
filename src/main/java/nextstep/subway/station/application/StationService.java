@@ -40,12 +40,10 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    @Cacheable(value = CacheConfig.STATION, key = "#id", unless = "#result == null")
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = CacheConfig.STATION, key = "#id", unless = "#result == null")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
