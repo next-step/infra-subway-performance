@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Proxy(lazy = false)
 @Entity
 public class Section implements Serializable {
     @Id
