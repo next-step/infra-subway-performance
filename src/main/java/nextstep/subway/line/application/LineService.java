@@ -27,7 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    
+
     @CacheEvict (value = {"findPath","findLine"}, allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
@@ -36,6 +36,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "findLine")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -43,7 +44,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "findLine")
+
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
