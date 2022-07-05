@@ -149,7 +149,7 @@ from record r
                              inner join salary s on m.employee_id = s.id and s.end_date > now()
                              inner join department d on m.department_id = d.id and d.note = 'active'
                              inner join employee e on m.employee_id = e.id and m.end_date > now()
-                             inner join position p on m.employee_id = p.id and p.end_date > now()
+                             inner join position p on m.employee_id = p.id and p.end_date > now() and p.position_name='Manager'
                     order by s.annual_income desc limit 5) wm
                    on r.employee_id = wm.id and r.record_symbol = 'O';
 
