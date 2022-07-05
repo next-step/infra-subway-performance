@@ -19,76 +19,88 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
 - http_req_duration 기준
+
 * Smoke Test
-  - before : max=26.8ms
-  - after : max=5.39ms
-  - **약 79.8% 향상**
+    - before : max=26.8ms
+    - after : max=5.39ms
+    - **약 79.8% 향상**
 
 * Load Test
-  - before : max=410.86ms 
-  - after :max=31.53ms
-  - **약 92.3% 향상**
+    - before : max=410.86ms
+    - after :max=31.53ms
+    - **약 92.3% 향상**
 
 * stress
-  - before : max=1.83s
-  - after : max=1.03s
-  - **43.7% 향상**
-  
+    - before : max=1.83s
+    - after : max=1.03s
+    - **43.7% 향상**
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
 - nginx 설정
-  - gzip 압축
-  - cache 설정
-  - http2 설정
+    - gzip 압축
+    - cache 설정
+    - http2 설정
 
 - Was 성능 개선
-  - redis 캐시 적용
+    - redis 캐시 적용
 
 ---
 
 ### 2단계 - 스케일 아웃
 
 #### 미션 요구사항
+
 - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
 - [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
 - 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
-만약 원하는 동작이 브라우저에게 캐시를 확실히 무효화 시키고 싶을때는 아래와 같이 사용 가능 합니다.
+  만약 원하는 동작이 브라우저에게 캐시를 확실히 무효화 시키고 싶을때는 아래와 같이 사용 가능 합니다.
 - Cache-Control: no-cache, no-store, must-revalidate
-  - 확실한 캐시 무효화 응답
-  
+    - 확실한 캐시 무효화 응답
+
 - Cache-Control: no-cache
-  - 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용
-- Cache-Control: no-store 
-  - 데이터에 민감한 정보가 있으므로 저장하면 안됨
+    - 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용
+- Cache-Control: no-store
+    - 데이터에 민감한 정보가 있으므로 저장하면 안됨
 - Cache-Control: must-revalidate
-  - 캐시 만료후 최초 조회시 원 서버에 검증해야함
-  - 원 서버 접근 실패시 반드시 오류가 발생해야함 - 504(Gateway Timeout) 
-  - must-revalidate는 캐시 유효 시간이라면 캐시를 사용함
+    - 캐시 만료후 최초 조회시 원 서버에 검증해야함
+    - 원 서버 접근 실패시 반드시 오류가 발생해야함 - 504(Gateway Timeout)
+    - must-revalidate는 캐시 유효 시간이라면 캐시를 사용함
 
 - [x] springboot에 HTTP Cache, gzip 설정하기
 - [x] Launch Template 작성하기
@@ -99,17 +111,19 @@ npm run dev
    https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0dff23b666dae89f6
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-![img.png](testresult/captures/asg_cloudwatch_instance.png)
-![img_1.png](testresult/captures/asg_cloudwatch_instance_list.png)
-![img_2.png](testresult/captures/asg_cloudwatch_cpu.png)
+   ![img.png](testresult/captures/asg_cloudwatch_instance.png)
+   ![img_1.png](testresult/captures/asg_cloudwatch_instance_list.png)
+   ![img_2.png](testresult/captures/asg_cloudwatch_cpu.png)
+
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-   - [smoke rsult](testresult/asg_result/smoke_result.txt)
-   - [load rsult](testresult/asg_result/load_result.txt)
-   - [stress rsult](testresult/asg_result/stress_result.txt)
+    - [smoke rsult](testresult/asg_result/smoke_result.txt)
+    - [load rsult](testresult/asg_result/load_result.txt)
+    - [stress rsult](testresult/asg_result/stress_result.txt)
+
 ---
 
 ### 1단계 - 쿼리 최적화
@@ -117,6 +131,41 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```sql
+select
+    wm.id as 사원번호,
+    wm.name as 이름,
+    wm.income as 연봉 ,
+    wm.position_name as 직급명,
+    r.time as 입출입시간,
+    r.region as 지역,
+    r.record_symbol as 입출입구분
+from
+    record r
+        inner join(
+        select
+            e.id as id,
+            e.last_name as name,
+            p.position_name as position_name,
+            s.annual_income as income
+        from manager m
+                 inner join salary s on m.employee_id = s.id and s.end_date > now()
+                 inner join department d on m.department_id = d.id and d.note = 'active'
+                 inner join employee e on m.employee_id = e.id and m.end_date > now()
+                 inner join position p on m.employee_id = p.id and p.end_date > now()
+        order by s.annual_income desc
+            limit 5
+    ) wm
+                  on r.employee_id = wm.id and r.record_symbol = 'O';
+
+```
+
+**Duration/Fetch Time**
+0.334 sec / 0.000012 sec
+
+실행계획
+![img.png](stp3_explain_plan.png)
 
 ---
 
