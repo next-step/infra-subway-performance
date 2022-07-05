@@ -19,7 +19,7 @@ public class Line extends BaseEntity implements Serializable {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Line() {
