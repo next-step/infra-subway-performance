@@ -41,6 +41,9 @@ dependencies {
 
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// resources test
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 test {
