@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    // 지하철역 조회 기능은 자주 사용되지 않을 것으로 예상되기 때문에 굳이 캐시 처리하지 않음
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -36,6 +38,7 @@ public class StationService {
                        .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = CacheConfig.STATION, key = "#id")
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
