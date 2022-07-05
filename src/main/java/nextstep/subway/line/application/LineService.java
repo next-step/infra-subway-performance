@@ -28,7 +28,7 @@ public class LineService {
     }
 
 
-    @CacheEvict (value = {"findPath","findLine"}, allEntries = true)
+    @CacheEvict(value = {"findPath", "findLine"}, allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());

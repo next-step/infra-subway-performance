@@ -68,12 +68,12 @@ npm run dev
      ![web](step1/after-1/load.png)
      * was 서버 성능 개선
      ![was](step1/after-2/load.png)
-   * ###Stress
-     * 개선전
+   * ###Stress  
+     * 개선전 - vus(256)
      ![개선전](step1/before/stress.png)
-     * web 서버 성능 개선
+     * web 서버 성능 개선 - vus(270) 
      ![web](step1/after-1/stress.png)
-     * was 서버 성능 개선 
+     * was 서버 성능 개선 - vus(300)
      ![was](step1/after-2/stress.png)
    
 
@@ -86,10 +86,12 @@ npm run dev
       - 경로조회 API 부분 Redis Cache 적용
       - spring boot gzip 적용 
 
-   > 전반적으로 성능개선을 진행하면서 WEB 서버를 개선했을때 속도 측면에서는 제일 많이
+   > ~~전반적으로 성능개선을 진행하면서 WEB 서버를 개선했을때 속도 측면에서는 제일 많이
    > 개선 되었습니다.  
    > WAS 레디스와 gizp 설정으로 속도적인 측면에서는 오히려 늘어난감이 있었는데 Stress 테스트시  
-   > 더 많은 성공율을 보여주네요 
+   > 더 많은 성공율을 보여주네요~~ 
+   > 환경설정을 잘못해서 실제 프로덕션에서는 잘 못 동작 했었네요 
+   > 개선하면 개선할수록 더 많은 부하를 버팀을 확인하였습니다.
 
     
 

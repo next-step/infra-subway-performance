@@ -14,7 +14,6 @@ public class Section implements Serializable {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
-    @JsonIgnore
     private Line line;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
