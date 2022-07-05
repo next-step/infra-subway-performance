@@ -208,15 +208,13 @@ group by a.employee_id, a.last_name, a.annual_income, a.position_name, r.region,
 ### step4 요구사항
 #### 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
-- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+- [x] (1) Coding as a Hobby 와 같은 결과를 반환하세요.
 - 실행시간 개선전
 - [1_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_before.png)
 - 실행시간 개선후
 - [1_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_after.png)
 - 실행계획
 - [1_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_plan.png)
-- 실행결과
-- [1_result](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_plan.png)
 
 ```roomsql
 SELECT  p.hobby,
@@ -230,7 +228,7 @@ alter table programmer add primary key (id);
 create index idx_programmer_hobby on programmer (hobby);
 ```
 
-- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [x] (2) 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 - 실행시간 개선전
 - [2_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_before.png)
 - 실행시간 개선후
@@ -250,23 +248,92 @@ ON h.id = c.hospital_id;
 ```roomsql  
 alter table hospital add primary key (id);
 alter table covid add primary key (id);
+create index idx_covid_programmer_id_hospital_id on covid (programmer_id, hospital_id);
+
+```
+- [x] (3) 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 실행시간
+- [3_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/3/step4_3_time_after.png)
+- 실행계획
+- [3_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/3/step4_3_plan.png)
+
+
+```roomsql  
+select c.id, c.name, p.hobby, p.student, p.dev_type, p.years_coding
+from (
+	select c.id, h.name
+	from covid c
+	inner join hospital h 
+	on c.hospital_id = h.id
+) c
+inner join (
+	select id, hobby, student, dev_type, years_coding
+    from programmer p
+    where p.hobby = 'Yes' 
+		and (student like 'Yes%' or p.years_coding = '0-2 years')
+) p
+on p.id = c.id
+order by p.id;
+```
+```roomsql 
+x 
+```
+
+- [x] (4) 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 실행시간 개선전
+- [4_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_time_before.png)
+- 실행시간 개선후
+- [4_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_time_after.png)
+- 실행계획
+- [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_plan.png)
+
+```roomsql
+select c.stay, count(c.stay)
+from hospital h
+inner join covid c 
+on c.hospital_id = h.id
+inner join (
+	select m.id
+		from member m
+		inner join programmer p 
+        on m.id = p.id
+		and (m.age between 20 and 29)
+		and p.country = 'India'
+) m
+on c.id = m.id
+and name = '서울대병원'
+group by c.stay;
+```
+```roomsql  
+alter table member add primary key (id);
+create index idx_hospital_name on hospital (name);
 create index idx_covid_hospital_id on covid (hospital_id);
-create index idx_covid_programmer_id on covid (programmer_id);
+
 ```
-- [] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-```roomsql  
+- [x] (5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 실행시간
+- [4_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_time_after.png)
+- 실행계획
+- [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
+
+```roomsql
+select p.exercise, count(p.exercise)
+from programmer p
+inner join member m 
+on p.id = m.id
+inner join (
+	select c.id 
+	from covid c
+	inner join hospital h 
+    on c.hospital_id = h.id
+	and name = '서울대병원'
+) c
+on p.id = c.id
+and m.age between 30 and 39
+group by p.exercise;
 ```
 ```roomsql  
-```
-- [] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-```roomsql  
-```
-```roomsql  
-```
-- [] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-```roomsql  
-```
-```roomsql  
+x
 ```
 ---
 
