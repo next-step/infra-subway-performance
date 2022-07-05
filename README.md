@@ -209,6 +209,28 @@ group by a.employee_id, a.last_name, a.annual_income, a.position_name, r.region,
 #### 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
 
 - [] Coding as a Hobby 와 같은 결과를 반환하세요.
+- 실행시간 개선전
+- [1_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_time_before.png)
+- 실행시간 개선후
+- [1_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_time_after.png)
+- 실행계획
+- [1_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_plan.png)
+- 실행결과
+- [1_result](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/1/step4/step4_1_plan.png)
+
+```roomsql
+SELECT  p.hobby,
+        COUNT(1) * 100 / (SELECT COUNT(1)
+                          FROM programmer) AS percent
+FROM  programmer p
+GROUP BY hobby;
+```
+```roomsql
+alter table programmer add primary key (id);
+create index idx_programmer_hobby on programmer (hobby);
+```
+
+
 
 - [] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
