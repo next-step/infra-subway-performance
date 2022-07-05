@@ -14,9 +14,9 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.context.annotation.Profile;
 
+@Profile("prod")
 @EnableCaching
 @Configuration
-@Profile("prod")
 public class CacheConfig extends CachingConfigurerSupport {
 
     @Autowired
