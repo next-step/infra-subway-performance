@@ -235,7 +235,7 @@ create index idx_programmer_hobby on programmer (hobby);
 - [2_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_after.png)
 - 실행계획
 - [2_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_plan.png)
-
+- cost 444290
 ```roomsql  
 SELECT  c.id,
         h.name
@@ -259,20 +259,20 @@ create index idx_covid_programmer_id_hospital_id on covid (programmer_id, hospit
 
 
 ```roomsql  
-select c.id, c.name, p.hobby, p.student, p.dev_type, p.years_coding
+select c.id, c.name, p.hobby, p.dev_type, p.years_coding
 from (
-	select c.id, h.name
+	select c.id, c.programmer_id, h.name
 	from covid c
 	inner join hospital h 
-	on c.hospital_id = h.id
+    on c.hospital_id = h.id
 ) c
 inner join (
 	select id, hobby, student, dev_type, years_coding
     from programmer p
     where p.hobby = 'Yes' 
-		and (student like 'Yes%' or p.years_coding = '0-2 years')
+	and (student like 'Yes%' or p.years_coding = '0-2 years')
 ) p
-on p.id = c.id
+on p.id = c.programmer_id
 order by p.id;
 ```
 ```roomsql 
@@ -289,26 +289,30 @@ x
 
 ```roomsql
 select c.stay, count(c.stay)
-from hospital h
-inner join covid c 
+from covid c  
+inner join (
+		select h.id
+		from hospital h
+        where h.name = '서울대병원'
+	) h
 on c.hospital_id = h.id
 inner join (
-	select m.id
+		select m.id
 		from member m
 		inner join programmer p 
-        on m.id = p.id
+        on m.id = p.member_id
 		and (m.age between 20 and 29)
 		and p.country = 'India'
 ) m
-on c.id = m.id
-and name = '서울대병원'
-group by c.stay;
+on c.member_id = m.id
+group by c.stay
+order by null;
 ```
 ```roomsql  
 alter table member add primary key (id);
 create index idx_hospital_name on hospital (name);
-create index idx_covid_hospital_id on covid (hospital_id);
-
+create index idx_covid_hospital_id_member_id_stay on covid (hospital_id, member_id, stay);
+create index idx_programmer_country_member_id on programmer (country, member_id);
 ```
 - [x] (5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 - 실행시간
@@ -317,23 +321,31 @@ create index idx_covid_hospital_id on covid (hospital_id);
 - [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
 
 ```roomsql
-select p.exercise, count(p.exercise)
-from programmer p
-inner join member m 
-on p.id = m.id
+explain
+select m.exercise, count(m.exercise) 
+from covid c  
 inner join (
-	select c.id 
-	from covid c
-	inner join hospital h 
-    on c.hospital_id = h.id
-	and name = '서울대병원'
-) c
-on p.id = c.id
-and m.age between 30 and 39
-group by p.exercise;
+		select h.id
+		from hospital h
+        where h.name = '서울대병원'
+	) h
+on c.hospital_id = h.id
+inner join (
+		select m.id, p.exercise
+		from member m
+		inner join programmer p
+        on m.id = p.member_id
+		and (m.age between 30 and 39)
+) m
+on c.member_id = m.id
+group by m.exercise
+order by null;
+
 ```
+create index idx_covid_hospital_id_member_id on covid (hospital_id, member_id);
 ```roomsql  
-x
+create index idx_covid_hospital_id_member_id on covid (hospital_id, member_id);
+create index idx_programmer_member_id on programmer (member_id);
 ```
 ---
 
