@@ -165,33 +165,34 @@ $ stress -c 2
               join covid as c on c.hospital_id = h.id
               join programmer as p on c.programmer_id = p.id;
        2. indexing 후 쿼리(0.0053sec)
-          1. alter TABLE hospital ADD UNIQUE(id); -> 데이터가 많은 hospital에, join되는 키값인 hospital.id 를 인덱싱
-             alter TABLE programmer ADD UNIQUE(id); -> 데이터가 많은 programmer에, join되는 키값인 programmer.id 를 인덱싱
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+       3. 개선 전 실행계획
+          [img](/readmeSource/step4/개선전_1.png)
+       4. 
+
 
     3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
-       1. 일단 조회하기(0.823sec)
+       1. 일단 조회하기(조회불가)
           1. 특이사항 : 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
        select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p    -- and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time")) and
            join covid as c on (c.programmer_id is not null and hobby = "Yes" and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time"))) and p.id = c.programmer_id)
            join hospital as h on h.id = c.hospital_id
            order by c.programmer_id;
-       2. indexing 후 쿼리 (0.304sex)
-          1. create index covid_programmer_id on subway.covid(programmer_id); -> 데이터가 많은 covid에 join되는 키값인 programmer.id를 인덱싱
-             create index covid_hospital_id on subway.covid(hospital_id); -> 데이터가 많은 covid에 join되는 키값인 horpital.id를 인덱싱
-             create index programmer_id on subway.programmer(id); -> 데이터가 많은 programmer에 join되는 키값 인덱싱
-    
+       2. indexing 후 쿼리 (0.304sec)
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+          
     4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-       1. 일단 조회하기(1.210sec)
+       1. 일단 조회하기(조회불가)
        select c.stay, count(c.stay) from covid as c where
           c.hospital_id = (select id from hospital where name = "서울대병원")
           and programmer_id in (select id from programmer where country = "India")
           and member_id in (select id from member where age >= 20 and age <= 29)
           group by c.stay;
        2. indexing 후 쿼리(0.073sec)
-          1. create index covid_stay on subway.covid(stay); -> groupby 조건은 indexing을 하는것이 효율적이다
-             create index programmer_id on subway.programmer(id); -> 데이터가 많은 테이블의 join을 하는 key값은 index을 하는것이 효율적이다
-             create index member_id on subway.member(id); -> 데이터가 많은 테이블의 join을 하는 key값은 index을 하는것이 효율적이다
-    
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+          2. create index programmer_country on subway.programmer(id, country);
+             create index member_age on subway.member(id, age);
+       
     5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
        1. 일단 조회하기(0.495sec)
           select exercise, count(exercise) from programmer as p
