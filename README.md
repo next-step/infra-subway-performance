@@ -44,8 +44,12 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+    * [before](monitoring/check/before)
+    * [after](monitoring/check/after)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+    * 기존 nginx-proxy 에 gzip/cache 설정을 추가하였습니다.
+    * redis 를 연동하여 같은 조건으로 데이터 조회 시 캐싱된 데이터로 응답하도록 설정하였습니다.
 
 ---
 

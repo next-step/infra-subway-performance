@@ -1,0 +1,34 @@
+
+          /\      |‾‾| /‾‾/   /‾‾/   
+     /\  /  \     |  |/  /   /  /    
+    /  \/    \    |     (   /   ‾‾\  
+   /          \   |  |\  \ |  (‾)  | 
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: ./check/main_stress.js
+     output: -
+
+  scenarios: (100.00%) 1 scenario, 184 max VUs, 11m40s max duration (incl. graceful stop):
+           * default: Up to 184 looping VUs for 11m10s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+     ✓ response ok
+
+     checks.........................: 100.00% ✓ 25856     ✗ 0    
+     data_received..................: 42 MB   62 kB/s
+     data_sent......................: 7.6 MB  11 kB/s
+     http_req_blocked...............: avg=58.27µs  min=123ns   med=1.05µs   max=53.55ms p(90)=1.14µs   p(95)=1.17µs  
+     http_req_connecting............: avg=15.33µs  min=0s      med=0s       max=43.77ms p(90)=0s       p(95)=0s      
+   ✗ http_req_duration..............: avg=1.76s    min=3.58ms  med=33.62ms  max=7.28s   p(90)=3.74s    p(95)=3.76s   
+       { expected_response:true }...: avg=1.76s    min=3.58ms  med=33.62ms  max=7.28s   p(90)=3.74s    p(95)=3.76s   
+     http_req_failed................: 0.00%   ✓ 0         ✗ 51712
+     http_req_receiving.............: avg=114.52µs min=11.53µs med=94.49µs  max=10.6ms  p(90)=156.96µs p(95)=286.61µs
+     http_req_sending...............: avg=102.75µs min=17.72µs med=119.22µs max=7.3ms   p(90)=152.86µs p(95)=168.43µs
+     http_req_tls_handshaking.......: avg=41.57µs  min=0s      med=0s       max=27.1ms  p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=1.76s    min=6.23µs  med=33.56ms  max=7.28s   p(90)=3.74s    p(95)=3.76s   
+     http_reqs......................: 51712   77.084949/s
+     iteration_duration.............: avg=4.53s    min=1.03s   med=4.7s     max=8.28s   p(90)=4.77s    p(95)=4.78s   
+     iterations.....................: 25856   38.542475/s
+     vus............................: 12      min=3       max=184
+     vus_max........................: 184     min=184     max=184
+
