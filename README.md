@@ -318,21 +318,136 @@ npm run dev
 
 1. Launch Template 링크를 공유해주세요.
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0462747c8a6281a8f
 
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   ![img_5.png](img_5.png)
+   ![img_4.png](img_4.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- Smoke
+``` K6
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: InfluxDBv1 (http://52.78.136.247:8086)
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 30s (gracefulStop: 30s)
+
+
+running (0m31.1s), 0/1 VUs, 7 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  30s
+
+     ✓ mainPage
+     ✓ loginPage
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ pathPage
+     ✓ requestPath
+
+     checks.........................: 100.00% ✓ 42       ✗ 0
+     data_received..................: 54 kB   1.7 kB/s
+     data_sent......................: 3.8 kB  123 B/s
+     http_req_blocked...............: avg=2.7ms    min=0s      med=1µs      max=113.42ms p(90)=2µs     p(95)=2µs
+     http_req_connecting............: avg=476.78µs min=0s      med=0s       max=20.02ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=69.22ms  min=12.56ms med=22.53ms  max=1.44s    p(90)=41.06ms p(95)=138.83ms
+       { expected_response:true }...: avg=69.22ms  min=12.56ms med=22.53ms  max=1.44s    p(90)=41.06ms p(95)=138.83ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 42
+     http_req_receiving.............: avg=255.78µs min=44µs    med=88µs     max=3.22ms   p(90)=272.2µs p(95)=1.26ms
+     http_req_sending...............: avg=240.19µs min=79µs    med=231.99µs max=614µs    p(90)=386.1µs p(95)=407.15µs
+     http_req_tls_handshaking.......: avg=1.24ms   min=0s      med=0s       max=52.08ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=68.72ms  min=12.41ms med=21.65ms  max=1.44s    p(90)=40.52ms p(95)=138.38ms
+     http_reqs......................: 42      1.35218/s
+     iteration_duration.............: avg=4.43s    min=4.12s   med=4.16s    max=6.17s    p(90)=4.97s   p(95)=5.57s
+     iterations.....................: 7       0.225363/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+- Load
+```
+running (58m13.8s), 00/12 VUs, 2263 complete and 0 interrupted iterations
+default ✓ [======================================] 00/12 VUs  41m0s
+
+     ✗ mainPage
+      ↳  99% — ✓ 2259 / ✗ 4
+     ✓ loginPage
+     ✗ logged in successfully
+      ↳  99% — ✓ 2262 / ✗ 1
+     ✓ retrieved member
+     ✗ pathPage
+      ↳  99% — ✓ 2257 / ✗ 5
+     ✗ requestPath
+      ↳  99% — ✓ 2260 / ✗ 2
+
+     checks.........................: 99.91% ✓ 13563    ✗ 12
+     data_received..................: 16 MB  4.5 kB/s
+     data_sent......................: 1.1 MB 301 B/s
+     http_req_blocked...............: avg=109.79µs min=0s     med=1µs     max=152.69ms p(90)=2µs     p(95)=2µs
+     http_req_connecting............: avg=15.35µs  min=0s     med=0s      max=14.65ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=16.33ms  min=7.02ms med=13.87ms max=412.27ms p(90)=22.27ms p(95)=26.08ms
+       { expected_response:true }...: avg=15.99ms  min=7.02ms med=13.86ms max=345.54ms p(90)=22.22ms p(95)=25.96ms
+     http_req_failed................: 0.08%  ✓ 12       ✗ 13563
+     http_req_receiving.............: avg=124.73µs min=0s     med=76µs    max=22.67ms  p(90)=113µs   p(95)=137µs
+     http_req_sending...............: avg=208.74µs min=13µs   med=177µs   max=5.8ms    p(90)=331µs   p(95)=381.29µs
+     http_req_tls_handshaking.......: avg=76.53µs  min=0s     med=0s      max=100.77ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=16ms     min=6.82ms med=13.52ms max=412.25ms p(90)=21.87ms p(95)=25.54ms
+     http_reqs......................: 13575  3.885495/s
+     iteration_duration.............: avg=4.1s     min=1.57s  med=4.09s   max=5.57s    p(90)=4.12s   p(95)=4.14s
+     iterations.....................: 2263   0.647726/s
+     vus............................: 1      min=1      max=12
+     vus_max........................: 12     min=12     max=12
+```
+
+- Stress
+```
+     ✗ mainPage
+      ↳  9% — ✓ 246939 / ✗ 2462131
+     ✗ loginPage
+      ↳  9% — ✓ 246945 / ✗ 2462125
+     ✗ logged in successfully
+      ↳  9% — ✓ 246952 / ✗ 2462118
+     ✓ retrieved member
+     ✗ pathPage
+      ↳  99% — ✓ 246928 / ✗ 24
+     ✗ requestPath
+      ↳  99% — ✓ 246928 / ✗ 24
+
+     checks.........................: 16.70%  ✓ 1481644     ✗ 7386422
+     data_received..................: 1.7 GB  757 kB/s
+     data_sent......................: 113 MB  50 kB/s
+     http_req_blocked...............: avg=1.29µs   min=0s     med=0s      max=321.91ms p(90)=0s      p(95)=1µs
+     http_req_connecting............: avg=282ns    min=0s     med=0s      max=35.68ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=2.43ms   min=0s     med=0s      max=6.86s    p(90)=11.59ms p(95)=15.22ms
+       { expected_response:true }...: avg=14.59ms  min=5.53ms med=12.58ms max=6.86s    p(90)=19.33ms p(95)=22.52ms
+     http_req_failed................: 83.29%  ✓ 7386422     ✗ 1481644
+     http_req_receiving.............: avg=29.28µs  min=0s     med=0s      max=4.5s     p(90)=29µs    p(95)=51µs
+     http_req_sending...............: avg=12.12µs  min=0s     med=0s      max=38.51ms  p(90)=43µs    p(95)=77µs
+     http_req_tls_handshaking.......: avg=892ns    min=0s     med=0s      max=312.93ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=2.39ms   min=0s     med=0s      max=6.86s    p(90)=11.41ms p(95)=14.99ms
+     http_reqs......................: 8868066 3887.831865/s
+     iteration_duration.............: avg=126.19ms min=85.7µs med=31.86ms max=8.01s    p(90)=120.2ms p(95)=1.07s
+     iterations.....................: 2709070 1187.678201/s
+     vus............................: 32      min=1         max=500
+     vus_max........................: 500     min=500       max=500
+```
 
 ---
-
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+  <<<<<<< Updated upstream
     ```
   select s.사원번호, s.이름, g.연봉, j.직급명, sr.입출입시간, sr.지역, sr.입출입구분
   from (select g.사원번호, g.연봉
@@ -346,103 +461,38 @@ $ stress -c 2
   inner join (select 사원번호, 입출입시간, 지역, 입출입구분 from tuning.사원출입기록 where 입출입구분 = 'O') as sr on s.사원번호 = sr.사원번호
   inner join (select 사원번호, 직급명 from tuning.직급 where 종료일자 = '9999-01-01') as j on j.사원번호 = s.사원번호
     ```
-### 2단계 - 인덱스 설계
+### 3단계 - 쿼리 최적화
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요.
-   - 적용 인덱스
-     ```
-     
-     -- subway.member
-     ALTER TABLE subway.member add constraint PK_MEMBER__ID primary key (`id`);
-     CREATE INDEX `IDX_MEMBER__AGE` ON subway.member (`age`);
-     
-     
-     -- subway.covid     
-     ALTER TABLE subway.covid add constraint PK_COVID__ID primary key (`id`);
-     CREATE INDEX `idx_covid_programmer_id` ON subway.covid (`programmer_id`);
-     CREATE INDEX `idx_covid_member_id` ON subway.covid  (`member_id`);
-     CREATE INDEX `idx_covid_hospital_id` ON subway.covid  (`hospital_id`);
-  
-     -- subway.programmer
-     ALTER TABLE subway.programmer add constraint PK_PROGRAMMER__ID primary key (`id`); 
-     CREATE INDEX `IDX_PROGRAMMER__MEMBER_ID` ON subway.programmer (`member_id`);
-     CREATE INDEX `IDX_PROGRAMMER__COUNTRY` ON subway.programmer (`country`);
-     CREATE INDEX `idx_programmer_hobby_student_years_coding` on subway.programmer (`hobby`,`student`,`years_coding`)  
-     
-  
-     ALTER TABLE subway.hospital add constraint PK_HOSPITAL__ID primary key (`id`);
-     CREATE INDEX `idx_hospital_name_id` ON subway.hospital (`name`,`id`)
-     ```
-   - Coding as a Hobby 와 같은 결과를 반환하세요. 
-     - hobby 인덱스 삭제하고 idx_programmer_hobby_student_years_coding 를 태웠습니다 
-         ```
-         select concat(round(count(case when hobby = 'Yes' then 1 end) / count(*) * 100, 1), '%') yes,
-         concat(round(count(case when hobby = 'No' then 1 end) / count(*) * 100, 1), '%') No
-         from subway.programmer;
-         ```
-  
-   - 프로그래머별로 해당하는 병원 이름을 반환하세요.
-     - programmer id로 Range Index 를 태웠습니다. 
-     - 페이징 쿼리 적용하여 Fetch를 줄였습니다.
-       ```
-       select c.id, h.name
-       from (select id, hospital_id, programmer_id from subway.covid) c     
-       inner join (select id from subway.programmer) p
-       on c.programmer_id = p.id
-       inner join (select id, name from subway.hospital) h 
-       on c.hospital_id = h.id
-       where p.id >= 0
-       limit 0, 1000;
-       ```
-
-   - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
-      - 이전 작업은 (취미 and 학생) or (주니어 and no 학생) 조건으로 진행 했었습니다.
-      - 다른 곳에 피드백하신 쿼리조건 참고하여 다시 수정하였습니다.
-      - 한국어 참 어렵네요..;;
-      - hobby, student, years_coding 복합 인덱스 적용
-      - 페이징쿼리 적용
-        ```
-        select c.id, h.name, p.hobby, p.dev_type, p.years_coding, student
-        from (select id, hobby, student, dev_type, years_coding from subway.programmer
-              where hobby = 'Yes' and (years_coding = '0-2 years' or student like 'Yes%')) p
-        inner join (select id, programmer_id, hospital_id from subway.covid) c
-        on p.id = c.programmer_id
-        inner join (select id, name from subway.hospital) h
-        on h.id = c.hospital_id  
-        order by p.id 0, limit 100;
-        ```
-
-   - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
-     - File Sort 제거하였습니다.
-         ```
-        select c.stay, count(*) count
-        from (select id from subway.member where age between 20 and 29)  m
-        inner join (select id from subway.programmer where country = 'India') p 
-        on m.id = p.id
-        inner join (select id, hospital_id, stay from subway.covid) c 
-        on p.id = c.id
-        inner join (select id from subway.hospital where id = 9) h 
-        on h.id = c.hospital_id
-        group by c.stay
-        order by null;
-         ```
-  
-   - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
-     - File Sort 제거하였습니다. 
-         ```
-       select p.exercise, count(*) count
-       from (select id, member_id, hospital_id, programmer_id from subway.covid) c   
-       inner join (select id from subway.hospital where id = 9) h
-       on c.hospital_id = h.id
-       inner join (select id, exercise from subway.programmer) p
-       on c.programmer_id  = p.id
-       inner join (select id, age from subway.member where age between 30 and 39) m
-       on c.member_id = m.id
-       group by p.exercise
-       order by null;
-         ```
+  ```sql
+  SELECT employee.id            AS 사원번호,
+         employee.last_name     AS 이름,
+         salary.annual_income   AS 연봉,
+         position.position_name AS 직급명,
+         record.time            AS 입출입시간,
+         record.region          AS 지역,
+         record.record_symbol   AS 입출입구분
+  FROM   (
+          SELECT salary.id, salary.annual_income
+            FROM (SELECT id, annual_income FROM tuning.salary WHERE  end_date = '9999-01-01') AS salary
+      INNER JOIN (SELECT employee_id FROM   tuning.manager WHERE  end_date = '9999-01-01') AS manager 
+              ON salary.id = manager.employee_id
+       ORDER  BY salary.annual_income DESC
+           LIMIT 5
+         ) salary
+  INNER JOIN (SELECT id, last_name FROM tuning.employee) AS employee 
+          ON salary.id = employee.id
+  INNER JOIN (SELECT employee_id, department_id FROM tuning.employee_department WHERE end_date = '9999-01-01') AS department
+          ON department.employee_id = employee.id
+  INNER JOIN (SELECT id, position_name FROM tuning.position WHERE end_date = '9999-01-01') AS position
+          ON position.id = employee.id
+  INNER JOIN (SELECT employee_id, time, region, record_symbol FROM tuning.record WHERE  record_symbol = 'O' AND region <> '') AS record
+          ON record.employee_id = department.employee_id
+   ORDER  BY salary.annual_income DESC, record.record_symbol ASC; 
+  ```
 ---
+### 2단계 - 인덱스 설계
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+---
 ### 추가 미션
-
-1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
