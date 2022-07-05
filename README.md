@@ -45,14 +45,14 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 #### 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 * Smoke
-  * Before: /loadtest/before_smoke.png
-  * After: /loadtest/after_smoke.png
+  * Before: /loadtest/step1/before_smoke.png
+  * After: /loadtest/step1/after_smoke.png
 * Load
-  * Before: /loadtest/before_load.png
-  * After: /loadtest/after_load.png
+  * Before: /loadtest/step1/before_load.png
+  * After: /loadtest/step1/after_load.png
 * Stress
-  * Before: /loadtest/before_stress.png
-  * After: /loadtest/after_stress.png
+  * Before: /loadtest/step1/before_stress.png
+  * After: /loadtest/step1/after_stress.png
 
 #### 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 * Nginx
@@ -66,15 +66,17 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+#### 1. Launch Template 링크를 공유해주세요.
+* [ttungga-launch-template](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a27f24997617b038)
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+#### 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+* /loadtest/step2/cloudwatch_stress_2x.png
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* /loadtest/step2/smoke.png
+* /loadtest/step2/load.png
+* /loadtest/step2/stress.png
+* /loadtest/step2/stress_2x.png
 
 ---
 
