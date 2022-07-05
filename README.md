@@ -66,7 +66,7 @@ url: https://yang-infra-subway.p-e.kr/
 [서버자원사용](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/cloudwatch%20%EC%84%9C%EB%B2%84%EC%9E%90%EC%9B%90%EC%82%AC%EC%9A%A9.png)  
 [인스턴스생성](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A6%9D%EA%B0%80.png)
 
-Cloudwatch에서 인스턴스가 증가한것을 대시보드에 추가하고싶었는데 찾지 못하였습니다. 그래서 인스턴스 리스트에서 추가된 결과를 첨부하였습니다.
+/mission/step2/cloudwatch 인스턴스증가.png에 추가하였습니다.
 
 ```sh
 $ stress -c 2
