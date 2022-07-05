@@ -321,7 +321,7 @@ create index idx_programmer_country_member_id on programmer (country, member_id)
 - [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
 
 ```roomsql
-explain
+
 select m.exercise, count(m.exercise) 
 from covid c  
 inner join (
