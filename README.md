@@ -60,19 +60,26 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+  + [링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0dd7ae9f6c5d7501c)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
 ```sh
 $ stress -c 2
 ```
+  + images/step2 디렉토리를 참고해주세요
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+  + images/step2 디렉토리를 참고해주세요
+  + Load test -> http_req_duration avg 7.64 -> 3.49로 3.15ms 감소
+  + Stress test -> http_req_duration avg 306.66 -> 43.27로 263.39ms 감소 및 실패율 0%
 
 ### 미션 요구사항
-- [ ] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-- [ ] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-- [ ] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [x] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - `no-store`만으로 캐시가 무효화 될 수 있지만 HTTP 스펙상 다양한 이슈에 대응하기 위해 `cache-control: no-cache, no-store, must-revalidate` 사용을 더 권장한다고 합니다. 
+  - 그러므로 결론은 가능하다. 입니다
+  - [참고](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
 
 ---
 
