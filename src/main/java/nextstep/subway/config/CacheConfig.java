@@ -26,6 +26,7 @@ public class CacheConfig extends CachingConfigurerSupport {
     public static final long DEFAULT_EXPIRE_SECONDS = 60;
     public static final String STATION = "station";
     public static final String LINE = "line";
+    public static final String PATH = "path";
 
     @Autowired
     RedisConnectionFactory connectionFactory;
@@ -41,6 +42,8 @@ public class CacheConfig extends CachingConfigurerSupport {
                                                                             .entryTtl(Duration.ofHours(CacheConfig.DEFAULT_EXPIRE_SECONDS)));
         cacheConfigurations.put(CacheConfig.LINE, RedisCacheConfiguration.defaultCacheConfig()
                                                                             .entryTtl(Duration.ofHours(CacheConfig.DEFAULT_EXPIRE_SECONDS)));
+        cacheConfigurations.put(CacheConfig.PATH, RedisCacheConfiguration.defaultCacheConfig()
+                                                                         .entryTtl(Duration.ofHours(CacheConfig.DEFAULT_EXPIRE_SECONDS)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(connectionFactory)
