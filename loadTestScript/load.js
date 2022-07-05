@@ -3,9 +3,9 @@ import { check, group, sleep, fail } from "k6";
 
 export let options = {
     stages: [
-        { duration: '30s', target: 45 },
-        { duration: '1m', target: 50 },
-        { duration: '30s', target: 0 },
+        { duration: '1m', target: 45 },
+        { duration: '2m', target: 50 },
+        { duration: '1m', target: 0 },
 
     ],
     thresholds: {
@@ -39,14 +39,11 @@ const pathSearch = () => {
 }
 
 
-
 export default function () {
     // 메인 페이지로 이동
     mainPageSearch();
-
     // 경로조회 페이지 이동
     pathPageSearch();
-
     // 경로 조회
     pathSearch();
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
+    private final static Duration REDIS_TTL_DURATION = Duration.ofMinutes(10);
 
     @Autowired
     private RedisConnectionFactory connectionFactory;
@@ -29,7 +31,8 @@ public class CacheConfig extends CachingConfigurerSupport {
     public CacheManager redisCacheManager() {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper())));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper())))
+                .entryTtl(REDIS_TTL_DURATION);
 
         return RedisCacheManagerBuilder.fromConnectionFactory(connectionFactory)
                 .cacheDefaults(redisCacheConfiguration)
@@ -37,15 +40,11 @@ public class CacheConfig extends CachingConfigurerSupport {
     }
 
     private ObjectMapper objectMapper() {
-
         return new ObjectMapper()
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .registerModules(new JavaTimeModule())
                 .activateDefaultTyping(BasicPolymorphicTypeValidator.builder().allowIfSubType(Object.class).build(),
                         ObjectMapper.DefaultTyping.NON_FINAL);
-
-
-
     }
 }
 
