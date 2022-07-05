@@ -44,7 +44,7 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-- Before ([경로](/result/before))
+- Before ([경로](result/before))
     - Http Request Duration 평균
         - Smoke  : 7.1ms
         - Load   : 7.65ms
@@ -59,7 +59,7 @@ npm run dev
          | 구간관리   | 65                | 3.0        | 3.2         |
          | 경로검색   | 66                | 2.7        | 2.8        | 
       
-- After ([경로](/result/after))
+- After ([경로](result/after))
     - Http Request Duration 평균
         - Smoke  : 6.42ms (-약 9%)
         - Load   : 6.85ms (-약 10%)
@@ -129,14 +129,14 @@ npm run dev
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
    
-    ![cpu](/step2/cpu_stress_cloudwatch.png)
+    ![cpu](step2/2/cpu_stress_cloudwatch.png)
    
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-    - 결과 이미지(k6, grafana)([경로](/step/3))
+    - 결과 이미지(k6, grafana)([경로](step/3))
     - Http Request Duration 평균
         - Smoke  : 6.38ms
         - Load   : 5.93ms 
