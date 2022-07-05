@@ -109,32 +109,38 @@ npm run dev
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
 ```sql
-select  T.id as 사원번호,
-        T.name as 이름,
-        T.annual_income as 연봉,
-        T.position_name as 직급명,
-        R.region as 지역,
-        R.record_symbol as 입출입구분,
-        R.time as 입출입시간
-from record R, 
-	(select E.id,
-            concat(E.last_name, ' ', E.first_name) as name,
-            S.annual_income,
-            P.position_name
-	from department D, manager M, employee E, position P, salary S
-	where D.id = M.department_id
-	and upper(D.note) = 'ACTIVE'
-	and E.id = M.employee_id
-	and P.id = M.employee_id 
-	and P.position_name = 'Manager'
-	and P.end_date = '9999-01-01'
-	and S.id = M.employee_id
-	and S.end_date = '9999-01-01'
-	ORDER BY S.annual_income DESC
-	limit 5
-) as T
-where R.employee_id = T.id
-and R.record_symbol = 'O';
+select
+    T.id as 사원번호,
+    T.name as 이름,
+    T.annual_income as 연봉,
+    T.position_name as 직급명,
+    R.region as 지역,
+    R.record_symbol as 입출입구분,
+    R.time as 입출입시간
+from record R join
+     (select
+          E.id,
+          concat(E.last_name, ' ', E.first_name) as name,
+          S.annual_income,
+          P.position_name
+      from department D
+               join manager M
+                    on D.id = M.department_id
+                        and upper(D.note) = 'ACTIVE'
+               join employee E
+                    on E.id = M.employee_id
+               join position P
+                    on P.id = M.employee_id
+                        and P.position_name = 'Manager'
+                        and P.end_date = '9999-01-01'
+               join salary S
+                    on S.id = M.employee_id
+                        and S.end_date = '9999-01-01'
+      ORDER BY S.annual_income DESC
+          limit 5
+     ) as T
+     on R.employee_id = T.id
+         and R.record_symbol = 'O';
 ```
 ![img.png](./performance/step3/result.png)
 
