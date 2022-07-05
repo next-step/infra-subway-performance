@@ -44,8 +44,41 @@ const myInfo = (accessToken) => {
     check(myObjects, { 'retrieved member': (obj) => obj.id != 0 });
 }
 
+function getLines(accessToken) {
+    let authHeaders = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    let response = http.get(`${BASE_URL}/lines`, authHeaders);
+    check(response, {'retrieved lines': (response) => response.status === 200 });
+}
+
+function getStations(accessToken) {
+    let authHeaders = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    let response = http.get(`${BASE_URL}/stations`, authHeaders);
+    check(response, {'retrieved stations': (response) => response.status === 200 });
+}
+
+function getFavorites(accessToken) {
+    let authHeaders = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+    let response = http.get(`${BASE_URL}/favorites`, authHeaders);
+    check(response, {'retrieved favorites': (response) => response.status === 200 });
+}
+
 export default function ()  {
     let accessToken = login();
     myInfo(accessToken);
+    getLines(accessToken);
+    getStations(accessToken);
+    getFavorites(accessToken);
     sleep(1);
 };
