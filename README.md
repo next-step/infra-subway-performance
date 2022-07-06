@@ -149,9 +149,7 @@ npm run dev
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+![이미지](/k6/stress/stress_feedback_auto_scaling.PNG)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
