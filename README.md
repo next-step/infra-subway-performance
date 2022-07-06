@@ -62,6 +62,16 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+####Step2 미션 내용
+- 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+####요구사항
+- [ ] springboot에 HTTP Cache, gzip 설정하기
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성하기
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
