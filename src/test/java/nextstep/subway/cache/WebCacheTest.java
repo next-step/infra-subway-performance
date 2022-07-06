@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.support.version.SubwayVersion;
 import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ public class WebCacheTest extends AcceptanceTest {
     @Autowired
     private SubwayVersion subwayVersion;
 
+    @Disabled
     @Test
     void etag() {
         // given
@@ -29,6 +31,7 @@ public class WebCacheTest extends AcceptanceTest {
         assertThat(응답.getHeader(HttpHeaders.ETAG)).isNotNull();
     }
 
+    @Disabled
     @Test
     void notModified_givenEtag() {
         // given
