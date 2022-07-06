@@ -31,7 +31,6 @@ const pathPageSearch = () => {
 //경로조회
 const pathSearch = (source, target) => {
     let pathApi = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`)
-    console.log(pathApi.status);
     check(pathApi, {
             "Path Api success:": (res) => res.status === 200,
             "Path Api find path success:": (res) => res.json().hasOwnProperty("stations")
