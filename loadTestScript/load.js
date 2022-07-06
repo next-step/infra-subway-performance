@@ -12,6 +12,8 @@ export let options = {
         http_req_duration: ["p(99)<1500"], // 99% of requests must complete below 1.5s
     },
 };
+
+
 const BASE_URL = "https://www.kbh0581.r-e.kr";
 
 //main page  조회
@@ -26,15 +28,17 @@ const pathPageSearch = () => {
     check(pathPage, { "retrieved page page:": (obj) => obj.status === 200});
 }
 
-//경로 조회 API
-const pathSearch = () => {
-    let pathApi = http.get(`${BASE_URL}/paths?source=1&target=2`)
+//경로조회
+const pathSearch = (source, target) => {
+    let pathApi = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`)
+    console.log(pathApi.status);
     check(pathApi, {
             "Path Api success:": (res) => res.status === 200,
             "Path Api find path success:": (res) => res.json().hasOwnProperty("stations")
         }
     );
 }
+
 
 
 //노선 api 조회
@@ -49,6 +53,10 @@ const stationsApiSearch = () => {
     check(stationApi, { "retrieved station page:": (obj) => obj.status === 200});
 }
 
+const multiPathSearch = (testData = []) => {
+    testData.forEach((data) => pathSearch(data.source, data.target))
+}
+
 
 
 
@@ -61,6 +69,15 @@ export default function () {
     lineApiSearch();
     //역 조회
     stationsApiSearch();
+
     // 경로 조회
-    pathSearch();
+    const searchPaths= [
+        {source: 1, target: 3},
+        {source: 1, target: 4},
+        {source: 1, target: 5},
+        {source: 3, target: 5},
+        {source: 3, target: 2},
+    ]
+
+    multiPathSearch(searchPaths);
 }
