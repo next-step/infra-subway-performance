@@ -43,7 +43,7 @@
 - [X] Spring Boot에 HTTP Cache, gzip 설정하기 
 - [X] Launch Template 작성하기 
 - [X] Auto Scaling Group 생성하기 
-- [] Smoke, Load, Stress 테스트 후 결과를 기록
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ## Web Cache 다루기
 - [웹 서비스 캐시 똑똑하게 다루기](https://toss.tech/article/smart-web-service-cache)
