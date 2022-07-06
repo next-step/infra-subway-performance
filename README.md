@@ -236,6 +236,7 @@ create index idx_programmer_hobby on programmer (hobby);
 - 실행계획
 - [2_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_plan.png)
 - cost 444290
+
 ```roomsql  
 SELECT  c.id,
         h.name
@@ -245,6 +246,7 @@ ON p.id = c.programmer_id
 INNER JOIN hospital h
 ON h.id = c.hospital_id;
 ```
+
 ```roomsql  
 alter table hospital add primary key (id);
 alter table covid add primary key (id);
