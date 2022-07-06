@@ -43,21 +43,12 @@ npm run dev
 
 
 ### 1단계 - 화면 응답 개선하기
-[step1](./docs/step1.md)
+[step1](docs/step1/step1.md)
 
 ---
 
 ### 2단계 - 스케일 아웃
-
-1. Launch Template 링크를 공유해주세요.
-
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
-
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+[step2](docs/step2/step2.md)
 
 ---
 
