@@ -34,6 +34,8 @@ dependencies {
 	// redis
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
+
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
