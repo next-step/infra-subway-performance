@@ -149,7 +149,8 @@ from record r
                              inner join salary s on m.employee_id = s.id and s.end_date > now()
                              inner join department d on m.department_id = d.id and d.note = 'active'
                              inner join employee e on m.employee_id = e.id and m.end_date > now()
-                             inner join position p on m.employee_id = p.id and p.end_date > now() and p.position_name='Manager'
+                             inner join position p
+                                        on m.employee_id = p.id and p.end_date > now() and p.position_name = 'Manager'
                     order by s.annual_income desc limit 5) wm
                    on r.employee_id = wm.id and r.record_symbol = 'O';
 
@@ -169,77 +170,142 @@ from record r
 
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 
-```sql
+```mysql
 select hobby, round(count(*) / (select count(*) from programmer) * 100, 1)
 from programmer
 group by hobby;
 ```
-개선전  
+
+#### 개선전  
 0.477 sec / 0.000021 sec
 
-
 index 추가
-```sql
-CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) 
+
+```mysql
+CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby)
 
 ```
-개선 후 : 0.070 sec / 0.0000069 sec
+
+#### 개선 후 : 0.070 sec / 0.0000069 sec
 ![after_explain_1.png](after_explain_1.png)
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
-```sql
+#### 실행 쿼리
+```mysql
 select c.id, h.name
 from hospital h
          inner join covid c on h.id = c.hospital_id
          inner join programmer p on p.id = c.programmer_id;
 ```
-개선전
+
+#### 개선전
 0.712 sec / 0.378 sec
 개선 작업
-alter table covid primary key(id);
-alter table programmer add primary key (id);
-alter table hospital add primary key (id);
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
 CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
 CREATE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id) ;
+```
 
-
-개선후
+#### 개선후
 0.011 sec / 0.00045 sec
 ![after_explain_2.png](after_explain_2.png)
-
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
-```sql
-select c.id, h.name from
-(select p.id as id
-from programmer p
-where (hobby = 'Yes' and student like 'Yes%')
-   or years_coding = '0-2 years') user
-inner join covid c on c.programmer_id = user.id
-inner join hospital h on h.id = c.hospital_id
+#### 실행 쿼리
+```mysql
+select c.id, h.name
+from (select p.id as id
+      from programmer p
+      where (hobby = 'Yes' and student like 'Yes%')
+         or years_coding = '0-2 years') user
+inner join covid c
+on c.programmer_id = user.id
+    inner join hospital h on h.id = c.hospital_id
 order by user.id;
 ```
 
-개선 작업
-alter table covid primary key(id);
-alter table programmer add primary key (id);
-alter table hospital add primary key (id);
+#### 개선 작업
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
 CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
 CREATE INDEX `idx_programmer_hobby_student_years_coding`  ON `subway`.`programmer` (hobby, student, years_coding) ;
-
+```
 개선 후
 0.011 sec / 0.0053 sec
 ![after_explain_3.png](after_explain_3.png)
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
+#### 실행 쿼리
+```mysql
+select c.stay, count(c.stay)
+from covid c
+         inner join
+         (select id from `member` where age between 20 and 29) m
+         on c.member_id = m.id
+         inner join programmer p on c.programmer_id = p.id and p.country = 'India'
+         inner join hospital h on c.hospital_id = h.id and h.name = '서울대병원'
+group by c.stay;
+```
+
+#### 개선 작업
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
+alter table `member` add primary key(id);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (`programmer_id`) ;
+CREATE INDEX `idx_member_age`  ON `subway`.`member` (`age`) ;
+CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
+CREATE INDEX `idx_programmer_country`  ON `subway`.`programmer` (`country`) ;
+```
+#### 개선 후
+0.056 sec / 0.000023 sec
+![after_explain_4.png](after_explain_4.png)
+
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+#### 실행 쿼리
+```mysql
+select p.exercise as '운동 횟수', count(p.exercise) as '집계'
+from (select id, age from member where age between 30 and 39) m
+         inner join
+         (select id, hospital_id, member_id from covid) c
+         on c.member_id = m.id
+         inner join
+         (select id from hospital where name = '서울대병원') h
+         on c.hospital_id = h.id
+         inner join programmer p on p.member_id = m.id
+group by p.exercise;
+```
+#### 개선 작업
+
+```mysql
+alter table `covid` add primary key(`id`);
+alter table `programmer` add primary key (`id`);
+alter table `hospital` add primary key (`id`);
+alter table `member` add primary key(`id`);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
+CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
+CREATE INDEX `idx_member_age`  ON `subway`.`member` (`age`) ;
+CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
+CREATE INDEX `idx_programmer_exercise`  ON `subway`.`programmer` (`exercise`) ;
+CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
+```
+#### 개선 후
+0.052 sec / 0.000010 sec
+![after_explain_5.png](after_explain_5.png)
 ---
 
 ### 추가 미션
