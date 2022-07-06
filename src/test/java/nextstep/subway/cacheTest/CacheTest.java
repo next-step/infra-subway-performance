@@ -4,6 +4,7 @@ import static nextstep.subway.common.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
+import nextstep.subway.AcceptanceTest;
 import nextstep.subway.version.SubwayVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +17,8 @@ import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CacheTest {
+
+public class CacheTest extends AcceptanceTest {
 
     @LocalServerPort
     int port;
