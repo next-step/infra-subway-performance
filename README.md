@@ -312,7 +312,7 @@ order by null;
 alter table member add primary key (id);
 create index idx_hospital_name on hospital (name);
 create index idx_covid_hospital_id_member_id_stay on covid (hospital_id, member_id, stay);
-create index idx_programmer_country_member_id on programmer (country, member_id);
+create index idx_programmer_member_id_country on programmer (member_id, country);
 ```
 - [x] (5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 - 실행시간
@@ -342,10 +342,7 @@ group by m.exercise
 order by null;
 
 ```
-create index idx_covid_hospital_id_member_id on covid (hospital_id, member_id);
 ```roomsql  
-create index idx_covid_hospital_id_member_id on covid (hospital_id, member_id);
-create index idx_programmer_member_id on programmer (member_id);
 ```
 ---
 
