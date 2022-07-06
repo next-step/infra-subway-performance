@@ -40,6 +40,9 @@ dependencies {
 	// redis
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
+	// webflux
+	implementation('org.springframework.boot:spring-boot-starter-webflux')
+
 	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4")
 
 	runtimeOnly 'com.h2database:h2'

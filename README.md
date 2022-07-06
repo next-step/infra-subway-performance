@@ -135,15 +135,33 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+0. 요구사항
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성하기
+- [x] DNS(내도메인.한국), TLS 설정
+    - AWS ALB IP를 A 레코드로 등록했으나, ALB IP가 바뀌는 이슈가 있습니다.
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
+
+[링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0dd94461facf15a35)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+![이미지](/k6/stress/stress_feedback_auto_scaling.PNG)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+- 2단계 요구 사항을 만족한 이후 1단계 테스트에서 수행한 스크립트 그대로 테스트 진행
+    - Smoke, Load, Stress 테스트 모두 부하로 인한 인스턴스 개수가 증가하지 않음
+    - 캐싱, gzip 등 여러 가지 기능의 반영으로 성능이 개선되었음
+    - 반대로 1단계 테스트의 시간이나 VUSER의 수가 작았음을 의미
+    
+- 1단계 리뷰어님의 피드백에 따라서 추가로 Stress 테스트 진행
+    - 시나리오 개선1: 스크립트 시나리오에서 프로그램의 핵심 로직인 경로 탐색에 집중
+    - 시나리오 개선2: 경로 탐색에 캐시를 적용함으로써 높은 부하 상태에서 성능 개선 확인
+    - 시나리오 개선3: 테스트 부하 테스트 시간 증가(4m → 15m) 및 Vuser의 수 증가 (300 → 900)
 
 ---
 
