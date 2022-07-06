@@ -51,6 +51,14 @@ npm run dev
 - [x] Auto Scaling Group 생성하기
 - [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
+## 🚀 3단계 - 쿼리 최적화
+### 요구사항
+- [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+    - (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- [x] 인덱스 설정을 추가하지 않고 1s 이하로 반환합니다.
+    - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+    - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
@@ -99,6 +107,42 @@ npm run dev
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```sql
+select
+    T.id as 사원번호,
+    T.name as 이름,
+    T.annual_income as 연봉,
+    T.position_name as 직급명,
+    R.region as 지역,
+    R.record_symbol as 입출입구분,
+    R.time as 입출입시간
+from record R join
+     (select
+          E.id,
+          concat(E.last_name, ' ', E.first_name) as name,
+          S.annual_income,
+          P.position_name
+      from department D
+               join manager M
+                    on D.id = M.department_id
+                        and upper(D.note) = 'ACTIVE'
+               join employee E
+                    on E.id = M.employee_id
+               join position P
+                    on P.id = M.employee_id
+                        and P.position_name = 'Manager'
+                        and P.end_date = '9999-01-01'
+               join salary S
+                    on S.id = M.employee_id
+                        and S.end_date = '9999-01-01'
+      ORDER BY S.annual_income DESC
+          limit 5
+     ) as T
+     on R.employee_id = T.id
+         and R.record_symbol = 'O';
+```
+![img.png](./performance/step3/result.png)
 
 ---
 
