@@ -44,9 +44,14 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- [개선 전](./docs/before)
+- [개선 후](./docs/after)
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+2어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- nginx Reverse Proxy 개선 - gzip 압축, cache, TLS, HTTP/2 설정
+- spring boot - response 압축 적용
+- index.html - js, css 최적화 적용
+- redis 캐시 - 노선 조회, 최단 경로 조회
 ---
 
 ### 2단계 - 스케일 아웃
