@@ -458,10 +458,10 @@ default ✓ [======================================] 00/12 VUs  41m0s
          record.record_symbol   AS 입출입구분
   FROM   (
           SELECT salary.id, salary.annual_income
-            FROM (SELECT id, annual_income FROM tuning.salary WHERE  end_date = '9999-01-01') AS salary
-      INNER JOIN (SELECT employee_id FROM   tuning.manager WHERE  end_date = '9999-01-01') AS manager 
+            FROM (SELECT id, annual_income FROM tuning.salary WHERE end_date = '9999-01-01') AS salary
+      INNER JOIN (SELECT employee_id FROM tuning.manager WHERE end_date = '9999-01-01') AS manager 
               ON salary.id = manager.employee_id
-       ORDER  BY salary.annual_income DESC
+        ORDER BY salary.annual_income DESC
            LIMIT 5
          ) salary
   INNER JOIN (SELECT id, last_name FROM tuning.employee) AS employee 
@@ -470,9 +470,9 @@ default ✓ [======================================] 00/12 VUs  41m0s
           ON department.employee_id = employee.id
   INNER JOIN (SELECT id, position_name FROM tuning.position WHERE end_date = '9999-01-01') AS position
           ON position.id = employee.id
-  INNER JOIN (SELECT employee_id, time, region, record_symbol FROM tuning.record WHERE  record_symbol = 'O' AND region <> '') AS record
+  INNER JOIN (SELECT employee_id, time, region, record_symbol FROM tuning.record WHERE record_symbol = 'O' AND region <> '') AS record
           ON record.employee_id = department.employee_id
-   ORDER  BY salary.annual_income DESC, record.record_symbol ASC; 
+    ORDER BY salary.annual_income DESC, record.record_symbol ASC; 
   ```
 ---
 ### 3단계 - 인덱스 설계
