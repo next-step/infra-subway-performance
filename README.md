@@ -334,14 +334,22 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- http://3.35.223.220:8080/stationsByPage?page=5 
+  - size 는 10개로 고정 
+  - Direction은 입력 안할시 "createdDate" ASC로 자동 설정 
+  - Page<StationResponse>로 반환
 
+2. Database Replication
+   1. master Status
+   
+      ![img.png](./readmeSource/step5/masterStatus.png)
+   
+   2. slave Status
 
+      ![img.png](./readmeSource/step5/slaveStatus.png)
 
-
-
-
-
-
+   3. EnableJpaRepository가 아닌 직접 DataSource를 생성하기때문에 main context에서는 @EnableJpaRepositories 삭제
+    - 테스트 코드에선 Repication DB가 아닌 Single H2 DB를 통헤 테스트 하기때문에 context에 @EnableJpaRepository 추가
 
 ### study
 http2 protocol
