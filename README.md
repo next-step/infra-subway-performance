@@ -63,15 +63,51 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+- 모든 정적자원에 대해 no-cache, no-store 설정을 한다. 가능한가??
+```text
+no-store 만으로도 캐시가 무효화 되어야 하지만, 구 브라우저 호환성 등 여러 이유로 no-cache등의 옵션들도 함께 사용해야 합니다.
+(https://www.inflearn.com/questions/112647)
+```
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0258d1f21cb938936
+
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+- **_CPU 사용량_**
+  - ![CPU 사용량](/docs/cpu_stress/cloudwatch_cpu.png)
+- **_인스턴스 추가_**
+  - ![추가 인스턴스](/docs/cpu_stress/addInstance)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- http_req_duration p(95) 값 기준.
+
+- smoke : 4.1ms -> 3.158ms
+
+  - **_before_**
+    - ![smoke before](/docs/smoke/smoke_after_k6.png)
+
+  - **_after_**
+    - ![smoke after](/docs/smoke/smoke_autoscaling_k6.png)
+
+- load : 89.7ms -> 35.19ms
+
+  - **_before_**
+    - ![load before](/docs/load/load_after_k6.png)
+
+  - **_after_**
+    - ![load after](/docs/load/load_autoscaling_k6.png)
+
+- stress : 337.8ms -> 91.77ms
+
+  - **_before_**
+    - ![stress before](/docs/stress/stress_after_k6.png)
+
+  - **_after_**
+    - ![stress after](/docs/stress/stress_autoscaling_k6.png)
 
 ---
 
