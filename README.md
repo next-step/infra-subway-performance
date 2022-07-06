@@ -47,6 +47,15 @@ npm run dev
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
+* Reverse Proxy 개선
+  - [x] gzip 압축
+  - [x] 캐싱
+  - [x] TLS, HTTP/2 설정
+
+* WAS 성능 개선
+  * Redis Spring Data Cache 적용
+  - [x] 지하철역 조회
+  - [x] 경로 검색
 ---
 
 ### 2단계 - 스케일 아웃
