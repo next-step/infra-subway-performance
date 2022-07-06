@@ -60,13 +60,23 @@ url: https://yang-infra-subway.p-e.kr/
 
 1. Launch Template 링크를 공유해주세요.
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+[yangseungin-template](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-021d4737b6300b06c)
+
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)  
+[서버자원사용](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/cloudwatch%20%EC%84%9C%EB%B2%84%EC%9E%90%EC%9B%90%EC%82%AC%EC%9A%A9.png)  
+[인스턴스생성](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A6%9D%EA%B0%80.png)
+[cloudwatch인스턴스증가](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/cloudwatch%20%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A6%9D%EA%B0%80.png)
 
 ```sh
 $ stress -c 2
 ```
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+[smoke](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/smoke.png)  
+[load](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/load.png)  
+[stress_750](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/stress_vuser_750.png)  
+[stress_1000](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/stress_vuser_1000.png)  
+[stress_1200](https://github.com/yangseungin/infra-subway-performance/blob/step2/mission/step2/stress_vuser1200.png)  
 
 ---
 
