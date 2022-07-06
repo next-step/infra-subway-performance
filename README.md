@@ -44,8 +44,21 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- ./performance/results/before (개선 전)
+- ./performance/results/after (개선 후)
+- page speed 결과 
+  - 모바일 : 31 -> 49
+  - 데스크탑 : 67 -> 94
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- [x] webserver (nginx) 
+  - [x] nginx.conf 파일에 gzip encoding 설정을 진행했습니다.
+  - [x] nginx.conf 파일에 cache 설정을 진행했습니다.
+  - [x] nginx.conf 파일에 http2 설정을 진행했습니다.
+- [x] was
+  - [x] redis 설정을 진행했습니다.
+  - [x] service 클래스의 read, update, delete 로직에 Cache 어노테이션을 적용했습니다.
+- 
 
 ---
 
