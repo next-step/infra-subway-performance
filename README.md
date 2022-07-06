@@ -222,7 +222,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
        alter table covid add foreign key(programmer_id) references programmer(id);
        ```
 
-    3. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
        1. 일단 조회하기(4.14sec)
           ```
           select c.programmer_id, h.name from hospital as h
@@ -240,16 +240,18 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           1. covid - hospital foreign key 에 의한 indexing
           2. hospital primary key 에 대한 indexing
 
-    4. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
        1. 일단 조회하기(조회불가)
-          1. 특이사항 : 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
+          1. 주의사항 
+             1. 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
+             2. 모수를 programmer로 설정하고, covid.programmer_id로 order by 할시 인덱싱을 타지 않고 Full-scan을 한다. 기존 모수에서 order by를 진행하자
        ```
-       select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p    -- and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time")) and
+       select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p   
            join covid as c on (c.programmer_id is not null and hobby = "Yes" and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time"))) and p.id = c.programmer_id)
            join hospital as h on h.id = c.hospital_id
-           order by c.programmer_id;
+           order by p.id;
        ```
-       2. indexing설정 내역 및 설정 후 쿼리 속도 (0.304sec)
+       2. indexing설정 내역 및 설정 후 쿼리 속도 (0.0042sec)
           1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
        3. 개선전 실행계획(추출불가)
        4. 개선 후 실행계획
@@ -258,7 +260,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           2. covid - programmer foreign key에 의한 indexing
           3. covid - hospital foreign key 에 의한 indexing
        
-    5. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
        1. 일단 조회하기(조회불가)
        ```
        select c.stay, count(c.stay) from covid as c where
@@ -280,7 +282,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           2. programmer의 primary key에 대한 indexing
           3. member의 primary key에 대한 indexing 
        
-    6. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
        1. 일단 조회하기(0.495sec)
        ```
           select exercise, count(exercise) from programmer as p
@@ -298,6 +300,23 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           1. hospital의 name에 대한 indexing
           2. programmer의 primary key에 대한 indexing
           3. member의 primary key에 대한 indexing
+
+    6. Coding as a Hobby 와 같은 결과를 반환
+       1. 일단 조회하기(0.4sec)
+       ```
+       select
+          hobby,
+          concat(round(count(hobby) / (select count(hobby) from programmer) * 100,1),'%')
+       from programmer group by hobby;
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.04sec)
+       ```
+       create index programmer_hobby on subway.programmer(hobby);
+       ```
+       3. 개선 전 실행계획
+          ![img.png](./readmeSource/step4/개선전_5.png)
+       4. 개선 후 실행계획(group by column 인덱싱으로, indexing을 통한 groupby를 하는걸 확인할수있다)
+          ![img.png](./readmeSource/step4/개선후_5.png)
 
 
 
