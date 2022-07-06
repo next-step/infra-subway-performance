@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
@@ -27,6 +28,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -40,6 +42,13 @@ public class LineService {
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<LineResponse> findLinePages(Long id, int pageSize) {
+        return lineRepository.findAll(id, PageRequest.of(0, pageSize))
+                             .stream()
+                             .map(LineResponse::of)
+                             .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -56,6 +65,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "map", allEntries = true)
@@ -65,6 +75,7 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "map", allEntries = true)
@@ -84,6 +95,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "map", allEntries = true)
@@ -92,5 +104,4 @@ public class LineService {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
-
 }
