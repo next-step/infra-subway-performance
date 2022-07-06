@@ -16,4 +16,5 @@
 
 ---
 # 캐싱 설정시 참고 문서
+- [스프링 캐시](https://blog.outsider.ne.kr/1094)
 - [스프링 Cache](https://jaehun2841.github.io/2018/11/07/2018-10-03-spring-ehcache/#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0)
