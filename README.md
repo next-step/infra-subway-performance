@@ -111,9 +111,8 @@ from record r
 on r.employee_id = adms.id and r.record_symbol = 'O';
 
 
-
 ```
-
+[실행결과](https://github.com/yangseungin/infra-subway-performance/blob/step3/mission/step3/%EC%8B%A4%ED%96%89%EA%B2%B0%EA%B3%BC.png)
 ---
 
 ### 4단계 - 인덱스 설계
