@@ -214,8 +214,27 @@ CREATE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id) ;
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 ```sql
-
+select c.id, h.name from
+(select p.id as id
+from programmer p
+where (hobby = 'Yes' and student like 'Yes%')
+   or years_coding = '0-2 years') user
+inner join covid c on c.programmer_id = user.id
+inner join hospital h on h.id = c.hospital_id
+order by user.id;
 ```
+
+개선 작업
+alter table covid primary key(id);
+alter table programmer add primary key (id);
+alter table hospital add primary key (id);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
+CREATE INDEX `idx_programmer_hobby_student_years_coding`  ON `subway`.`programmer` (hobby, student, years_coding) ;
+
+개선 후
+0.011 sec / 0.0053 sec
+![after_explain_3.png](after_explain_3.png)
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
