@@ -205,6 +205,150 @@ group by a.employee_id, a.last_name, a.annual_income, a.position_name, r.region,
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+### step4 요구사항
+#### 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+
+- [x] (1) Coding as a Hobby 와 같은 결과를 반환하세요.
+- 실행시간 개선전
+- [1_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_before.png)
+- 실행시간 개선후
+- [1_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_time_after.png)
+- 실행계획
+- [1_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/1/step4_1_plan.png)
+
+```roomsql
+SELECT  p.hobby,
+        COUNT(1) * 100 / (SELECT COUNT(1)
+                          FROM programmer) AS percent
+FROM  programmer p
+GROUP BY hobby;
+```
+```roomsql
+alter table programmer add primary key (id);
+create index idx_programmer_hobby on programmer (hobby);
+```
+
+- [x] (2) 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 실행시간 개선전
+- [2_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_before.png)
+- 실행시간 개선후
+- [2_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_time_after.png)
+- 실행계획
+- [2_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/2/step4_2_plan.png)
+- cost 444290
+
+```roomsql  
+SELECT  c.id,
+        h.name
+FROM covid c
+INNER JOIN programmer p
+ON p.id = c.programmer_id
+INNER JOIN hospital h
+ON h.id = c.hospital_id;
+```
+
+```roomsql  
+alter table hospital add primary key (id);
+alter table covid add primary key (id);
+create index idx_covid_programmer_id_hospital_id on covid (programmer_id, hospital_id);
+
+```
+- [x] (3) 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 실행시간
+- [3_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/3/step4_3_time_after.png)
+- 실행계획
+- [3_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/3/step4_3_plan.png)
+
+
+```roomsql  
+select c.id, c.name, p.hobby, p.dev_type, p.years_coding
+from (
+	select c.id, c.programmer_id, h.name
+	from covid c
+	inner join hospital h 
+    on c.hospital_id = h.id
+) c
+inner join (
+	select id, hobby, student, dev_type, years_coding
+    from programmer p
+    where p.hobby = 'Yes' 
+	and (student like 'Yes%' or p.years_coding = '0-2 years')
+) p
+on p.id = c.programmer_id
+order by p.id;
+```
+```roomsql 
+x 
+```
+
+- [x] (4) 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 실행시간 개선전
+- [4_time_before](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_time_before.png)
+- 실행시간 개선후
+- [4_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_time_after.png)
+- 실행계획
+- [4_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/4/step4_4_plan.png)
+
+```roomsql
+select c.stay, count(c.stay)
+from covid c  
+inner join (
+		select h.id
+		from hospital h
+        where h.name = '서울대병원'
+	) h
+on c.hospital_id = h.id
+inner join (
+		select m.id
+		from member m
+		inner join programmer p 
+        on m.id = p.member_id
+		and (m.age between 20 and 29)
+		and p.country = 'India'
+) m
+on c.member_id = m.id
+group by c.stay
+order by null;
+```
+```roomsql  
+alter table member add primary key (id);
+create index idx_hospital_name on hospital (name);
+create index idx_covid_hospital_id_member_id_stay on covid (hospital_id, member_id, stay);
+create index idx_programmer_member_id_country on programmer (member_id, country);
+```
+- [x] (5) 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 실행시간
+- [5_time_after](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_time_after.png)
+- 실행계획
+- [5_plan](https://github.com/kwonyongil/infra-subway-performance/blob/step4/docs/step4/5/step4_5_plan.png)
+
+```roomsql
+
+select m.exercise, count(m.exercise) 
+from covid c  
+inner join (
+		select h.id
+		from hospital h
+        where h.name = '서울대병원'
+	) h
+on c.hospital_id = h.id
+inner join (
+		select m.id, p.exercise
+		from member m
+		inner join programmer p
+        on m.id = p.member_id
+		and (m.age between 30 and 39)
+) m
+on c.member_id = m.id
+group by m.exercise
+order by null;
+
+```
+```roomsql
+x
+```
+---
+
 ---
 
 ### 추가 미션
