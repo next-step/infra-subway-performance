@@ -342,7 +342,8 @@ group by m.exercise
 order by null;
 
 ```
-```roomsql  
+```roomsql
+x
 ```
 ---
 
