@@ -14,7 +14,7 @@
 - 더 나아가 FCP(1.8)초, LCP(2.5)초, TTI(5초)를 기준으로 우수한 사용자 경험을 제공할 수 있어야함.
 
 ---
-# 캐싱 설정시 참고 문서
+## 캐싱 설정시 참고 문서
 - [스프링 캐시](https://blog.outsider.ne.kr/1094)
 - [스프링 Cache](https://jaehun2841.github.io/2018/11/07/2018-10-03-spring-ehcache/#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0)
 
@@ -40,7 +40,10 @@
 - 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
 
 ## 요구사항
-- [] Spring Boot에 HTTP Cache, gzip 설정하기 
-- [] Launch Template 작성하기 
-- [] Auto Scaling Group 생성하기 
+- [X] Spring Boot에 HTTP Cache, gzip 설정하기 
+- [X] Launch Template 작성하기 
+- [X] Auto Scaling Group 생성하기 
 - [] Smoke, Load, Stress 테스트 후 결과를 기록
+
+## Web Cache 다루기
+- [웹 서비스 캐시 똑똑하게 다루기](https://toss.tech/article/smart-web-service-cache)

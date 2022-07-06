@@ -17,11 +17,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/js/**")
-                .addResourceLocations("classpath:/static/")
+                .addResourceLocations("classpath:/static/js/")
                 .setCacheControl(CacheControl.noCache().cachePrivate());
 
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/css/**")
-                .addResourceLocations("classpath:/static/")
+                .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(60 * 60 * 24 * 365);
     }
 
