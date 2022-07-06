@@ -29,7 +29,7 @@ function pull() {
 function build() {
   echo -e ""
   echo -e ">> Run Build 🏃♂️"
-  ./gradlew clean build
+  ./gradlew clean build --exclude-task test
 }
 
 function find_process_id() {
