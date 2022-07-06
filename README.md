@@ -114,8 +114,62 @@ from record r
 
 ### 2단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```sql
+-- Coding as a Hobby 쿼리 0.667 sec -> 0.081 sec
+select hobby, count(*) / (select count(*) from programmer p) * 100
+from programmer
+group by hobby;
+-- 인덱스 생성
+create index idx_programmer_hobby ON programmer (hobby);
 
+-- 프로그래머별로 해당하는 병원 이름 쿼리 0.770 sec -> 0.026 sec
+select c.programmer_id, h.name
+from covid c
+inner join programmer p on c.programmer_id = p.id
+inner join hospital h on c.hospital_id = h.id;
+-- 인덱스 생성
+create index idx_programmer_id ON programmer (id);
+alter table hospital add primary key (id);
+create index idx_covid_programmer_id ON covid (programmer_id);
+create index idx_covid_hospital_id ON covid (hospital_id);
+
+-- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름 쿼리 -> 0.030 sec
+select c.programmer_id, h.name, p.hobby, p.dev_type, p.years_coding
+from covid c
+inner join (
+	select id, hobby, dev_type, years_coding
+	from programmer 
+	where hobby = 'Yes' 
+    and (student != 'No' or years_coding = '0-2 years')) p
+on c.programmer_id = p.id
+inner join hospital h on c.hospital_id = h.id;
+
+-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계 쿼리 1.661 sec -> 0.103 sec
+select c.stay, count(*)
+from covid c
+inner join programmer p on c.programmer_id = p.id
+inner join member m on c.member_id = m.id
+inner join hospital h on c.hospital_id = h.id
+where p.country = 'India'
+and m.age between 20 and 29
+and h.name = '서울대병원'
+group by c.stay;
+-- 인덱스 생성
+alter table member add primary key (id);
+create index idx_member_id_covid on covid (member_id);
+
+-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계 쿼리 0.092 sec
+select p.exercise, count(*)
+from covid c
+inner join programmer p on c.programmer_id = p.id
+inner join member m on c.member_id = m.id
+inner join hospital h on c.hospital_id = h.id
+where m.age between 30 and 39
+and h.name = '서울대병원'
+group by p.exercise
+```
+* 결과 이미지: /sql/step4
 ---
 
 ### 추가 미션
