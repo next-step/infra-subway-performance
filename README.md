@@ -168,28 +168,26 @@ from record r
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-- Coding as a Hobby 와 같은 결과를 반환하세요.
+### 1. Coding as a Hobby 와 같은 결과를 반환하세요.
 
 ```mysql
-select hobby, round(count(*) / (select count(*) from programmer) * 100, 1)
-from programmer
+select hobby as '취미', round(count(*) / (select count(*) from programmer) * 100, 1) as 'percent'
+from programmer where hobby = 'Yes' or hobby = 'No'
 group by hobby;
 ```
 
 #### 개선전  
-0.477 sec / 0.000021 sec
+Duration/Fetch Time : 0.477 sec / 0.000021 sec
 
-index 추가
-
+#### 개선 작업
 ```mysql
-CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby)
-
+CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby);
 ```
 
-#### 개선 후 : 0.070 sec / 0.0000069 sec
+#### 개선 후 : 0.062 sec / 0.000022 sec
 ![after_explain_1.png](after_explain_1.png)
 
-- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+### 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
 #### 실행 쿼리
 ```mysql
@@ -200,8 +198,8 @@ from hospital h
 ```
 
 #### 개선전
-0.712 sec / 0.378 sec
-개선 작업
+Duration/Fetch Time : 0.712 sec / 0.378 sec
+#### 개선 작업
 ```mysql
 alter table `covid` add primary key(id);
 alter table `programmer` add primary key (id);
@@ -212,10 +210,10 @@ CREATE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id) ;
 ```
 
 #### 개선후
-0.011 sec / 0.00045 sec
+Duration/Fetch Time : 0.011 sec / 0.00045 sec
 ![after_explain_2.png](after_explain_2.png)
 
-- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+### 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 #### 실행 쿼리
@@ -244,7 +242,7 @@ CREATE INDEX `idx_programmer_hobby_student_years_coding`  ON `subway`.`programme
 0.011 sec / 0.0053 sec
 ![after_explain_3.png](after_explain_3.png)
 
-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 #### 실행 쿼리
 ```mysql
@@ -274,7 +272,7 @@ CREATE INDEX `idx_programmer_country`  ON `subway`.`programmer` (`country`) ;
 0.056 sec / 0.000023 sec
 ![after_explain_4.png](after_explain_4.png)
 
-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 #### 실행 쿼리
 ```mysql
@@ -297,6 +295,7 @@ alter table `programmer` add primary key (`id`);
 alter table `hospital` add primary key (`id`);
 alter table `member` add primary key(`id`);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
+CREATE INDEX `idx_covid_member_id`  ON `subway`.`covid` (`member_id`) ;
 CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
 CREATE INDEX `idx_member_age`  ON `subway`.`member` (`age`) ;
 CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
