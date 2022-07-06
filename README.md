@@ -177,8 +177,10 @@ $ stress -c 2
         order by 연봉 desc, 지역;
 
        1. 1차 조회 결과(정상, 평균 0.43sec)
+       
           ![img.png](./readmeSource/step3/쿼리_조회결과.png)
        2. 실행계획
+       
           ![img.png](./readmeSource/step3/1차_쿼리조회_실행계획.png)
           1. Manager과 Record에서 풀스캔 발생
 
@@ -198,6 +200,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
     join record as r on (r.record_symbol="O" and r.region <> "" and r.employee_id = m.employee_id)
     order by m.annual_income desc, r.region;
        3. 실행계획
+       
           ![img.png](./readmeSource/step3/쿼리개선후_실행계획.png)
           1. 서브쿼리를 없앤 후 Join을 통해서 쿼리 하니 All scan이 사라지고 key lookup으로 개선된걸 확인할수 있었음
           2. 최대한 낮은 depth로 쿼리를 작성하니, 중간에 불필요한 tmp table을 생성/유지하기위한 메모리를 절약할수 있었음
@@ -255,6 +258,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
        3. 개선전 실행계획(추출불가)
        4. 개선 후 실행계획
+       
           ![img.png](./readmeSource/step4/개선후_2.png)
           1. programmer의 Hobby에 대한 indexing 
           2. covid - programmer foreign key에 의한 indexing
@@ -277,6 +281,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
           ```
        3. 개선 전 실행계획(추출불가)
        4. 개선 후 실행계획
+       
           ![img.png](./readmeSource/step4/개선후_3.png)
           1. hospital의 name에 대한 indexing
           2. programmer의 primary key에 대한 indexing
@@ -296,6 +301,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
        ```
        3. 개선 전 실행계획(추출불가)
        4. 개선 후 실행계획
+       
           ![img.png](./readmeSource/step4/개선후_4.png)
           1. hospital의 name에 대한 indexing
           2. programmer의 primary key에 대한 indexing
@@ -314,8 +320,10 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
        create index programmer_hobby on subway.programmer(hobby);
        ```
        3. 개선 전 실행계획
+       
           ![img.png](./readmeSource/step4/개선전_5.png)
        4. 개선 후 실행계획(group by column 인덱싱으로, indexing을 통한 groupby를 하는걸 확인할수있다)
+       
           ![img.png](./readmeSource/step4/개선후_5.png)
 
 
