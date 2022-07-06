@@ -174,15 +174,41 @@ select hobby, round(count(*) / (select count(*) from programmer) * 100, 1)
 from programmer
 group by hobby;
 ```
+개선전  
+0.477 sec / 0.000021 sec
+
+
+index 추가
+```sql
+CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) 
+
+```
+개선 후 : 0.070 sec / 0.0000069 sec
+![after_explain_1.png](after_explain_1.png)
 
 - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
 ```sql
 select c.id, h.name
-from covid c
-         inner join programmer p on c.programmer_id = p.id
-         inner join hospital h on c.hospital_id = h.id;
+from hospital h
+         inner join covid c on h.id = c.hospital_id
+         inner join programmer p on p.id = c.programmer_id;
 ```
+개선전
+0.712 sec / 0.378 sec
+개선 작업
+alter table covid primary key(id);
+alter table programmer add primary key (id);
+alter table hospital add primary key (id);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
+CREATE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id) ;
+
+
+개선후
+0.011 sec / 0.00045 sec
+![after_explain_2.png](after_explain_2.png)
+
 
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
