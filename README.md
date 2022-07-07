@@ -59,6 +59,15 @@ npm run dev
     - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
     - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
 
+## 🚀 4단계 - 인덱스 설계
+### 요구사항
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+    - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
@@ -149,6 +158,135 @@ from record R join
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```sql
+/* 1. Coding as a Hobby 와 같은 결과를 반환하세요. */
+select hobby, concat(count(*) / (select count(*) from programmer) * 100,' %') as result
+from programmer
+group by hobby;
+```
+![img.png](./performance/step4/1_execution_plan.png)
+- 0.031 sec / 0.000 sec
+- programmer
+    - id: PK 지정
+    - hobby: index 생성
+
+```sql
+/* 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) */
+select C.id, H.name
+from covid C
+         join programmer P
+              on P.id = C.programmer_id
+         join hospital H
+              on C.hospital_id = H.id;
+```
+![img.png](./performance/step4/2_execution_plan.png)
+- 0.015 sec / 0.000 sec
+- covid
+    - id: PK 지정
+    - programmer_id: unique 지정
+    - hospital_id: index 생성
+- programmer
+    - id: PK 지정 (이전 sql 미션에서 지정)
+- hospital
+    - id: PK 지정
+    - name: unique 지정
+
+```sql
+/* 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. 
+(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) */
+select CH.id, CH.name, P.hobby, P.dev_type, P.Years_coding
+from
+    (
+        select C.id, C.programmer_id, H.name
+        from covid C
+            join hospital H
+              on C.hospital_id = H.id
+    ) CH join
+    (
+        select P.id, P.hobby, P.dev_type, P.Years_coding
+        from programmer P
+        where P.hobby = 'Yes'
+        and (P.student like 'Yes%' or P.years_coding = '0-2 years')
+    ) P
+    on CH.programmer_id = P.id
+order by P.id;
+```
+![img.png](./performance/step4/3_execution_plan.png)
+- 0.015 sec / 0.000 sec
+- covid
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - programmer_id: unique 지정 (이전 sql 미션에서 지정)
+- hospital
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - name: unique 지정 (이전 sql 미션에서 지정)
+- programmer
+    - id: PK 지정 (이전 sql 미션에 서 지정)
+    - hobby: index 생성 (이전 sql 미션에서 지정)
+
+```sql
+/* 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay) */
+select C.stay, count(*)
+from covid C
+         join hospital H
+           on C.hospital_id = H.id
+          and H.name = '서울대병원'
+         join programmer P
+           on C.programmer_id = P.id
+          and P.country = 'India'
+group by C.stay;
+```
+![img.png](./performance/step4/4_execution_plan.png)
+- 0.047 sec / 0.000 sec
+- covid
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - hospital_id: index 생성 (이전 sql 미션에 서 지정)
+    - programmer_id: unique 지정 (이전 sql 미션에 서 지정)
+- hospital
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - name: unique 지정 (이전 sql 미션에서 지정)
+- programmer
+    - id: PK 지정 (이전 sql 미션에 서 지정)
+
+```sql
+/* 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) */
+select P.exercise, count(*)
+from covid C
+    join (
+        select H.id, H.name
+        from hospital H
+        where H.name = '서울대병원'
+    ) H
+      on C.hospital_id = H.id
+    join programmer P
+      on C.programmer_id = P.id
+    join (
+        select M.id
+        from member M
+        where M.age between 30 and 39
+    ) M
+      on P.id = M.id
+group by P.exercise;
+```
+![img.png](./performance/step4/5_execution_plan.png)
+- 0.047 sec / 0.000 sec
+- covid
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - hospital_id: index 생성 (이전 sql 미션에 서 지정)
+    - programmer_id: unique 지정 (이전 sql 미션에 서 지정)
+- programmer
+    - id: PK 지정 (이전 sql 미션에 서 지정)
+- hospital
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - name: unique 지정 (이전 sql 미션에서 지정)
+- member
+    - id: PK 지정 (이전 sql 미션에서 지정)
+    - age: index 생성 (이전 sql 미션에서 지정)
+
+#### 1~6 최종 결과 캡처
+- 전체 결과
+  - ![img.png](./performance/step4/result.png)
+- 2번 문제 재캡처
+  - ![img.png](./performance/step4/result_Q2.png)
 
 ---
 
