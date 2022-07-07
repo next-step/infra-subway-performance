@@ -63,7 +63,7 @@ npm run dev
      ![was](step1/after-2/smoke.png)
    * ###Load
      * 개선전
-     ![개선전](step1/before/load.png)
+     ![개선전](step1/before/smoke.png)
      * web 서버 성능 개선
      ![web](step1/after-1/load.png)
      * was 서버 성능 개선
