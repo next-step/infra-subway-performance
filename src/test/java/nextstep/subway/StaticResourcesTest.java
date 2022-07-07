@@ -13,12 +13,12 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.concurrent.TimeUnit;
 
-import static nextstep.subway.common.WebMvcConfig.PREFIX_STATIC_RESOURCES;
-
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StaticResourcesTest {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourcesTest.class);
+
+    private static final String PREFIX_STATIC_RESOURCES = "/resources";
 
     @Autowired
     private WebTestClient client;
