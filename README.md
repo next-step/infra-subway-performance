@@ -160,6 +160,151 @@ inner join record r on r.employee_id = e.id and r.record_symbol = 'O';
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+- [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
+
+sql
+```roomsql
+select  p.hobby, count(hobby) / (select count(hobby) from programmer) * 100 percent
+from  programmer p
+group by hobby;
+```
+index
+```roomsql
+ALTER TABLE `subway`.`programmer` 
+ADD INDEX `idx_hobby` (`hobby` ASC);
+```
+
+#### before
+![](before_index_explain_step1.png)
+
+![](before_index_result_step1.png)
+#### after
+![](after_index_explain_step1.png)
+
+![](after_index_result_step1.png)
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+sql
+```roomsql
+select c.id, h.name 
+from hospital h
+	inner join covid c on c.hospital_id = h.id
+    inner join programmer p on p.id = c.programmer_id;
+```
+index
+```roomsql
+ALTER TABLE `subway`.`programmer` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`covid` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`hospital` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`covid` 
+ADD INDEX `idx_covid_programmer_id` (`programmer_id` ASC);
+
+ALTER TABLE `subway`.`covid` 
+ADD INDEX `idx_covid_hospital_id` (`hospital_id` ASC);
+```
+
+#### before
+![](before_index_explain_step2.png)
+
+![](before_index_result_step2.png)
+#### after
+![](after_index_result_step2.png)
+
+![](after_index_explain_step2.png)
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```roomsql
+select c.id, c.hospital_name, p.hobby, p.dev_type, p.years_coding
+ from (
+	select c.id, c.programmer_id, h.name hospital_name
+ 	from hospital h
+ 	inner join covid c 
+     on c.hospital_id = h.id
+ ) c
+ inner join (
+ 	select id, hobby, student, dev_type, years_coding
+     from programmer p
+     where p.hobby = 'Yes' and (p.student <> 'No' or p.years_coding = '0-2 years'
+ ) p
+ on p.id = c.programmer_id
+ order by p.id;
+```
+index 변화 없음
+
+#### result
+
+![](explain_step3.png)
+
+![](result_step3.png)
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```roomsql
+select c.stay, count(c.stay) count
+from covid c
+where c.hospital_id in 
+			(select id from hospital where name = '서울대병원') 
+			and c.programmer_id in (
+                            select id
+                            from programmer
+                            where id in (select id from member where age >= 20 AND age < 30) and country = 'India')
+group by c.stay;
+```
+
+index
+```roomsql
+ALTER TABLE `subway`.`member` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`programmer` 
+ADD INDEX `idx_member_id_country` (`member_id` ASC, `country` ASC
+
+ALTER TABLE `subway`.`hospital` 
+ADD INDEX `idx_name` (`name` ASC);
+
+ALTER TABLE `subway`.`member` 
+ADD INDEX `idx_age` (`age` ASC);
+```
+
+#### before
+![](before_index_explain_step4.png)
+
+![](before_index_result_step4.png)
+#### after
+![](after_index_explain_step4.png)
+
+![](after_index_after_result_step4.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+sql
+```roomsql
+select p.exercise, count(p.exercise) 
+from covid c
+inner join ( select id from hospital where name = '서울대병원' ) h on h.id = c.hospital_id
+inner join (
+ 		select p.member_id, p.exercise
+ 		from programmer p
+        inner join (select m.id from member m where m.age >= 30 and m.age < 40 ) m on m.id = p.member_id
+ ) p
+on p.member_id = c.member_id
+group by p.exercise;
+```
+index 변화 없음
+
+#### result
+![](explain_step5.png)
 ---
 
 ### 추가 미션
