@@ -206,7 +206,6 @@ alter table `programmer` add primary key (id);
 alter table `hospital` add primary key (id);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
 CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
-CREATE INDEX `idx_programmer_id`  ON `subway`.`programmer` (id) ;
 ```
 
 #### 개선후
