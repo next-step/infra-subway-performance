@@ -1,6 +1,6 @@
 package nextstep.subway.util;
 
-import nextstep.subway.util.support.version.BlogVersion;
+import nextstep.subway.util.support.version.SubwayVersion;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +13,12 @@ import javax.servlet.Filter;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    private static final int YEAR = 60 * 60 * 24 * 365;
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
 
-    private final BlogVersion version;
+    private final SubwayVersion version;
 
-    public WebMvcConfig(BlogVersion version) {
+    public WebMvcConfig(SubwayVersion version) {
         this.version = version;
     }
 
@@ -29,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/*/*css")
                 .addResourceLocations("classpath:/static/")
-                .setCachePeriod(60 * 60 * 24 * 365);
+                .setCachePeriod(YEAR);
     }
 
     @Bean

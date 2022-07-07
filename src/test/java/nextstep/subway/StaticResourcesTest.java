@@ -1,7 +1,7 @@
 package nextstep.subway;
 
 
-import nextstep.subway.util.support.version.BlogVersion;
+import nextstep.subway.util.support.version.SubwayVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ class StaticResourcesTest {
     private WebTestClient client;
 
     @Autowired
-    private BlogVersion version;
+    private SubwayVersion version;
 
     @Test
     @DisplayName("main.js 캐시 태스트")

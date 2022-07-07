@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class BlogVersion {
+public class SubwayVersion {
     private static final String DEFAULT_DATE_TIME_FORMAT = "yyyyMMddHHmmss";
     private String version;
 
