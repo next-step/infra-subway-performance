@@ -112,15 +112,18 @@ npm run dev
     
 * 요구 사항
   - [X] springboot에 HTTP Cache, gzip 설정하기
-  - [ ] Launch Template 작성하기
-  - [ ] Auto Scaling Group 생성하기
+  - [X] Launch Template 작성하기
+  - [X] Auto Scaling Group 생성하기
   - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplates:launch-template-name=kbh0581-Launch-Template
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+    - cpu 부하를 9 정도 줬을때 오스케일링이 발생하여 인스턴스가 늘어났습니다.
+    ![img.png](autoscale.png)
+    
 ```sh
 $ stress -c 2
 ```
