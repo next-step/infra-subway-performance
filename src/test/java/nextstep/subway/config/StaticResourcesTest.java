@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.CacheControl;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+@ActiveProfiles("local")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class StaticResourcesTest {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourcesTest.class);
