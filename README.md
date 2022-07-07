@@ -170,9 +170,9 @@ ORDER BY manager_salary_top5.연봉 DESC;
     - Result Grid  
     ![](mission_results/step4/coding-as-hobby/result_grid.png)
     - Duration / Fetch Time
-      - 인덱스 사용 전  
+      - 인덱스 사용 전 `0.585sec`  
       ![](mission_results/step4/coding-as-hobby/time_result_no_idx.png)
-      - 인덱스 사용 후  
+      - 인덱스 사용 후 `0.053sec`  
       ![](mission_results/step4/coding-as-hobby/time_result_idx.png)
     - Explain
       - 인덱스 사용 전  
@@ -181,7 +181,52 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - 인덱스 사용 후  
       ![](mission_results/step4/coding-as-hobby/explain_idx.png)
       ![](mission_results/step4/coding-as-hobby/visual_explain_idx.png)
-  - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - Index
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+    ;
+
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+    ;
+    
+    ALTER TABLE `subway`.`covid`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+    ;
+    
+    CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_programmer_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - Query
+    ```sql
+    SELECT
+    p.id AS programmer_id,
+    h.name AS hospital_name
+    FROM programmer AS p
+    JOIN covid AS c
+    ON c.programmer_id = p.id
+    JOIN hospital AS h
+    ON h.id = c.hospital_id
+    ```
+    - Result Grid  
+    ![](mission_results/step4/hospital-name-by-programmer/result_grid.png)
+    - Duration / Fetch Time
+      - 인덱스 사용 전 `0.589sec`  
+      ![](mission_results/step4/hospital-name-by-programmer/time_result_no_idx.png)
+      - 인덱스 사용 후 `0.025sec` 
+      ![](mission_results/step4/hospital-name-by-programmer/time_result_idx.png)
+    - Explain
+      - 인덱스 사용 전  
+      ![](mission_results/step4/hospital-name-by-programmer/explain_no_idx.png)
+      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_no_idx.png)
+      - 인덱스 사용 후  
+      ![](mission_results/step4/hospital-name-by-programmer/explain_idx.png)
+      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_idx.png)
   - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
   - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
