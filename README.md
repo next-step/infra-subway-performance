@@ -152,7 +152,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
   - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
     - Index
     ```sql
@@ -334,7 +334,61 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - hospital name도 인덱스 사용  
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys_and_idx_hospital_name.png)
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys_and_idx_hospital_name.png)
-  - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - **Index**
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`member`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE UNIQUE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      p.exercise,
+      COUNT(*) as count
+    FROM (SELECT id, hospital_id, member_id, programmer_id, stay FROM covid) AS c
+    JOIN (SELECT id FROM hospital WHERE name = '서울대병원') AS h
+      ON c.hospital_id = h.id
+    JOIN (SELECT id, exercise FROM programmer) AS p
+      ON p.id = c.programmer_id
+    JOIN (SELECT id FROM member WHERE age BETWEEN 31 AND 39) AS m
+      ON m.id = c.member_id
+    GROUP BY p.exercise
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/result_grid.png)
+    - **Duration / Fetch Time**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/time_result_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/time_result_idx_join_keys_and_idx_hospital_name.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/explain_idx_join_keys.png)
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/visual_explain_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/explain_idx_join_keys_and_idx_hospital_name.png)
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/visual_explain_idx_join_keys_and_idx_hospital_name.png)
 ---
 
 ### 추가 미션
