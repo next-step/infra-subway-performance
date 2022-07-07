@@ -12,7 +12,7 @@ import javax.servlet.Filter;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    public static final String PREFIX_STATIC_RESOURCES = "/resources";
+    private static final String PREFIX_STATIC_RESOURCES = "/resources";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
