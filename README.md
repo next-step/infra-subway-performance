@@ -91,12 +91,12 @@ $ stress -c 2
 #### smoke
 ![](img/step2/smoke.png)
 #### load
-http_req_duration avg 기준 `21.35ms` -> `5.28ms`
-http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
-iteration_duration avg 기준 `187.36ms` -> `24.15ms`
+- http_req_duration avg 기준 `21.35ms` -> `5.28ms`
+- http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
+- iteration_duration avg 기준 `187.36ms` -> `24.15ms`
 ![](img/step2/load.png)
 #### stress
-에러가 나는 지점 vsu `272` -> `1,050`
+- 에러가 나는 지점 vsu `272` -> `1,050`
 ![](img/step2/stress.png)
 ---
 
@@ -105,7 +105,48 @@ iteration_duration avg 기준 `187.36ms` -> `24.15ms`
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+#### SQL
+```sql
+SELECT 
+    manager_salary_top5.사원번호,
+    manager_salary_top5.이름,
+    manager_salary_top5.연봉,
+    manager_salary_top5.직급명,
+    r.time AS 입출입시간,
+    r.region AS 지역,
+    r.record_symbol AS 입출입구분
+FROM
+    (SELECT 
+        m.employee_id AS 사원번호,
+            e.last_name AS 이름,
+            s.annual_income AS 연봉,
+            p.position_name AS 직급명
+    FROM
+        manager AS m
+    JOIN department AS d ON d.id = m.department_id
+    JOIN position AS p ON p.id = m.employee_id
+    JOIN employee AS e ON e.id = m.employee_id
+    JOIN salary AS s ON s.id = e.id
+    WHERE
+        d.note = 'active'
+            AND p.position_name = 'Manager'
+            AND NOW() BETWEEN m.start_date AND m.end_date
+            AND NOW() BETWEEN s.start_date AND s.end_date
+    ORDER BY s.annual_income DESC
+    LIMIT 5) AS manager_salary_top5
+JOIN record AS r ON r.employee_id = manager_salary_top5.사원번호
+WHERE r.record_symbol = 'O'
+ORDER BY manager_salary_top5.연봉 DESC;
+```
+#### Result
+![](img/step3/result.png)
+#### Duration / Fetch Time
+![](img/step3/time.png)
+#### Execution Plan
+- Visual
+![](img/step3/visual_explain.png)
+- Tabular
+![](img/step3/tabular_explain.png)
 ---
 
 ### 2단계 - 인덱스 설계
