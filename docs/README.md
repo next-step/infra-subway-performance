@@ -40,10 +40,24 @@
 - 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
 
 ## 요구사항
-- [X] Spring Boot에 HTTP Cache, gzip 설정하기 
-- [X] Launch Template 작성하기 
-- [X] Auto Scaling Group 생성하기 
+
+- [X] Spring Boot에 HTTP Cache, gzip 설정하기
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
 - [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ## Web Cache 다루기
+
 - [웹 서비스 캐시 똑똑하게 다루기](https://toss.tech/article/smart-web-service-cache)
+
+---
+
+# 🚀 3단계 - 쿼리 최적화
+
+* 요구사항
+
+- [X] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+  - (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- [X] 인덱스 설정을 추가하지 않고 1s 이하로 반환합니다.
+  - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+- 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
