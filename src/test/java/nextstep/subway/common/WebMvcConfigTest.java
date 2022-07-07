@@ -7,14 +7,13 @@ import nextstep.subway.supprot.version.SubwayVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@AutoConfigureWebTestClient
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WebMvcConfigTest {
 
@@ -57,7 +56,7 @@ public class WebMvcConfigTest {
     @Test
     @DisplayName("js no-cache, private 설정")
     void jsNoCache() {
-        String uri = PREFIX_STATIC_RESOURCES + "/static/js/main.js";
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/main.js";
         EntityExchangeResult<String> response = client
                 .get()
                 .uri(uri)

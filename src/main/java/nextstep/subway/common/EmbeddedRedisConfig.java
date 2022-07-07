@@ -13,7 +13,7 @@ import redis.embedded.RedisServer;
 
 
 @Configuration
-@Profile(value = "!prod")
+@Profile(value = "local")
 public class EmbeddedRedisConfig {
 
     @Value("${spring.redis.port}")
