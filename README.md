@@ -48,6 +48,17 @@ npm run dev
 * ![](log-test/load/after/load_k6_after.png)
 * ![](log-test/stress/after/stress_k6_after.png)
 
+* 개선 전 / 후  계측 비교
+
+| 구분         | FCP   | TTI   | SP    | TBT   | LCP  | CLS   |
+|------------|-------|-------|-------|-------|------|-------|
+| 서울교통공사     | 6.5s  | 9.2s  | 11.9s | 0.187s | 6.7s | 0     |
+| 네이버 지도     | 2.2s  | 6.5s  | 5.4s  | 0.34s | 8.1s | 0.03  |
+| 카카오맵       | 1.7s  | 4.2s  | 7.1s  | 0.05s | 6.4s | 0.005 |
+| 내 사이트 개선 전 | 14.3s | 14.9s | 14.3s | 0.48s | 15s  | 0.042 |
+| 내 사이트 개선 후 | 2.5s  | 5.6s  | 4.7s  | 0.62s | 5.7s | 0.041 |
+
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 * @Trancsactional(readOnly=true) 읽기전용 트랜잭션 처리
 * nginx Reverse Proxy 개선
