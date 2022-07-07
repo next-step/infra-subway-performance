@@ -174,14 +174,19 @@ group by hobby;
 /* 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) */
 select C.id, H.name
 from covid C
-    join hospital H
-      on C.hospital_id = H.id;
+         join programmer P
+              on P.id = C.programmer_id
+         join hospital H
+              on C.hospital_id = H.id;
 ```
 ![img.png](./performance/step4/2_execution_plan.png)
 - 0.015 sec / 0.000 sec
 - covid
     - id: PK 지정
+    - programmer_id: unique 지정
     - hospital_id: index 생성
+- programmer
+    - id: PK 지정 (이전 sql 미션에서 지정)
 - hospital
     - id: PK 지정
     - name: unique 지정
@@ -210,7 +215,7 @@ order by P.id;
 - 0.015 sec / 0.000 sec
 - covid
     - id: PK 지정 (이전 sql 미션에서 지정)
-    - programmer_id: unique 지정
+    - programmer_id: unique 지정 (이전 sql 미션에서 지정)
 - hospital
     - id: PK 지정 (이전 sql 미션에서 지정)
     - name: unique 지정 (이전 sql 미션에서 지정)
@@ -278,7 +283,10 @@ group by P.exercise;
     - age: index 생성 (이전 sql 미션에서 지정)
 
 #### 1~6 최종 결과 캡처
-![img.png](./performance/step4/result.png)
+- 전체 결과
+  - ![img.png](./performance/step4/result.png)
+- 2번 문제 재캡처
+  - ![img.png](./performance/step4/result_Q2.png)
 
 ---
 
