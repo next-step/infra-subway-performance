@@ -46,6 +46,13 @@ http {
         server 172.17.0.1:8080;
     }
 
+    server {
+        listen 8088;
+        location /health {
+            return 200;
+        }
+    }
+
     # Redirect all traffic to HTTPS
     server {
         listen 80;
