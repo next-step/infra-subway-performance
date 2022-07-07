@@ -154,11 +154,11 @@ ORDER BY manager_salary_top5.연봉 DESC;
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 - [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
   - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
-    - Index
+    - **Index**
     ```sql
     CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
     ```
-    - Query
+    - **Query**
     ```sql
     SELECT
       hobby,
@@ -167,14 +167,14 @@ ORDER BY manager_salary_top5.연봉 DESC;
     GROUP BY hobby
     ORDER BY hobby DESC;
     ```
-    - Result Grid  
+    - **Result Grid**  
     ![](mission_results/step4/coding-as-hobby/result_grid.png)
-    - Duration / Fetch Time
+    - **Duration / Fetch Time**
       - 인덱스 사용 전 `0.585sec`  
       ![](mission_results/step4/coding-as-hobby/time_result_no_idx.png)
       - 인덱스 사용 후 `0.053sec`  
       ![](mission_results/step4/coding-as-hobby/time_result_idx.png)
-    - Explain
+    - **Explain**
       - 인덱스 사용 전  
       ![](mission_results/step4/coding-as-hobby/explain_no_idx.png)
       ![](mission_results/step4/coding-as-hobby/visual_explain_no_idx.png)
@@ -182,7 +182,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       ![](mission_results/step4/coding-as-hobby/explain_idx.png)
       ![](mission_results/step4/coding-as-hobby/visual_explain_idx.png)
   - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-    - Index
+    - **Index**
     ```sql
     ALTER TABLE `subway`.`hospital`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
@@ -205,7 +205,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
     CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
     CREATE INDEX `idx_covid_programmer_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
     ```
-    - Query
+    - **Query**
     ```sql
     SELECT
       p.id AS programmer_id,
@@ -216,14 +216,14 @@ ORDER BY manager_salary_top5.연봉 DESC;
     JOIN hospital AS h
       ON h.id = c.hospital_id
     ```
-    - Result Grid  
+    - **Result Grid**  
     ![](mission_results/step4/hospital-name-by-programmer/result_grid.png)
-    - Duration / Fetch Time
+    - **Duration / Fetch Time**
       - 인덱스 사용 전 `0.589sec`  
       ![](mission_results/step4/hospital-name-by-programmer/time_result_no_idx.png)
       - 인덱스 사용 후 `0.025sec` 
       ![](mission_results/step4/hospital-name-by-programmer/time_result_idx.png)
-    - Explain
+    - **Explain**
       - 인덱스 사용 전  
       ![](mission_results/step4/hospital-name-by-programmer/explain_no_idx.png)
       ![](mission_results/step4/hospital-name-by-programmer/visual_explain_no_idx.png)
@@ -267,7 +267,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
     - **Result Grid**  
     ![](mission_results/step4/hospital-name-by-student-or-junior/result_grid.png)
     - **Duration / Fetch Time**  
-    아래 두 경우 극적인 차이는 없음.
+      아래 두 경우 극적인 차이는 없음.
       - JOIN 연결 key들만 인덱스 사용  
       ![](mission_results/step4/hospital-name-by-student-or-junior/time_result_join_idx_only.png)
       - hobby까지 인덱스 사용  
@@ -323,9 +323,9 @@ ORDER BY manager_salary_top5.연봉 DESC;
     - **Result Grid**  
     ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/result_grid.png)
     - **Duration / Fetch Time**
-      - JOIN 연결 key들만 인덱스 사용  
+      - JOIN 연결 key들만 인덱스 사용 `0.117sec`  
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys.png)
-      - hospital name도 인덱스 사용  
+      - hospital name도 인덱스 사용 `0.047sec`  
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys_and_idx_hospital_name.png)
     - **Explain**
       - JOIN 연결 key들만 인덱스 사용  
@@ -377,7 +377,8 @@ ORDER BY manager_salary_top5.연봉 DESC;
     ```
     - **Result Grid**  
     ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/result_grid.png)
-    - **Duration / Fetch Time**
+    - **Duration / Fetch Time**  
+      아래 두 경우 극적인 차이는 없음.
       - JOIN 연결 key들만 인덱스 사용  
       ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/time_result_idx_join_keys.png)
       - hospital name도 인덱스 사용  
