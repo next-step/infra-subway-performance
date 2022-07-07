@@ -143,6 +143,84 @@ result
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+```mysql
+## 1
+alter table programmer
+    add primary key (id);
+
+create index idx_hobby
+    on programmer (hobby);
+
+select hobby, round(count(*) * 100.0 / (select count(*) from programmer), 1)
+from programmer
+group by hobby
+order by hobby desc;
+```
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```mysql
+alter table covid
+    add primary key (id);
+
+alter table hospital
+    add primary key (id);
+
+create index idx_programmerId_hospitalId
+    on covid (programmer_id, hospital_id);
+
+select c.id, h.name
+from covid c
+         inner join programmer p on c.programmer_id = p.id
+         inner join hospital h on c.hospital_id = h.id;
+```
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```mysql
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from covid c
+         inner join hospital h on c.hospital_id = h.id
+         inner join programmer p on c.programmer_id = p.id
+         inner join member m on c.member_id = m.id
+where (p.hobby = 'Yes' and p.student like 'Yes%')
+   or p.years_coding = '0-2 years'
+order by p.id;
+```
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```mysql
+alter table member
+    add primary key (id);
+
+create index idx_name
+    on hospital(name);
+
+create index idx_hospitalId_memberId
+    on covid (hospital_id, member_id);
+
+select c.stay, count(*)
+from programmer p
+         inner join covid c on c.programmer_id = p.id
+         inner join member m on c.member_id = m.id
+         inner join hospital h on c.hospital_id = h.id
+where h.name = '서울대병원'
+  and p.country = 'India'
+  and m.age BETWEEN 20 and 29
+group by c.stay;
+```
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```mysql
+select p.exercise, count(p.exercise)
+from programmer p
+         inner join covid c on p.id = c.programmer_id
+         inner join hospital h on c.hospital_id = h.id
+         inner join member m on c.member_id = m.id
+where m.age between 30 and 39
+  and h.name = '서울대병원'
+group by p.exercise
+```
+
 
 ---
 
