@@ -27,7 +27,6 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "stations")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 

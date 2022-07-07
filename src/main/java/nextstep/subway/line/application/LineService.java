@@ -33,7 +33,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Cacheable(value = "lines")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -45,11 +44,11 @@ public class LineService {
         return lineRepository.findAll();
     }
 
+    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -67,7 +66,6 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addLineSection(upStation, downStation, request.getDistance());
