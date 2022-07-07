@@ -286,9 +286,25 @@ ADD INDEX `idx_age` (`age` ASC);
 
 ![](after_index_after_result_step4.png)
 
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+sql
+```roomsql
+select p.exercise, count(p.exercise) 
+from covid c
+inner join ( select id from hospital where name = '서울대병원' ) h on h.id = c.hospital_id
+inner join (
+ 		select p.member_id, p.exercise
+ 		from programmer p
+        inner join (select m.id from member m where m.age >= 30 and m.age < 40 ) m on m.id = p.member_id
+ ) p
+on p.member_id = c.member_id
+group by p.exercise;
+```
+index 변화 없음
 
+#### result
+![](explain_step5.png)
 ---
 
 ### 추가 미션
