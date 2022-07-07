@@ -109,6 +109,36 @@ spring.resources.cache.cachecontrol.no-cache=true
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+``` sql
+select record.employee_id as '사원번호'
+	, salary_rank.employee_name as '이름'
+	, salary_rank.annual_income as '연봉'
+	, salary_rank.position_name as '직급명'
+	, record.region as '지역'
+	, record.record_symbol as '입출입구분'
+	, record.time as '입출입시간'
+from (
+	select  e.id
+	      , concat(e.last_name, e.first_name) as employee_name
+	      , salary.annual_income
+	      , p.position_name
+	from manager m
+	inner join employee e on m.employee_id = e.id
+		and m.end_date > now()
+	inner join department d on m.department_id = d.id 
+		and upper(d.note) = 'ACTIVE'
+	inner join position p on m.employee_id = p.id 
+		and p.end_date > now()
+	inner join salary on m.employee_id = salary.id
+		and salary.end_date > now()
+	order by salary.annual_income desc
+	limit 5
+) salary_rank 
+inner join record on salary_rank.id = record.employee_id
+	and record.record_symbol = 'O';
+```
+
+
 ---
 
 ### 2단계 - 인덱스 설계
