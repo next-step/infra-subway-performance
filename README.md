@@ -63,25 +63,46 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 ####Step2 미션 내용
-- 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-- 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-- 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- [X] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [X] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [X] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? 
+
+→ 가능합니다. 모든 정적 자원에 대해 캐싱하고 싶지 않을때, 즉 캐시 무효화를 위한 설정입니다.
+  > no-cache: 데이터는 캐시해도 되지만, 항상 원(origin) 서버에 검증하고 사용<br>
+   no-store: 데이터에 민감한 정보가 있으므로 저장하면 안됨. 메모리에서 사용하고 최대한 빨리 삭제.
+
+no-store 만으로도 충분할 것 같지만, 여러가지 모호한 Case에 대해 더 확실한 무효화를 제공하기 위해, 주요 사이트에서는 Cache Controle 정책으로 no-cache, no-store, must-revalidate를 함께 가져갑니다. <br>
+(참고: https://www.inflearn.com/questions/112647)
+
 ####요구사항
-- [ ] springboot에 HTTP Cache, gzip 설정하기
-- [ ] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [X] springboot에 HTTP Cache, gzip 설정하기
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
+-  [Launch Template 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-09e692a207f9f6542)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- Auto Scaling 결과
+  ![AutoScaling](step2/test%20result/cloudwatch-autoScaling.PNG)
+
+
+- EC2 Monitoring 결과
+  ![EC2](step2/test%20result/cloudwatch-ec2.PNG)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+- smoke : http_req_duration (p95) [15ms](step1/03.%20after%20(was)/3-1.%20smoke_k6_after2.PNG) 
+                                → [7ms](step2/test%20result/1.%20smoke%20test.PNG) 개선
+- load : http_req_duration (max) [65ms](step1/03.%20after%20(was)/3-2.%20load_k6_after2.PNG) 
+                                → [43ms](step2/test%20result/2.%20load%20test.PNG) 개선
+- stress : Vuser 1000으로 테스트시 [Fail 발생](step1/03.%20after%20(was)/4.%20stress_test_fail%20(VUser%201000).PNG) 
+                                → [성공](step2/test%20result/3.%20stress%20test%20(VUser%201000).PNG) 개선
+- 테스트 결과 캡쳐는 step2/test result에 첨부하였습니다.
 ---
 
 ### 1단계 - 쿼리 최적화
