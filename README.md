@@ -143,6 +143,7 @@ FROM (
     JOIN salary s
         ON m.employee_id = s.id
         AND NOW() BETWEEN s.start_date AND s.end_date
+    WHERE INSTR(d.note, UPPER('active')) > 0
     ORDER BY s.annual_income DESC
     LIMIT 5
 ) t
