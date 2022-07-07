@@ -220,8 +220,32 @@ ADD INDEX `idx_covid_hospital_id` (`hospital_id` ASC);
 ![](after_index_result_step2.png)
 
 ![](after_index_explain_step2.png)
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```roomsql
+select c.id, c.hospital_name, p.hobby, p.dev_type, p.years_coding
+ from (
+	select c.id, c.programmer_id, h.name hospital_name
+ 	from hospital h
+ 	inner join covid c 
+     on c.hospital_id = h.id
+ ) c
+ inner join (
+ 	select id, hobby, student, dev_type, years_coding
+     from programmer p
+     where p.hobby = 'Yes' and (p.student <> 'No' or p.years_coding = '0-2 years'
+ ) p
+ on p.id = c.programmer_id
+ order by p.id;
+```
+index 변화 없음
+
+#### result
+
+![](explain_step3.png)
+
+![](result_step3.png)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
