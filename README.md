@@ -44,9 +44,24 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+   * 테스트 결과 첨부
+     * smoke 테스트 결과 : `/docs/smoke`
+     * load 테스트 결과 : `/docs/load`
+     * stress 테스트 결과 : `/docs/stress`
+   * http_req_duration p(95) 기준
+     * smoke (1vus) : 143.8ms -> 17.71ms
+     * load (115vus) : 1.52s -> 10.93ms
+     * stress (600vus) : 10.8s -> 94.97ms 
+       * http_req_failed : 62.57% -> 0%
+     
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+   * Reverse Proxy 개선
+     * gzip 압축
+     * 캐싱
+     * TLS & HTTP/2 설정
+   * Redis 와 Spring Data Cache를 활용한 WAS 성능 개선 
+     * 지하철역 조회, 경로 조회, 지하철역 조회, 노선 조회, 역 삭제 등 기능에 캐싱 적용
 ---
 
 ### 2단계 - 스케일 아웃
