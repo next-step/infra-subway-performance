@@ -7,6 +7,7 @@ unzip awscliv2.zip
 sudo ./aws/install
 
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=8088/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
 sudo firewall-cmd --reload
 
@@ -238,7 +239,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 sudo docker build -t nextstep/reverse-proxy:0.0.1 /home/ubuntu/docker
-sudo docker run -d -p 80:80 -p 443:443 --name proxy -v /var/log/nginx:/var/log/nginx nextstep/reverse-proxy:0.0.1
+sudo docker run -d -p 80:80 -p 8088:8088 -p 443:443 --name proxy -v /var/log/nginx:/var/log/nginx nextstep/reverse-proxy:0.0.1
 
 sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/tasklet1579-deploy.sh /home/ubuntu
 sudo -i -u ubuntu chmod 755 /home/ubuntu/tasklet1579-deploy.sh
