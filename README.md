@@ -186,17 +186,20 @@ ORDER BY manager_salary_top5.연봉 DESC;
     ```sql
     ALTER TABLE `subway`.`hospital`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
     ;
-
+    
     ALTER TABLE `subway`.`programmer`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
     ;
     
     ALTER TABLE `subway`.`covid`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
     ;
     
     CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
@@ -232,12 +235,14 @@ ORDER BY manager_salary_top5.연봉 DESC;
     ```sql
     ALTER TABLE `subway`.`hospital`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
     ;
     
     ALTER TABLE `subway`.`programmer`
     CHANGE COLUMN `id` `id` INT (11) NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
     ;
     
     CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
@@ -274,7 +279,61 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - hobby까지 인덱스 사용  
       ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_hobby_idx.png)
       ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_hobby_idx.png)
-  - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - **Index**  
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`member`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE UNIQUE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**  
+    ```sql
+    SELECT
+      c.stay,
+      COUNT(*) as count
+    FROM (SELECT id, hospital_id, member_id, programmer_id, stay FROM covid) AS c
+    JOIN (SELECT id FROM hospital WHERE name = '서울대병원') AS h
+      ON c.hospital_id = h.id
+    JOIN (SELECT id FROM programmer WHERE country = 'India') AS p
+      ON p.id = c.programmer_id
+    JOIN (SELECT id FROM member WHERE age BETWEEN 21 AND 29) AS m
+      ON m.id = c.member_id
+    GROUP BY c.stay
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/result_grid.png)
+    - **Duration / Fetch Time**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys_and_idx_hospital_name.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys.png)
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys_and_idx_hospital_name.png)
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys_and_idx_hospital_name.png)
   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ---
 
