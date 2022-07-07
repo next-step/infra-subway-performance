@@ -46,21 +46,21 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### Smoke
 - before  
-![](img/step1/smoke-before.png)
+![](mission_results/step1/smoke-before.png)
 - after  
-![](img/step1/smoke_after.png)
+![](mission_results/step1/smoke_after.png)
 #### Load
 http_req_waiting avg 148.9ms -> 21.15ms
 - before  
-![](img/step1/load-before.png)
+![](mission_results/step1/load-before.png)
 - after  
-![](img/step1/load_after.png)
+![](mission_results/step1/load_after.png)
 #### Stress
 에러가 나는 지점 vsu 238 -> 272
 - before  
-![](img/step1/stress-before.png)
+![](mission_results/step1/stress-before.png)
 - after  
-![](img/step1/stress-after.png)
+![](mission_results/step1/stress-after.png)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선
   - gzip 압축 types: text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
@@ -82,22 +82,22 @@ http_req_waiting avg 148.9ms -> 21.15ms
 1. Launch Template 링크를 공유해주세요.  
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c761492b2914af82
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-![](img/step2/cloudwatch.png)
+![](mission_results/step2/cloudwatch.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### smoke
-![](img/step2/smoke.png)
+![](mission_results/step2/smoke.png)
 #### load
 - http_req_duration avg 기준 `21.35ms` -> `5.28ms`
 - http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
 - iteration_duration avg 기준 `187.36ms` -> `24.15ms`
-![](img/step2/load.png)
+![](mission_results/step2/load.png)
 #### stress
 - 에러가 나는 지점 vsu `272` -> `1,050`
-![](img/step2/stress.png)
+![](mission_results/step2/stress.png)
 ---
 
 ### 1단계 - 쿼리 최적화
@@ -139,14 +139,14 @@ WHERE r.record_symbol = 'O'
 ORDER BY manager_salary_top5.연봉 DESC;
 ```
 #### Result
-![](img/step3/result.png)
+![](mission_results/step3/result.png)
 #### Duration / Fetch Time
-![](img/step3/time.png)
+![](mission_results/step3/time.png)
 #### Execution Plan
 - Visual
-![](img/step3/visual_explain.png)
+![](mission_results/step3/visual_explain.png)
 - Tabular
-![](img/step3/tabular_explain.png)
+![](mission_results/step3/tabular_explain.png)
 ---
 
 ### 2단계 - 인덱스 설계
