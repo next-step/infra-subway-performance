@@ -80,15 +80,42 @@ $ stress -c 2
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```mysql
+select adms.id as 사원번호,
+       adms.last_name as 이름,
+       adms.annual_income as 연봉,
+       adms.position_name as 직급명,
+       r.time as 입출입시간,
+       r.region as 지역,
+       r.record_symbol as 입출입구분
+from record r
+       inner join (
+  select adm.id, adm.last_name, s.annual_income, adm.position_name
+  from salary s
+         inner join (
+    select e.id, e.last_name, p.position_name
+    from department d
+           inner join manager m on d.id = m.department_id and d.note = 'active'
+           inner join employee e on e.id = m.employee_id and m.end_date >= now()
+           inner join position p on e.id = p.id and p.position_name = 'manager'
+  ) adm
+                    on s.id = adm.id and s.end_date >= now()
+  order by s.annual_income desc
+  limit 5
+) adms
+on r.employee_id = adms.id and r.record_symbol = 'O';
 
+
+```
+[실행결과](https://github.com/yangseungin/infra-subway-performance/blob/step3/mission/step3/%EC%8B%A4%ED%96%89%EA%B2%B0%EA%B3%BC.png)
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
