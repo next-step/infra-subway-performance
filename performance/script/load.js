@@ -77,11 +77,18 @@ function getFavorites(accessToken) {
     check(response, {'retrieved favorites': (response) => response.status === 200 });
 }
 
+function getPaths(source, target) {
+    let response = http.get(`${BASE_URL}/path?source=${source}&target=${target}`);
+
+    check(response, {'retrieved paths': (response) => response.status == 200});
+}
+
 export default function ()  {
     let accessToken = login();
     myInfo(accessToken);
     getLines(accessToken);
     getStations(accessToken);
     getFavorites(accessToken);
+    getPaths(1, 3);
     sleep(1);
 };
