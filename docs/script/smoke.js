@@ -15,32 +15,73 @@ const USERNAME = 'wenodev@nextstep.com';
 const PASSWORD = '1234';
 
 export default function ()  {
+    // mainPage 접근
+    accessMainPage();
 
-    var payload = JSON.stringify({
-        email: USERNAME,
-        password: PASSWORD,
+    // login
+    let accessToken = login(USERNAME, PASSWORD);
+
+
+    let authHeaders = {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+
+
+    // 경로 조회 페이지 접근
+    accessFindPathPage();
+
+    // 경로 검색
+    searchPath(1,2);
+    searchPath(1,3);
+    searchPath(1,4);
+
+    sleep(1);
+};
+
+function accessMainPage() {
+    let mainResponse = http.get(`${BASE_URL}`);
+    check(mainResponse, {
+        'main page success': (response) => response.status == 200
+    });
+}
+
+function login(username, password) {
+    let loginUri = `${BASE_URL}/login/token`;
+    let loginPayload = JSON.stringify({
+        email: username,
+        password: password,
     });
 
-    var params = {
+    let loginParams = {
         headers: {
             'Content-Type': 'application/json',
         },
     };
 
 
-    let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+    let loginResponse = http.post(loginUri, loginPayload, loginParams);
 
-    check(loginRes, {
-        'logged in successfully': (resp) => resp.json('accessToken') !== '',
+    check(loginResponse, {
+        'logged in successfully': (response) => response.json('accessToken') !== '',
     });
 
+    return loginResponse.json('accessToken');
+}
 
-    let authHeaders = {
-        headers: {
-            Authorization: `Bearer ${loginRes.json('accessToken')}`,
-        },
-    };
-    let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
-    check(myObjects, { 'retrieved member': (obj) => obj.id != 0 });
-    sleep(1);
-};
+function accessFindPathPage() {
+    let findPathResponse = http.get(`${BASE_URL}/path`);
+
+    check(findPathResponse, {
+        'find path page success': (response) => response.status == 200
+    });
+}
+
+function searchPath(source, target) {
+    let searchPathResponse = http.get(`${BASE_URL}/path?source=${source}&target=${target}`);
+
+    check(searchPathResponse, {
+        'search path success': (response) => response.status == 200
+    });
+}

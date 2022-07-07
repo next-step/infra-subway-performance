@@ -31,7 +31,9 @@ export default function ()  {
     accessFindPathPage();
 
     // 경로 검색
-    searchPath();
+    searchPath(1,2);
+    searchPath(1,3);
+    searchPath(1,4);
 
     sleep(1);
 };
@@ -74,8 +76,8 @@ function accessFindPathPage() {
     });
 }
 
-function searchPath() {
-    let searchPathResponse = http.get(`${BASE_URL}/path?source=1&target=5`);
+function searchPath(source, target) {
+    let searchPathResponse = http.get(`${BASE_URL}/path?source=${source}&target=${target}`);
 
     check(searchPathResponse, {
         'search path success': (response) => response.status == 200
