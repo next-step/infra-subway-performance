@@ -99,6 +99,24 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+# 요구 사항 
+* 실습 
+  * 미션 요구사항
+    - [X] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증 합니다.
+    - [X] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+    - [X] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?  
+       => 가능합니다. HttpServletResponse 객체에 직접 헤더를 할당하는 방식으로 구현하면 될듯 싶습니다. 
+        ```text
+           response.setHeader("Cache-Control", "no-cache, no-store"); 
+       ```
+    
+* 요구 사항
+  - [X] springboot에 HTTP Cache, gzip 설정하기
+  - [ ] Launch Template 작성하기
+  - [ ] Auto Scaling Group 생성하기
+  - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+
+
 1. Launch Template 링크를 공유해주세요.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
