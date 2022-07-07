@@ -44,8 +44,16 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* ![](log-test/smoke/after/smoke_k6_after.png)
+* ![](log-test/load/after/load_k6_after.png)
+* ![](log-test/stress/after/stress_k6_after.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+* @Trancsactional(readOnly=true) 읽기전용 트랜잭션 처리
+* nginx Reverse Proxy 개선
+* gzip 압축,
+* 캐시적용
+* TLS, HTTP/2 설정
 
 ---
 
