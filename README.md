@@ -62,7 +62,7 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-####Step2 미션 내용
+#### Step2 미션 내용
 - [X] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
 - [X] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
 - [X] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? 
@@ -74,7 +74,7 @@ npm run dev
 no-store 만으로도 충분할 것 같지만, 여러가지 모호한 Case에 대해 더 확실한 무효화를 제공하기 위해, 주요 사이트에서는 Cache Controle 정책으로 no-cache, no-store, must-revalidate를 함께 가져갑니다. <br>
 (참고: https://www.inflearn.com/questions/112647)
 
-####요구사항
+#### 요구사항
 - [X] springboot에 HTTP Cache, gzip 설정하기
 - [X] Launch Template 작성하기
 - [X] Auto Scaling Group 생성하기
