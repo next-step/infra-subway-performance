@@ -12,13 +12,22 @@ sudo firewall-cmd --reload
 
 sudo -i -u ubuntu mkdir docker
 sudo -i -u ubuntu mkdir docker/certs
-sudo -i -u ubuntu echo -e "FROM nginx
+
+dockerFile=docker/Dockerfile
+nginxConfig=docker/nginx.conf
+fullchainPem=docker/certs/fullchain.pem
+privkeyPem=docker/certs/privkey.pem
+
+sudo -i -u ubuntu tee $dockerFile > /dev/null << EOF
+FROM nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY certs/fullchain.pem /etc/letsencrypt/live/tasklet1579.p-e.kr/fullchain.pem
-COPY certs/privkey.pem /etc/letsencrypt/live/tasklet1579.p-e.kr/privkey.pem" > docker/Dockerfile
+COPY certs/privkey.pem /etc/letsencrypt/live/tasklet1579.p-e.kr/privkey.pem
+EOF
 
-sudo -i -u ubuntu echo -e 'events {}
+sudo -i -u ubuntu tee $nginxConfig > /dev/null << EOF
+events {}
 
 http {
     # gzip 압축
@@ -31,7 +40,7 @@ http {
     proxy_cache_path /tmp/nginx levels=1:2 keys_zone=mycache:10m inactive=10m max_size=200M;
 
     ## 캐시를 구분하기 위한 Key 규칙
-    proxy_cache_key "$scheme$host$request_uri $cookie_user";
+    proxy_cache_key "\$scheme\$host\$request_uri \$cookie_user";
 
     upstream app {
         server 172.17.0.1:8080;
@@ -40,7 +49,7 @@ http {
     # Redirect all traffic to HTTPS
     server {
         listen 80;
-        return 301 https://$host$request_uri;
+        return 301 https://\$host\$request_uri;
     }
 
     server {
@@ -65,20 +74,20 @@ http {
         ssl_session_timeout 10m;
 
         location / {
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header Host \$http_host;
             proxy_pass http://app;
         }
 
-        location ~* \.(?:css|js|gif|png|jpg|jpeg)$ {
+        location ~* \.(?:css|js|gif|png|jpg|jpeg)\$ {
             proxy_pass http://app;
 
             ## 캐시 설정 적용 및 헤더에 추가
             # 캐시 존을 설정 (캐시 이름)
             proxy_cache mycache;
             # X-Proxy-Cache 헤더에 HIT, MISS, BYPASS와 같은 캐시 적중 상태정보가 설정
-            add_header X-Proxy-Cache $upstream_cache_status;
+            add_header X-Proxy-Cache \$upstream_cache_status;
             # 200 302 코드는 20분간 캐싱
             proxy_cache_valid 200 302 10m;
             # 만료기간을 1 달로 설정
@@ -87,9 +96,11 @@ http {
             access_log off;
         }
     }
-}' > docker/nginx.conf
+}
+EOF
 
-sudo -i -u ubuntu echo -e "-----BEGIN CERTIFICATE-----
+sudo -i -u ubuntu tee $fullchainPem > /dev/null << EOF
+-----BEGIN CERTIFICATE-----
 MIIFQTCCBCmgAwIBAgISBIRjIgr/lwt9epxbh37Tw8tEMA0GCSqGSIb3DQEBCwUA
 MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD
 EwJSMzAeFw0yMjA2MDMxMTA2MjJaFw0yMjA5MDExMTA2MjFaMB8xHTAbBgNVBAMM
@@ -180,9 +191,11 @@ MA0GCSqGSIb3DQEBCwUAA4IBAQAKcwBslm7/DlLQrt2M51oGrS+o44+/yQoDFVDC
 WCLKTVXkcGdtwlfFRjlBz4pYg1htmf5X6DYO8A4jqv2Il9DjXA6USbW1FzXSLr9O
 he8Y4IWS6wY7bCkjCWDcRQJMEhg76fsO3txE+FiYruq9RUWhiF1myv4Q6W+CyBFC
 Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5
------END CERTIFICATE-----" > docker/certs/fullchain.pem
+-----END CERTIFICATE-----
+EOF
 
-sudo -i -u ubuntu echo -e "-----BEGIN PRIVATE KEY-----
+sudo -i -u ubuntu tee $privkeyPem > /dev/null << EOF
+-----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDNxhLOz+h7nv5D
 GfObDZd576vpcKiueCiyHy9iLfIAWpcejMrtE6ZvWsCmLN8iv0uM9EG2O2X3WhY9
 T1Jj9YNTJWHeDMN/ZjfvDI2FrTMy2M2+3Zsc6XkpE1UI6Qp+D4gsbWCAxIsGo0MQ
@@ -209,14 +222,15 @@ CTDgqKhH26k1FUa+EJ0O7G/FZqUocAIJhaY1NGECgYALzbgfZsfUusp8z4G5/l5G
 tLdpke7QgeH0dd9ZyDkR4jvAOold5PaKbZdnF2w1jERupXLiT43GJqa816CIjvku
 IOelxVvVkYP84iiR55r7yQ014a8xgEa4iHfyaXo0Mnec8oppQAxxDdN04M2/PxyC
 nFX2PKtm/uz0HxIG/fuz1A==
------END PRIVATE KEY-----" > docker/certs/privkey.pem
+-----END PRIVATE KEY-----
+EOF
 
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-sudo docker build -t nextstep/reverse-proxy:0.0.1 docker
+sudo docker build -t nextstep/reverse-proxy:0.0.1 /home/ubuntu/docker
 sudo docker run -d -p 80:80 -p 443:443 --name proxy -v /var/log/nginx:/var/log/nginx nextstep/reverse-proxy:0.0.1
 
 sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/tasklet1579-deploy.sh /home/ubuntu
