@@ -183,8 +183,43 @@ ADD INDEX `idx_hobby` (`hobby` ASC);
 
 ![](after_index_result_step1.png)
 
-- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+sql
+```roomsql
+select c.id, h.name 
+from hospital h
+	inner join covid c on c.hospital_id = h.id
+    inner join programmer p on p.id = c.programmer_id;
+```
+index
+```roomsql
+ALTER TABLE `subway`.`programmer` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `subway`.`covid` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`hospital` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`covid` 
+ADD INDEX `idx_covid_programmer_id` (`programmer_id` ASC);
+
+ALTER TABLE `subway`.`covid` 
+ADD INDEX `idx_covid_hospital_id` (`hospital_id` ASC);
+```
+
+#### before
+![](before_index_explain_step2.png)
+
+![](before_index_result_step2.png)
+#### after
+![](after_index_result_step2.png)
+
+![](after_index_explain_step2.png)
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
