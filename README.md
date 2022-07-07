@@ -177,8 +177,10 @@ $ stress -c 2
         order by 연봉 desc, 지역;
 
        1. 1차 조회 결과(정상, 평균 0.43sec)
+       
           ![img.png](./readmeSource/step3/쿼리_조회결과.png)
        2. 실행계획
+       
           ![img.png](./readmeSource/step3/1차_쿼리조회_실행계획.png)
           1. Manager과 Record에서 풀스캔 발생
 
@@ -198,6 +200,7 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
     join record as r on (r.record_symbol="O" and r.region <> "" and r.employee_id = m.employee_id)
     order by m.annual_income desc, r.region;
        3. 실행계획
+       
           ![img.png](./readmeSource/step3/쿼리개선후_실행계획.png)
           1. 서브쿼리를 없앤 후 Join을 통해서 쿼리 하니 All scan이 사라지고 key lookup으로 개선된걸 확인할수 있었음
           2. 최대한 낮은 depth로 쿼리를 작성하니, 중간에 불필요한 tmp table을 생성/유지하기위한 메모리를 절약할수 있었음
@@ -207,24 +210,146 @@ select m.employee_id as 사원번호, m.last_name as 이름, m.annual_income as 
        3. tmp_table_size
        4. max_heap_table_size
 ---
+---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    1. key, foreign key 매핑하기
+       ```
+       alter table covid add primary key (id);
+       alter table hospital add primary key(id);
+       alter table programmer add primary key(id);
+       alter table hospital modify column id bigint(20);
+       alter table covid add foreign key(hospital_id) references hospital(id);
+       alter table covid add foreign key(programmer_id) references programmer(id);
+       ```
+
+    2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+       1. 일단 조회하기(4.14sec)
+          ```
+          select c.programmer_id, h.name from hospital as h
+              join covid as c on c.hospital_id = h.id
+              join programmer as p on c.programmer_id = p.id;
+          ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.0053sec)
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+       3. 개선 전 실행계획
+
+          ![img.png](./readmeSource/step4/개선전_1.png)
+       4. 개선 후 실행계획
+       
+          ![img.png](./readmeSource/step4/개선후_1.png)
+          1. covid - hospital foreign key 에 의한 indexing
+          2. hospital primary key 에 대한 indexing
+
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+       1. 일단 조회하기(조회불가)
+          1. 주의사항 
+             1. 시작 모수를 programmer가 아닌 covid를 driving table로 설정시, 시작 모수가 많아 executing시간이 1분을 넘어간다.
+             2. 모수를 programmer로 설정하고, covid.programmer_id로 order by 할시 인덱싱을 타지 않고 Full-scan을 한다. 기존 모수에서 order by를 진행하자
+       ```
+       select c.id, h.name, p.hobby, p.dev_type, p.years_coding  from programmer as p   
+           join covid as c on (c.programmer_id is not null and hobby = "Yes" and (years_coding = "0-2 years" or (student in ("Yes, part-time", "Yes, full-time"))) and p.id = c.programmer_id)
+           join hospital as h on h.id = c.hospital_id
+           order by p.id;
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도 (0.0042sec)
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+       3. 개선전 실행계획(추출불가)
+       4. 개선 후 실행계획
+       
+          ![img.png](./readmeSource/step4/개선후_2.png)
+          1. programmer의 Hobby에 대한 indexing 
+          2. covid - programmer foreign key에 의한 indexing
+          3. covid - hospital foreign key 에 의한 indexing
+       
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+       1. 일단 조회하기(조회불가)
+       ```
+       select c.stay, count(c.stay) from covid as c where
+          c.hospital_id = (select id from hospital where name = "서울대병원")
+          and programmer_id in (select id from programmer where country = "India")
+          and member_id in (select id from member where age >= 20 and age <= 29)
+          group by c.stay;
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.073sec)
+          1. 각 테이블 별 기본키 / 외래키 설정을 통한 자동 인덱싱
+          ```
+          create index programmer_country on subway.programmer(id, country);
+             create index member_age on subway.member(id, age);
+          ```
+       3. 개선 전 실행계획(추출불가)
+       4. 개선 후 실행계획
+       
+          ![img.png](./readmeSource/step4/개선후_3.png)
+          1. hospital의 name에 대한 indexing
+          2. programmer의 primary key에 대한 indexing
+          3. member의 primary key에 대한 indexing 
+       
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+       1. 일단 조회하기(0.495sec)
+       ```
+          select exercise, count(exercise) from programmer as p
+              where p.id in (select programmer_id from covid where hospital_id in (select id from hospital where name = "서울대병원"))
+              and p.id in (select id from member where age >= 30 and age <= 39)
+              group by exercise;
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.055sec)
+       ```
+          create index member_id_age on subway.member( age);
+       ```
+       3. 개선 전 실행계획(추출불가)
+       4. 개선 후 실행계획
+       
+          ![img.png](./readmeSource/step4/개선후_4.png)
+          1. hospital의 name에 대한 indexing
+          2. programmer의 primary key에 대한 indexing
+          3. member의 primary key에 대한 indexing
+
+    6. Coding as a Hobby 와 같은 결과를 반환
+       1. 일단 조회하기(0.4sec)
+       ```
+       select
+          hobby,
+          concat(round(count(hobby) / (select count(hobby) from programmer) * 100,1),'%')
+       from programmer group by hobby;
+       ```
+       2. indexing설정 내역 및 설정 후 쿼리 속도(0.04sec)
+       ```
+       create index programmer_hobby on subway.programmer(hobby);
+       ```
+       3. 개선 전 실행계획
+       
+          ![img.png](./readmeSource/step4/개선전_5.png)
+       4. 개선 후 실행계획(group by column 인덱싱으로, indexing을 통한 groupby를 하는걸 확인할수있다)
+       
+          ![img.png](./readmeSource/step4/개선후_5.png)
+
+
+
 
 ---
 
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- http://3.35.223.220:8080/stationsByPage?page=5 
+  - size 는 10개로 고정 
+  - Direction은 입력 안할시 "createdDate" ASC로 자동 설정 
+  - Page<StationResponse>로 반환
 
+2. Database Replication
+   1. master Status
+   
+      ![img.png](./readmeSource/step5/masterStatus.png)
+   
+   2. slave Status
 
+      ![img.png](./readmeSource/step5/slaveStatus.png)
 
-
-
-
-
-
+   3. EnableJpaRepository가 아닌 직접 DataSource를 생성하기때문에 main context에서는 @EnableJpaRepositories 삭제
+    - 테스트 코드에선 Repication DB가 아닌 Single H2 DB를 통헤 테스트 하기때문에 context에 @EnableJpaRepository 추가
 
 ### study
 http2 protocol
@@ -251,3 +376,23 @@ http2 protocol
     4. max_heap_table_size
         1. 사용자가 생성한 memory가 증가할수 있는 최대 크기
 
+
+
+#### mysql indexing
+1. 인덱스 설정을 해본다
+   1. 설정 조건
+      1. 테이블 내 데이터 양이 많고 조건 검색을 하는경우
+      2. WHERE문, 결합 , ORDER BY문을 이용하는 경우
+      3. NULL값이 많은 데이터로 부터 NULL이외의 값을 검색하는 경우
+      4. 인덱스 시 테이블 엑세스를 최소화 하기 위해 인덱스에 primary key를 추가 (가장 앞에)
+   2. 인덱스가 사용될때
+      1. 컬럼값을 정수와 비교할때
+      2. 컬럼값 전체로 JOIN할때
+      3. 컬럼값의 범위를 요구할때
+      4. LIKE로 문자열의 선두가 고정일때
+      5. MIN(),MAX()
+      6. ORDER BY, GROUP BY
+   3. 인덱스가 사용 안될때
+      1. LIKE문이 와일드 카드(*)로 시작될때
+      2. DB전체를 읽는것이 빠르다고 MySQL이 판단할때
+      3. WHERE과 ORDER BY의 컬럼이 다를때에는 한쪽만 사용
