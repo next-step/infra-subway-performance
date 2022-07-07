@@ -80,7 +80,7 @@ $ stress -c 2
 - **_CPU 사용량_**
   - ![CPU 사용량](/docs/cpu_stress/cloudwatch_cpu.png)
 - **_인스턴스 추가_**
-  - ![추가 인스턴스](/docs/cpu_stress/addInstance)
+  - ![추가 인스턴스](/docs/cpu_stress/addInstance.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - http_req_duration p(95) 값 기준.
