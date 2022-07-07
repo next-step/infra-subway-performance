@@ -134,6 +134,129 @@ order by employee.id
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+  - `group by` 시 index full scan
+
+```sql
+create index idx_hobby on programmer(hobby);
+```
+
+```sql
+select
+  hobby,
+  count(hobby) * 100 / (select count(hobby) from programmer) as rate
+from programmer
+group by hobby
+;
+```
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - `programmer join covid` 시 index 사용
+  - `covid join hospital` 시 index 사용
+
+```sql
+alter table programmer add primary key(id);
+alter table covid add primary key(id);
+alter table hospital add primary key(id);
+create index idx_programmer_id on covid(programmer_id);
+```
+
+```sql
+select
+  programmer.id as programmer_id,
+  covid.id as covid_id,
+  hospital.name as hospital_name
+from covid
+inner join programmer on covid.programmer_id = programmer.id
+inner join hospital on covid.hospital_id = hospital.id
+;
+```
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - `programmer join covid` 시 index 사용
+  - `covid join hospital` 시 index 사용
+
+```sql
+select
+  covid.id,
+  hospital.name,
+  user.Hobby,
+  user.DevType,
+  user.YearsCoding
+from covid
+inner join (
+  select
+    id,
+    hobby as Hobby,
+    dev_type as DevType,
+    years_coding as YearsCoding
+  from programmer
+  where hobby = 'Yes'
+  and (student like 'Yes%' or years_coding = '0-2 years')
+) as user on covid.programmer_id = user.id
+inner join hospital on covid.hospital_id = hospital.id
+;
+```
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - `programmer join member` 시 index 사용
+  - `hospital`을 `name`으로 조회 시 index 사용
+  - `hospital join covid` 시 index 사용
+  - `covid join programmer` 시 index 사용
+
+```sql
+alter table member add primary key(id);
+create index idx_name on hospital(name);
+create index idx_hospital_id on covid(hospital_id);
+```
+
+```sql
+select
+  covid.Stay
+  ,count(user.id) as count
+from covid
+inner join (
+  select programmer.id
+  from programmer
+  inner join member on programmer.member_id = member.id
+  where programmer.country = 'India'
+  and member.age between 20 and 29
+) as user on covid.programmer_id = user.id
+inner join (
+  select id
+  from hospital
+  where name = '서울대병원'
+) as seoul_hospital on covid.hospital_id = seoul_hospital.id
+group by covid.Stay
+;
+```
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - `programmer join member` 시 index 사용
+  - `hospital`을 `name`으로 조회 시 index 사용
+  - `hospital join covid` 시 index 사용
+  - `covid join programmer` 시 index 사용
+
+```sql
+select
+  user.Exercise
+  ,count(user.id) as count
+from covid
+inner join (
+  select programmer.id, programmer.exercise
+  from programmer
+  inner join member on programmer.member_id = member.id
+  where member.age between 30 and 39
+) as user on covid.programmer_id = user.id
+inner join (
+  select id
+  from hospital
+  where name = '서울대병원'
+) as seoul_hospital on covid.hospital_id = seoul_hospital.id
+group by user.Exercise
+;
+```
+
 ---
 
 ### 추가 미션
