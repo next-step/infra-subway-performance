@@ -23,8 +23,7 @@ public class StationService {
     }
 
     @Caching(
-            cacheable = @Cacheable(value = "station", key = "#result.id"),
-            evict = @CacheEvict(value = "stations")
+            evict = { @CacheEvict(value = "stations"), @CacheEvict(value = "lines"), @CacheEvict(value = "line"), @CacheEvict(value = "path") }
     )
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
@@ -41,14 +40,14 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+
     @Caching(
-            evict = { @CacheEvict(value = "stations"), @CacheEvict(value = "station", key = "#id"), @CacheEvict(value = "pathResponse") }
+            evict = { @CacheEvict(value = "stations"), @CacheEvict(value = "lines"), @CacheEvict(value = "line"), @CacheEvict(value = "path") }
     )
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
-    @Cacheable(value = "station", key = "#id")
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
