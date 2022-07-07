@@ -55,18 +55,23 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+   - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplates:search=14km
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+   - docs - step2 - ec2 페이지 내 공유
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+ - docs -> step2 이미지 참조
+
+4. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+   - 가능은 정적 자원이 자주 호출되는지 등을 따져서 하나 자원에 효율성에 대해서 생각을 해봐야할 것 같습니다. (정적 컨텐츠에 캐시를 사용하는 이유 등..)
+   - no-store(캐시를 등록하지 않음), no-cache(캐시를 사용하나, 서버에 검증이 필요)
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -74,7 +79,7 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
