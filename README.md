@@ -205,13 +205,13 @@ ORDER BY manager_salary_top5.연봉 DESC;
     - Query
     ```sql
     SELECT
-    p.id AS programmer_id,
-    h.name AS hospital_name
+      p.id AS programmer_id,
+      h.name AS hospital_name
     FROM programmer AS p
     JOIN covid AS c
-    ON c.programmer_id = p.id
+      ON c.programmer_id = p.id
     JOIN hospital AS h
-    ON h.id = c.hospital_id
+      ON h.id = c.hospital_id
     ```
     - Result Grid  
     ![](mission_results/step4/hospital-name-by-programmer/result_grid.png)
@@ -227,7 +227,53 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - 인덱스 사용 후  
       ![](mission_results/step4/hospital-name-by-programmer/explain_idx.png)
       ![](mission_results/step4/hospital-name-by-programmer/visual_explain_idx.png)
-  - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - **Index**  
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`);
+    ;
+    
+    CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_programmer_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      programmer.id,
+      hospital.name
+    FROM programmer
+    JOIN covid
+      ON covid.programmer_id = programmer.id
+    JOIN hospital
+      ON hospital.id = covid.hospital_id
+    WHERE programmer.hobby = 'Yes'
+      AND (programmer.student <> 'No' OR programmer.years_coding = '0-2 years')
+    ORDER BY programmer.id;
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/hospital-name-by-student-or-junior/result_grid.png)
+    - **Duration / Fetch Time**  
+    아래 두 경우 극적인 차이는 없음.
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/time_result_join_idx_only.png)
+      - hobby까지 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/time_result_join_hobby_idx.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_idx_only.png)
+      ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_idx_only.png)
+      - hobby까지 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_hobby_idx.png)
+      ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_hobby_idx.png)
   - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ---
