@@ -309,3 +309,17 @@ group by exercise;
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+- [Station 목록] : https://woo.subway-limwoobin.p-e.kr/stations/page/5?size=10  
+- [Line 목록] : https://woo.subway-limwoobin.p-e.kr/lines/page/2?size=3
+
+
+<hr>
+
+#### DB Master, Slave 동기화 확인  
+__./docs/step5/1-1__
+
+<hr>
+
+#### DB Master, Slave 설정 확인
+__./docs/step5/1-2__
