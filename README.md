@@ -170,6 +170,129 @@ JOIN record r
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+  - Duration : 4.314s -> 0.464s
+  - 개선점
+    - 인덱스 추가1 : programmer.hobby
+```sql
+Select hobby, ROUND((Count(hobby)* 100 / (Select Count(*) From programmer)), 1) as Score
+From programmer
+Group By hobby
+order by hobby desc
+;
+```
+![plan1](/docs/step4/q1_plan.png)
+<br>
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - Duration : 4.056s -> 0.048s
+  - 개선점
+    - PK 생성 1 : covid.id
+    - PK 생성 2 : hospital.id
+    - PK 생성 3 : programmer.id
+    - 인덱스 추가 1 : covid.hospital_id
+    - 인덱스 추가 2 : covid.programmer_id
+```sql
+SELECT c.id, h.name
+FROM covid c
+JOIN hospital h
+	ON c.hospital_id = h.id
+JOIN programmer p
+	ON c.programmer_id = p.id
+;
+```
+![plan2](/docs/step4/q2_plan.png)
+<br>
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - Duration : 30.010s -> 0.061s
+  - 개선점
+    - PK 생성 1 : covid.id
+    - PK 생성 2 : hospital.id
+    - PK 생성 3 : programmer.id
+    - 인덱스 추가 1 : covid.hospital_id
+    - 인덱스 추가 2 : covid.programmer_id
+    - 인덱스 추가 3 : programmer.years_coding
+    - 인덱스 추가 4 : programmer.hobby
+```sql
+SELECT c.id, h.name, user.hobby, user.dev_type, user.years_coding
+FROM (
+	SELECT id, hobby, dev_type, years_coding
+	FROM programmer
+	WHERE years_coding = '0-2 years'
+	OR (hobby = 'Yes' AND student like 'Yes%' AND INSTR(dev_type, 'developer') > 0)
+	ORDER BY id
+) user
+JOIN covid c
+	ON user.id = c.programmer_id
+JOIN hospital h
+	ON c.hospital_id = h.id    
+;
+```
+![plan3](/docs/step4/q3_plan.png)
+<br>
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - Duration : 300s 이상 -> 0.975s
+  - 개선점
+    - PK 생성 1 : covid.id
+    - PK 생성 2 : hospital.id
+    - PK 생성 3 : programmer.id
+    - PK 생성 4 : member.id
+    - 인덱스 추가 1 : covid.member_id
+    - 인덱스 추가 2 : covid.hospital_id
+    - 인덱스 추가 3 : covid.programmer_id
+    - 인덱스 추가 4 : member.age
+    - 인덱스 추가 5 : hospital.name
+    - 인덱스 추가 6 : programmer.country
+    - 인덱스 추가 7 : covid.stay
+```sql
+SELECT c.stay, COUNT(c.stay) AS count
+FROM covid c
+JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) m
+	ON c.member_id = m.id
+JOIN (SELECT id FROM hospital WHERE name = '서울대병원') h
+	ON c.hospital_id = h.id
+JOIN (SELECT id FROM programmer WHERE country = 'India') p
+	ON c.programmer_id = p.id
+GROUP BY c.stay
+;
+```
+![plan4](/docs/step4/q4_plan.png)
+<br>
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - Duration : 300s 이상 -> 0.497s
+  - 개선점
+    - PK 생성 1 : covid.id
+    - PK 생성 2 : hospital.id
+    - PK 생성 3 : programmer.id
+    - PK 생성 4 : member.id
+    - 인덱스 추가 1 : covid.member_id
+    - 인덱스 추가 2 : covid.hospital_id
+    - 인덱스 추가 3 : covid.programmer_id
+    - 인덱스 추가 4 : member.age
+    - 인덱스 추가 5 : hospital.name
+    - 인덱스 추가 6 : programmer.exercise
+```sql
+SELECT user.exercise, COUNT(user.exercise) AS count
+FROM (
+	SELECT p.exercise
+    FROM covid c
+	JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) m
+		ON c.member_id = m.id
+	JOIN (SELECT id FROM hospital WHERE name = '서울대병원') h
+		ON c.hospital_id = h.id
+	JOIN programmer p
+		ON c.programmer_id = p.id
+) user
+GROUP BY user.exercise
+;
+```
+![plan5](/docs/step4/q5_plan.png)
+<br>
+
 
 ---
 
