@@ -246,7 +246,45 @@ index 변화 없음
 ![](explain_step3.png)
 
 ![](result_step3.png)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```roomsql
+select c.stay, count(c.stay) count
+from covid c
+where c.hospital_id in 
+			(select id from hospital where name = '서울대병원') 
+			and c.programmer_id in (
+                            select id
+                            from programmer
+                            where id in (select id from member where age >= 20 AND age < 30) and country = 'India')
+group by c.stay;
+```
+
+index
+```roomsql
+ALTER TABLE `subway`.`member` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subway`.`programmer` 
+ADD INDEX `idx_member_id_country` (`member_id` ASC, `country` ASC
+
+ALTER TABLE `subway`.`hospital` 
+ADD INDEX `idx_name` (`name` ASC);
+
+ALTER TABLE `subway`.`member` 
+ADD INDEX `idx_age` (`age` ASC);
+```
+
+#### before
+![](before_index_explain_step4.png)
+
+![](before_index_result_step4.png)
+#### after
+![](after_index_explain_step4.png)
+
+![](after_index_after_result_step4.png)
 
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
