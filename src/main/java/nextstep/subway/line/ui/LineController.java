@@ -27,6 +27,11 @@ public class LineController {
     }
 
     @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineResponses());
+    }
+
+    @GetMapping("_page")
     public ResponseEntity<List<LineResponse>> findAllLines(@RequestParam Integer page, @RequestParam Integer size) {
         return ResponseEntity.ok(lineService.findLineResponsesBy(page, size));
     }
