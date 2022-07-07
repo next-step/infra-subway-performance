@@ -6,6 +6,9 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,13 @@ public class StationService {
     }
 
     @Transactional
+    @Caching(
+        evict = {
+            @CacheEvict(value = "line", allEntries = true),
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+        }
+    )
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -33,6 +43,13 @@ public class StationService {
     }
 
     @Transactional
+    @Caching(
+        evict = {
+            @CacheEvict(value = "line", allEntries = true),
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+        }
+    )
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

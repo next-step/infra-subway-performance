@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,13 @@ public class LineService {
     }
 
     @Transactional
+    @Caching(
+        put = @CachePut(value = "line", key = "result.id"),
+        evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+        }
+    )
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -35,6 +43,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -64,7 +73,13 @@ public class LineService {
     }
 
     @Transactional
-    @CacheEvict(value = "line", key = "#id")
+    @Caching(
+        evict = {
+            @CacheEvict(value = "line", allEntries = true),
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+        }
+    )
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
