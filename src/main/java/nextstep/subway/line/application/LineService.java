@@ -59,7 +59,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @CachePut(value = "line", key = "#id")
     @CacheEvict(value = "path", allEntries = true)
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
