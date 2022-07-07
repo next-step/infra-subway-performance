@@ -451,31 +451,33 @@ default ✓ [======================================] 00/12 VUs  41m0s
   ```sql
   SELECT employee.id            AS 사원번호,
          employee.last_name     AS 이름,
-         salary.annual_income   AS 연봉,
-         position.position_name AS 직급명,
+         employee_salary.annual_income   AS 연봉,
+         employee_salary.position_name AS 직급명,
          record.time            AS 입출입시간,
          record.region          AS 지역,
          record.record_symbol   AS 입출입구분
   FROM   (
-          SELECT salary.id, salary.annual_income
+          SELECT salary.id, salary.annual_income, position.position_name
             FROM (SELECT id, annual_income FROM tuning.salary WHERE end_date = '9999-01-01') AS salary
-      INNER JOIN (SELECT employee_id FROM tuning.manager WHERE end_date = '9999-01-01') AS manager 
+      INNER JOIN (SELECT employee_id, department_id FROM tuning.manager WHERE end_date = '9999-01-01') AS manager 
               ON salary.id = manager.employee_id
+      INNER JOIN (SELECT id FROM tuning.department WHERE note = 'active') department
+			  ON manager.department_id = department.id
+      INNER JOIN (SELECT id, position_name FROM tuning.position where end_date = '9999-01-01' and position_name = 'manager') position
+			  ON manager.employee_id = position.id
         ORDER BY salary.annual_income DESC
            LIMIT 5
-         ) salary
+         ) employee_salary
   INNER JOIN (SELECT id, last_name FROM tuning.employee) AS employee 
-          ON salary.id = employee.id
-  INNER JOIN (SELECT employee_id, department_id FROM tuning.employee_department WHERE end_date = '9999-01-01') AS department
-          ON department.employee_id = employee.id
-  INNER JOIN (SELECT id, position_name FROM tuning.position WHERE end_date = '9999-01-01') AS position
-          ON position.id = employee.id
+          ON employee_salary.id = employee.id
+  INNER JOIN (SELECT employee_id, department_id FROM tuning.employee_department WHERE end_date = '9999-01-01') AS employee_department
+          ON employee_department.employee_id = employee.id
   INNER JOIN (SELECT employee_id, time, region, record_symbol FROM tuning.record WHERE record_symbol = 'O' AND region <> '') AS record
-          ON record.employee_id = department.employee_id
-    ORDER BY salary.annual_income DESC, record.record_symbol ASC; 
+          ON record.employee_id = employee_department.employee_id
+    ORDER BY employee_salary.annual_income DESC, record.record_symbol ASC; 
   ```
 ---
-### 3단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 ---
