@@ -44,8 +44,8 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-- [개선 전](./docs/before)
-- [개선 후](./docs/after)
+- [개선 전](ground/camp-pro/infra-subway-performance/docs/step1/before)
+- [개선 후](ground/camp-pro/infra-subway-performance/docs/step1/after)
 
 2어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - nginx Reverse Proxy 개선 - gzip 압축, cache, TLS, HTTP/2 설정
