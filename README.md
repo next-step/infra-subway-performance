@@ -111,6 +111,7 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+#### Query
 ```roomsql
 select 
 	top5_managers.id as '사원번호', 
@@ -137,6 +138,14 @@ inner join (
 ) top5_managers
 on top5_managers.id = record.employee_id and record.record_symbol = 'O';
 ```
+
+#### Result
+``` 
+14 row(s) returned	0.140 sec / 0.000 sec
+```
+
+#### 실행계획
+![실행계획](step3/step3_explain.png)
 
 ---
 
