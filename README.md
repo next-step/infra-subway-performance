@@ -224,7 +224,7 @@ from
   #### 2. `hoppy` 인덱스 설정 (Duration): 0.069 sec
   ![hobby 인덱스 설정](./queryoptimization/data-subway/1_with_index_hobby.png)
 
-  #### 3. `id` PK 설정 (Duration): 0.044 sec
+  #### 3. `programmer.id` PK 설정 (Duration): 0.044 sec
   ![pk 설정](./queryoptimization/data-subway/1_with_pk.png)
     
 * [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -265,8 +265,37 @@ from
 
     ![설정전](./queryoptimization/data-subway/3_with_index.png)
 
-  * [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+* [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    ```sql
+    select c.stay, count(*) as `total`
+    from programmer p
+    inner join member m on m.id = p.member_id
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on h.id = c.hospital_id
+    where h.`name` = '서울대병원'
+      and p.country = 'India'
+      and (m.age >= 20 and m.age < 30)
+    group by c.stay;
+    ```  
+    #### 1. 초기 상태 (Duration / Fetch Time): 22.015 sec / 0.000025 sec
+    ![초기 상태](./queryoptimization/data-subway/4_without_index.png)
+    
+    #### 2. `member.id` PK로 설정 (Duration / Fetch Time): 0.523 sec / 0.000010 sec
+    ![PK 설정](./queryoptimization/data-subway/4_with_pk.png)
+
+    #### 3. `programmer` 인덱스 설정 (Duration / Fetch Time): 0.068 sec / 0.0000079 sec
+    * `country, member_id` 인덱스 설정
+    ![programmer 인덱스 설정](./queryoptimization/data-subway/4_with_index.png)
+
+    #### 4. `covid` 인덱스 설정 (Duration / Fetch Time): 0.039 sec / 0.000010 sec
+    * `programmer_id, hospital_id`
+    ![covid 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
+    
+    #### 5. `hospital.name` 인덱스 설정 (Duration / Fetch Time): 0.036 sec / 0.000012 sec
+    ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
+
   * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
 
 ---
 
