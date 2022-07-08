@@ -44,14 +44,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", unless = "#result.empty")
-    public List<LineResponse> findLineResponsesBy(Integer page, Integer size) {
-        Page<Line> lines = lineRepository.findAll((long) page * size, PageRequest.of(page, size));
-        return lines.getContent().stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public List<Line> findLines() {
         return lineRepository.findAll();
     }

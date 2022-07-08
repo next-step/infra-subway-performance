@@ -43,8 +43,8 @@ public class StationService {
 
     @Cacheable(value = "stations", unless = "#result.empty")
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStationsBy(Integer page, Integer size) {
-        Page<Station> stations = stationRepository.findAll((long) (page-1) * size, PageRequest.of(page-1, size));
+    public List<StationResponse> findAllStationsBy(Long id, Pageable pageable) {
+        Page<Station> stations = stationRepository.findAll(id, pageable);
         return stations.getContent().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
