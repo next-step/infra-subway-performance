@@ -117,6 +117,63 @@ where r.record_symbol = 'O'
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+      - pk(id) 지정, hobby index 지정
+   ```sql
+   select hobby, ROUND((count(hobby) * 100) / (SELECT count(hobby) FROM programmer)) as 'Coding as a Hobby'
+   from programmer
+   where 1
+   group by hobby
+   order by hobby desc
+   ```
+   - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+      - covid 테이블 pk(id) 지정
+      - hospital 테이블 pk(id) 지정
+    ```sql
+    select covid.id, h.name
+    from covid
+    join hospital h on h.id = covid.hospital_id
+    join programmer p on p.id = covid.programmer_id
+    ```
+
+   - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.
+     DevType, user.YearsCoding)
+    ```sql
+    select covid.id, h.name, p.hobby, p.dev_type, p.years_coding
+    from covid
+    join hospital h on h.id = covid.hospital_id
+    join programmer p on p.id = covid.programmer_id
+    where p.hobby = 'Yes'
+    and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'))
+    ```
+
+   - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+      - member 테이블 pk(id) 지정
+      - covid 테이블 member_id 인덱스 지정
+      - hospital 테이블 name 인덱스 지정
+   ```sql
+    select c.stay, count(c.stay)
+    from covid as c
+    inner join programmer p on c.programmer_id = p.id
+    inner join member m on c.member_id = m.id
+    inner join hospital h on c.hospital_id = h.id
+    where h.name = '서울대병원'
+    and p.country = 'India'
+    and (m.age between 20 and 29)
+    group by c.stay
+    ```
+   
+   - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+   ```sql
+    select p.exercise, count(m.id) as exerciseCount
+    from covid as c
+    inner join programmer p on c.programmer_id = p.id
+    inner join member m on c.member_id = m.id
+    inner join hospital h on c.hospital_id = h.id
+    where h.name = '서울대병원'
+    and m.age between 30 and 39
+    group by p.exercise
+    ```
 
 ---
 
