@@ -169,7 +169,24 @@ from covid c
        inner join hospital h on h.id = c.hospital_id;
 ```
 
----
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+alter table member add primary key(id);
+alter table programmer add index idx_programmer(member_id);
+
+SELECT c.id
+     , h.name
+     , p.hobby
+     , p.dev_type
+     , p.years_coding
+FROM programmer p
+	inner join covid c on p.id = c.programmer_id
+	inner join hospital h on c.hospital_id = h.id
+	inner join member m on p.member_id = m.id
+WHERE p.hobby = 'YES'
+  and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'))
+order by p.id;
+```
 
 ### 추가 미션
 
