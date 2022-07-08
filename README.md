@@ -246,13 +246,25 @@ from
   #### 3. `covid.id` PK 설정 (Duration / Fetch Time): 0.0054 sec / 0.372 sec
   ![COVID PK 추가](./queryoptimization/data-subway/2_with_covid_pk.png)
 
+* [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 ~~user.id~~ `programmer.id` 기준으로 정렬하세요. (covid.id, hospital.name, ~~user.Hobby~~ programmer.hobby, ~~user.DevType~~ programmer.dev_type, ~~user.YearsCoding~~ programmer.years_coding)
+    ```sql
+    select c.id, h.`name`, p.hobby, p.dev_type, p.years_coding
+    from (
+        select p.id, p.hobby, p.dev_type, p.years_coding
+        from programmer p
+        where hobby = 'Yes'
+          and (student in ('Yes, part-time', 'Yes, full-time')
+               or years_coding = '0-2 years')
+        ) p
+    inner join covid c on p.id = c.programmer_id
+    inner join hospital h on c.hospital_id = h.id;
+    ```
+    #### 1. 초기 상태 (Duration / Fetch Time): 0.015 sec / 3.087 sec
+    * 위 요구사항을 만족하려 생성한 인덱스를 사용하여 별도의 인덱스 설정을 하지 않았습니다.
+    * 별도로 정렬하지 않은 이유는 이미 `programer.id`를 PK로 설정되어 따로 정렬하지 않았습니다.
 
-* (Duration / Fetch Time): 0.0082 sec / 2.684 sec
-  
-  
+    ![설정전](./queryoptimization/data-subway/3_with_index.png)
 
-
-  * [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
   * [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
