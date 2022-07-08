@@ -172,20 +172,23 @@ from record r
 
 ```mysql
 select hobby as '취미', round(count(*) / (select count(*) from programmer) * 100, 1) as 'percent'
-from programmer where hobby = 'Yes' or hobby = 'No'
+from programmer
 group by hobby;
 ```
 
 #### 개선전  
-Duration/Fetch Time : 0.477 sec / 0.000021 sec
+- 0.477 sec / 0.000021 sec
 
 #### 개선 작업
 ```mysql
 CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby);
 ```
 
-#### 개선 후 : 0.062 sec / 0.000022 sec
-![after_explain_1.png](after_explain_1.png)
+#### 개선 후
+- 0.062 sec / 0.000022 sec
+
+![after_explain_1_1.png](after_explain_1_1.png)
+![after_explain_1_2.png](after_explain_1_2.png)
 
 ### 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
@@ -198,7 +201,8 @@ from hospital h
 ```
 
 #### 개선전
-Duration/Fetch Time : 0.712 sec / 0.378 sec
+- 0.712 sec / 0.378 sec
+
 #### 개선 작업
 ```mysql
 alter table `covid` add primary key(id);
@@ -208,7 +212,8 @@ CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
 ```
 
 #### 개선후
-0.0059 sec / 0.0020 sec
+- 0.0059 sec / 0.0020 sec
+
 ![after_explain_2_1.png](after_explain_2_1.png)
 ![after_explain_2_2.png](after_explain_2_2.png)
 
@@ -235,8 +240,9 @@ alter table `programmer` add primary key (id);
 alter table `hospital` add primary key (id);
 CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
 ```
-개선 후
-0.018 sec / 0.012 sec
+#### 개선 후
+- 0.018 sec / 0.012 sec
+
 ![after_explain_3_1.png](after_explain_3_1.png)
 ![after_explain_3_2.png](after_explain_3_2.png)
 
@@ -264,7 +270,8 @@ CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
 CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
 ```
 #### 개선 후
-0.047 sec / 0.000023 sec
+- 0.047 sec / 0.000023 sec
+
 ![after_explain_4_1.png](after_explain_4_1.png)
 ![after_explain_4_2.png](after_explain_4_2.png)
 
@@ -295,7 +302,8 @@ CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
 CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
 ```
 #### 개선 후
-0.062 sec / 0.000015 sec
+- 0.062 sec / 0.000015 sec
+
 ![after_explain_5_1.png](after_explain_5_1.png)
 ![after_explain_5_2.png](after_explain_5_2.png)
 ---
