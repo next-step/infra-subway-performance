@@ -5,9 +5,9 @@ HOME_PATH=$(dirname "$0")
 LOG_FILE_NAME="infra-subway-deploy.log"
 PROFILE_TYPE=("prod" "local")
 REPOSITORY_TYPE=("origin" "upstream")
-REPOSITORY="origin"
-BRANCH="kmmin78"
-PROFILE="prod"
+REPOSITORY=$1
+BRANCH=$2
+PROFILE=$3
 ORIGIN_REPOSITORY="https://github.com/kmmin78/infra-subway-performance.git"
 ORIGIN_REPOSITORY_DIR="infra-subway-performance"
 
@@ -69,7 +69,7 @@ function shutDownBeforeProcess() {
   echo -e ""
   echo -e ">> shutDownBeforeProcess Start 🏃♂️ "
   echo -e "searching pid ..."
-  PID=$(lsof -t -i :8080)
+  PID=$(ps -ef | grep "java" | grep -v "grep" | awk '{print $2}')
   if [[ -z "${PID}" ]]
   then
     echo -e "pid was not found"

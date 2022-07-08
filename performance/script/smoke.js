@@ -80,12 +80,18 @@ function getPaths(source, target) {
     check(response, {'retrieved paths': (response) => response.status == 200});
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
 export default function ()  {
     let accessToken = login();
     myInfo(accessToken);
     getLines(accessToken);
     getStations(accessToken);
     getFavorites(accessToken);
-    getPaths(1, 3);
+    getPaths(getRandomInt(1, 10), getRandomInt(11, 20));
     sleep(1);
 };
