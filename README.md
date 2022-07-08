@@ -113,8 +113,84 @@ on record.employee_id = s.id and record.record_symbol = 'O';
 ---
 
 ### 4단계 - 인덱스 설계
+0. 인덱스 설계 결과
+```sql
+-- 1. covid
+PRIMARY KEY - id,
+UNIQUE KEY - id,
+INDEX - hospital_id, member_id,
+INDEX2 - programmer_id
+
+-- 2. hopital
+PRIMARY KEY - id,
+UNIQUE KEY - id, name
+INDEX - name
+
+-- 3. member
+PRIMARY KEY - id,
+UNIQUE KEY - id
+
+-- 4. programmer
+PRIMARY KEY - id,
+UNIQUE KEY - id,
+INDEX - hobby
+```
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### Q1. Coding as a Hobby 와 같은 결과를 반환하세요.
+- 개선 결과 : 0.3s
+```sql
+select hobby, concat(round(count(hobby) * 100.0 / (select count(hobby) from programmer), 1), '%') as percentage
+from programmer
+group by hobby
+order by hobby desc;
+```
+
+#### Q2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 개선 결과 : 0.03s
+```sql
+select covid.id, hospital.name 
+from covid
+inner join hospital on covid.hospital_id = hospital.id
+inner join programmer on covid.programmer_id = programmer.id;
+```
+
+#### Q3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 개선 결과 : 0.03s
+```sql
+select covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding
+from covid
+inner join hospital on covid.hospital_id = hospital.id
+inner join (
+    select id, hobby, dev_type, years_coding
+    from programmer
+    where (hobby = 'Yes' and student like 'Yes%') or years_coding = '0-2 years'
+) as user
+on covid.programmer_id = user.id
+order by user.id;
+```
+
+#### Q4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 개선 결과 : 0.3s
+```sql
+select stay, count(member.id) as count
+from (select id from member where age between 20 and 29) as member
+inner join covid on covid.id = member.id 
+inner join (select id from programmer where country = 'India') as programmer on member.id = programmer.id
+inner join (select id from hospital where name = '서울대병원') as hospital on covid.hospital_id = hospital.id
+group by stay;
+```
+
+#### Q5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 개선 결과 : 0.2s
+```sql
+select exercise, count(member.id)as count
+from (select id from member where age between 30 and 39) as member
+inner join covid on covid.id = member.id
+inner join programmer on covid.id = programmer.id
+inner join (select id from hospital where name = '서울대병원') as hospital on covid.hospital_id = hospital.id
+group by exercise;
+```
 
 ---
 
