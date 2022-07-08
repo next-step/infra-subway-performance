@@ -125,14 +125,12 @@ select hobby, round(count(hobby) * 100 / (select count(*) from programmer), 1) a
 from programmer
 group by hobby;
 ```
+- hobby에 인덱스 추가
+
 변경전  
 시간: 598ms  
 
-변경후  
-- hobby에 인덱스 추가  
-```mysql
-CREATE INDEX idx_programmer_hobby on subway.programmer (hobby);
-```
+변경후   
 시간: 76ms  
 
 4-2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
@@ -147,13 +145,12 @@ FROM
   programmer p ON c.programmer_id = p.id;
 
 ```
+- covid, hospital, programmer 테이블에 PK 설정 추가
 
 변경전  
 시간: 778 ms
 
-변경후  
-- covid, hospital, programmer 테이블에 PK 설정 추가
-
+변경후
 시간:  8ms
 
 4-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -178,8 +175,28 @@ ORDER BY c.id;
 시간: 5ms 
 
 
-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+4-4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```mysql
+select c.stay, count(c.stay)
+from covid c
+inner join hospital h 
+    on c.hospital_id = h.id and h.name = '서울대병원'
+inner join member m 
+    on c.member_id = m.id and m.age between 20 and 29
+inner join programmer p 
+    on c.programmer_id = p.id and p.country = 'India'
+group by c.stay;
+```
 
+- member 테이블 PK 설정 추가
+- covid(member_id) 인덱스 추가
+- covid(hospital_id) 인덱스 추가
+
+변경전  
+시간: 2299ms
+
+변경후
+시간: 60ms
 
 
 - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
