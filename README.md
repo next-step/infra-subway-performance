@@ -227,7 +227,31 @@ from
   #### 3. `id` PK 설정 (Duration): 0.044 sec
   ![pk 설정](./queryoptimization/data-subway/1_with_pk.png)
     
-  * [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+* [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```sql
+  select p.id, h.`name`
+  from programmer p
+           inner join covid c on p.id = c.programmer_id
+           inner join hospital h on c.hospital_id = h.id;
+  ```
+
+  #### 1. 초기 상태 (Duration / Fetch Time): 0.0074 sec / 2.553 sec
+  ![설정전](./queryoptimization/data-subway/2_without_index.png)
+
+  #### 2. 인덱스 설정 (Duration / Fetch Time): 0.0064 sec / 0.362 sec
+  * `covid.programmer_id` 인덱스 추가
+  * `hospital.id` PK 설정
+  ![인덱스 추가](./queryoptimization/data-subway/2_with_index.png)
+
+  #### 3. `covid.id` PK 설정 (Duration / Fetch Time): 0.0054 sec / 0.372 sec
+  ![COVID PK 추가](./queryoptimization/data-subway/2_with_covid_pk.png)
+
+
+* (Duration / Fetch Time): 0.0082 sec / 2.684 sec
+  
+  
+
+
   * [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
   * [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
