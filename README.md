@@ -152,8 +152,8 @@ ORDER BY manager_salary_top5.연봉 DESC;
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
-  - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+- [x] **주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환**
+  - [x] **[Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.**
     - **Index**
     ```sql
     CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
@@ -181,7 +181,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - 인덱스 사용 후  
       ![](mission_results/step4/coding-as-hobby/explain_idx.png)
       ![](mission_results/step4/coding-as-hobby/visual_explain_idx.png)
-  - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - [x] **프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
     - **Index**
     ```sql
     ALTER TABLE `subway`.`hospital`
@@ -282,7 +282,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - hobby까지 인덱스 사용  
       ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_hobby_idx.png)
       ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_hobby_idx.png)
-  - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - [x] **서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
     - **Index**  
     ```sql
     ALTER TABLE `subway`.`hospital`
@@ -337,7 +337,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       - hospital name도 인덱스 사용  
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys_and_idx_hospital_name.png)
       ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys_and_idx_hospital_name.png)
-  - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - [x] **서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
     - **Index**
     ```sql
     ALTER TABLE `subway`.`hospital`
