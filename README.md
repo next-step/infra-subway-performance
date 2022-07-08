@@ -88,33 +88,107 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 ```sql
-select s.id                 as '사원번호',
-       s.last_name          as '이름',
-       s.annual_income      as '연봉',
-       s.position_name      as '직급명',
-       record.region        as '지역',
+select salary.id as '사원번호',
+       hr.last_name as '이름',
+       salary.annual_income as '연봉',
+       hr.position_name as '직급명',
+       record.region as '지역',
        record.record_symbol as '입출입구분',
-       record.time          as '입출입시간'
+       record.time as '입출입시간'
 from record
-inner join (
-    select hr.id, hr.last_name, salary.annual_income, hr.position_name
-    from salary
-    inner join (
-        select e.id, e.last_name, p.position_name
-        from department d
-        inner join manager m on d.id = m.department_id and LOWER(d.note) = 'active' and m.end_date = '9999-01-01'
-        inner join employee e on m.employee_id = e.id
-        inner join position p on e.id = p.id and p.position_name = 'Manager') hr
-    on salary.id = hr.id and salary.end_date = '9999-01-01'
-    order by salary.annual_income desc limit 5) s
-on record.employee_id = s.id and record.record_symbol = 'O'; 
+inner join (select id, annual_income from salary where end_date = '9999-01-01') salary on record.employee_id = salary.id
+inner join (select e.id, e.last_name, p.position_name 
+            from department d
+            inner join (select department_id, employee_id from manager where end_date = '9999-01-01') m on d.id = m.department_id
+            inner join employee e on m.employee_id = e.id
+            inner join (select id, position_name from position where position_name = 'Manager') p on e.id = p.id
+            where LOWER(d.note) = 'active' limit 5) hr
+on salary.id = hr.id 
+where record.employee_id = salary.id and record.record_symbol = 'O' 
+order by salary.annual_income desc, record.region;
 ```
 
 ---
 
 ### 4단계 - 인덱스 설계
+0. 인덱스 설계 결과
+```sql
+-- 1. covid
+PRIMARY KEY - id,
+UNIQUE KEY - id,
+INDEX - hospital_id, member_id,
+INDEX2 - programmer_id
+
+-- 2. hopital
+PRIMARY KEY - id,
+UNIQUE KEY - id, name
+INDEX - name
+
+-- 3. member
+PRIMARY KEY - id,
+UNIQUE KEY - id
+
+-- 4. programmer
+PRIMARY KEY - id,
+UNIQUE KEY - id,
+INDEX - hobby
+```
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### Q1. Coding as a Hobby 와 같은 결과를 반환하세요.
+- 개선 결과 : 0.3s
+```sql
+select hobby, concat(round(count(hobby) * 100.0 / (select count(hobby) from programmer), 1), '%') as percentage
+from programmer
+group by hobby
+order by hobby desc;
+```
+
+#### Q2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 개선 결과 : 0.03s
+```sql
+select covid.id, hospital.name 
+from covid
+inner join hospital on covid.hospital_id = hospital.id
+inner join programmer on covid.programmer_id = programmer.id;
+```
+
+#### Q3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 개선 결과 : 0.03s
+```sql
+select covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding
+from covid
+inner join hospital on covid.hospital_id = hospital.id
+inner join (
+    select id, hobby, dev_type, years_coding
+    from programmer
+    where (hobby = 'Yes' and student like 'Yes%') or years_coding = '0-2 years'
+) as user
+on covid.programmer_id = user.id
+order by user.id;
+```
+
+#### Q4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 개선 결과 : 0.3s
+```sql
+select stay, count(member.id) as count
+from (select id from member where age between 20 and 29) as member
+inner join covid on covid.id = member.id 
+inner join (select id from programmer where country = 'India') as programmer on member.id = programmer.id
+inner join (select id from hospital where name = '서울대병원') as hospital on covid.hospital_id = hospital.id
+group by stay;
+```
+
+#### Q5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 개선 결과 : 0.2s
+```sql
+select exercise, count(member.id)as count
+from (select id from member where age between 30 and 39) as member
+inner join covid on covid.id = member.id
+inner join programmer on covid.id = programmer.id
+inner join (select id from hospital where name = '서울대병원') as hospital on covid.hospital_id = hospital.id
+group by exercise;
+```
 
 ---
 
