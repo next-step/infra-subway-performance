@@ -209,14 +209,14 @@ order by a.annual_income desc, r.region;
 select programmer.country, 
 	round(concat((programmer.cnt / total.cnt) * 100, "%"),2) as percentage
 from (
-	select 
-	country,
-    count(id) as cnt
-	from programmer
-	group by country
+    select 
+        country,
+        count(id) as cnt
+    from programmer
+    group by country
 ) as programmer
 inner join (
-	select count(id) as cnt
+    select count(id) as cnt
     from programmer
 ) as total on 1 = 1
 order by programmer.country;
