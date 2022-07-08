@@ -233,13 +233,12 @@ order by user.id;
 alter table `covid` add primary key(id);
 alter table `programmer` add primary key (id);
 alter table `hospital` add primary key (id);
-CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (hospital_id) ;
 CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
-CREATE INDEX `idx_programmer_hobby_student_years_coding`  ON `subway`.`programmer` (hobby, student, years_coding) ;
 ```
 개선 후
-0.011 sec / 0.0053 sec
-![after_explain_3.png](after_explain_3.png)
+0.018 sec / 0.012 sec
+![after_explain_3_1.png](after_explain_3_1.png)
+![after_explain_3_2.png](after_explain_3_2.png)
 
 ### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
