@@ -6,7 +6,7 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +32,9 @@ public class StationService {
     @Cacheable(value = "station", key = "'stations'", unless = "#result.size() < 500")
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations(Pageable pageable) {
-        Page<Station> stations = stationRepository.findAll(pageable);
+        List<Station> stations = stationRepository.findAll(
+                pageable.getOffset(),
+                PageRequest.of(0, pageable.getPageSize()));
 
         return stations.stream()
                 .map(StationResponse::of)
