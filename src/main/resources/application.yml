@@ -6,6 +6,11 @@ security.jwt.token:
   secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno
   expire-length: 3600000
 
+server.compression:
+  enabled: true
+  mime-types: text/html,text/plain,text/css,application/javascript,application/json
+  min-response-size: 500
+
 ---
 
 spring.profiles.active: test
@@ -30,11 +35,6 @@ spring:
 logging.level.org.hibernate.type.descriptor.sql: trace
 
 ---
-
-server.compression:
-    enabled: true
-    mime-types: text/html,text/plain,text/css,application/javascript,application/json
-    min-response-size: 500
 
 spring:
   config.activate.on-profile: prod
