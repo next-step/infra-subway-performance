@@ -105,6 +105,24 @@ $ stress -c 2
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+  - 쿼리 : ./performance/step4/1_실행쿼리.sql
+  - 실행계획 : ./performance/step4/1_실행계획.png
+  - programmer 테이블에 hobby 컬럼을 index로 추가
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - 쿼리 : ./performance/step4/2_실행쿼리.sql
+  - 실행계획 : ./performance/step4/2_실행계획.png
+  - covid, programmer, hospital 테이블의 id에 PK 적용, programmer의 id에 index 적용
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - 쿼리 : ./performance/step4/3_실행쿼리.sql
+  - 실행계획 : ./performance/step4/3_실행계획.png
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 쿼리 : ./performance/step4/4_실행쿼리.sql
+  - 실행계획 : ./performance/step4/4_실행계획.png
+  - member 테이블 id PK 적용
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - 쿼리 : ./performance/step4/4_실행쿼리.sql
+  - 실행계획 : ./performance/step4/4_실행계획.png
 
 ---
 
