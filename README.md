@@ -155,7 +155,7 @@ SELECT hobby,
 FROM programmer
 group by hobby;
 ```
-
+![](index/1.png)
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```sql
 alter table covid add primary key(id);
@@ -168,7 +168,7 @@ FROM covid c
        inner join programmer p on p.id = c.programmer_id
        inner join hospital h on h.id = c.hospital_id;
 ```
-
+![](index/2.png)
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```sql
 alter table member add primary key(id);
@@ -187,7 +187,7 @@ WHERE p.hobby = 'YES'
   and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'))
 order by p.id;
 ```
-
+![](index/3.png)
 - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```sql
 alter table covid add index idx_covid_member(member_id);
@@ -202,6 +202,7 @@ WHERE h.name = '서울대병원'
   and m.age BETWEEN 20 and 29
 group by c.stay;
 ```
+![](index/4.png)
 - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```sql
 SELECT p.exercise
@@ -214,6 +215,11 @@ where h.name = '서울대병원'
 	and m.age BETWEEN 30 and 39
 group by exercise;
 ```
+![](index/5.png)
+
+#### 실행 시간
+![](index/실행시간.png)
+
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
