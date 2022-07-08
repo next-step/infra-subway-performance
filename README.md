@@ -158,13 +158,24 @@ FROM
 
 4-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
+```mysql
+SELECT  c.id, h.name, user.hobby, user.dev_type, user.years_coding
+FROM covid c
+       INNER JOIN hospital h
+                  ON c.hospital_id = h.id
+       INNER JOIN (
+  SELECT p.id, p.hobby, p.dev_type, p.years_coding
+  FROM programmer p
+  WHERE
+    (p.hobby = 'yes' AND p.student LIKE 'Yes%') OR years_coding = '0-2 years') user
+                  ON c.programmer_id = user.id
+ORDER BY c.id;
+```
 변경전  
-시간:
-query cost:
+시간: 5ms
 
 변경후  
-시간:  
-query cost:
+시간: 5ms 
 
 
 - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
