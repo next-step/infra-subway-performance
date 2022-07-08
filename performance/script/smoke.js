@@ -9,7 +9,7 @@ export let options = {
     },
 };
 
-const BASE_URL = 'https://kmmin78-alb-648104832.ap-northeast-2.elb.amazonaws.com';
+const BASE_URL = 'https://kmmin78-infra-subway.p-e.kr';
 const USERNAME = 'probitanima98855@gmail.com';
 const PASSWORD = '11';
 
