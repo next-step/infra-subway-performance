@@ -549,8 +549,7 @@ default ✓ [======================================] 00/12 VUs  41m0s
           ON programmer.id = covid.id 
   INNER JOIN (SELECT id FROM subway.hospital WHERE id = 9) as hospital 
           ON hospital.id = covid.hospital_id 
-    GROUP BY covid.stay 
-    ORDER BY NULL;
+    GROUP BY covid.stay;
   ```
   ![img_12.png](img_12.png)
 
@@ -565,10 +564,9 @@ default ✓ [======================================] 00/12 VUs  41m0s
           ON covid.programmer_id  = programmer.id
   INNER JOIN (SELECT id, age FROM subway.member WHERE age BETWEEN 30 AND 39) as member
           ON covid.member_id = member.id
-    GROUP BY programmer.exercise
-    ORDER BY NULL;
+    GROUP BY programmer.exercise;
   ```
-  ![img_14.png](img_14.png)
+  ![img_13.png](img_13.png)
 ---
 ### 추가 미션
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
