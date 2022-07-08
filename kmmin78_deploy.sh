@@ -84,7 +84,7 @@ function shutDownBeforeProcess() {
 
 function deploy() {
   echo -e ">> deploy Start 🏃♂️ "
-  BUILD_FILE_PATH=$(find "${HOME_PATH}"/build/libs -name "*.jar")
+  BUILD_FILE_PATH=$(find "${HOME_PATH}/${ORIGIN_REPOSITORY_DIR}"/build/libs -name "*.jar")
   nohup java -jar -Dspring.profiles.active="${PROFILE}" "${BUILD_FILE_PATH}" 1> ${LOG_FILE_NAME} 2>&1 &
   echo -e ">> deploy End 🏃♂️ "
 }
