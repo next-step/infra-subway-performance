@@ -1,19 +1,21 @@
 package nextstep.subway.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -42,6 +44,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("회원정보 페이지를 조회한다.")
+    @Test
+    void getMembers() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        //when
+        ExtractableResponse<Response> response = 회원정보_페이지조회_요청();
+        //then
+        회원정보_페이지조회_확인(response, 1);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -117,5 +130,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 회원정보_페이지조회_요청() {
+        return RestAssured.given().log().all()
+            .param("size", 10)
+            .param("beforeId", 0)
+            .when().get("/members")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 회원정보_페이지조회_확인(ExtractableResponse<Response> response, int expectedSize) {
+        List<MemberResponse> list = response.jsonPath().getList(".", MemberResponse.class);
+        assertAll(
+            () -> assertEquals(HttpStatus.OK.value(), response.statusCode()),
+            () -> assertEquals(expectedSize, list.size())
+        );
     }
 }
