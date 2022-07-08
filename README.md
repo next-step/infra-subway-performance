@@ -147,10 +147,26 @@ inner join record on salary_rank.id = record.employee_id
 
 - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
 ```sql
+alter table programmer add primary key(id);
+alter table programmer add index idx_programmer_hobby(hobby);
+
 select hobby,
        concat(round(count(id) / (select count(id) from programmer p) * 100, 1), '%') as '비율'
 from programmer
 group by hobby;
+```
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+alter table covid add primary key(id);
+alter table covid add index idx_covid_hospital(hospital_id);
+alter table covid add index idx_covid_programmer(programmer_id);
+alter table hospital add primary key(id);
+
+select c.id, h.name
+from covid c
+       inner join programmer p on p.id = c.programmer_id
+       inner join hospital h on h.id = c.hospital_id;
 ```
 
 ---
