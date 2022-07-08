@@ -68,7 +68,10 @@ npm run dev
 - [x] Launch Template 작성하기
 - [x] Auto Scaling Group 생성하기
 - [x] DNS 설정
-- [] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+  - ./performance/step2/smoke_result.png
+  - ./performance/step2/load_result.png
+  - ./performance/step2/stress_result.png
 
 1. Launch Template 링크를 공유해주세요.
    - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-01e8d81098e933acb
