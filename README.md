@@ -398,3 +398,4 @@ ORDER BY manager_salary_top5.연봉 DESC;
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+`/stations`
