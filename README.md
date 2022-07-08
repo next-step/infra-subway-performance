@@ -479,7 +479,94 @@ default ✓ [======================================] 00/12 VUs  41m0s
 ---
 ### 4단계 - 인덱스 설계
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 적용 인덱스
+  ```sql
+    -- subway.member
+    ALTER TABLE subway.member add constraint PK_MEMBER__ID primary key ('id');
+    CREATE INDEX 'IDX_MEMBER__AGE' ON subway.member ('age');
+    
+    -- subway.covid     
+    ALTER TABLE subway.covid add constraint PK_COVID__ID primary key ('id');
+    CREATE INDEX 'idx_covid_programmer_id' ON subway.covid ('programmer_id');
+    CREATE INDEX 'idx_covid_member_id' ON subway.covid  ('member_id');
+    CREATE INDEX 'idx_covid_hospital_id' ON subway.covid  ('hospital_id');
+    
+    -- subway.programmer
+    ALTER TABLE subway.programmer add constraint PK_PROGRAMMER__ID primary key ('id'); 
+    CREATE INDEX 'IDX_PROGRAMMER__MEMBER_ID' ON subway.programmer ('member_id');
+    CREATE INDEX 'IDX_PROGRAMMER__COUNTRY' ON subway.programmer ('country');
+    CREATE INDEX 'idx_programmer_hobby_student_years_coding' on subway.programmer ('hobby','student','years_coding');
+    
+    -- subway.hospital
+    ALTER TABLE subway.hospital add constraint PK_HOSPITAL__ID primary key ('id');
+    CREATE INDEX 'idx_hospital_name_id' ON subway.hospital ('name','id');
+  ```
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+  ```sql
+  SELECT CONCAT(ROUND(COUNT(CASE WHEN hobby = 'Yes' THEN 1 END) / COUNT(*) * 100, 1), '%') as yes,
+         CONCAT(ROUND(COUNT(CASE WHEN hobby = 'No' THEN 1 END) / COUNT(*) * 100, 1), '%') as No
+    FROM subway.programmer;
+  ```
+  
+  ![img_7.png](img_7.png)
 
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  ```sql
+      SELECT covid.id, hospital.name 
+        FROM (SELECT id,hospital_id,programmer_id FROM subway.covid) as covid
+  INNER JOIN (SELECT id,name FROM subway.hospital) as hospital ON covid.hospital_id = hospital.id
+  INNER JOIN (SELECT id FROM subway.programmer) as programmer ON covid.programmer_id = programmer.id  
+      LIMIT 0, 1000; -- 과도한 디스크 I/O 발생으로 LIMIT 적용
+  ```
+  ![img_11.png](img_11.png)
+
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  ```sql
+      SELECT covid.id, hospital.name, programmer.hobby, programmer.dev_type, programmer.years_coding
+        FROM (SELECT id, hobby, dev_type, years_coding 
+                FROM subway.programmer
+               WHERE hobby = 'Yes' 
+                 AND (years_coding = '0-2 years' OR student LIKE 'Yes%')) as programmer
+  INNER JOIN (SELECT id, programmer_id, hospital_id FROM subway.covid) as covid
+          ON programmer.id = covid.programmer_id
+  INNER JOIN (SELECT id, name FROM subway.hospital) as hospital
+          ON hospital.id = covid.hospital_id
+    ORDER BY programmer.id
+       LIMIT 0, 1000;
+  ```
+  ![img_10.png](img_10.png)
+
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  ```sql
+      SELECT covid.stay, COUNT(*) as count 
+        FROM (SELECT id FROM subway.member WHERE age BETWEEN 20 AND 29) as member
+  INNER JOIN (SELECT id FROM subway.programmer WHERE country = 'India') as programmer
+          ON member.id = programmer.id 
+  INNER JOIN (SELECT id,hospital_id,stay FROM subway.covid) as covid 
+          ON programmer.id = covid.id 
+  INNER JOIN (SELECT id FROM subway.hospital WHERE id = 9) as hospital 
+          ON hospital.id = covid.hospital_id 
+    GROUP BY covid.stay;
+  ```
+  ![img_12.png](img_12.png)
+
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  ```sql
+      SELECT programmer.exercise, COUNT(*) as count
+        FROM (SELECT id, member_id, hospital_id, programmer_id FROM subway.covid) as covid
+  INNER JOIN (SELECT id FROM subway.hospital WHERE id = 9) as hospital
+          ON covid.hospital_id = hospital.id
+  INNER JOIN (SELECT id, exercise FROM subway.programmer) as programmer
+          ON covid.programmer_id  = programmer.id
+  INNER JOIN (SELECT id, age FROM subway.member WHERE age BETWEEN 30 AND 39) as member
+          ON covid.member_id = member.id
+    GROUP BY programmer.exercise;
+  ```
+  ![img_13.png](img_13.png)
 ---
 ### 추가 미션
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
