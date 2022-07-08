@@ -26,6 +26,23 @@ function pull() {
     git pull origin ${BRANCH}
 }
 
+function find_pid() {
+  echo -e ""
+  echo -e ">> find PID 🏃..."
+  PID=`ps -ef | grep -v "grep" | jps | grep "subway" | awk '{print $1}'`
+}
+
+function kill_pid() {
+  if [ "$PID" != "" ]
+  then
+    echo -e ""
+    echo -e ">> Kill ${PID} 🏃..."
+    kill ${PID}
+  else
+    echo -e "PID is Empty!"
+  fi
+}
+
 function build() {
   echo -e ""
   echo -e "${txtpur}>> Build ..."
@@ -41,4 +58,8 @@ deploy_message
 clone
 pull
 build
+find_pid
+kill_pid
 run
+echo -e "Deploy success!"
+
