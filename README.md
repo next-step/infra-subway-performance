@@ -224,10 +224,10 @@ order by programmer.country;
 
 ![이미지](/query/step4/question0_explain.png)
 
-- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요.
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
 ```sql
-select m.id, h.name
+select c.id, h.name
 from hospital h
 inner join covid c on c.hospital_id = h.id
 inner join member m on m.id = c.member_id;
@@ -236,9 +236,10 @@ inner join member m on m.id = c.member_id;
 ![이미지](/query/step4/question1_explain.png)
 
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+    - (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 ```sql
-select p.id, h.name, p.hobby, p.dev_type, p.years_coding
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
 from programmer p
 inner join covid c on c.id = p.id
 inner join hospital h on h.id = c.hospital_id
@@ -249,7 +250,7 @@ order by p.id;
 
 ![이미지](/query/step4/question2_explain.png)
 
-- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 ```sql
 select c.stay, count(m.id)
@@ -262,7 +263,7 @@ group by stay
 
 ![이미지](/query/step4/question3_explain.png)
 
-- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ```sql
 select exercise, count(m.id)
