@@ -60,12 +60,18 @@ npm run dev
 - [보러가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0e2d8b415f45e9a03)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- [cloud watch](./docs/step2/cloud_watch_dashboard.png)
+- [ec2](./docs/step2/ec2.png)
+- [ec2](./docs/step2/auto_scaling.png)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- [smoke](./docs/step2/smoke_result.png)
+- [load](./docs/step2/load_result.png)
+- [stress](./docs/step2/stress_result.png)
 
 ---
 
