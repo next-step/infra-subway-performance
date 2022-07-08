@@ -188,6 +188,21 @@ WHERE p.hobby = 'YES'
 order by p.id;
 ```
 
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+alter table covid add index idx_covid_member(member_id);
+
+SELECT c.stay, count(1)
+from programmer p
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on c.hospital_id = h.id
+    inner join member m on c.member_id = m.id
+WHERE h.name = '서울대병원'
+  and p.country = 'India'
+  and m.age BETWEEN 20 and 29
+group by c.stay;
+```
+
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
