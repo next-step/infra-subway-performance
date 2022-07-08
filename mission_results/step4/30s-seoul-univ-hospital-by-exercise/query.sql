@@ -6,6 +6,6 @@ JOIN (SELECT id FROM hospital WHERE name = '서울대병원') AS h
   ON c.hospital_id = h.id
 JOIN (SELECT id, exercise FROM programmer) AS p
   ON p.id = c.programmer_id
-JOIN (SELECT id FROM member WHERE age BETWEEN 31 AND 39) AS m
+JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) AS m
   ON m.id = c.member_id
 GROUP BY p.exercise

@@ -6,6 +6,6 @@ FROM (SELECT id, hospital_id, member_id, programmer_id, stay FROM covid) AS c
 ON c.hospital_id = h.id
     JOIN (SELECT id FROM programmer WHERE country = 'India') AS p
     ON p.id = c.programmer_id
-    JOIN (SELECT id FROM member WHERE age BETWEEN 21 AND 29) AS m
+    JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) AS m
     ON m.id = c.member_id
 GROUP BY c.stay

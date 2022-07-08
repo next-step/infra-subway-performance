@@ -316,7 +316,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       ON c.hospital_id = h.id
     JOIN (SELECT id FROM programmer WHERE country = 'India') AS p
       ON p.id = c.programmer_id
-    JOIN (SELECT id FROM member WHERE age BETWEEN 21 AND 29) AS m
+    JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) AS m
       ON m.id = c.member_id
     GROUP BY c.stay
     ```
@@ -371,7 +371,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
       ON c.hospital_id = h.id
     JOIN (SELECT id, exercise FROM programmer) AS p
       ON p.id = c.programmer_id
-    JOIN (SELECT id FROM member WHERE age BETWEEN 31 AND 39) AS m
+    JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) AS m
       ON m.id = c.member_id
     GROUP BY p.exercise
     ```
