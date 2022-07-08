@@ -44,8 +44,8 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-- [개선 전](./docs/before)
-- [개선 후](./docs/after)
+- [개선 전](ground/camp-pro/infra-subway-performance/docs/step1/before)
+- [개선 후](ground/camp-pro/infra-subway-performance/docs/step1/after)
 
 2어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - nginx Reverse Proxy 개선 - gzip 압축, cache, TLS, HTTP/2 설정
@@ -57,14 +57,21 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+- [보러가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0e2d8b415f45e9a03)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- [cloud watch](./docs/step2/cloud_watch_dashboard.png)
+- [ec2](./docs/step2/ec2.png)
+- [ec2](./docs/step2/auto_scaling.png)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- [smoke](./docs/step2/smoke_result.png)
+- [load](./docs/step2/load_result.png)
+- [stress](./docs/step2/stress_result.png)
 
 ---
 
