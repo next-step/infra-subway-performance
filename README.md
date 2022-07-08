@@ -199,10 +199,25 @@ group by c.stay;
 시간: 60ms
 
 
-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+4-5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```mysql
+select user.exercise, count(user.exercise) 
+from (
+	select p.exercise from covid c
+    inner join member m on c.member_id = m.id and m.age between 30 and 39
+    inner join hospital h on c.hospital_id = h.id and h.name = '서울대병원'
+    inner join programmer p on c.programmer_id = p.id
+) user
+group by user.exercise
+order by exercise;
+```
+- hospital(name) 인덱스 추가
 
+변경전  
+시간: 55ms
 
-
+변경후
+시간: 39ms
 
 
 ---
