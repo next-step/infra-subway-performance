@@ -129,70 +129,50 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-
 ```sql
-select 
-  skm.id as `사원번호`, 
-  skm.last_name as `이름`, 
-  skm.annual_income as `연봉`, 
-  skm.position_name as `직급명`, 
-  r.`time` as `입출입시간`, 
-  r.region as `지역`, 
-  r.record_symbol as `입출입구분` 
-from 
-  (
-    select 
-      e.id, 
-      e.last_name, 
-      s.annual_income, 
-      p.position_name 
-    from 
-      (
-        select 
-          employee_id, 
-          department_id 
-        from 
-          manager 
-        where 
-          end_date > now()
-      ) m 
-      inner join (
-        select 
-          id 
-        from 
-          department 
-        where 
-          lower(note) = 'active'
-      ) d on m.department_id = d.id 
-      inner join employee e on m.employee_id = e.id 
-      inner join position p on m.employee_id = p.id 
-      inner join (
-        select 
-          id, 
-          annual_income 
-        from 
-          salary 
-        where 
-          end_date > now()
-      ) s on m.employee_id = s.id 
-    where 
-      p.position_name = 'Manager' 
-    order by 
-      s.annual_income desc 
-    limit 
+select skm.id            as `사원번호`,
+       skm.last_name     as `이름`,
+       skm.annual_income as `연봉`,
+       skm.position_name as `직급명`,
+       r.`time`          as `입출입시간`,
+       r.region          as `지역`,
+       r.record_symbol   as `입출입구분`
+from (
+         select e.id,
+                e.last_name,
+                s.annual_income,
+                p.position_name
+         from (
+                  select employee_id,
+                         department_id
+                  from manager
+                  where end_date > now()
+              ) m
+                  inner join (
+             select id
+             from department
+             where lower(note) = 'active'
+         ) d on m.department_id = d.id
+                  inner join employee e on m.employee_id = e.id
+                  inner join position p on m.employee_id = p.id
+                  inner join (
+             select id,
+                    annual_income
+             from salary
+             where end_date > now()
+         ) s on m.employee_id = s.id
+         where p.position_name = 'Manager'
+         order by s.annual_income desc limit 
       5
-  ) skm 
-  inner join (
-    select 
-      employee_id, 
-      `time`, 
-      region, 
-      record_symbol 
-    from 
-      record 
-    where 
-      record_symbol = 'O'
-  ) r on r.employee_id = skm.id;
+     ) skm
+         inner join (
+    select employee_id,
+           `time`,
+           region,
+           record_symbol
+    from record
+    where record_symbol = 'O'
+) r on r.employee_id = skm.id;
 
 ```
 
@@ -226,27 +206,28 @@ from
 
   #### 3. `programmer.id` PK 설정 (Duration): 0.044 sec
   ![pk 설정](./queryoptimization/data-subway/1_with_pk.png)
-    
+
 * [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
   ```sql
   select p.id, h.`name`
   from programmer p
-           inner join covid c on p.id = c.programmer_id
-           inner join hospital h on c.hospital_id = h.id;
+  inner join covid c on p.id = c.programmer_id
+  inner join hospital h on c.hospital_id = h.id;
   ```
 
   #### 1. 초기 상태 (Duration / Fetch Time): 0.0074 sec / 2.553 sec
   ![설정전](./queryoptimization/data-subway/2_without_index.png)
 
   #### 2. 인덱스 설정 (Duration / Fetch Time): 0.0064 sec / 0.362 sec
-  * `covid.programmer_id` 인덱스 추가
-  * `hospital.id` PK 설정
+    * `covid.programmer_id` 인덱스 추가
+    * `hospital.id` PK 설정
   ![인덱스 추가](./queryoptimization/data-subway/2_with_index.png)
 
   #### 3. `covid.id` PK 설정 (Duration / Fetch Time): 0.0054 sec / 0.372 sec
   ![COVID PK 추가](./queryoptimization/data-subway/2_with_covid_pk.png)
 
-* [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 ~~user.id~~ `programmer.id` 기준으로 정렬하세요. (covid.id, hospital.name, ~~user.Hobby~~ programmer.hobby, ~~user.DevType~~ programmer.dev_type, ~~user.YearsCoding~~ programmer.years_coding)
+* [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 ~~user.id~~ `programmer.id` 기준으로 정렬하세요. (covid.id, hospital.name, ~~
+  user.Hobby~~ programmer.hobby, ~~user.DevType~~ programmer.dev_type, ~~user.YearsCoding~~ programmer.years_coding)
     ```sql
     select c.id, h.`name`, p.hobby, p.dev_type, p.years_coding
     from (
@@ -259,11 +240,11 @@ from
     inner join covid c on p.id = c.programmer_id
     inner join hospital h on c.hospital_id = h.id;
     ```
-    #### 1. 초기 상태 (Duration / Fetch Time): 0.015 sec / 3.087 sec
+  #### 1. 초기 상태 (Duration / Fetch Time): 0.015 sec / 3.087 sec
     * 위 요구사항을 만족하려 생성한 인덱스를 사용하여 별도의 인덱스 설정을 하지 않았습니다.
     * 별도로 정렬하지 않은 이유는 이미 `programer.id`를 PK로 설정되어 따로 정렬하지 않았습니다.
 
-    ![설정전](./queryoptimization/data-subway/3_with_index.png)
+  ![설정전](./queryoptimization/data-subway/3_with_index.png)
 
 * [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     ```sql
@@ -277,37 +258,37 @@ from
       and (m.age >= 20 and m.age < 30)
     group by c.stay;
     ```  
-    #### 1. 초기 상태 (Duration / Fetch Time): 22.015 sec / 0.000025 sec
-    ![초기 상태](./queryoptimization/data-subway/4_without_index.png)
-    
-    #### 2. `member.id` PK로 설정 (Duration / Fetch Time): 0.523 sec / 0.000010 sec
-    ![PK 설정](./queryoptimization/data-subway/4_with_pk.png)
+  #### 1. 초기 상태 (Duration / Fetch Time): 22.015 sec / 0.000025 sec
+  ![초기 상태](./queryoptimization/data-subway/4_without_index.png)
 
-    #### 3. `programmer` 인덱스 설정 (Duration / Fetch Time): 0.068 sec / 0.0000079 sec
+  #### 2. `member.id` PK로 설정 (Duration / Fetch Time): 0.523 sec / 0.000010 sec
+  ![PK 설정](./queryoptimization/data-subway/4_with_pk.png)
+
+  #### 3. `programmer` 인덱스 설정 (Duration / Fetch Time): 0.068 sec / 0.0000079 sec
     * `country, member_id` 인덱스 설정
-    ![programmer 인덱스 설정](./queryoptimization/data-subway/4_with_index.png)
+      ![programmer 인덱스 설정](./queryoptimization/data-subway/4_with_index.png)
 
-    #### 4. `covid` 인덱스 설정 (Duration / Fetch Time): 0.039 sec / 0.000010 sec
+  #### 4. `covid` 인덱스 설정 (Duration / Fetch Time): 0.039 sec / 0.000010 sec
     * `programmer_id, hospital_id`
-    ![covid 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
-    
-    #### 5. `hospital.name` 인덱스 설정 (Duration / Fetch Time): 0.036 sec / 0.000012 sec
-    ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
+      ![covid 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
 
-  * [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (~~user.Exercise~~ programmer.exercise)
+  #### 5. `hospital.name` 인덱스 설정 (Duration / Fetch Time): 0.036 sec / 0.000012 sec
+  ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
 
-    #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
-    ![초기 상태](./queryoptimization/data-subway/5_without_index.png)
+* [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (~~user.Exercise~~ programmer.exercise)
 
-    #### 2. `programmer` 인덱스 추가 (Duration / Fetch Time): 0.104 sec / 0.0000091 sec
+  #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
+  ![초기 상태](./queryoptimization/data-subway/5_without_index.png)
+
+  #### 2. `programmer` 인덱스 추가 (Duration / Fetch Time): 0.104 sec / 0.0000091 sec
     * `member_id, exercise`
-    ![programmer 인덱스 설정](./queryoptimization/data-subway/5_without_index.png)
+      ![programmer 인덱스 설정](./queryoptimization/data-subway/5_without_index.png)
 
-    #### 3. `member.age` 인덱스 추가 (Duration / Fetch Time): 0.061 sec / 0.0000079 sec
-    ![member 인덱스 설정](./queryoptimization/data-subway/5_with_index1.png)
+  #### 3. `member.age` 인덱스 추가 (Duration / Fetch Time): 0.061 sec / 0.0000079 sec
+  ![member 인덱스 설정](./queryoptimization/data-subway/5_with_index1.png)
 
-    #### 4. `covid` 인덱스 추가 (Duration / Fetch Time): 0.028 sec / 0.0000091 sec
-    ![covid 인덱스 설정](./queryoptimization/data-subway/5_with_index2.png)
+  #### 4. `covid` 인덱스 추가 (Duration / Fetch Time): 0.028 sec / 0.0000091 sec
+  ![covid 인덱스 설정](./queryoptimization/data-subway/5_with_index2.png)
 
 ---
 
