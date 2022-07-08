@@ -150,9 +150,9 @@ inner join record on salary_rank.id = record.employee_id
 alter table programmer add primary key(id);
 alter table programmer add index idx_programmer_hobby(hobby);
 
-select hobby,
+SELECT hobby,
        concat(round(count(id) / (select count(id) from programmer p) * 100, 1), '%') as '비율'
-from programmer
+FROM programmer
 group by hobby;
 ```
 
@@ -163,8 +163,8 @@ alter table covid add index idx_covid_hospital(hospital_id);
 alter table covid add index idx_covid_programmer(programmer_id);
 alter table hospital add primary key(id);
 
-select c.id, h.name
-from covid c
+SELECT c.id, h.name
+FROM covid c
        inner join programmer p on p.id = c.programmer_id
        inner join hospital h on h.id = c.hospital_id;
 ```
@@ -193,7 +193,7 @@ order by p.id;
 alter table covid add index idx_covid_member(member_id);
 
 SELECT c.stay, count(1)
-from programmer p
+FROM programmer p
     inner join covid c on c.programmer_id = p.id
     inner join hospital h on c.hospital_id = h.id
     inner join member m on c.member_id = m.id
@@ -202,7 +202,18 @@ WHERE h.name = '서울대병원'
   and m.age BETWEEN 20 and 29
 group by c.stay;
 ```
-
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+SELECT p.exercise
+	   , count(p.id)
+FROM programmer p
+	inner join covid c on c.programmer_id = p.id
+    inner join hospital h on c.hospital_id = h.id
+	inner join member m on c.member_id = m.id
+where h.name = '서울대병원'
+	and m.age BETWEEN 30 and 39
+group by exercise;
+```
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
