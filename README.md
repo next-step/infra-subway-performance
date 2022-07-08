@@ -258,7 +258,7 @@ GROUP BY c.stay
     - PK 생성 2 : hospital.id
     - PK 생성 3 : programmer.id
     - PK 생성 4 : member.id
-    - 인덱스 추가 1 : covid = member_id, hospital_id, covid.programmer_id
+    - 인덱스 추가 1 : covid = hospital_id, member_id, covid.programmer_id
     - 인덱스 추가 2 : hospital.name
 ```sql
 SELECT user.exercise, COUNT(user.exercise) AS count
