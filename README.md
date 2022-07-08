@@ -294,16 +294,13 @@ alter table `programmer` add primary key (`id`);
 alter table `hospital` add primary key (`id`);
 alter table `member` add primary key(`id`);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
-CREATE INDEX `idx_covid_member_id`  ON `subway`.`covid` (`member_id`) ;
-CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
-CREATE INDEX `idx_member_age`  ON `subway`.`member` (`age`) ;
 CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
-CREATE INDEX `idx_programmer_exercise`  ON `subway`.`programmer` (`exercise`) ;
 CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
 ```
 #### 개선 후
-0.052 sec / 0.000010 sec
-![after_explain_5.png](after_explain_5.png)
+0.062 sec / 0.000015 sec
+![after_explain_5_1.png](after_explain_5_1.png)
+![after_explain_5_2.png](after_explain_5_2.png)
 ---
 
 ### 추가 미션
