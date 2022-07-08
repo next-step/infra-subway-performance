@@ -1,7 +1,8 @@
 import http from 'k6/http';
 import { check, fail, sleep } from 'k6';
 
-const BASE_URL = 'https://sung-jin.o-r.kr';
+// const BASE_URL = 'https://sung-jin.o-r.kr';
+const BASE_URL = 'https://sung-jin.p-e.kr';
 const USERNAME = 'monitoring@monitor.com';
 const PASSWORD = '1234';
 
