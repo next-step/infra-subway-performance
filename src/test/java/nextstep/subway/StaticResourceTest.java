@@ -1,6 +1,5 @@
 package nextstep.subway;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,8 @@ import static nextstep.subway.config.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class StaticResourcesTest {
-    private static final Logger logger = LoggerFactory.getLogger(StaticResourcesTest.class);
+class StaticResourceTest {
+    private static final Logger logger = LoggerFactory.getLogger(StaticResourceTest.class);
 
     @Autowired
     private WebTestClient client;
