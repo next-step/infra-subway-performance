@@ -104,7 +104,8 @@ from (select e.id, e.last_name, s.annual_income, p.position_name
         and s.end_date = '9999-01-01'
         and p.end_date = '9999-01-01'
       order by s.annual_income DESC limit 5) as result
-        INNER join (select * from record where record_symbol = 'O') as r ON r.employee_id = result.id
+        INNER join record as r ON r.employee_id = result.id
+where r.record_symbol = 'O'
 
 ```
 
