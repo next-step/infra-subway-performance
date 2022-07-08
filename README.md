@@ -294,8 +294,20 @@ from
     #### 5. `hospital.name` 인덱스 설정 (Duration / Fetch Time): 0.036 sec / 0.000012 sec
     ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
 
-  * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  * [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (~~user.Exercise~~ programmer.exercise)
 
+    #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
+    ![초기 상태](./queryoptimization/data-subway/5_without_index.png)
+
+    #### 2. `programmer` 인덱스 추가 (Duration / Fetch Time): 0.104 sec / 0.0000091 sec
+    * `member_id, exercise`
+    ![programmer 인덱스 설정](./queryoptimization/data-subway/5_without_index.png)
+
+    #### 3. `member.age` 인덱스 추가 (Duration / Fetch Time): 0.061 sec / 0.0000079 sec
+    ![member 인덱스 설정](./queryoptimization/data-subway/5_with_index1.png)
+
+    #### 4. `covid` 인덱스 추가 (Duration / Fetch Time): 0.028 sec / 0.0000091 sec
+    ![covid 인덱스 설정](./queryoptimization/data-subway/5_with_index2.png)
 
 ---
 
