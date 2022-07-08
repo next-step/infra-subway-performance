@@ -1,16 +1,15 @@
 #!/bin/bash
 
-PROFILE=$1
-BRANCH=$2
+PROFILE=prod
+BRANCH=step2
 
-if [ -z "$PROFILE" ]
-  then echo "프로필 설정은 필수입니다."
-  exit
+if [ "$(docker ps -q)" ]; then
+    docker stop $(docker ps -a -q)
+    docker rm $(docker ps -a -q)
 fi
 
-if [ -z "$BRANCH" ]
-  then echo "브랜치 설정은 필수입니다."
-  exit
+if [ "$(docker images 'subway-performance' -a -q)" ]; then
+    docker rmi $(docker images 'subway-performance' -a -q)
 fi
 
 git clone https://github.com/Sung-jin/infra-subway-performance.git
@@ -21,4 +20,5 @@ SPRING_PROFILE_ACTIVE=test ./gradlew clean build
 cp build/libs/*.jar scale-out/application.jar
 cd scale-out
 
+docker build -t subway-performance --build-arg PROFILE="$PROFILE" .
 docker-compose up -d
