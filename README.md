@@ -212,22 +212,22 @@ create index idx_hospital_id on covid(hospital_id);
 
 ```sql
 select
-  covid.Stay
-  ,count(user.id) as count
+  Stay
+  ,count(programmer_id) as count
 from covid
-inner join (
+where programmer_id in (
   select programmer.id
   from programmer
   inner join member on programmer.member_id = member.id
   where programmer.country = 'India'
   and member.age between 20 and 29
-) as user on covid.programmer_id = user.id
-inner join (
+)
+and hospital_id in (
   select id
   from hospital
   where name = '서울대병원'
-) as seoul_hospital on covid.hospital_id = seoul_hospital.id
-group by covid.Stay
+)
+group by Stay
 ;
 ```
 
@@ -248,11 +248,11 @@ inner join (
   inner join member on programmer.member_id = member.id
   where member.age between 30 and 39
 ) as user on covid.programmer_id = user.id
-inner join (
+where covid.hospital_id in (
   select id
   from hospital
   where name = '서울대병원'
-) as seoul_hospital on covid.hospital_id = seoul_hospital.id
+)
 group by user.Exercise
 ;
 ```
