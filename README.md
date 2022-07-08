@@ -399,3 +399,7 @@ ORDER BY manager_salary_top5.연봉 DESC;
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 `/stations`
+- 단순히 `Page<T> findAll(Pageable pageable)`만 사용했을 때 쿼리  
+![](mission_results/step4/paging/jpaRepo.png)
+- 직접 JPQL을 적용해 주었을 때 쿼리  
+![](mission_results/step4/paging/jpql.png)
