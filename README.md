@@ -245,7 +245,7 @@ CREATE INDEX `idx_programmer_hobby_student_years_coding`  ON `subway`.`programme
 
 #### 실행 쿼리
 ```mysql
-select c.stay, count(c.stay)
+select c.stay, count(*)
 from covid c
          inner join
          (select id from `member` where age between 20 and 29) m
@@ -262,20 +262,18 @@ alter table `programmer` add primary key (id);
 alter table `hospital` add primary key (id);
 alter table `member` add primary key(id);
 CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
-CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (`programmer_id`) ;
-CREATE INDEX `idx_member_age`  ON `subway`.`member` (`age`) ;
 CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
-CREATE INDEX `idx_programmer_country`  ON `subway`.`programmer` (`country`) ;
 ```
 #### 개선 후
-0.056 sec / 0.000023 sec
-![after_explain_4.png](after_explain_4.png)
+0.047 sec / 0.000023 sec
+![after_explain_4_1.png](after_explain_4_1.png)
+![after_explain_4_2.png](after_explain_4_2.png)
 
 ### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 #### 실행 쿼리
 ```mysql
-select p.exercise as '운동 횟수', count(p.exercise) as '집계'
+select p.exercise as '운동 횟수', count(*) as '집계'
 from (select id, age from member where age between 30 and 39) m
          inner join
          (select id, hospital_id, member_id from covid) c
