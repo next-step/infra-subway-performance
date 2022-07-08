@@ -152,15 +152,45 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+   * [minzzang-launch-template](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a43fc27120fedd72)
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+ ![scaleout.png](scaleout.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+* 목표값 설정
+    * Stress 테스트를 제외한 테스트는 vUser를 이전 테스트와 동일하게 설정하였고 Stress 테스트는 점진적으로 늘려가면서 테스트를 진행했습니다.
+        * smoke : vUser 1
+        * load : vUser 70
+        * stress : vUser 3000
+    * vUser 3000이상으로 설정 시 메모리 부족으로 멈춤현상이 발생하여 max vUser 3000으로 설정해서 진행했습니다.
+
+### Smoke Test 결과 비교 (http_req_duration)
+|http_req_duration  | avg  | min  | med   | max  | p(90)  |   p(95)  |  
+   |------|------|------|------|------|-------|-------|
+| 개선 전  | 36.85ms | 6.92ms | 9.35ms | 176.21ms | 98.87ms |  104.3ms  | 
+| 개선 후  | 6.35ms | 1.67ms | 6.91ms | 107.59ms | 8.08ms |  8.38ms  | 
+
+### Load Test 결과 비교 (http_req_duration)
+|http_req_duration  | avg  | min  | med   | max  | p(90)  |   p(95)  |  
+   |------|------|------|------|------|-------|-------|
+| 개선 전  | 1.14s | 4.01ms | 830.97ms | 24.72s | 1.89s |  4.5s  |  
+| 개선 후  | 4.31ms | 662.26us | 4.98ms | 529.1ms | 6.31ms |  7.06ms  | 
+
+### Stress Test 결과 비교 (http_req_duration)
+|http_req_duration  | avg  | min  | med   | max  | p(90)  |   p(95)  |  
+   |------|------|------|------|------|-------|-------|
+| 개선 전  | 2.8s | 0s | 2.21s | 30.83s | 5.18s |  6.33s  |  
+| 개선 후  | 272.94ms | 1.22ms | 167.9ms | 4.03s | 700.85ms |  849.43ms  | 
+ 
+### 개선 결과
+* Smoke test 목표 응답 시간인 0.5s 만족
+* load test에서 목표 응답 시간인 0.5s를 만족했기 때문에 평소 우리 서비스의 트래픽을 안정적으로 처리할 수 있다는 결론이 도출됨.
+* 우리 서비스의 한계치를 파악해서 앞으로 서비스가 성장할 경우 발생할 트래픽에 대한 성능을 어느정도 예측할 수 있음.
+* 한계치를 바탕으로 미리 대비를 해서 장애 발생 시 빠른 대처 가능
 ---
 
 ### 1단계 - 쿼리 최적화
