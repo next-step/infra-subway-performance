@@ -208,13 +208,13 @@ ORDER BY manager_salary_top5.연봉 DESC;
     - **Query**
     ```sql
     SELECT
-      p.id AS programmer_id,
-      h.name AS hospital_name
-    FROM programmer AS p
-    JOIN covid AS c
-      ON c.programmer_id = p.id
-    JOIN hospital AS h
-      ON h.id = c.hospital_id
+      covid.id AS covid_id,
+      hospital.name AS hospital_name
+    FROM programmer
+    JOIN covid
+      ON covid.programmer_id = programmer.id
+    JOIN hospital
+      ON hospital.id = covid.hospital_id
     ```
     - **Result Grid**  
     ![](mission_results/step4/hospital-name-by-programmer/result_grid.png)
@@ -228,8 +228,8 @@ ORDER BY manager_salary_top5.연봉 DESC;
       ![](mission_results/step4/hospital-name-by-programmer/explain_no_idx.png)
       ![](mission_results/step4/hospital-name-by-programmer/visual_explain_no_idx.png)
       - 인덱스 사용 후  
-      ![](mission_results/step4/hospital-name-by-programmer/explain_idx.png)
-      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_idx.png)
+      ![](mission_results/step4/hospital-name-by-programmer/explain_idx_join_keys.png)
+      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_idx_join_keys.png)
   - [x] **프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
     - **Index**  
     ```sql
