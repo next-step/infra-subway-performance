@@ -19,6 +19,7 @@ from (
                              on employee.id = manager.employee_id
                   inner join position
                              on position.id = employee.id
+                                 and position.position_name = 'Manager'
          order by salary.annual_income desc limit 5
      ) as limit_employee
          Inner join record
