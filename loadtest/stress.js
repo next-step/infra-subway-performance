@@ -34,6 +34,7 @@ export default function ()  {
     update(authHeaders);
 
     findPath(1, 4);
+    findPath(1, 4);
 
     sleep(1);
 };

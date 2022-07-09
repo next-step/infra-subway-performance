@@ -6,4 +6,4 @@
 - [x] TLS, HTTP/2 설정
 
 #### WAS 성능 개선하기
-- [ ] Redis Server, Spring Data Cache 적용
+- [x] Redis Server, Spring Data Cache 적용
