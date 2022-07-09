@@ -44,7 +44,7 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+- https://bgc8214-subway.kro.kr/
 #### smoke
 * before
 ![](test-image/smoke/before/smoke-k6-before.png)
