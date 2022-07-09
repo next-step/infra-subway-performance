@@ -133,31 +133,26 @@ $ stress -c 2
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
 ```sql
-select
-    wm.id as 사원번호,
-    wm.name as 이름,
-    wm.income as 연봉 ,
-    wm.position_name as 직급명,
-    r.time as 입출입시간,
-    r.region as 지역,
-    r.record_symbol as 입출입구분
-from
-    record r
-        inner join(
-        select
-            e.id as id,
-            e.last_name as name,
-            p.position_name as position_name,
-            s.annual_income as income
-        from manager m
-                 inner join salary s on m.employee_id = s.id and s.end_date > now()
-                 inner join department d on m.department_id = d.id and d.note = 'active'
-                 inner join employee e on m.employee_id = e.id and m.end_date > now()
-                 inner join position p on m.employee_id = p.id and p.end_date > now()
-        order by s.annual_income desc
-            limit 5
-    ) wm
-                  on r.employee_id = wm.id and r.record_symbol = 'O';
+select wm.id            as 사원번호,
+       wm.name          as 이름,
+       wm.income        as 연봉,
+       wm.position_name as 직급명,
+       r.time           as 입출입시간,
+       r.region         as 지역,
+       r.record_symbol  as 입출입구분
+from record r
+         inner join(select e.id            as id,
+                           e.last_name     as name,
+                           p.position_name as position_name,
+                           s.annual_income as income
+                    from manager m
+                             inner join salary s on m.employee_id = s.id and s.end_date > now()
+                             inner join department d on m.department_id = d.id and d.note = 'active'
+                             inner join employee e on m.employee_id = e.id and m.end_date > now()
+                             inner join position p
+                                        on m.employee_id = p.id and p.end_date > now() and p.position_name = 'Manager'
+                    order by s.annual_income desc limit 5) wm
+                   on r.employee_id = wm.id and r.record_symbol = 'O';
 
 ```
 
@@ -173,6 +168,144 @@ from
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+### 1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```mysql
+select hobby as '취미', round(count(*) / (select count(*) from programmer) * 100, 1) as 'percent'
+from programmer
+group by hobby;
+```
+
+#### 개선전  
+- 0.477 sec / 0.000021 sec
+
+#### 개선 작업
+```mysql
+CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby);
+```
+
+#### 개선 후
+- 0.062 sec / 0.000022 sec
+
+![after_explain_1_1.png](after_explain_1_1.png)
+![after_explain_1_2.png](after_explain_1_2.png)
+
+### 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+#### 실행 쿼리
+```mysql
+select c.id, h.name
+from hospital h
+         inner join covid c on h.id = c.hospital_id
+         inner join programmer p on p.id = c.programmer_id;
+```
+
+#### 개선전
+- 0.712 sec / 0.378 sec
+
+#### 개선 작업
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
+```
+
+#### 개선후
+- 0.0059 sec / 0.0020 sec
+
+![after_explain_2_1.png](after_explain_2_1.png)
+![after_explain_2_2.png](after_explain_2_2.png)
+
+### 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+#### 실행 쿼리
+```mysql
+select c.id, h.name
+from (select p.id as id
+      from programmer p
+      where (hobby = 'Yes' and student like 'Yes%')
+         or years_coding = '0-2 years') user
+inner join covid c
+on c.programmer_id = user.id
+    inner join hospital h on h.id = c.hospital_id
+order by user.id;
+```
+
+#### 개선 작업
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
+CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) ;
+```
+#### 개선 후
+- 0.018 sec / 0.012 sec
+
+![after_explain_3_1.png](after_explain_3_1.png)
+![after_explain_3_2.png](after_explain_3_2.png)
+
+### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+#### 실행 쿼리
+```mysql
+select c.stay, count(*)
+from covid c
+         inner join
+         (select id from `member` where age between 20 and 29) m
+         on c.member_id = m.id
+         inner join programmer p on c.programmer_id = p.id and p.country = 'India'
+         inner join hospital h on c.hospital_id = h.id and h.name = '서울대병원'
+group by c.stay;
+```
+
+#### 개선 작업
+```mysql
+alter table `covid` add primary key(id);
+alter table `programmer` add primary key (id);
+alter table `hospital` add primary key (id);
+alter table `member` add primary key(id);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
+CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
+```
+#### 개선 후
+- 0.047 sec / 0.000023 sec
+
+![after_explain_4_1.png](after_explain_4_1.png)
+![after_explain_4_2.png](after_explain_4_2.png)
+
+### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+#### 실행 쿼리
+```mysql
+select p.exercise as '운동 횟수', count(*) as '집계'
+from (select id, age from member where age between 30 and 39) m
+         inner join
+         (select id, hospital_id, member_id from covid) c
+         on c.member_id = m.id
+         inner join
+         (select id from hospital where name = '서울대병원') h
+         on c.hospital_id = h.id
+         inner join programmer p on p.member_id = m.id
+group by p.exercise;
+```
+#### 개선 작업
+
+```mysql
+alter table `covid` add primary key(`id`);
+alter table `programmer` add primary key (`id`);
+alter table `hospital` add primary key (`id`);
+alter table `member` add primary key(`id`);
+CREATE INDEX `idx_covid_hospital_id`  ON `subway`.`covid` (`hospital_id`) ;
+CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (`name`) ;
+CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) ;
+```
+#### 개선 후
+- 0.062 sec / 0.000015 sec
+
+![after_explain_5_1.png](after_explain_5_1.png)
+![after_explain_5_2.png](after_explain_5_2.png)
 ---
 
 ### 추가 미션
