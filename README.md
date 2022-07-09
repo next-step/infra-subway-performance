@@ -82,6 +82,9 @@ npm run dev
 1. Launch Template 링크를 공유해주세요.
 
 * [x] springboot에 HTTP Cache, gzip 설정하기
+    * [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+    * [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+    * [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? => 가능하다.
 * [x] Launch Template 작성하기
 * [x] Auto Scaling Group 생성하기
 * [x] DNS 설정  
