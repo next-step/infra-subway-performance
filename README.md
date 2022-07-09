@@ -256,9 +256,9 @@ inner join (
 
 ```sql
 select c.id, h.name
-from hospital h
-inner join covid c on c.hospital_id = h.id
-inner join member m on m.id = c.member_id;
+from programmer p
+inner join covid c on c.programmer_id = p.id
+inner join hospital h on h.id = c.hospital_id;
 ```
 
 ![이미지](/query/step4/question1_explain.png)
