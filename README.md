@@ -81,10 +81,56 @@ $ stress -c 2
 
 ### 2단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
 
+[쿼리 파일](step4/query.sql)
+-[x] Coding as a Hobby 와 같은 결과를 반환하세요.
+
+![hobby.png](step4/hobby.png)
+
+
+![hobby.png](step4/hobby_scan.png)
+
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+![hospital.png](step4/hospital.png)
+
+
+![hospital.png](step4/hospital_scan.png)
+
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+![yearcoding.png](step4/yearcoding.png)
+
+
+![yearcoding.png](step4/yearcoding_scan.png)
+
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+![india_stay.png](step4/india_stay.png)
+
+
+![india_stay.png](step4/india_stay_scan.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+![exercise.png](step4/exercise.png)
+
+
+![exercise.png](step4/exercise_scan.png)
+
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요.
+실무 에서 table index 설정 시 가장 중요 하게 생각 하는 부분은 , 해당 테이블의 컬럼의 변경이 얼마나 자주 일어 나는지, 조회를 많이 하는 것인지 생각 하고 index 생성을 합니다.
+또한 테이블의 cardinality 수가 적으면 index 생성을 할지 고민 하는 편이구요.
+해당 미션 에는 우선.. 테이블 조회 관련된 미션 만 있엇고, 변경이 자주 일어나지 않는 pk / fk 위주로 인덱스를 생성 하였습니다.
+마지막 2가지 미션 중 병원(hospital_name) 에 인덱스를 생성하지 않을 경우 추후에 hospital_name에 index 생성을 하였습니다. 해당 부분은 변경이 자주 일어나지 않고 조회성 으로
+더 많이 사용될것 같아 적용 하였습니다.
+workbench 의 도움을 받아... full scan 이 되는 부분은 최대한 index scan 이 타도록 적용 해 보았습니다.
 ---
-
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
