@@ -103,7 +103,7 @@ $ stress -c 2
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -140,9 +140,123 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+#### PK 지정 및 인덱스 생성
+```
+/* subway.covid */
+ALTER TABLE `subway`.`covid` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD INDEX `idx_covid_hospital_id` (`hospital_id` ASC),
+ADD INDEX `idx_covid_member_id` (`member_id` ASC),
+ADD INDEX `idx_covid_programmer_id` (`programmer_id` ASC);
+
+/* subway.hospital */
+ALTER TABLE `subway`.`hospital` 
+CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+ADD PRIMARY KEY (`id`);
+
+/* subway.member */
+ALTER TABLE `subway`.`member` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD INDEX `idx_member_age` (`age` ASC);
+
+/* subway.programmer */
+ALTER TABLE `subway`.`programmer` 
+CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+ADD PRIMARY KEY (`id`),
+ADD INDEX `idx_programmer_member_id` (`member_id` ASC),
+ADD INDEX `idx_programmer_country` (`country` ASC),
+ADD INDEX `idx_programmer_hobby_student_years_coding` (`hobby` ASC, `student` ASC, `years_coding` ASC);
+```
+
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+    ```
+    SELECT CONCAT(ROUND(COUNT(CASE WHEN hobby = 'Yes' THEN 1 END) / COUNT(*) * 100, 1), '%') as yes
+         , CONCAT(ROUND(COUNT(CASE WHEN hobby = 'No' THEN 1 END) / COUNT(*) * 100, 1), '%') as No
+      FROM subway.programmer
+    ```
+    ![실행계획](/result/step4/query1_explain.png)
+    ![실행결과](/result/step4/query1_output.png)
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    ```
+    SELECT covid.id, hospital.name
+      FROM subway.covid
+           INNER JOIN subway.programmer
+                   ON programmer.id = covid.programmer_id
+           INNER JOIN subway.hospital
+                   ON hospital.id = covid.hospital_id
+    ```
+    ![실행계획](/result/step4/query2_explain.png)
+    ![실행결과](/result/step4/query2_output.png)
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    ```
+    SELECT covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding
+      FROM subway.covid
+           INNER JOIN (SELECT id, hobby, dev_type, years_coding
+                         FROM subway.programmer
+                        WHERE (hobby = 'Yes' AND student like 'Yes%') OR years_coding = '0-2 years'
+                       ) user
+                   ON user.id = covid.programmer_id
+           INNER JOIN subway.hospital
+                   ON hospital.id = covid.hospital_id
+     ORDER BY user.id
+    ```
+    ![실행계획](/result/step4/query3_explain.png)
+    ![실행결과](/result/step4/query3_output.png)
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    ```
+    SELECT covid.stay, COUNT(*) AS COUNT
+      FROM subway.covid
+           INNER JOIN (SELECT id
+                            FROM subway.member
+                        WHERE age BETWEEN '20' AND 29
+                       ) member
+                   ON member.id = covid.member_id
+           INNER JOIN (SELECT id
+                         FROM subway.programmer
+                        WHERE country='India'
+                       ) programmer
+                   ON programmer.id = covid.programmer_id
+           INNER JOIN (SELECT id
+                         FROM subway.hospital
+                        WHERE name = '서울대병원'
+                       ) hospital
+                   ON hospital.id = covid.hospital_id
+     GROUP BY covid.stay
+    ```
+    ![실행계획](/result/step4/query4_explain.png)
+    ![실행결과](/result/step4/query4_output.png)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    ```
+    SELECT programmer.exercise, COUNT(*) AS COUNT
+      FROM subway.covid
+           INNER JOIN (SELECT id
+                         FROM subway.member
+                        WHERE age BETWEEN '30' AND 39
+                       ) member
+                   ON member.id = covid.member_id
+           INNER JOIN (SELECT id, exercise
+                         FROM subway.programmer
+                       ) programmer
+                   ON programmer.id = covid.programmer_id
+           INNER JOIN (SELECT id
+                         FROM subway.hospital
+                        WHERE name = '서울대병원'
+                       ) hospital
+                   ON hospital.id = covid.hospital_id
+     GROUP BY programmer.exercise
+    ```
+    ![실행계획](/result/step4/query5_explain.png)
+    ![실행결과](/result/step4/query5_output.png)
 
 ---
 
