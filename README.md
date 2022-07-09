@@ -45,7 +45,47 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+#### smoke
+* before
+![](test-image/smoke/before/smoke-k6-before.png)
+* after
+![](test-image/smoke/after/smoke-k6-after.png)
+* before
+![](test-image/smoke/before/smoke-grafana-before.png)
+* after
+![](test-image/smoke/after/smoke-grafana-after.png)
+
+
+#### load
+* before
+  ![](test-image/load/before/load-k6-before.png)
+* after
+  ![](test-image/load/after/load-k6-after.png)
+* before
+  ![](test-image/load/before/load-grafana-before.png)
+* after (influx DB가 한번에 읽지 못해서 시점을 반으로 나눠서 첨부)
+  ![](test-image/load/after/load-grafana-after1.png)
+  ![](test-image/load/after/load-grafana-after2.png)
+
+
+
+#### stress
+* before
+  ![](test-image/stress/before/stress-k6-before.png)
+* after
+  ![](test-image/stress/after/stress-k6-after.png)
+* before
+  ![](test-image/stress/before/stress-grafana-before.png)
+* after
+  ![](test-image/stress/after/stress-grafana-after.png)
+
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+* 리버스 프록시 개선
+* gzip 압축
+* cache 적용
+* 캐시적용
+* TLS, HTTP/2 설정
 
 ---
 
