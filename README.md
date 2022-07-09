@@ -309,4 +309,8 @@ index 변화 없음
 
 ### 추가 미션
 
+- [ ] master, slave db 구성
+- [ ] app db properties 설정
+- [ ] 페이징 적용
+
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
