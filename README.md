@@ -148,7 +148,7 @@ inner join record on salary_rank.id = record.employee_id
 - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
 ```sql
 alter table programmer add primary key(id);
-alter table programmer add index (id, hobby);
+alter table programmer add index idx_programmer_hobby(hobby);
 
 SELECT hobby,
        concat(round(count(id) / (select count(id) from programmer p) * 100, 1), '%') as '비율'
