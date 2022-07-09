@@ -227,3 +227,9 @@ group by p.exercise
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- GET `http://localhost:8080/members?beforeId=1&size=10` 
+
+3. replication
+- `/stations` readonly 조건 유무에 따른 쿼리 이력 조회 결과
+  - ![true](./docs/additionalMission/readonly_true.png)
+  - ![false](./docs/additionalMission/readonly_false.png)
