@@ -41,13 +41,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "stations", unless = "#result.empty")
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStationsBy(Long id, Pageable pageable) {
+    public Page<StationResponse> findAllStationsBy(Long id, Pageable pageable) {
         Page<Station> stations = stationRepository.findAll(id, pageable);
-        return stations.getContent().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return StationResponse.ofListToPage(stations);
     }
 
     @CacheEvict(value = {"stations", "lines", "path"}, allEntries = true)
