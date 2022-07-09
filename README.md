@@ -201,11 +201,33 @@ from (
   #### 1. 초기 상태 (Duration): 2.026 sec
   ![설정전](./queryoptimization/data-subway/1_without_index.png)
 
-  #### 2. `hobby` 인덱스 설정 (Duration): 0.069 sec
+  #### 2. `programmer.hobby` 인덱스 설정 (Duration): 0.069 sec
+  ```sql
+  CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
   ![hobby 인덱스 설정](./queryoptimization/data-subway/1_with_index_hobby.png)
 
   #### 3. `programmer.id` PK 설정 (Duration): 0.044 sec
+  ```sql
+  ALTER TABLE `subway`.`programmer` 
+  CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+  ADD PRIMARY KEY (`id`);
+  ```
   ![pk 설정](./queryoptimization/data-subway/1_with_pk.png)
+
+  #### 첫번째 요구사항 관련 질문
+
+  > 해당 인덱스의 explain plan을 보면 plan이 동일하네요....! 시간이 줄어들긴 했지만 우연히 줄어든 것으로보이고, 실제 성능 향상은 없었던 것 같습니다! 성능 차이가 미세하여 직접 확인은 어렵겠지만, 쿼리를 여러번 수행하다보면 수행 시간이 달라질 것으로 보입니다!
+
+    - 말씀하신것 처럼 `실행계획`이 동일해 보일 수 있지만, 참조하는 `row` 수에 차이()가 있습니다. 즉, PK 추가여부가 내부적으로 데이터 접근에 영향을 미쳤다는걸 알 수 있습니다. 추측하신것을 검증하기
+      위해 해당 쿼리를 여러번 실행해 본 결과 두 쿼리 성능 차이는 아래와 같이 분명히 존재합니다.
+        - PK 설정 전: rows = 74,465
+        - PK 설정 후: rows = 71,210
+          ![PK 설정 전](./queryoptimization/data-subway/analysis/1_after_add_idx_hobby.png)
+          ![PK 설정 후](./queryoptimization/data-subway/analysis/1_after_add_pk.png)
+          ![성능차이 비교](./queryoptimization/data-subway/analysis/1_analysis_pk.png)
+
+----
 
 * [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
   ```sql
@@ -221,7 +243,7 @@ from (
   #### 2. 인덱스 설정 (Duration / Fetch Time): 0.0064 sec / 0.362 sec
     * `covid.programmer_id` 인덱스 추가
     * `hospital.id` PK 설정
-  ![인덱스 추가](./queryoptimization/data-subway/2_with_index.png)
+      ![인덱스 추가](./queryoptimization/data-subway/2_with_index.png)
 
   #### 3. `covid.id` PK 설정 (Duration / Fetch Time): 0.0054 sec / 0.372 sec
   ![COVID PK 추가](./queryoptimization/data-subway/2_with_covid_pk.png)
