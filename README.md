@@ -362,7 +362,7 @@ from (
   ```
 
   #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
-  ![초기 상태](./queryoptimization/data-subway/5_init.png)
+  ![초기 상태](./queryoptimization/data-subway/5_initial_result.png)
 
   #### 2. `programmer` 인덱스 추가 (Duration / Fetch Time): 0.104 sec / 0.0000091 sec
     * `member_id, exercise`
