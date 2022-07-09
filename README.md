@@ -19,36 +19,45 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
 ### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-* ![](log-test/smoke/after/smoke_k6_after.png)
-* ![](log-test/load/after/load_k6_after.png)
-* ![](log-test/stress/after/stress_k6_after.png)
 
-* 개선 전 / 후  계측 비교
+1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+* ![](log-test/smoke/ste%5B1/smoke_k6_after.png)
+* ![](log-test/load/init/load_k6.png)
+* ![](log-test/stress/init/stress_k6.png)
+
+* 개선 전 / 후 계측 비교
 
 | 구분         | FCP   | TTI   | SP    | TBT   | LCP  | CLS   |
 |------------|-------|-------|-------|-------|------|-------|
@@ -58,8 +67,8 @@ npm run dev
 | 내 사이트 개선 전 | 14.3s | 14.9s | 14.3s | 0.48s | 15s  | 0.042 |
 | 내 사이트 개선 후 | 2.5s  | 5.6s  | 4.7s  | 0.62s | 5.7s | 0.041 |
 
-
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
 * @Trancsactional(readOnly=true) 읽기전용 트랜잭션 처리
 * nginx Reverse Proxy 개선
 * gzip 압축,
@@ -72,13 +81,25 @@ npm run dev
 
 1. Launch Template 링크를 공유해주세요.
 
+* [x] springboot에 HTTP Cache, gzip 설정하기
+* [x] Launch Template 작성하기
+* [x] Auto Scaling Group 생성하기
+* [x] DNS 설정  
+  [Launch Template 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-02f3ad26f57232498)
+
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   ![cpu_load](log-test/cpu_load.png)
+   ![ec2_count](log-test/ec2_count.png)
+
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+   ![smoke](log-test/smoke/step2/smoke_k6.png)
+   ![losd](log-test/load/step2/load_k6.png)
+   ![stress](log-test/stress/step2/stress_k6.png)
 
 ```sh
 $ stress -c 2
 ```
-
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 ---
 
