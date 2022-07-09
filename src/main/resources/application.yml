@@ -6,6 +6,11 @@ security.jwt.token:
   secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno
   expire-length: 3600000
 
+server.compression:
+  enabled: true
+  mime-types: text/html,text/plain,text/css,application/javascript,application/json
+  min-response-size: 500
+
 ---
 
 spring.profiles.active: test
@@ -25,7 +30,7 @@ spring:
   cache.type: redis
   redis:
     host: 172.17.0.1
-    prot: 6379
+    port: 6379
 
 logging.level.org.hibernate.type.descriptor.sql: trace
 
@@ -41,4 +46,4 @@ spring:
   cache.type: redis
   redis:
     host: 192.168.16.46
-    prot: 6379
+    port: 6379

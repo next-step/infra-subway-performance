@@ -1,7 +1,7 @@
 import executor from '../executor/index.js';
 
 const targetMethod = 'get';
-const targetPath = '/';
+const targetPath = '/members/me';
 const checkBy = {'response ok': (res) => res.status === 200}
 
 export const options = {
@@ -10,6 +10,8 @@ export const options = {
         { duration: '2m', target: 44 },
         { duration: '1m', target: 184 },
         { duration: '2m', target: 184 },
+        { duration: '1m', target: 2000 },
+        { duration: '2m', target: 2000 },
         { duration: '10s', target: 0 },
     ],
     thresholds: {
