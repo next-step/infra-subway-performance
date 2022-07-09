@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StationRepository extends JpaRepository<Station, Long> {
     @Query("SELECT s FROM Station s WHERE s.id > ?1")
-    List<Station> findAll(Long page, Pageable pageable);
+    List<Station> findAll(Long id, Pageable pageable);
 }
