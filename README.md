@@ -46,21 +46,21 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### Smoke
 - before  
-![](img/step1/smoke-before.png)
+![](mission_results/step1/smoke-before.png)
 - after  
-![](img/step1/smoke_after.png)
+![](mission_results/step1/smoke_after.png)
 #### Load
 http_req_waiting avg 148.9ms -> 21.15ms
 - before  
-![](img/step1/load-before.png)
+![](mission_results/step1/load-before.png)
 - after  
-![](img/step1/load_after.png)
+![](mission_results/step1/load_after.png)
 #### Stress
 에러가 나는 지점 vsu 238 -> 272
 - before  
-![](img/step1/stress-before.png)
+![](mission_results/step1/stress-before.png)
 - after  
-![](img/step1/stress-after.png)
+![](mission_results/step1/stress-after.png)
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선
   - gzip 압축 types: text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/rss+xml text/javascript image/svg+xml application/vnd.ms-fontobject application/x-font-ttf font/opentype
@@ -82,22 +82,22 @@ http_req_waiting avg 148.9ms -> 21.15ms
 1. Launch Template 링크를 공유해주세요.  
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c761492b2914af82
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-![](img/step2/cloudwatch.png)
+![](mission_results/step2/cloudwatch.png)
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### smoke
-![](img/step2/smoke.png)
+![](mission_results/step2/smoke.png)
 #### load
 - http_req_duration avg 기준 `21.35ms` -> `5.28ms`
 - http_req_waiting avg 기준 `21.15ms` -> `4.34ms`
 - iteration_duration avg 기준 `187.36ms` -> `24.15ms`
-![](img/step2/load.png)
+![](mission_results/step2/load.png)
 #### stress
 - 에러가 나는 지점 vsu `272` -> `1,050`
-![](img/step2/stress.png)
+![](mission_results/step2/stress.png)
 ---
 
 ### 1단계 - 쿼리 최적화
@@ -139,22 +139,276 @@ WHERE r.record_symbol = 'O'
 ORDER BY manager_salary_top5.연봉 DESC;
 ```
 #### Result
-![](img/step3/result.png)
+![](mission_results/step3/result.png)
 #### Duration / Fetch Time
-![](img/step3/time.png)
+![](mission_results/step3/time.png)
 #### Execution Plan
 - Visual
-![](img/step3/visual_explain.png)
+![](mission_results/step3/visual_explain.png)
 - Tabular
-![](img/step3/tabular_explain.png)
+![](mission_results/step3/tabular_explain.png)
 ---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
+- [x] **주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환**
+  - [x] **[Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.**
+    - **Index**
+    ```sql
+    CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      hobby,
+      ROUND(COUNT(*) / (SELECT COUNT(*) FROM programmer) * 100, 1) AS percentage
+    FROM programmer
+    GROUP BY hobby
+    ORDER BY hobby DESC;
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/coding-as-hobby/result_grid.png)
+    - **Duration / Fetch Time**
+      - 인덱스 사용 전 `0.585sec`  
+      ![](mission_results/step4/coding-as-hobby/time_result_no_idx.png)
+      - 인덱스 사용 후 `0.053sec`  
+      ![](mission_results/step4/coding-as-hobby/time_result_idx.png)
+    - **Explain**
+      - 인덱스 사용 전  
+      ![](mission_results/step4/coding-as-hobby/explain_no_idx.png)
+      ![](mission_results/step4/coding-as-hobby/visual_explain_no_idx.png)
+      - 인덱스 사용 후  
+      ![](mission_results/step4/coding-as-hobby/explain_idx.png)
+      ![](mission_results/step4/coding-as-hobby/visual_explain_idx.png)
+  - [x] **프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
+    - **Index**
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`covid`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_programmer_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      covid.id AS covid_id,
+      hospital.name AS hospital_name
+    FROM programmer
+    JOIN covid
+      ON covid.programmer_id = programmer.id
+    JOIN hospital
+      ON hospital.id = covid.hospital_id
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/hospital-name-by-programmer/result_grid.png)
+    - **Duration / Fetch Time**
+      - 인덱스 사용 전 `0.589sec`  
+      ![](mission_results/step4/hospital-name-by-programmer/time_result_no_idx.png)
+      - 인덱스 사용 후 `0.025sec` 
+      ![](mission_results/step4/hospital-name-by-programmer/time_result_idx.png)
+    - **Explain**
+      - 인덱스 사용 전  
+      ![](mission_results/step4/hospital-name-by-programmer/explain_no_idx.png)
+      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_no_idx.png)
+      - 인덱스 사용 후  
+      ![](mission_results/step4/hospital-name-by-programmer/explain_idx_join_keys.png)
+      ![](mission_results/step4/hospital-name-by-programmer/visual_explain_idx_join_keys.png)
+  - [x] **프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
+    - **Index**  
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_hospital_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_programmer_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      covid.id,
+      hospital.name,
+      programmer.hobby,
+      programmer.dev_type,
+      programmer.years_coding
+    FROM programmer
+    JOIN covid
+      ON covid.programmer_id = programmer.id
+    JOIN hospital
+      ON hospital.id = covid.hospital_id
+    WHERE programmer.hobby = 'Yes'
+      AND (programmer.student LIKE 'Yes%' OR programmer.years_coding = '0-2 years')
+    ORDER BY programmer.id;
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/hospital-name-by-student-or-junior/result_grid.png)
+    - **Duration / Fetch Time**  
+      아래 두 경우 극적인 차이는 없음.
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/time_result_join_idx_only.png)
+      - hobby까지 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/time_result_join_hobby_idx.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_idx_only.png)
+      ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_idx_only.png)
+      - hobby까지 인덱스 사용  
+      ![](mission_results/step4/hospital-name-by-student-or-junior/explain_join_hobby_idx.png)
+      ![](mission_results/step4/hospital-name-by-student-or-junior/visual_explain_join_hobby_idx.png)
+  - [x] **서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
+    - **Index**  
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`member`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE UNIQUE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**  
+    ```sql
+    SELECT
+      c.stay,
+      COUNT(*) as count
+    FROM (SELECT id, hospital_id, member_id, programmer_id, stay FROM covid) AS c
+    JOIN (SELECT id FROM hospital WHERE name = '서울대병원') AS h
+      ON c.hospital_id = h.id
+    JOIN (SELECT id FROM programmer WHERE country = 'India') AS p
+      ON p.id = c.programmer_id
+    JOIN (SELECT id FROM member WHERE age BETWEEN 20 AND 29) AS m
+      ON m.id = c.member_id
+    GROUP BY c.stay
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/result_grid.png)
+    - **Duration / Fetch Time**
+      - JOIN 연결 key들만 인덱스 사용 `0.117sec`  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys.png)
+      - hospital name도 인덱스 사용 `0.047sec`  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/time_result_idx_join_keys_and_idx_hospital_name.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys.png)
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/explain_idx_join_keys_and_idx_hospital_name.png)
+      ![](mission_results/step4/20s-india-seoul-univ-hospital-by-period/visual_explain_idx_join_keys_and_idx_hospital_name.png)
+  - [x] **서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+    - **Index**
+    ```sql
+    ALTER TABLE `subway`.`hospital`
+    CHANGE COLUMN `id` `id` INT (11) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`member`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    ALTER TABLE `subway`.`programmer`
+    CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL,
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);
+    ;
+    
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (hospital_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (member_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    CREATE INDEX `idx_covid_member_id` ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    
+    CREATE UNIQUE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+    ```
+    - **Query**
+    ```sql
+    SELECT
+      p.exercise,
+      COUNT(*) as count
+    FROM (SELECT id, hospital_id, member_id, programmer_id, stay FROM covid) AS c
+    JOIN (SELECT id FROM hospital WHERE name = '서울대병원') AS h
+      ON c.hospital_id = h.id
+    JOIN (SELECT id, exercise FROM programmer) AS p
+      ON p.id = c.programmer_id
+    JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) AS m
+      ON m.id = c.member_id
+    GROUP BY p.exercise
+    ```
+    - **Result Grid**  
+    ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/result_grid.png)
+    - **Duration / Fetch Time**  
+      아래 두 경우 극적인 차이는 없음.
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/time_result_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/time_result_idx_join_keys_and_idx_hospital_name.png)
+    - **Explain**
+      - JOIN 연결 key들만 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/explain_idx_join_keys.png)
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/visual_explain_idx_join_keys.png)
+      - hospital name도 인덱스 사용  
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/explain_idx_join_keys_and_idx_hospital_name.png)
+      ![](mission_results/step4/30s-seoul-univ-hospital-by-exercise/visual_explain_idx_join_keys_and_idx_hospital_name.png)
 ---
 
 ### 추가 미션
 
-1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+1. 페이징 쿼리를 적용한 API endpoint를 알려주세요  
+`/stations`  
+예시:  
+지하철역이 1번부터 10번까지 있다고 가정하면
+   1. `/stations?offset=8`  
+   반환: 8번 ~ 10번 (총 3개)
+   2. `/stations?size=4`  
+   반환: 1번 ~ 4번 (총 4개)
+   3. `/stations?offset=2&size=3`  
+   반환: 2번 ~ 4번 (총 3개)
+- 실제 쿼리 참고
+  - 단순히 `Page<T> findAll(Pageable pageable)`만 사용했을 때 쿼리  
+  ![](mission_results/step4/paging/jpaRepo.png)
+  - 직접 JPQL을 적용해 주었을 때 쿼리  
+  ![](mission_results/step4/paging/jpql.png)
