@@ -112,5 +112,13 @@ create index idx_hospital_name on hospital (name);
 - primary
 - idx_programmer_country
 
+## 실행계획
+![result1](./result1.png)
+![result2](./result2.png)
+![result3](./result3.png)
+![result4](./result4.png)
+![result5](./result5.png)
+
+
 
 
