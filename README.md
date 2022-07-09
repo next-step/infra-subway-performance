@@ -264,8 +264,8 @@ ORDER  BY a.annual_income DESC,
         JOIN programmer p
           ON c.programmer_id = p.id; 
   ```
-  * 이전 실행 계획
-    * ![이전.png](step4/3-1before.png)
+    * 이전 실행 계획
+      ![이전.png](step4/3-1before.png)
     * 작업 내용
       1. 각 테이블에 PK 추가 
       ```sql
@@ -305,26 +305,66 @@ ORDER  BY a.annual_income DESC,
                          OR ( p.student LIKE 'Yes%' ) )
            ORDER  BY p.id; 
       ```
-   * 이전 실행 계획
+     * 이전 실행 계획
      ![이전.png](step4/3-1before.png) 
-    * 작업 내용
-     * memeber 테이블에 pk 추가 
+     * 작업 내용
+       * memeber 테이블에 pk 추가 
        ```sql
        alter table member add primary key(id);
        ```
-     * programer 테이블에 member_id 인덱스 추가
+       * programer 테이블에 member_id 인덱스 추가
        ```sql
         CREATE INDEX programmer_member_id_IDX  ON subway.programmer (member_id);
        ```
-     * 실행 계획 & 결과 : 0.78ms
-       * 실행 계획 
-       ![img_1.png](step4/3-2실행계획.png)
-       * 결과
-       ![img.png](step4/3-1결과.png)
+       * 실행 계획 & 결과 : 0.78ms
+         * 실행 계획 
+          ![img_1.png](step4/3-2실행계획.png)
+         * 결과
+          ![img.png](step4/3-1결과.png)
        
-     
-   - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+   - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+     - SQL
+     ```sql
+        SELECT c.stay, COUNT(*) count
+        FROM   programmer p
+               JOIN covid c
+                 ON c.programmer_id = p.id
+               JOIN member m
+                 ON c.member_id = m.id
+               JOIN hospital h
+                 ON c.hospital_id = h.id
+        WHERE  h.name = '서울대병원'
+               AND p.country = 'India'
+               AND m.age BETWEEN 20 AND 29 
+        group by c.stay;
+     ```
+     * 이전 실행 계획
+       ![before.png](step4/4-1before.png)
+     * 작업 내용
+       * covid 테이블에 member_id 인덱스 추가
+       ```sql
+          CREATE INDEX covid_member_id_IDX ON subway.covid (member_id);
+       ```
+    
+     * 실행 계획 & 결과 : 0.17ms
+         * 실행 계획
+           ![img_1.png](step4/4-2실행계획.png)
+         * 결과
+          ![img.png](step4/4-2결과.png)
+           
    - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+     - SQL
+     ```sql
+
+     ```
+       * 이전 실행 계획
+         
+       * 작업 내용
+
+       * 실행 계획 & 결과
+           * 실행 계획
+
+           * 결과
 ---
 
 ### 추가 미션
