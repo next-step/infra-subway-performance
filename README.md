@@ -153,7 +153,137 @@ on top5_managers.id = record.employee_id and record.record_symbol = 'O';
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 요구사항
+- [X] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
+    - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+
+----------
+1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+   #### Create Index
+    ```roomsql
+   alter table programmer add primary key (id);
+    create index idx_programmer_hobby on programmer (hobby);
+    ```
+   #### Query
+   ```roomsql
+   select hobby, count(*) / (select count(*) from programmer) * 100 as percent
+    from programmer
+    group by hobby;
+   ```
+   #### Result
+    - Duration Time: 0.313 sec → 0.250 sec (PK 생성) → 0.047 sec (Index 생성)
+    - [실행계획(Before)](step4/Q1/1-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q1/1-2.%20Visual_ExplainAfter_.PNG)
+
 ---
+2. 프로그래머별로 해당하는 병원 이름을 반환하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id); -- 1번에서 실행
+    alter table hospital add primary key (id);
+    alter table covid add primary key (id);
+    create index idx_covid_hospital_id on covid (hospital_id);
+    ```
+   #### Query
+   ```roomsql
+    select c.id, h.name
+    FROM covid c
+    JOIN programmer p ON p.id = c.programmer_id
+    JOIN hospital h ON h.id = c.hospital_id;
+   ```
+   #### Result
+    - Duration Time: 0.516 sec → 0.187 (PK 생성) sec → 0.016 sec (Index 생성)
+    - [실행계획(Before)](step4/Q2/2-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q2/2-2.%20Visual_Explain_After.PNG)
+---
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id); -- 1번에서 실행
+    alter table hospital add primary key (id); -- 2번에서 실행
+    alter table covid add primary key (id); -- 2번에서 실행
+    create index idx_programmer_hobby on programmer (hobby); -- 1번에서 실행
+    ```
+   #### Query
+   ```roomsql
+    select covid_hospital.id, covid_hospital.name, p.hobby, p.dev_type, p.years_coding
+    from (
+        select c.id as id, h.name as name
+        from covid c
+        join hospital h on c.hospital_id = h.id
+    ) covid_hospital
+    join (
+        select id, hobby, dev_type, years_coding
+        from programmer p
+        where hobby = 'Yes'
+            and (student like 'Yes%' or years_coding = '0-2 years')
+    ) p
+    on covid_hospital.id = p.id;
+   ```
+   #### Result
+    - Duration Time: 30 sec 이상 → 0.016 sec (PK 생성) → 0.00 sec (Index 생성)
+    - [실행계획(Before)](step4/Q3/3-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q3/3-2.%20Visual_Explain_After.PNG)
+------------
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id);
+    alter table hospital add primary key (id);
+    alter table member add primary key (id);
+    create index idx_covid_hospital_id on covid (hospital_id);
+    create index idx_hospital_name on hospital (name);
+    ```
+   #### Query
+   ```roomsql
+    select c.stay, count(*)
+    from covid c
+    join hospital h
+        on c.hospital_id = h.id and h.name = '서울대병원'
+    join programmer p
+        on c.programmer_id = p.id and p.country = 'India'
+    group by c.stay;
+   ```
+   #### Result
+    - Duration Time: 100 sec 이상 → 0.187 sec (PK 생성) → 0.063 sec (Index 생성)
+    - [실행계획(Before)](step4/Q4/4-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q4/4-2.%20Visual_Explain_After.PNG)
+------------
+5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id); -- 1번에서 실행
+    alter table hospital add primary key (id); -- 2번에서 실행
+    alter table covid add primary key (id); -- 2번에서 실행
+    alter table member add primary key (id); -- 4번에서 실행
+    create index idx_hospital_name on hospital (name); -- 4번에서 실행
+    create index idx_covid_hospital_id_programmer_id on covid (hospital_id, programmer_id);
+    ```
+   #### Query
+   ```roomsql
+    SELECT seoul_hospital_user.exercise, COUNT(*) AS count
+    FROM (
+        SELECT p.exercise
+        FROM covid c
+        JOIN (SELECT id FROM member WHERE age BETWEEN 30 AND 39) m
+            ON c.member_id = m.id
+        JOIN (SELECT id FROM hospital WHERE name = '서울대병원') h
+            ON c.hospital_id = h.id
+        JOIN programmer p
+            ON c.programmer_id = p.id
+    ) seoul_hospital_user
+    GROUP BY seoul_hospital_user.exercise;
+   ```
+   #### Result
+    - Duration Time: 100 sec 이상 0.079 sec (PK 생성) → 0.31 sec (Index 생성)
+    - [실행계획(Before)](step4/Q5/5-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q5/5-2.%20Visual_Explain_Before.PNG)
+----------
 
 ### 추가 미션
 
