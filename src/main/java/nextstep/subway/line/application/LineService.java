@@ -35,6 +35,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", cacheManager = "redisCacheManager")
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
