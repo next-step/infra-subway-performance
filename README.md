@@ -158,7 +158,7 @@ on top5_managers.id = record.employee_id and record.record_symbol = 'O';
     - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
     - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
     - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-    - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+    - [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 
@@ -229,6 +229,30 @@ on top5_managers.id = record.employee_id and record.record_symbol = 'O';
    #### Result
     - Duration Time: 30 sec 이상 → 0.016 sec (PK 생성) → 0.00 sec (Index 생성)
     - [실행계획(Before)](step4/Q3/3-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q3/3-2.%20Visual_Explain_After.PNG)
+------------
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id);
+    alter table hospital add primary key (id);
+    alter table member add primary key (id);
+    create index idx_covid_hospital_id on covid (hospital_id);
+    create index idx_hospital_name on hospital (name);
+    ```
+   #### Query
+   ```roomsql
+    select c.stay, count(*)
+    from covid c
+    join hospital h
+        on c.hospital_id = h.id and h.name = '서울대병원'
+    join programmer p
+        on c.programmer_id = p.id and p.country = 'India'
+    group by c.stay;
+   ```
+   #### Result
+    - Duration Time: 100 sec 이상 → 0.187 sec (PK 생성) → 0.063 sec (Index 생성)
+    - [실행계획(Before)](step4/Q4/4-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q4/4-2.%20Visual_Explain_After.PNG)
 ------------
 
 ### 추가 미션
