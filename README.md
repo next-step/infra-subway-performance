@@ -242,7 +242,161 @@ FROM (
 
 ### 2단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+지* 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+    
+### 1. Coding as a Hobby 와 같은 결과를 반환하세요.
+```
+select hobby, count(*) / (select count(*) from programmer p) * 100 AS PERCENT
+from programmer
+group by hobby;
+```
+
+* 인덱스
+```
+create index programmer_hobby_index
+    on programmer (hobby);
+```
+
+### 실행 시간
+![hoby_output.png](index/hoby_output.png)
+### 실행 계획
+![hoby_plan.png](index/hoby_plan.png)
+
+### 2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```
+select c.id, h.name
+from covid c
+         inner join hospital h on c.hospital_id = h.id
+         inner join programmer p on c.programmer_id = p.id
+```
+
+* 인덱스
+```
+constraint covid_pk
+     unique (id)
+     
+constraint hospital_pk
+     unique (id)
+
+constraint programmer_pk
+     unique (id)
+
+create index covid_hospital_id_index
+     on covid (hospital_id);
+
+create index covid_programmer_id_index
+     on covid (programmer_id);
+```
+
+### 실행 시간
+![hospital_output.png](index/hospital_output.png)
+### 실행 계획
+![hospital_plan.png](index/hospital_plan.png)
+
+### 3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+### (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```
+select c.id, h.name, p.hobby, p.dev_type, p.Years_coding
+from covid c
+    inner join hospital h on c.hospital_id = h.id
+    inner join
+        (
+            select p.id, p.hobby, p.dev_type, p.Years_coding
+            from programmer p
+            where p.hobby = 'Yes'
+              and (p.student like 'Yes%' or p.years_coding = '0-2 years')
+        ) p on c.programmer_id = p.id
+order by p.id;
+```
+
+* 인덱스
+```  
+constraint hospital_pk
+     unique (id)
+     
+create index programmer_hobby_index
+    on programmer (hobby);
+
+create index covid_programmer_id_index
+     on covid (programmer_id);
+```
+
+### 실행 시간
+![junior_output.png](index/junior_output.png)
+### 실행 계획
+![junior_plan.png](index/junior_plan.png)
+
+### 4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```
+select c.stay, count(*)
+from covid c
+         inner join hospital h on c.hospital_id = h.id
+         inner join programmer p on c.programmer_id = p.id
+         inner join member m on c.member_id = m.id
+where
+    m.age between 20 and 29
+    and h.name = '서울대병원'
+    and p.country = 'India'
+group by c.stay;
+```
+
+* 인덱스
+```
+constraint programmer_pk
+     unique (id)
+     
+create index member_age_id_index
+	on member (age, id);
+     
+create index covid_hospital_id_index
+     on covid (hospital_id);
+     
+create index hospital_name_index
+    on hospital (name);
+     
+```
+
+### 실행 시간
+![20_output.png](index/20_output.png)
+### 실행 계획
+![20_plan.png](index/20_plan.png)
+
+### 5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```
+select p.exercise, count(*)
+from hospital h
+         inner join covid c on c.hospital_id = h.id
+         inner join programmer
+             p on c.programmer_id = p.id
+         inner join member m on m.id = c.member_id
+where
+   m.age between 30 and 39
+   and h.name = '서울대병원'
+group by p.exercise;
+
+```
+
+* 인덱스
+```
+constraint programmer_pk
+     unique (id)
+     
+create index member_age_id_index
+	on member (age, id);
+     
+create index covid_hospital_id_index
+     on covid (hospital_id);
+     
+create index hospital_name_index
+    on hospital (name);
+     
+```
+
+### 실행 시간
+![30_output.png](index/30_output.png)
+### 실행 계획
+![30_plan.png](index/30_plan.png)
 
 ---
 
