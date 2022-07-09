@@ -381,3 +381,4 @@ inner join record r
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+ - https://subway.kangseonghyo.kro.kr/stations_page?id=[stationId]&size=[size]

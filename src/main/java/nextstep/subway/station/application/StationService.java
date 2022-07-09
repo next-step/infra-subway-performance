@@ -6,6 +6,9 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,12 @@ public class StationService {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StationResponse> findAllStationsBy(Long id, Pageable pageable) {
+        Page<Station> stations = stationRepository.findAll(id, pageable);
+        return StationResponse.ofListToPage(stations);
     }
 
     @CacheEvict(value = {"stations", "lines", "path"}, allEntries = true)
