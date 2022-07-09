@@ -243,10 +243,42 @@ from (
   #### 2. 인덱스 설정 (Duration / Fetch Time): 0.0064 sec / 0.362 sec
     * `covid.programmer_id` 인덱스 추가
     * `hospital.id` PK 설정
+      ```sql
+      CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+
+      ALTER TABLE `subway`.`hospital` 
+      CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+      ADD PRIMARY KEY (`id`);
+      ```
       ![인덱스 추가](./queryoptimization/data-subway/2_with_index.png)
 
   #### 3. `covid.id` PK 설정 (Duration / Fetch Time): 0.0054 sec / 0.372 sec
+  ```sql
+  ALTER TABLE `subway`.`covid` 
+  CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+  ADD PRIMARY KEY (`id`);
+  ```
   ![COVID PK 추가](./queryoptimization/data-subway/2_with_covid_pk.png)
+
+  #### 두번째 요구사항 관련 질문
+
+  > 여기도 pk 설정이 plan에 유효한 영향을 준 것 같아보이지는 않습니다!
+
+    - 말씀하신것 처럼 `covid.id`를 `PK`로 지정했지만, 아래와 같이 완전히 동일한 `실행계획`을 볼 수 있고 실제 성능에서도 차이가 없어서 다른 접근 방법으로 가야할 것 같네요.
+      ![IDX PK 설정 전](./queryoptimization/data-subway/analysis/2_initial.png)
+      ![IDX PK 설정 후](./queryoptimization/data-subway/analysis/2_idx_pk.png)
+      ![COVID PK 설정 후](./queryoptimization/data-subway/analysis/2_covid_pk.png)
+
+    - 이 부분을 더 향상할 방법이 없을까 고민하다 앞에서 설정한 인덱스 `idx_covid_programmer_id`를 `porgrammer_id, hospital_id`로 변경을 해봤지만 `실행계획`
+      에서 `covid` 테이블의 `extra` 값에 `Using index`가 추가된것을 확인했지만 성능이 좋아지진 않았네요. 성능을 더 올리기위해 어떤 방법이 있을까요?
+      ```sql
+      ALTER TABLE `subway`.`covid` 
+      DROP INDEX `idx_covid_programmer_id` ,
+      ADD INDEX `idx_covid_programmer_id` (`programmer_id` ASC, `hospital_id` ASC);
+      ```
+      ![IDX 수정](./queryoptimization/data-subway/analysis/2_idx_programmer_id_hospital_id.png)
+
+----
 
 * [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 ~~user.id~~ `programmer.id` 기준으로 정렬하세요. (covid.id, hospital.name, ~~
   user.Hobby~~ programmer.hobby, ~~user.DevType~~ programmer.dev_type, ~~user.YearsCoding~~ programmer.years_coding)
@@ -260,13 +292,17 @@ from (
                or years_coding = '0-2 years')
         ) p
     inner join covid c on p.id = c.programmer_id
-    inner join hospital h on c.hospital_id = h.id;
+    inner join hospital h on c.hospital_id = h.id
+    order by p.id;
     ```
   #### 1. 초기 상태 (Duration / Fetch Time): 0.015 sec / 3.087 sec
     * 위 요구사항을 만족하려 생성한 인덱스를 사용하여 별도의 인덱스 설정을 하지 않았습니다.
-    * 별도로 정렬하지 않은 이유는 이미 `programer.id`를 PK로 설정되어 따로 정렬하지 않았습니다.
+    * ~~별도로 정렬하지 않은 이유는 이미 `programer.id`를 PK로 설정되어 따로 정렬하지 않았습니다.~~
+      ![설정전](./queryoptimization/data-subway/3_with_index.png)
 
-  ![설정전](./queryoptimization/data-subway/3_with_index.png)
+    * `order by p.id`를 추가하여 정렬하였습니다.
+        * 성능(Duration / Fetch Time): **0.019 sec / 1.898 sec**
+          ![ORDER BY 추가](./queryoptimization/data-subway/3_with_order.png)
 
 * [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     ```sql
@@ -284,18 +320,34 @@ from (
   ![초기 상태](./queryoptimization/data-subway/4_without_index.png)
 
   #### 2. `member.id` PK로 설정 (Duration / Fetch Time): 0.523 sec / 0.000010 sec
+  ```sql
+  ALTER TABLE `subway`.`member` 
+  CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,
+  ADD PRIMARY KEY (`id`);
+  ```
   ![PK 설정](./queryoptimization/data-subway/4_with_pk.png)
 
   #### 3. `programmer` 인덱스 설정 (Duration / Fetch Time): 0.068 sec / 0.0000079 sec
     * `country, member_id` 인덱스 설정
+      ```sql
+      ALTER TABLE `subway`.`programmer` 
+      ADD INDEX `idx_country_member` (`country` ASC, `member_id` ASC);
+      ```
       ![programmer 인덱스 설정](./queryoptimization/data-subway/4_with_index.png)
 
   #### 4. `covid` 인덱스 설정 (Duration / Fetch Time): 0.039 sec / 0.000010 sec
     * `programmer_id, hospital_id`
+      ```sql
+      ALTER TABLE `subway`.`covid` 
+      ADD INDEX `idx_programmer_hospital` (`programmer_id` ASC, `hospital_id` ASC);
+      ```
       ![covid 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
 
   #### 5. `hospital.name` 인덱스 설정 (Duration / Fetch Time): 0.036 sec / 0.000012 sec
-  ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
+  ```sql
+  CREATE INDEX `idx_hospital_name`  ON `subway`.`hospital` (name) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+  ```
+  ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index2.png)
 
 * [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (~~user.Exercise~~ programmer.exercise)
   ```sql
@@ -310,17 +362,28 @@ from (
   ```
 
   #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
-  ![초기 상태](./queryoptimization/data-subway/5_without_index.png)
+  ![초기 상태](./queryoptimization/data-subway/5_init.png)
 
   #### 2. `programmer` 인덱스 추가 (Duration / Fetch Time): 0.104 sec / 0.0000091 sec
     * `member_id, exercise`
-      ![programmer 인덱스 설정](./queryoptimization/data-subway/5_without_index.png)
+    ```sql
+    ALTER TABLE `subway`.`programmer` 
+    ADD INDEX `idx_member_exercise` (`member_id` ASC, `exercise` ASC);
+    ```
+    ![programmer 인덱스 설정](./queryoptimization/data-subway/5_idx_member_exercise.png)
 
   #### 3. `member.age` 인덱스 추가 (Duration / Fetch Time): 0.061 sec / 0.0000079 sec
-  ![member 인덱스 설정](./queryoptimization/data-subway/5_with_index1.png)
+  ```sql
+  CREATE INDEX `idx_member_age`  ON `subway`.`member` (age) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+  ```
+  ![member 인덱스 설정](./queryoptimization/data-subway/5_idx_age.png)
 
   #### 4. `covid` 인덱스 추가 (Duration / Fetch Time): 0.028 sec / 0.0000091 sec
-  ![covid 인덱스 설정](./queryoptimization/data-subway/5_with_index2.png)
+  ```sql
+  ALTER TABLE `subway`.`covid` 
+  ADD INDEX `idx_hospital_member_programmer` (`hospital_id` ASC, `member_id` ASC, `programmer_id` ASC);
+  ```
+  ![covid 인덱스 설정](./queryoptimization/data-subway/5_idx_hospital_member_programmer.png)
 
 ---
 
