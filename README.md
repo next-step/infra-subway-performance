@@ -201,7 +201,7 @@ from (
   #### 1. 초기 상태 (Duration): 2.026 sec
   ![설정전](./queryoptimization/data-subway/1_without_index.png)
 
-  #### 2. `hoppy` 인덱스 설정 (Duration): 0.069 sec
+  #### 2. `hobby` 인덱스 설정 (Duration): 0.069 sec
   ![hobby 인덱스 설정](./queryoptimization/data-subway/1_with_index_hobby.png)
 
   #### 3. `programmer.id` PK 설정 (Duration): 0.044 sec
@@ -276,6 +276,16 @@ from (
   ![hospital 인덱스 설정](./queryoptimization/data-subway/4_with_index1.png)
 
 * [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (~~user.Exercise~~ programmer.exercise)
+  ```sql
+  select p.exercise, count(*)
+  from programmer p
+  inner join covid c on c.programmer_id = p.id
+  inner join member m on m.id = p.member_id
+  inner join hospital h on h.id = c.hospital_id
+  where h.`name` = '서울대병원'
+    and (m.age >= 30 and m.age < 40)
+  group by p.exercise;
+  ```
 
   #### 1. 초기 상태 (Duration / Fetch Time): 2.230 sec / 0.0000079 sec
   ![초기 상태](./queryoptimization/data-subway/5_without_index.png)
