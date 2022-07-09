@@ -314,7 +314,7 @@ index 변화 없음
 ![master.png](master.png)
 #### slave
 ![slave.png](slave.png)
-- [ ] app db properties 설정
+- [x] app db properties 설정
 - [ ] 페이징 적용
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
