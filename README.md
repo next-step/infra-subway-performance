@@ -119,7 +119,7 @@ $ stress -c 2
              - resources/static/step4/Q1/Q1_image
         [result]
              - resources/static/step4/Q1/Q1_result
-    
+     
     [Q2] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
         [sql]
             - resources/static/step4/Q1/sql1    
