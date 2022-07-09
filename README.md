@@ -82,6 +82,9 @@ npm run dev
 1. Launch Template 링크를 공유해주세요.
 
 * [x] springboot에 HTTP Cache, gzip 설정하기
+    * [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+    * [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+    * [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? => 가능하다.
 * [x] Launch Template 작성하기
 * [x] Auto Scaling Group 생성하기
 * [x] DNS 설정  
@@ -107,7 +110,41 @@ $ stress -c 2
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- [x] 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- [x] 인덱스 설정을 추가하지 않고 1s 이하로 반환합니다. => 0.279 sec 소요
+
+```mysql
+
+select e.id            as '사원번호',
+       e.last_name     as '이름',
+       s.annual_income as '연봉',
+       p.position_name as '직책명',
+       r.region        as '지역명',
+       r.record_symbol as '입출입구분',
+       r.time          as '입출입시간'
+from employee e
+         inner join (
+    select id, annual_income
+    from salary
+    where id in (
+        select employee_id
+        from manager
+        where department_id in (
+            select id
+            from department
+            where note = 'Active')
+          and start_date <= now()
+          and end_date >= now()
+    )
+      and start_date <= now()
+      and end_date >= now()
+    order by annual_income desc
+    limit 5
+) s on e.id = s.id
+         inner join position p on e.id = p.id and p.start_date <= now() and p.end_date >= now()
+         inner join record r on e.id = r.employee_id and r.record_symbol = 'O';
+
+```
 
 ---
 
