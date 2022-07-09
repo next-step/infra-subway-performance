@@ -41,6 +41,9 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
+<details>
+<summary>1단계 - 화면 응답 개선한기</summary>
+<div markdown="1">
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
@@ -58,7 +61,19 @@ npm run dev
   - [x] 경로 검색
 ---
 
+</div>
+</details>
+
+<details>
+<summary>2단계 - 스케일 아웃</summary>
+<div markdown="2">
+
 ### 2단계 - 스케일 아웃
+
+- [ ] springboot에 HTTP Cache, gzip 설정하기
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성하기
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 
@@ -70,9 +85,12 @@ $ stress -c 2
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+</div>
+</details>
+
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -80,7 +98,7 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
