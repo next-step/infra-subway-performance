@@ -309,7 +309,11 @@ index 변화 없음
 
 ### 추가 미션
 
-- [ ] master, slave db 구성
+- [x] master, slave db 구성
+#### master
+![master.png](master.png)
+#### slave
+![slave.png](slave.png)
 - [ ] app db properties 설정
 - [ ] 페이징 적용
 
