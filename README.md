@@ -198,7 +198,46 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+```
+SELECT
+        top5.id AS '사원번호',
+        top5.first_name AS '이름',
+        top5.annual_income AS '연봉',
+        top5. position_name AS '직급명',
+        r.region AS '지역',
+        r.record_symbol AS '입출입구분',
+        r.time AS '입출입시간'
+FROM (
+         SELECT e.id, e.first_name, s.annual_income, p.position_name
+         FROM employee e
+                  INNER JOIN (SELECT m.employee_id, m.department_id
+                              FROM manager m
+                              WHERE m.end_date >= now()) m
+                      ON e.id = m.employee_id
+                  INNER JOIN (SELECT d.id
+                              FROM department d
+                              WHERE d.note = 'active') d
+                      ON d.id = m.department_id
+                  INNER JOIN (SELECT p.id, p.position_name
+                              FROM position p
+                              WHERE p.position_name = 'manager') p
+                      ON p.id = e.id
+                  INNER JOIN (SELECT s.id, s.annual_income
+                              FROM salary s
+                              WHERE s.end_date >= now()) s
+                     ON s.id = e.id
+         ORDER BY s.annual_income DESC
+         LIMIT 5
+ ) top5 INNER JOIN record r
+     ON r.employee_id = top5.id
+    AND r.record_symbol = 'O'
+```
+### 실행 시간
+![output.png](optimization/output.png)
+### 쿼리 결과
+![result.png](optimization/result.png)
+### 실행 계획
+![explain-plan.png](optimization/explain-plan.png)
 ---
 
 ### 2단계 - 인덱스 설계
