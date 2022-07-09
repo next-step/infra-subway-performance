@@ -206,28 +206,24 @@ order by a.annual_income desc, r.region;
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
 | covid      | PRIMARY                | id
-| covid      | id_UNIQUE              | id
 | covid      | idx_covid_hospital_id  | hospital_id
 | covid      | idx_covid_programmer_id| programmer_id
 
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
 | hospital   | PRIMARY                | id
-| hospital   | id_UNIQUE              | id
-| hospital   | name_UNIQUE            | name
 | hospital   | idx_hospital_name      | name
 
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
 | member     | PRIMARY                | id
-| member     | id_UNIQUE              | id
 
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
 | programmer | PRIMARY                | id
-| programmer | id_UNIQUE              | id
 | programmer | idx_programmer_country | country
 | programmer | idx_programmer_exercise| exercise
+| programmer | idx_programmer_exercise| hobby
 
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
