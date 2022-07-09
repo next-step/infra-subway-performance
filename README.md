@@ -346,25 +346,34 @@ ORDER  BY a.annual_income DESC,
           CREATE INDEX covid_member_id_IDX ON subway.covid (member_id);
        ```
     
-     * 실행 계획 & 결과 : 0.17ms
+     * 실행 계획 & 결과 : 0.17ms 
          * 실행 계획
-           ![img_1.png](step4/4-2실행계획.png)
+          ![실행계획](step4/4-2실행계획.png)
          * 결과
-          ![img.png](step4/4-2결과.png)
+          ![결과](step4/4-2결과.png)
            
-   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+   - [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
      - SQL
      ```sql
-
+        SELECT p.exercise,
+               COUNT(*) count
+        FROM   programmer p
+               JOIN covid c
+                 ON c.programmer_id = p.id
+               JOIN member m
+                 ON c.member_id = m.id
+               JOIN hospital h
+                 ON c.hospital_id = h.id
+        WHERE  h.name = '서울대병원'
+               AND m.age BETWEEN 30 AND 39
+        GROUP  BY exercise; 
      ```
-       * 이전 실행 계획
-         
-       * 작업 내용
-
-       * 실행 계획 & 결과
+     * 실행 계획 & 결과 : 0.01ms 미만
            * 실행 계획
-
-           * 결과
+            ![실행계획](step4/5-2실행계획.png)
+         * 결과
+            ![결과](step4/5-1결과.png)
+     > 단계를 수행 하면서 이미 튜닝된 결과로 해당 부분은 별도 튜닝이 필요 없어 보입니다.
 ---
 
 ### 추가 미션
