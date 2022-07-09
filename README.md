@@ -157,7 +157,7 @@ on top5_managers.id = record.employee_id and record.record_symbol = 'O';
 - [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
     - [X] Coding as a Hobby 와 같은 결과를 반환하세요.
     - [X] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-    - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - [X] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
     - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
     - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
@@ -201,6 +201,35 @@ on top5_managers.id = record.employee_id and record.record_symbol = 'O';
     - Duration Time: 0.516 sec → 0.187 (PK 생성) sec → 0.016 sec (Index 생성)
     - [실행계획(Before)](step4/Q2/2-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q2/2-2.%20Visual_Explain_After.PNG)
 ---
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+
+   #### Create Index
+    ```roomsql
+    alter table programmer add primary key (id); -- 1번에서 실행
+    alter table hospital add primary key (id); -- 2번에서 실행
+    alter table covid add primary key (id); -- 2번에서 실행
+    create index idx_programmer_hobby on programmer (hobby); -- 1번에서 실행
+    ```
+   #### Query
+   ```roomsql
+    select covid_hospital.id, covid_hospital.name, p.hobby, p.dev_type, p.years_coding
+    from (
+        select c.id as id, h.name as name
+        from covid c
+        join hospital h on c.hospital_id = h.id
+    ) covid_hospital
+    join (
+        select id, hobby, dev_type, years_coding
+        from programmer p
+        where hobby = 'Yes'
+            and (student like 'Yes%' or years_coding = '0-2 years')
+    ) p
+    on covid_hospital.id = p.id;
+   ```
+   #### Result
+    - Duration Time: 30 sec 이상 → 0.016 sec (PK 생성) → 0.00 sec (Index 생성)
+    - [실행계획(Before)](step4/Q3/3-1.%20Visual_Explain_Before.PNG) →[실행계획(After)](step4/Q3/3-2.%20Visual_Explain_After.PNG)
+------------
 
 ### 추가 미션
 
