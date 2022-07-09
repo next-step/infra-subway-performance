@@ -397,9 +397,18 @@ ORDER BY manager_salary_top5.연봉 DESC;
 
 ### 추가 미션
 
-1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
-`/stations`
-- 단순히 `Page<T> findAll(Pageable pageable)`만 사용했을 때 쿼리  
-![](mission_results/step4/paging/jpaRepo.png)
-- 직접 JPQL을 적용해 주었을 때 쿼리  
-![](mission_results/step4/paging/jpql.png)
+1. 페이징 쿼리를 적용한 API endpoint를 알려주세요  
+`/stations`  
+예시:  
+지하철역이 1번부터 10번까지 있다고 가정하면
+   1. `/stations?offset=8`  
+   반환: 8번 ~ 10번 (총 3개)
+   2. `/stations?size=4`  
+   반환: 1번 ~ 4번 (총 4개)
+   3. `/stations?offset=2&size=3`  
+   반환: 2번 ~ 4번 (총 3개)
+- 실제 쿼리 참고
+  - 단순히 `Page<T> findAll(Pageable pageable)`만 사용했을 때 쿼리  
+  ![](mission_results/step4/paging/jpaRepo.png)
+  - 직접 JPQL을 적용해 주었을 때 쿼리  
+  ![](mission_results/step4/paging/jpql.png)
