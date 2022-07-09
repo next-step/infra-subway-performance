@@ -185,7 +185,42 @@ GROUP  BY a.id,
 ORDER  BY a.annual_income DESC,
           r.region 
 
-
+```
+* 그룹 바이를 쓴 이유
+> record 테이블에 record_symbol이 퇴실(o)인 경우가 한 id당 한개가 이후에도 보장 될까 하는 마음에 작성하였습니다.
+> id당 한개가 추후에도 보장된 환경이라면 제거가 가능할껏 같습니다.
+```sql
+SELECT a.id            AS 사원번호,
+       a.last_name     AS 이름,
+       a.annual_income AS 연봉,
+       a.position_name AS 직급명,
+       r.time       AS 입출입시간,
+       r.record_symbol AS 입출입구분,
+       r.region        AS 지역
+FROM   (SELECT e.id,
+               e.last_name,
+               s.annual_income,
+               p.position_name
+        FROM   manager m
+               JOIN department dept
+                 ON m.department_id = dept.id
+                    AND dept.note = 'active'
+                    AND m.end_date >= Now()
+               JOIN salary s
+                 ON s.id = m.employee_id
+                    AND s.end_date >= Now()
+               JOIN employee e
+                 ON m.employee_id = e.id
+               JOIN `position` p
+                 ON e.id = p.id
+                    AND p.position_name = 'manager'
+        ORDER  BY annual_income DESC
+        LIMIT  5) a
+       JOIN record r
+         ON a.id = r.employee_id
+            AND r.record_symbol = 'O'
+ORDER  BY a.annual_income DESC,
+          r.region 
 ```
 
 * 결과 
