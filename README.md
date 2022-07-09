@@ -91,12 +91,67 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+[sql]
+- resources/static/step3/step3.sql
+
+[실행결과 data]
+- resources/static/step3/step3_result.png
+
+[실행시간]
+- resources/static/step3/step3_time.png
+
 ---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
+    [Index 및 DDL 적용사항]
+    - resources/static/step3/DDL
+        - covid
+        - hospital
+        - member
+        - programmer
+        
+    [Q1] Coding as a Hobby 와 같은 결과를 반환하세요.
+        [sql]
+            - resources/static/step4/Q1/sql1    
+        [explain]
+             - resources/static/step4/Q1/Q1_image
+        [result]
+             - resources/static/step4/Q1/Q1_result
+    
+    [Q2] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+        [sql]
+            - resources/static/step4/Q1/sql1    
+        [explain]
+             - resources/static/step4/Q1/Q1_image
+        [result]
+             - resources/static/step4/Q1/Q1_result
+    
+    [Q3] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+        [sql]
+            - resources/static/step4/Q1/sql1    
+        [explain]
+             - resources/static/step4/Q1/Q1_image
+        [result]
+             - resources/static/step4/Q1/Q1_result
+                 
+    [Q4] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+        [sql]
+            - resources/static/step4/Q1/sql1    
+        [explain]
+             - resources/static/step4/Q1/Q1_image
+        [result]
+             - resources/static/step4/Q1/Q1_result
+             
+    [Q5] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+        [sql]
+            - resources/static/step4/Q1/sql1    
+        [explain]
+             - resources/static/step4/Q1/Q1_image
+        [result]
+             - resources/static/step4/Q1/Q1_result
+             
 ---
 
 ### 추가 미션
