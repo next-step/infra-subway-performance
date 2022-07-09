@@ -39,7 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean(){
+    public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         Filter etagHeaderFilter = new ShallowEtagHeaderFilter();
         registration.setFilter(etagHeaderFilter);

@@ -145,6 +145,53 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+* 쿼리 
+```sql
+SELECT a.id            AS 사원번호,
+       a.last_name     AS 이름,
+       a.annual_income AS 연봉,
+       a.position_name AS 직급명,
+       Max(time)       AS 입출입시간,
+       r.record_symbol AS 입출입구분,
+       r.region        AS 지역
+FROM   (SELECT e.id,
+               e.last_name,
+               s.annual_income,
+               p.position_name
+        FROM   manager m
+               JOIN department dept
+                 ON m.department_id = dept.id
+                    AND dept.note = 'active'
+                    AND m.end_date >= Now()
+               JOIN salary s
+                 ON s.id = m.employee_id
+                    AND s.end_date >= Now()
+               JOIN employee e
+                 ON m.employee_id = e.id
+               JOIN `position` p
+                 ON e.id = p.id
+                    AND p.position_name = 'manager'
+        ORDER  BY annual_income DESC
+        LIMIT  5) a
+       JOIN record r
+         ON a.id = r.employee_id
+            AND r.record_symbol = 'O'
+GROUP  BY a.id,
+          a.last_name,
+          a.annual_income,
+          a.position_name,
+          r.record_symbol,
+          r.region
+ORDER  BY a.annual_income DESC,
+          r.region 
+
+
+```
+
+* 결과 
+![img.png](3단계 쿼리결과.png)
+
+
 ---
 
 ### 4단계 - 인덱스 설계
