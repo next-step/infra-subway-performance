@@ -233,22 +233,21 @@ order by a.annual_income desc, r.region;
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 - [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
-    - 국가별 프로그래머 비율 확인
+    - Coding as a Hobby
 ```sql
-select programmer.country, 
+select programmer.hobby, 
 	round(concat((programmer.cnt / total.cnt) * 100, "%"),2) as percentage
 from (
     select 
-        country,
+        hobby,
         count(id) as cnt
     from programmer
-    group by country
+    group by hobby
 ) as programmer
 inner join (
     select count(id) as cnt
     from programmer
-) as total on 1 = 1
-order by programmer.country;
+) as total on 1 = 1;
 ```
 
 ![이미지](/query/step4/question0_explain.png)
