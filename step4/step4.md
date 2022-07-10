@@ -111,12 +111,14 @@ SELECT C.id
 ```
 SELECT C.stay 
     ,  COUNT(1)
-  FROM su 
+  FROM subway.`member` M
  INNER JOIN subway.programmer P
+    ON M.id = P.member_id 
  INNER JOIN subway.covid C
     ON P.id = C.programmer_id
    AND C.city_code_hospital = 9
- WHERE P.country = 'India'
+ WHERE (M.age >= 20 AND M.age <= 29)
+   AND P.country = 'India'
  GROUP BY C.stay
 ```
 
