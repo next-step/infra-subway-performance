@@ -115,7 +115,7 @@ inner join record r on r.employee_id = e.id and record_symbol = 'O'
 inner join position p on p.id = e.id and p.start_date <= now() and p.end_date >= now();
 ```
 - 실행결과
-![결과](./docs/query.PNG)
+![결과](docs/step3/query.PNG)
 ---
 
 ### 2단계 - 인덱스 설계
