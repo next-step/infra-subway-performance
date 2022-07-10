@@ -85,7 +85,31 @@ npm run dev
 $ stress -c 2
 ```
 
+* cpu_stress
+
+![cpu_stress](./result/cpu_stress.png)
+
+* cloudWatch
+
+![cloudWatch](./result/cloudWatch.png)
+
+* cloudWatch_instance
+
+![cloudWatch_instance](./result/cloudWatch_instance.png)
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+* scale_out_smoke_test
+
+![scale_out_smoke_test](./result/k6/smoke_after_scale_out.png)
+
+* scale_out_load_test
+
+![scale_out_load_test](./result/k6/load_after_scale_out.png)
+
+* scale_out_stress_test
+
+![scale_out_stress_test](./result/k6/stress_after_scale_out.png)
 
 </div>
 </details>
