@@ -86,11 +86,54 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+* [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+    * (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+* [x] 인덱스 설정을 추가하지 않고 1s 이하로 반환합니다.
+
+```sql
+select e.id as '사원번호',
+	   e.last_name as '이름',
+       t.annual_income as '연봉',
+       p.position_name as '직급명',
+       r.time as '입출입시간',
+       r.region as '지역',
+       r.record_symbol as '입출입구분'
+from employee e
+join (
+    select m.employee_id, s.annual_income
+    from department d
+	join manager m on d.id = m.department_id
+    join salary s on m.employee_id = s.id
+	where d.note = 'active'
+    and m.start_date < now() and m.end_date > now()
+    and s.start_date < now() and s.end_date > now()
+    order by s.annual_income desc
+    limit 5
+) t on e.id = t.employee_id
+join position p on e.id = p.id
+join record r on e.id = r.employee_id
+and p.start_date < now() and p.end_date > now()
+and r.record_symbol = 'O';
+```
+
 ---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+* 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+    * M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+    * [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+        * [결과](/step4/1_hobby)
+    * [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+        * [결과](/step4/2_covid)
+    * [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+        * [결과](/step4/3_hospital)
+    * [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+        * [결과](/step4/4_stay)
+    * [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+        * [결과](/step4/5_exercise)
 
 ---
 
