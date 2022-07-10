@@ -121,7 +121,53 @@ inner join position p on p.id = e.id and p.start_date <= now() and p.end_date >=
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+#### 문제1. Coding as a Hobby 와 같은 결과를 반환하세요.
+- 실행쿼리
+```mysql
+select hobby, 
+round((count(hobby) * 100 / (select count(hobby) from programmer)), 1) as rate
+from programmer 
+group by hobby;
+```
+- 실행시간 : 0.469s -> 0.047s 
+    - Programmer PK 추가
+    - Programmer hobby 컬럼 index 추가
+- 실행계획  
+![실행계획](./docs/step4/p1_query_explain.PNG)
 
+#### 문제2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 실행쿼리
+```mysql
+select c.id, h.name
+from covid c, hospital h, programmer p
+where c.hospital_id = h.id
+and c.programmer_id = p.id;
+```
+- 실행시간 : 0.391s -> 0.000s
+    - PK 생성(Covid.id)
+    - PK 생성(Hospital.id)
+    - PK 생성(Programmer.id)
+- 실행계획
+![실행계획](./docs/step4/p2_query_explain.PNG)
+![실행계획](./docs/step4/p2_visual_explain.PNG)
+
+#### 문제3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 실행쿼리
+```mysql
+select c.id, h.name, user.hobby, user.dev_type, user.years_coding
+from covid c,
+	hospital h,
+(select p.id, p.hobby, p.dev_type, p.years_coding from programmer p
+where (p.hobby = 'Yes' and p.student like 'Yes%')
+or p.years_coding = '0-2 years') user
+where c.hospital_id = h.id
+and c.programmer_id = user.id; 
+```
+- 실행시간 : 30.016s
+    - PK 생성(Covid.id)
+    - PK 생성(Hospital.id)
+    - PK 생성(Programmer.id)
+    - 인덱스 생성(idx_covid_hospital_id)
 ---
 
 ### 추가 미션
