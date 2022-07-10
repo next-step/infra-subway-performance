@@ -25,7 +25,6 @@ public class StationService {
     @Caching(
         evict = {
             @CacheEvict(value = "line", allEntries = true),
-            @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "path", allEntries = true)
         }
     )
@@ -46,7 +45,6 @@ public class StationService {
     @Caching(
         evict = {
             @CacheEvict(value = "line", allEntries = true),
-            @CacheEvict(value = "lines", allEntries = true),
             @CacheEvict(value = "path", allEntries = true)
         }
     )
