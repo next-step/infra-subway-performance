@@ -12,7 +12,7 @@ from
                p.position_name
         from department d
                  join manager m
-                      on d.id= m.department_id
+                      on d.id = m.department_id
                  join employee e
                       on m.employee_id = e.id
                  join position p
