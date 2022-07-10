@@ -309,4 +309,14 @@ index 변화 없음
 
 ### 추가 미션
 
+- [x] master, slave db 구성
+#### master
+![master.png](master.png)
+#### slave
+![slave.png](slave.png)
+- [x] app db properties 설정
+- [x] 페이징 적용
+
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+- https://soob-forest.p-e.kr/stations?page=0&size=10
