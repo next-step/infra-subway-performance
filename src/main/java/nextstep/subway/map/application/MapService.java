@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class MapService {
     private LineService lineService;
     private StationService stationService;
@@ -26,6 +25,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "path", key = "{#source, #target}")
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();

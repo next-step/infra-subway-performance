@@ -311,3 +311,4 @@ CREATE INDEX `idx_programmer_member_id`  ON `subway`.`programmer` (`member_id`) 
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+ - https://toughchb.kro.kr/stations/page?offset=5&size=10
