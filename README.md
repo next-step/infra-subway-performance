@@ -88,6 +88,34 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```mysql
+select 
+	e.id,
+	e.last_name,
+	top5.annual_income,
+	p.position_name,
+	r.time,
+	r.region,
+	r.record_symbol
+from employee e
+inner join (
+	select s.id, s.annual_income
+	from salary s
+	where id in (select employee_id from manager
+		where department_id in (select id from department where note = 'Active')
+		and start_date <= now() 
+		and end_date >= now()
+	)
+	and s.start_date <= now() 
+	and s.end_date >= now()
+	order by s.annual_income desc
+	limit 5
+) top5 on top5.id = e.id
+inner join record r on r.employee_id = e.id and record_symbol = 'O'
+inner join position p on p.id = e.id and p.start_date <= now() and p.end_date >= now();
+```
+- 실행결과
+![결과](./docs/query.PNG)
 ---
 
 ### 2단계 - 인덱스 설계
