@@ -1,0 +1,95 @@
+$ k6 run --out influxdb=http://localhost:8086/k6 stress.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 326 max VUs, 6m30s max duration (incl. graceful stop):
+           * default: Up to 326 looping VUs for 6m0s over 6 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+WARN[0299] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/stations\": read tcp 192.168.171.142:55396->13.209.177.16:443: read: connection reset by peer"
+ERRO[0299] TypeError: Cannot read property 'length' of undefined
+running at 지하철역 개수 점검 (file:///home/ubuntu/k6/stress.js:72:50(3))
+default at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_stations (file:///home/ubuntu/k6/stress.js:71:20(19))
+        at file:///home/ubuntu/k6/stress.js:28:4(8)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+WARN[0299] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr\": read tcp 192.168.171.142:55402->13.209.177.16:443: read: connection reset by peer"
+WARN[0299] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/paths?source=1&target=15\": read tcp 192.168.171.142:55450->13.209.177.16:443: read: connection reset by peer"
+ERRO[0299] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at 지하철 길찾기 점검 (file:///home/ubuntu/k6/stress.js:84:50(4))
+        at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_path (file:///home/ubuntu/k6/stress.js:83:20(41))
+        at file:///home/ubuntu/k6/stress.js:30:4(11)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+WARN[0303] The flush operation took higher than the expected set push interval. If you see this message multiple times then the setup or configuration need to be adjusted to achieve a sustainable rate.  output=InfluxDBv1 t=1.010440831s
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/paths?source=1&target=15\": read tcp 192.168.171.142:56080->13.209.177.16:443: read: connection reset by peer"
+ERRO[0311] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at 지하철 길찾기 점검 (file:///home/ubuntu/k6/stress.js:84:50(4))
+        at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_path (file:///home/ubuntu/k6/stress.js:83:20(41))
+        at file:///home/ubuntu/k6/stress.js:30:4(11)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/stations\": read tcp 192.168.171.142:56118->13.209.177.16:443: read: connection reset by peer"
+ERRO[0311] TypeError: Cannot read property 'length' of undefined
+running at 지하철역 개수 점검 (file:///home/ubuntu/k6/stress.js:72:50(3))
+default at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_stations (file:///home/ubuntu/k6/stress.js:71:20(19))
+        at file:///home/ubuntu/k6/stress.js:28:4(8)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr\": read tcp 192.168.171.142:56124->13.209.177.16:443: read: connection reset by peer"
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/stations\": read tcp 192.168.171.142:56130->13.209.177.16:443: read: connection reset by peer"
+ERRO[0311] TypeError: Cannot read property 'length' of undefined
+running at 지하철역 개수 점검 (file:///home/ubuntu/k6/stress.js:72:50(3))
+default at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_stations (file:///home/ubuntu/k6/stress.js:71:20(19))
+        at file:///home/ubuntu/k6/stress.js:28:4(8)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr\": read tcp 192.168.171.142:56136->13.209.177.16:443: read: connection reset by peer"
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr\": read tcp 192.168.171.142:56142->13.209.177.16:443: read: connection reset by peer"
+WARN[0311] Request Failed                                error="Get \"https://www.tasklet1579.p-e.kr/paths?source=1&target=15\": read tcp 192.168.171.142:56148->13.209.177.16:443: read: connection reset by peer"
+ERRO[0311] the body is null so we can't transform it to JSON - this likely was because of a request error getting the response
+running at reflect.methodValueCall (native)
+default at 지하철 길찾기 점검 (file:///home/ubuntu/k6/stress.js:84:50(4))
+        at go.k6.io/k6/js/modules/k6.(*K6).Check-fm (native)
+        at find_path (file:///home/ubuntu/k6/stress.js:83:20(41))
+        at file:///home/ubuntu/k6/stress.js:30:4(11)
+        at native  executor=ramping-vus scenario=default source=stacktrace
+
+running (6m00.5s), 000/326 VUs, 33599 complete and 0 interrupted iterations
+default ✓ [======================================] 000/326 VUs  6m0s
+
+     ✗ 랜딩 페이지 점검
+      ↳  99% — ✓ 33595 / ✗ 4
+     ✓ 로그인 토큰 점검
+     ✗ 지하철역 개수 점검
+      ↳  99% — ✓ 33596 / ✗ 3
+     ✗ 지하철 길찾기 점검
+      ↳  99% — ✓ 33593 / ✗ 3
+     ✓ 지하철 즐겨찾기 점검
+
+     checks.........................: 99.99% ✓ 167976     ✗ 10
+     data_received..................: 149 MB 414 kB/s
+     data_sent......................: 18 MB  50 kB/s
+     http_req_blocked...............: avg=283.8µs  min=0s       med=325ns   max=352.35ms p(90)=425ns    p(95)=480ns
+     http_req_connecting............: avg=14.47µs  min=0s       med=0s      max=184.98ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=39.59ms  min=0s       med=11.83ms max=1.37s    p(90)=111.83ms p(95)=174.03ms
+       { expected_response:true }...: avg=39.59ms  min=1ms      med=11.83ms max=1.37s    p(90)=111.82ms p(95)=174.03ms
+     http_req_failed................: 0.00%  ✓ 10         ✗ 167976
+     http_req_receiving.............: avg=862.57µs min=0s       med=37.28µs max=107.08ms p(90)=712.6µs  p(95)=2.55ms
+     http_req_sending...............: avg=222.76µs min=0s       med=37.62µs max=491.67ms p(90)=68.03µs  p(95)=121.91µs
+     http_req_tls_handshaking.......: avg=190.19µs min=0s       med=0s      max=351.58ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=38.5ms   min=0s       med=11.58ms max=1.16s    p(90)=108.55ms p(95)=169.88ms
+     http_reqs......................: 167986 465.951715/s
+     iteration_duration.............: avg=1.2s     min=205.11ms med=1.04s   max=3.07s    p(90)=1.62s    p(95)=1.81s
+     iterations.....................: 33599  93.195336/s
+     vus............................: 4      min=1        max=326
+     vus_max........................: 326    min=326      max=326

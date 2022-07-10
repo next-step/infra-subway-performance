@@ -24,10 +24,14 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/@mdi/font@5.0.45/css/materialdesignicons.min.css"
     />
+    {{#block "customHeader"}}
+    {{/block}}
   </head>
   <body>
     <div id="app"></div>
-    <script src="/js/vendors.js"></script>
-    <script src="/js/main.js"></script>
+    {{#block "script"}}
+    <script src="{{staticUrls '/js/vendors.js'}}"></script>
+    <script src="{{staticUrls '/js/main.js'}}"></script>
+    {{/block}}
   </body>
 </html>

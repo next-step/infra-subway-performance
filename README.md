@@ -68,13 +68,31 @@ Redis
 
 1. Launch Template 링크를 공유해주세요.
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+[링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-00ebdcb2aca0fdbe3)
+
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+
+4. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+
+CacheControl에서 noCache와 noStore 설정은 모두 할 수 없도록 되어 있습니다.
+
+no-cache : 클라이언트가 서버에게 매번 캐시의 유효성 확인을 요청함
+
+no-store : 캐시를 비활성하고 이것은 비공개 그리고 공유 캐시에 적용됨
+- 비휘발성 스토리지에 저장되는 것은 아니지만 완벽하게 privacy를 보장하는 것은 아님
+
+인터넷 상에서는 모두 설정해주는 것이 좋다고 나와있는데 실제 코드에서는 왜 양립할 수 없는지 의문이 들었습니다.
+
+하나. HTTP 스펙을 구현하는 시점에 설계 오류가 있었다.
+
+둘. 기타 옵션을 적절히 사용해서 확실한 캐시 무효화 효과를 만들어낸다.
 
 ---
 
