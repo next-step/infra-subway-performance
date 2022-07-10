@@ -90,13 +90,13 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#
 
 ```mysql
 select 
-	e.id,
-	e.last_name,
-	top5.annual_income,
-	p.position_name,
-	r.time,
-	r.region,
-	r.record_symbol
+	e.id                as '사원번호',
+	e.last_name         as '이름',
+	top5.annual_income  as '연봉',
+	p.position_name     as '직책명',
+	r.time              as '입출입시간',
+	r.region            as '지역',
+	r.record_symbol     as '입출입구분'
 from employee e
 inner join (
 	select s.id, s.annual_income
