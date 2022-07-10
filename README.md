@@ -46,19 +46,19 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - Smoke Test
     - 적용 전
-![적용전](./loadtest/before/smoke_result_k6.PNG)
+![적용전](loadtest/step1/before/smoke_result_k6.PNG)
     - 적용 후
-![적용후](./loadtest/after/smoke_result_k6.PNG)
+![적용후](loadtest/step1/after/smoke_result_k6.PNG)
 - Load Test
     - 적용 전
-![적용전](./loadtest/before/load_result_k6.PNG)
+![적용전](loadtest/step1/before/load_result_k6.PNG)
     - 적용 후
-![적용후](./loadtest/after/load_result_k6.PNG)
+![적용후](loadtest/step1/after/load_result_k6.PNG)
 - Stress Test
     - 적용 전
-![적용전](./loadtest/before/stress_result_k6.PNG)
+![적용전](loadtest/step1/before/stress_result_k6.PNG)
     - 적용 후
-![적용후](./loadtest/after/stress_result_k6.PNG)    
+![적용후](loadtest/step1/after/stress_result_k6.PNG)    
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - Reverse Proxy 개선
     - gzip 압축
@@ -69,17 +69,17 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
-
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0ad25643698f5a02d
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![EC2 추가생성 결과](./loadtest/step2/instance_count.PNG)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+- Smoke Test
+![smoke](./loadtest/step2/smoke_test.PNG)
+- Stress Test
+![smoke](./loadtest/step2/stress_test.PNG)
 ---
 
 ### 1단계 - 쿼리 최적화
