@@ -92,6 +92,8 @@ $ stress -c 2
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+[답변](https://github.com/tasklet1579/infra-subway-performance/blob/step4/step4/step4.md)
+
 ---
 
 ### 추가 미션
