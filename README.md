@@ -85,6 +85,10 @@ npm run dev
     * [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
     * [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
     * [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? => 가능하다.
+        * 정적자원 root 경로로 setCacheControl(CacheControl.noStore().mustRevalidate()) 설정추가
+        * no-cache 값은 대부분의 브라우저에서 max-age=0 과 동일한 뜻을 가집니다. 즉, 캐시는 저장하지만 사용하려고 할 때마다 서버에 재검증 요청을 보내야 합니다.
+        * no-store 값은 캐시를 절대로 해서는 안 되는 리소스일 때 사용합니다. 캐시를 만들어서 저장조차 하지 말라는 가장 강력한 Cache-Control 값입니다. no-store를 사용하면
+          브라우저는 어떤 경우에도 캐시 저장소에 해당 리소스를 저장하지 않습니다.
 * [x] Launch Template 작성하기
 * [x] Auto Scaling Group 생성하기
 * [x] DNS 설정  
