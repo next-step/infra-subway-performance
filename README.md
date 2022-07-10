@@ -292,6 +292,20 @@ group by stay
 - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ```sql
+select exercise, count(m.id)
+    from (select id from member where age between 30 and 39) m
+    inner join (select id, exercise from programmer) p on m.id = p.id
+    inner join (select hospital_id, programmer_id, stay from covid) c on c.programmer_id = p.id
+    inner join (select id from hospital where name = '서울대병원') h on h.id = c.hospital_id
+group by exercise;
+```
+
+![이미지](/query/step4/question4_explain.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - use index 방식으로 추가로 작성해보기...
+
+```sql
 select p.exercise, count(m.id)
 from programmer p
 	inner join member m use index (idx_member_age) on m.id = p.id and m.age between 30 and 39
@@ -300,7 +314,7 @@ from programmer p
 group by p.exercise;
 ```
 
-![이미지](/query/step4/question4_explain.png)
+![이미지](/query/step4/question4_explain_type2.png)
 
 - [x] 전체 출력 결과
 
