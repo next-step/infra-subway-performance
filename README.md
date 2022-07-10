@@ -201,7 +201,124 @@ order by a.annual_income desc, r.region;
 
 ### 2단계 - 인덱스 설계
 
+0. 테이블 별 설정한 인덱스 정보
+
+|Table       | Key_name               | Column_name |
+|------------|------------------------|---------------
+| covid      | PRIMARY                | id
+| covid      | idx_covid_hospital_id  | hospital_id
+| covid      | idx_covid_programmer_id| programmer_id
+
+|Table       | Key_name               | Column_name |
+|------------|------------------------|---------------
+| hospital   | PRIMARY                | id
+| hospital   | uk_hospital_name       | name
+
+|Table       | Key_name               | Column_name |
+|------------|------------------------|---------------
+| member     | PRIMARY                | id
+| member     | idx_member_age         | age
+
+|Table       | Key_name               | Column_name |
+|------------|------------------------|---------------
+| programmer | PRIMARY                | id
+| programmer | idx_programmer_country | country
+| programmer | idx_programmer_exercise| exercise
+| programmer | idx_programmer_exercise| hobby
+
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+- [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+    - Coding as a Hobby
+```sql
+select programmer.hobby, 
+	round(concat((programmer.cnt / total.cnt) * 100, "%"),2) as percentage
+from (
+    select 
+        hobby,
+        count(id) as cnt
+    from programmer
+    group by hobby
+) as programmer
+inner join (
+    select count(id) as cnt
+    from programmer
+) as total on 1 = 1;
+```
+
+![이미지](/query/step4/question0_explain.png)
+
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+select c.id, h.name
+from programmer p
+inner join covid c on c.programmer_id = p.id
+inner join hospital h on h.id = c.hospital_id;
+```
+
+![이미지](/query/step4/question1_explain.png)
+
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+    - (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer p
+inner join covid c on c.id = p.id
+inner join hospital h on h.id = c.hospital_id
+where (p.student in ('Yes, part-time', 'Yes, full-time') and p.hobby = 'Yes')
+    or (p.years_coding = '0-2 years' and p.student in ('No', 'NA'))
+order by p.id;
+```
+
+![이미지](/query/step4/question2_explain.png)
+
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```sql
+select c.stay, count(m.id)
+from member m
+         inner join programmer p  use index (idx_programmer_country) on m.id = p.id and p.country = 'india'
+         inner join covid c on c.programmer_id = p.id
+         inner join hospital h on h.id = c.hospital_id and name = '서울대병원'
+where age between 20 and 29
+group by stay
+```
+
+![이미지](/query/step4/question3_explain.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```sql
+select exercise, count(m.id)
+    from (select id from member where age between 30 and 39) m
+    inner join (select id, exercise from programmer) p on m.id = p.id
+    inner join (select hospital_id, programmer_id, stay from covid) c on c.programmer_id = p.id
+    inner join (select id from hospital where name = '서울대병원') h on h.id = c.hospital_id
+group by exercise;
+```
+
+![이미지](/query/step4/question4_explain.png)
+
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    - use index 방식으로 추가로 작성해보기...
+
+```sql
+select p.exercise, count(m.id)
+from programmer p
+	inner join member m use index (idx_member_age) on m.id = p.id and m.age between 30 and 39
+	inner join covid c on c.programmer_id = p.id
+	inner join hospital h use index (uk_hospital_name) on h.id = c.hospital_id and h.name = '서울대병원'
+group by p.exercise;
+```
+
+![이미지](/query/step4/question4_explain_type2.png)
+
+- [x] 전체 출력 결과
+
+![이미지](/query/step4/output.png)
 
 ---
 
