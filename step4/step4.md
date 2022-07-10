@@ -1,3 +1,23 @@
+### Coding as a Hobby 와 같은 결과를 반환하세요.
+조회 SQL
+```
+SELECT P1.hobby
+    ,  CONCAT(COUNT(1) / P2.Total * 100, '%') Percentage
+  FROM subway.programmer P1
+    ,  (SELECT COUNT(1) Total FROM subway.programmer) P2
+ GROUP BY P1.hobby
+        , P2.Total
+```
+
+실행 결과
+```
+2 row(s) fetched - 296ms
+hobby|Percentage|
+-----|----------|
+No   |19.1776%  |
+Yes  |80.8224%  |
+```
+
 ### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 기본키 생성
 ```
@@ -91,7 +111,8 @@ SELECT C.id
 ```
 SELECT C.stay 
     ,  COUNT(1)
-  FROM subway.programmer P
+  FROM su 
+ INNER JOIN subway.programmer P
  INNER JOIN subway.covid C
     ON P.id = C.programmer_id
    AND C.city_code_hospital = 9
