@@ -217,6 +217,7 @@ order by a.annual_income desc, r.region;
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
 | member     | PRIMARY                | id
+| member     | idx_member_age         | age
 
 |Table       | Key_name               | Column_name |
 |------------|------------------------|---------------
