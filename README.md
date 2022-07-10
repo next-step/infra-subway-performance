@@ -73,7 +73,26 @@ npm run dev
 - [x] springboot에 HTTP Cache, gzip 설정하기
 - [x] Launch Template 작성하기
 - [x] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+
+- [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가?
+
+가능한 것 같습니다.
+
+[참고링크 1](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
+[참고링크 2](https://stackoverflow.com/questions/24164014/how-to-enable-http-response-caching-in-spring-boot)
+
+Spring을 이용한다면
+```text
+# application.properties
+
+spring.web.resources.cache.cachecontrol.no-cache=true
+spring.web.resources.cache.cachecontrol.no-store=true
+```
+
+브라우저 호환이나 버그 등의 이유로 이 두개를 같이 이용한다는 글이 있네요.
+
+[참고링크 3](https://www.inflearn.com/questions/112647)
 
 1. Launch Template 링크를 공유해주세요.
 
