@@ -145,7 +145,80 @@ inner join record on salary_rank.id = record.employee_id
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
----
+- [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환하세요.
+```sql
+alter table programmer add primary key(id);
+alter table programmer add index idx_programmer_hobby(hobby);
+
+SELECT hobby,
+       concat(round(count(id) / (select count(id) from programmer p) * 100, 1), '%') as '비율'
+FROM programmer
+group by hobby;
+```
+![](index/1.png)
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+alter table covid add primary key(id);
+alter table covid add index idx_covid_hospital(hospital_id);
+alter table covid add index idx_covid_programmer(programmer_id);
+alter table hospital add primary key(id);
+
+SELECT c.id, h.name
+FROM covid c
+       inner join programmer p on p.id = c.programmer_id
+       inner join hospital h on h.id = c.hospital_id;
+```
+![](index/2.png)
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+alter table member add primary key(id);
+alter table programmer add index idx_programmer(member_id);
+
+SELECT c.id
+     , h.name
+     , p.hobby
+     , p.dev_type
+     , p.years_coding
+FROM programmer p
+	inner join covid c on p.id = c.programmer_id
+	inner join hospital h on c.hospital_id = h.id
+	inner join member m on p.member_id = m.id
+WHERE p.hobby = 'YES'
+  and ((p.years_coding = '0-2 years') or (p.student like 'Yes%'))
+order by p.id;
+```
+![](index/3.png)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+alter table covid add index idx_covid_member(member_id);
+
+SELECT c.stay, count(1)
+FROM programmer p
+    inner join covid c on c.programmer_id = p.id
+    inner join hospital h on c.hospital_id = h.id
+    inner join member m on c.member_id = m.id
+WHERE h.name = '서울대병원'
+  and p.country = 'India'
+  and m.age BETWEEN 20 and 29
+group by c.stay;
+```
+![](index/4.png)
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+SELECT p.exercise
+	   , count(p.id)
+FROM programmer p
+	inner join covid c on c.programmer_id = p.id
+    inner join hospital h on c.hospital_id = h.id
+	inner join member m on c.member_id = m.id
+where h.name = '서울대병원'
+	and m.age BETWEEN 30 and 39
+group by exercise;
+```
+![](index/5.png)
+
+#### 실행 시간
+![](index/실행시간.png)
 
 ### 추가 미션
 
