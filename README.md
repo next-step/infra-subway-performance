@@ -102,22 +102,15 @@ no-store : 캐시를 비활성하고 이것은 비공개 그리고 공유 캐시
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-[쿼리](https://github.com/tasklet1579/infra-subway-performance/blob/step2/file/sql/Manager.sql)
-
-[실행계획](https://github.com/tasklet1579/infra-subway-performance/blob/step2/file/sql/image/Manager_Plan.PNG)
-
-실행시간
-
-- 첫번째 : 1.51s
-- 두번째 : 324ms
-- 세번째 : 264ms
-
+[답변](https://github.com/tasklet1579/infra-subway-performance/blob/step3/step3/step3.md)
 
 ---
 
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+[답변](https://github.com/tasklet1579/infra-subway-performance/blob/step4/step4/step4.md)
 
 ---
 
