@@ -85,6 +85,10 @@ npm run dev
     * [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
     * [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
     * [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? => 가능하다.
+        * 정적자원 root 경로로 setCacheControl(CacheControl.noStore().mustRevalidate()) 설정추가
+        * no-cache 값은 대부분의 브라우저에서 max-age=0 과 동일한 뜻을 가집니다. 즉, 캐시는 저장하지만 사용하려고 할 때마다 서버에 재검증 요청을 보내야 합니다.
+        * no-store 값은 캐시를 절대로 해서는 안 되는 리소스일 때 사용합니다. 캐시를 만들어서 저장조차 하지 말라는 가장 강력한 Cache-Control 값입니다. no-store를 사용하면
+          브라우저는 어떤 경우에도 캐시 저장소에 해당 리소스를 저장하지 않습니다.
 * [x] Launch Template 작성하기
 * [x] Auto Scaling Group 생성하기
 * [x] DNS 설정  
@@ -151,6 +155,128 @@ from employee e
 ### 2단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+#### 테이블 별 PK, Index 설정 정보
+
+|Table       | Key_name                          | Column_name |
+|------------|-----------------------------------|---------------
+| covid      | PRIMARY                           | id
+| covid      | covid_hospital_id_member_id_index | hospital_id, member_id
+| covid      | idx_covid_programmer_id           | programmer_id
+
+|Table       | Key_name                 | Column_name |
+|------------|--------------------------|---------------
+| hospital   | PRIMARY                  | id
+| hospital   | hospital_name_index      | name
+
+|Table       | Key_name                 | Column_name |
+|------------|--------------------------|---------------
+| member     | PRIMARY                  | id
+| member     | member_age_index         | age
+
+|Table       | Key_name                  | Column_name |
+|------------|---------------------------|---------------
+| programmer | PRIMARY                   | id
+| programmer | programmer_country_index  | country
+| programmer | programmer_exercise_index | exercise
+| programmer | programmer_hobby_index    | hobby
+
+---
+
+#### Q1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```mysql
+select programmer.hobby,
+       round(concat((programmer.cnt / total.cnt) * 100, "%"), 2) as percentage
+from (
+         select hobby,
+                count(id) as cnt
+         from programmer
+         group by hobby
+     ) as programmer
+         inner join (
+    select count(id) as cnt
+    from programmer
+) as total on 1 = 1;
+```
+
+<img src="step4/Q1_explain.png" width="600px" height="500px">
+
+---
+
+#### Q2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```mysql
+select covid.id,
+       hospital.name
+from (select id from subway.programmer) as programmer
+         inner join (select id, hospital_id, programmer_id from covid) as covid on covid.programmer_id = programmer.id
+         inner join (select id, name from hospital) as hospital on covid.hospital_id = hospital.id;
+```
+
+<img src="step4/Q2_explain.png" width="600px" height="500px">
+
+---
+
+#### Q3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```mysql
+select covid.id,
+       hospital.name,
+       programmer.hobby,
+       programmer.dev_type,
+       programmer.years_coding
+from (
+         select id, hobby, dev_type, years_coding
+         from programmer
+         where hobby = 'Yes'
+           and (
+                     student in ('Yes, part-time', 'Yes, full-time')
+                 or years_coding = '0-2 years'
+             )
+     ) programmer
+         inner join (select id, hospital_id, programmer_id from covid) as covid on covid.programmer_id = programmer.id
+         inner join (select id, name from hospital) as hospital on covid.hospital_id = hospital.id;
+```
+
+<img src="step4/Q3_explain.png" width="600px" height="500px">
+
+---
+
+#### Q4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```mysql
+select c.stay, count(m.id)
+from member m
+         inner join programmer p on m.id = p.id and p.country = 'india'
+         inner join covid c on c.programmer_id = p.id
+         inner join hospital h on h.id = c.hospital_id and name = '서울대병원'
+where age between 20 and 29
+group by stay;
+```
+
+<img src="step4/Q4_explain.png" width="800px" height="500px">
+
+---
+
+#### Q5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```mysql
+select exercise, count(m.id)
+from (select id from member where age between 30 and 39) m
+         inner join (select id, exercise from programmer) p on m.id = p.id
+         inner join (select hospital_id, programmer_id, stay from covid) c on c.programmer_id = p.id
+         inner join (select id from hospital where name = '서울대병원') h on h.id = c.hospital_id
+group by exercise;
+```
+
+<img src="step4/Q5_explain.png" width="800px" height="500px">
+
+---
+
+#### 실행시간
+
+<img src="step4/실행시간.png" width="800px" height="200px">
 
 ---
 
