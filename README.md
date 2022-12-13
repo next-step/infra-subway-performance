@@ -50,6 +50,7 @@ npm run dev
 - nginx gzip 압축, cache, HTTP/2 설정을 통해 리버스 프록시를 개선했습니다.
 - redis와 Spring Data Cache를 이용하여 애플리케이션 내 조회 기능에 캐싱을 적용해 조회 성능을 개선했습니다.
 
+<br/>
 ---
 
 ### 2단계 - 스케일 아웃
