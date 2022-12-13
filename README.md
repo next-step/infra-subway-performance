@@ -46,16 +46,14 @@ npm run dev
 ### 요구사항
 - 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
   - 개선 전/후를 직접 계측하여 확인
-- [ ] reverse proxy 개선
+- [x] reverse proxy 개선
     - cache 활성화
     - http2 적용
     - gzip 압축 적용
-- [ ] was 개선
+- [x] was 개선
   - redis 적용
-- [ ] scale out - 초간단 blue-green 배포 구성
-- [ ] 정적 파일 경량화
 
-### 웹 성능
+### 튜닝 전 웹 성능
 |               | RUNNINGMAP | 서울교통공사 | 네이버지도  | 카카오맵 |
 |---------------|------------|----------|----------|--------|
 | Total Bytes   | 2462kb     | 1067kb   | 941kb    | 1456kb |
@@ -88,45 +86,29 @@ npm run dev
 | TBT | <span style="color:green">50ms</span>  | <span style="color:red">620ms</span> | <span style="color:green">10ms</span>  | <span style="color:green">0ms</span>   |
 | CLS | <span style="color:green">0.004</span> | <span style="color:green">0.001</span>       | <span style="color:green">0.006</span> | <span style="color:green">0.039</span> |
 
-#### 성능 개선 계획
-<table>
-  <tr>
-    <td rowspan="2"></td>
-    <td colspan="2" align="center">AS - IS</td>
-    <td colspan="2" align="center">TO - BE</td>
-  </tr>
-  <tr>
-    <td>MOBILE</td>
-    <td>PC</td>
-    <td>MOBILE</td>
-    <td>PC</td>
-  </tr>
-  <tr>
-    <td>TTI</td>
-    <td>15.3s</td>
-    <td>2.9s</td>
-    <td>5s</td>
-    <td>0.5s</td>
-  </tr>
-  <tr>
-    <td>FCP</td>
-    <td>14.7s</td>
-    <td>2.8s</td>
-    <td>1.7s</td>
-    <td>0.5s</td>
-  </tr>
-  <tr>
-    <td>성능</td>
-    <td>33</td>
-    <td>67</td>
-    <td>80</td>
-    <td>90</td>
-  </tr>
-</table>
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- `docs/step1/` 하위에 결과 올려두었습니다.
+  - reverse proxy(nginx) 먼저 개선하였을 때의 부하 테스트 결과와 was 개선 이후의 테스트 결과를 각각 넣어두었습니다.
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+**[ reverse proxy ]**
+- gzip 압축을 통해 정적 컨텐츠 크기 줄임
+- 텍스트 기반 파일(js, css, html..)의 인코딩 및 전송 크기 최적화
+- 1 ~ 9단계 중 가장 높은 단계로 압축함 (높은 단계로 압축하면 조금 느릴 수 있다고 함)
+- cache 설정
+  - 유저 쿠키별로 캐시 구성하며, 10분간 접근 하지 않은 캐시는 제거됨
+  - 정적 컨텐츠 대상으로 캐시하며, 해당 내용은 access log를 찍지 않음
+  - X-Proxy-Cache 헤더를 추가함으로써 크롬에서 개발자도구로 https://earth-h.tk 접근 시, request header에서 캐시 적중여부 확인 가능
+- HTTP/1.1 대신 HTTP/2 사용
+  - 하나의 TCP 연결을 통해 다수의 클라이언트 요청과 서버 응답이 비동기 방식으로 이루어질 수 있음
+    - 요청과 응답이 message 단위로 구성되고, 이는 frame 등으로 나뉘어 stream 구조를 취하기 때문
+
+**[ was ]**
+- caching 설정
+  - 서비스레이어에서 캐싱 설정
+    - 조회 로직은 캐싱하고, 삭제/수정/등록 로직에서는 캐시를 삭제함
 
 ---
 
