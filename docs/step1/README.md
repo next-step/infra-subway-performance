@@ -89,3 +89,33 @@ http {
   - 하나의 TCP 연결을 통해 다수의 클라이언트 요청과 서버 응답이 비동기 방식으로 이루어질 수 있음
     - 요청과 응답이 message 단위로 구성되고, 이는 frame 등으로 나뉘어 stream 구조를 취하기 때문
 
+## was
+### redis를 이용한 자원 재사용 설정을 통한 성능 개선
+- redis 설치
+```shell
+$ docker pull redis
+$ docker run -d -p 6379:6379 redis
+```
+
+- application 내 redis 설정(application-prod.yml)
+```yaml
+spring:
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+```
+
+- application 내 의존성 추가
+```shell
+implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+```
+
+#### 캐시 사용 시 유의사항
+- ResponseEntity는 Deserialize 되지 않으므로 도메인 객체를 직접 반환하거나, Service Layer에 적용 필요
+- LocalDateTime은 Deserialize 되지 않으므로 String으로 변환해야 함
+- Spring AOP의 제약사항을 가짐
+  - public method에서만 사용 가능
+  - 같은 객체 내 method끼리 호출 시 AOP 동작 안함
+  - Runtime Weaving으로 처리되어 약간의 성능저하
