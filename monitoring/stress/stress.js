@@ -7,7 +7,7 @@ export let options = {
         { duration: '1m', target: 90 },
         { duration: '1m', target: 160 },
         { duration: '2m', target: 250 },
-        { duration: '2m', target: 500 },
+        { duration: '2m', target: 300 },
         { duration: '2m', target: 250 },
         { duration: '1m', target: 160 },
         { duration: '1m', target: 90 },
