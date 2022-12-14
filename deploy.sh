@@ -50,7 +50,7 @@ function start_process() {
 function start_deploy() {
     echo -e "${txtgrn}=======================================${txtrst}"
     echo -e "${txtgrn}  >> deploy start ${txtrst}"
-    check_df1
+    check_df
     echo -e "${txtgrn}  >> deploy finish ${txtrst}"
     echo -e "${txtgrn}=======================================${txtrst}"
 }
