@@ -47,13 +47,14 @@ npm run dev
 #### 요구사항
 - 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
   - 개선 전/후를 직접 계측하여 확인
-- [ ] Reverse Proxy 개선하기
-- [ ] WAS 성능 개선하기
+- [X] Reverse Proxy 개선하기
+- [X] WAS 성능 개선하기
 
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+프로젝트 monitoring 폴더에 올려놓았습니다. 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- nginx gzip 압축, cache, HTTP/2 설정을 통해 Reverse Proxy를 개선했습니다.
+- redis를 이용하여 캐싱을 적용해 WAS 성능을 개선했습니다.
 ---
 
 ### 2단계 - 스케일 아웃
