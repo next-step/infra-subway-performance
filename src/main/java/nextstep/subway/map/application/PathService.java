@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class PathService {
 
-    @Cacheable(value = "subwayPath", key = "#source + ',' + #target")
+    @Cacheable(value = "path", key = "{#source, #target}")
     @Transactional(readOnly = true)
     public SubwayPath findPath(List<Line> lines, Station source, Station target) {
         SubwayGraph graph = new SubwayGraph(SectionEdge.class);
