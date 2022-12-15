@@ -16,9 +16,9 @@ import java.util.List;
 @Service
 @Transactional
 public class MapService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathService pathService;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathService pathService;
 
     public MapService(LineService lineService, StationService stationService, PathService pathService) {
         this.lineService = lineService;
@@ -26,7 +26,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    @Cacheable(value = "path", key = "#source + '_' + #target")
+    @Cacheable(value = "path", key = "{#source, #target}" )
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
