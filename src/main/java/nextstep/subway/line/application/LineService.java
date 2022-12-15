@@ -47,7 +47,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines")
+    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();

@@ -1,5 +1,11 @@
 package nextstep.subway.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -23,15 +29,32 @@ public class CacheConfig extends CachingConfigurerSupport {
         this.connectionFactory = connectionFactory;
     }
 
-
     @Bean
     public CacheManager redisCacheManager() {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper())));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
                 fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
         return redisCacheManager;
+    }
+
+    private ObjectMapper objectMapper() {
+        PolymorphicTypeValidator ptv = getPolymorphicTypeValidator();
+
+        return JsonMapper.builder()
+                .polymorphicTypeValidator(ptv)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .addModule(new JavaTimeModule())
+                .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL)
+                .build();
+    }
+
+    private PolymorphicTypeValidator getPolymorphicTypeValidator() {
+        return BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType(Object.class)
+                .build();
     }
 }
