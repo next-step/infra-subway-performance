@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
         super(edgeClass);
     }
 
+    @Async
     public void addVertexWith(List<Line> lines) {
         // 지하철 역(정점)을 등록
         lines.stream()
@@ -22,6 +24,7 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
                 .forEach(this::addVertex);
     }
 
+    @Async
     public void addEdge(List<Line> lines) {
         // 지하철 역의 연결 정보(간선)을 등록
         for (Line line : lines) {

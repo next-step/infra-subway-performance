@@ -10,8 +10,6 @@
     [X] WAS 성능 개선하기
         [X] Spring Data Cache
         [X] 비동기 처리
-    [ ] Scale out: 초간단 Blue-Green 배포 구성하기
-    [ ] 정적 파일 경량화
     [ ] 부하 테스트(smoke, load, stress)
 ```
 
