@@ -48,7 +48,6 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }
@@ -81,10 +80,8 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
-    })
+
+    @CacheEvict(cacheNames = "path", allEntries = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -92,10 +89,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
-    })
+    @CacheEvict(cacheNames = "path", allEntries = true)
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
