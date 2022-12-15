@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.common.CacheConstant.stations;
+
 @Service
 @Transactional
 public class StationService {
@@ -22,15 +24,14 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(cacheNames = "stations", allEntries = true)
-
+    @CacheEvict(cacheNames = stations, allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "stations", unless = "#result.isEmpty()")
+    @Cacheable(value = stations, unless = "#result.isEmpty()")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -40,7 +41,7 @@ public class StationService {
     }
 
 
-    @CacheEvict(cacheNames = "stations", allEntries = true)
+    @CacheEvict(cacheNames = stations, allEntries = true)
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);

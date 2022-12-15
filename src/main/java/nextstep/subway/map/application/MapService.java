@@ -1,5 +1,6 @@
 package nextstep.subway.map.application;
 
+import nextstep.subway.common.CacheConstant;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.map.domain.SubwayPath;
@@ -28,7 +29,7 @@ public class MapService {
 
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "path", key = "{#source, #target}")
+    @Cacheable(value = CacheConstant.paths, key = "{#source, #target}")
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);

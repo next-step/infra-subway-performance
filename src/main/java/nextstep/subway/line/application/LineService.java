@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.CacheConstant;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.common.CacheConstant.*;
+
 @Service
 @Transactional
 public class LineService {
@@ -28,8 +31,8 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
+            @CacheEvict(cacheNames = paths, allEntries = true),
+            @CacheEvict(cacheNames = lines, allEntries = true)
     })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
@@ -39,7 +42,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "lines", unless = "#result.isEmpty()")
+    @Cacheable(value = lines, unless = "#result.isEmpty()")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -64,8 +67,8 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
+            @CacheEvict(cacheNames = paths, allEntries = true),
+            @CacheEvict(cacheNames = lines, allEntries = true)
     })
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -73,15 +76,15 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
+            @CacheEvict(cacheNames = paths, allEntries = true),
+            @CacheEvict(cacheNames = lines, allEntries = true)
     })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
 
-    @CacheEvict(cacheNames = "path", allEntries = true)
+    @CacheEvict(cacheNames = path, allEntries = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -89,7 +92,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CacheEvict(cacheNames = "path", allEntries = true)
+    @CacheEvict(cacheNames = path, allEntries = true)
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
