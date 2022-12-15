@@ -30,6 +30,8 @@
 
 <br />
 
+<b> https://jisu1211.kro.kr에서 수행된 결과입니다. </b>
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 * `src/main/resources/static/loadtest`에 포함해두었습니다.
   * before: 개선 전의 부하 테스트 결과를 포함하였습니다.
