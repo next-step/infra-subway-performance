@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -28,7 +29,7 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "lines", key = "lines"),
             @CacheEvict(value = "path", allEntries = true)
     })
     @Transactional
@@ -47,7 +48,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", unless = "#result.isEmpty()")
+    @Cacheable(value = "lines", key = "lines", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
@@ -63,7 +64,7 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @CachePut(value = "lines")
+    @CachePut(value = "lines", key = "lines")
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -71,7 +72,7 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "lines", key = "lines"),
             @CacheEvict(value = "path", allEntries = true)
     })
     @Transactional
@@ -79,7 +80,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @CachePut(value = "lines")
+    @CachePut(value = "lines", key = "lines")
     @CacheEvict(value = "path", allEntries = true)
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -89,7 +90,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CachePut(value = "lines")
+    @CachePut(value = "lines", key = "lines")
     @CacheEvict(value = "path", allEntries = true)
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
