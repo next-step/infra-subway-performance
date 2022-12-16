@@ -48,7 +48,7 @@ npm run dev
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 - [x] gzip 압축
 - [x] TLS, HTTP/2 설정
-- [ ] WAS 캐싱 적용
+- [x] WAS 캐싱 적용
 - [x] nginx cache 적용
 ---
 
