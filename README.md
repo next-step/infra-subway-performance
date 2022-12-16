@@ -56,9 +56,9 @@ npm run dev
 ### 2단계 - 스케일 아웃
 #### 기능 구현 목록
 - [x] gzip 설정하기
-- [ ] 캐싱 설정
-  - [ ] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증하기
-  - [ ] css 확장자 파일의 경우 max-age를 1년, js인 경우 no-cache, private 설정하기
+- [x] 캐싱 설정
+  - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증하기
+  - [x] css 확장자 파일의 경우 max-age를 1년, js인 경우 no-cache, private 설정하기
 - [ ] Launch Template 작성하기
 - [ ] 로드 밸런서 생성하기
 - [ ] Auto Scaling Group 생성하기
