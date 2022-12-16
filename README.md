@@ -46,7 +46,10 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- [x] gzip 압축
+- [x] TLS, HTTP/2 설정
+- [ ] WAS 캐싱 적용
+- [x] nginx cache 적용
 ---
 
 ### 2단계 - 스케일 아웃
