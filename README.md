@@ -50,6 +50,7 @@ npm run dev
 - [x] TLS, HTTP/2 설정
 - [x] WAS 캐싱 적용
 - [x] nginx cache 적용
+- https://yohan-subway.n-e.kr/
 ---
 
 ### 2단계 - 스케일 아웃
