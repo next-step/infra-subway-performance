@@ -42,3 +42,4 @@ fronted/.prttierrc.js
 fronted/.eslintrc.js
 *.cer
 package-lock.json
+*.log
