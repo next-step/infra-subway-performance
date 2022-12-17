@@ -15,6 +15,7 @@ public class SubwayHandlebarsHelper {
 
     public String staticUrls(String path, Options options) {
         logger.debug("static url : {}", path);
-        return String.format("/resources/%s%s", version.getVersion(), path);
+        //return String.format("/resources/%s%s", version.getVersion(), path);
+        return "/resources";
     }
 }
