@@ -142,8 +142,20 @@ $ stress -c 2
 ### 1단계 - 화면 응답 개선하기
 
 1. 요구사항
+    - [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
+        - [x] 개선 전 / 후를 직접 계측하여 확인
+    - [x] 개선 방법
+        - [x] gzip 압축하기
 
-- [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
-    - [x] 개선 전 / 후를 직접 계측하여 확인
-- [x] 개선 방법
-    - [x] gzip 압축하기
+### 2단계 - 스케일 아웃 (with ASG)
+
+1. 요구사항
+    - [ ] springboot에 HTTP Cache, gzip 설정하기
+    - [ ] Launch Template 작성하기
+    - [ ] Auto Scaling Group 생성하기
+    - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+2. 실습 요구사항
+    - [ ] 모든 정적 자원에 대해 no-cache, private 설정과 테스트 코드 검증
+    - [ ] 확장자는 css인 경우 max-age 1년, js인 경우 no-cache, private 설정
+    - [ ] 모든 정적 자원에 대해 no-cache, no-store 설정?
+
