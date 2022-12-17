@@ -5,10 +5,10 @@
 ### 요구사항
 
 - [ ] 부하테스트 각 시나리오의 요청시간을 목표값 이하로 개선
-  - [ ] Reverse Proxy 개선하기
-    - [ ] gzip 압축
-    - [ ] cache
-    - [ ] TLS, HTTP/2 설정
+  - [x] Reverse Proxy 개선하기
+    - [x] gzip 압축
+    - [x] cache
+    - [x] TLS, HTTP/2 설정
   - [ ] WAS 성능 개선하기
     - [ ] Spring Data Cache
       - [ ] StationService 캐시적용
@@ -20,3 +20,4 @@
   - [x] 개선 전 k6 확인
     - [x] 스크립트 작성 및 결과값 추가
   - [ ] 개선 후 k6 확인
+    - [x] Reverse Proxy 개선하기 적용 후 결과
