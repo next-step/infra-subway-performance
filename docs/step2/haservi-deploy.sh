@@ -15,9 +15,7 @@ LOG_FILE='/home/ubuntu/infra-subway-performance/subway.log'
 function git_clone() {
   echo "저장소의 정보를 복사합니다."
   git clone "https://github.com/haservi/infra-subway-performance.git"
-  cd infra-subway-performance
-  git checkout step2
-  git pull
+  cd ${PROJECT_PATH} && git checkout step2 && git pull
 }
 
 function build() {
