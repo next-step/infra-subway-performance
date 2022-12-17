@@ -29,14 +29,15 @@ export let options = {
 };
 
 const BASE_URL = 'https://jisu1211.kro.kr';
+
 const source_min = 1;
 const source_max = 10;
-const source = Math.floor(Math.random() * (source_max - source_min) + source_min);
-
 const target_min = 101;
 const target_max = 110;
-const target = Math.floor(Math.random() + (target_max - target_min) + target_min);
 
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 
 function main() {
     check(http.get(`${BASE_URL}`), {
@@ -50,7 +51,7 @@ function path() {
     });
 }
 
-function findPath() {
+function findPath(source, target) {
     const params = {
         headers: {
             'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ function findPath() {
 export default function() {
     main();
     path();
-    findPath();
+    findPath(random(source_min, source_max), random(target_min, target_max));
 
     sleep(1);
 };
