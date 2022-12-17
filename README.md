@@ -132,7 +132,7 @@ npm run dev
   - docs/step2/README.md 내 작성
     - nginx 관련 주석은 로드밸런서가 대상 그룹으로 보낼 때 8080 포트로 보내게 해두었고, 앞단 로드밸런서에 의해 이미 HTTP, HTTPS 설정이 되어있다고 판단하여 붙이지 않게되어 주석해두었습니다.
 - [x] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과 기록
+- [x] Smoke, Load, Stress 테스트 후 결과 기록
 
 #### cache-control
 - no-cache
@@ -151,14 +151,14 @@ npm run dev
   - O ➝ public
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-04892f934559a6b5f
+  - docs/step2/README.md 내에도 작성되어 있습니다.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+- docs/step2/cloudwatch 패키지 내에 결과 올려두었습니다.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- docs/step2/k6 하위 패키지에 결과 올려두었습니다.
 
 ---
 
