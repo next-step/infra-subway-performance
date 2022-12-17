@@ -17,7 +17,7 @@ public class AsyncThreadConfig {
 		/* 기본 Thread 사이즈 */
 		executor.setCorePoolSize(2);
 		/* 최대 Thread 사이즈 */
-		executor.setMaxPoolSize(4);
+		executor.setMaxPoolSize(2);
 		/* MaxThread가 동작하는 경우 대기하는 Queue 사이즈 */
 		executor.setQueueCapacity(100);
 		executor.setThreadNamePrefix("subway-async-");
