@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.config;
 
 import java.io.IOException;
 

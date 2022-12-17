@@ -126,7 +126,8 @@ $ stress -c 2
 
 ## step2
 
--[ ] springboot에 HTTP Cache, gzip 설정하기
+-[x] springboot에 HTTP Cache, gzip 설정하기
+    -[x] test code
 -[ ] Launch Template 작성하기
 -[ ] Auto Scaling Group 생성하기
 -[ ] Smoke, Load, Stress 테스트 후 결과를 기록
