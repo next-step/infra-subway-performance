@@ -22,7 +22,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 모든 정적 자원에 대해 no-cache, private 설정
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/**")
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
                 .addResourceLocations("classpath:/static/")
                 .setCacheControl(CacheControl.noCache().cachePrivate());
 

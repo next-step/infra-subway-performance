@@ -80,7 +80,7 @@ public class StaticResourcesTest {
     @DisplayName("css, js 제외한 정적 리소스에 대한 ETag 테스트 (no cache, private)")
     @Test
     void etcETag() {
-        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/images/main_logo.png";
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/images/main_logo.png";
         EntityExchangeResult<String> response = client
                 .get()
                 .uri(uri)
