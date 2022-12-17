@@ -25,6 +25,7 @@ function openMainPage(){
 function getRandomStationId() {
   return Math.floor(Math.random() * (STATION_MAX_COUNT - STATION_MIN_COUNT) + STATION_MIN_COUNT)
 }
+
 function login(){
   const payload = JSON.stringify({
     email: USERNAME,
