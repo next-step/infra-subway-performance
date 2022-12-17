@@ -128,8 +128,10 @@ npm run dev
 
 ### 요구사항
 - [x] springboot에 HTTP Cache, gzip 설정하기
-- [ ] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성하기
+- [x] Launch Template 작성하기
+  - docs/step2/README.md 내 작성
+    - nginx 관련 주석은 로드밸런서가 대상 그룹으로 보낼 때 8080 포트로 보내게 해두었고, 앞단 로드밸런서에 의해 이미 HTTP, HTTPS 설정이 되어있다고 판단하여 붙이지 않게되어 주석해두었습니다.
+- [x] Auto Scaling Group 생성하기
 - [ ] Smoke, Load, Stress 테스트 후 결과 기록
 
 #### cache-control
