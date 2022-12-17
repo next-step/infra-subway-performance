@@ -5,7 +5,9 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +17,28 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(value = "stations", allEntries = true)
+    @Caching(
+            put = @CachePut(value = "station", key = "#result.id"),
+            evict = {
+                    @CacheEvict(value = "stations", allEntries = true),
+                    @CacheEvict(value = "line", key = "#result.id"),
+                    @CacheEvict(value = "lines", allEntries = true),
+                    @CacheEvict(value = "path", allEntries = true)
+            }
+    )
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(station);
     }
 
-    @Cacheable(value = "stations")
+    @Cacheable(value = "stations", unless = "#result.empty")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -37,7 +47,15 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "stations", allEntries = true)
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "station", key = "#id"),
+                    @CacheEvict(value = "stations", allEntries = true),
+                    @CacheEvict(value = "line", key = "#id"),
+                    @CacheEvict(value = "lines", allEntries = true),
+                    @CacheEvict(value = "path", allEntries = true)
+            }
+    )
     @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
