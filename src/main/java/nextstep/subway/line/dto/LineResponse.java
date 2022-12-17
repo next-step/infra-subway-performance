@@ -18,11 +18,9 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    @JsonFormat(pattern="yyyy-MM-dd")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdDate;
-    @JsonFormat(pattern="yyyy-MM-dd")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime modifiedDate;
