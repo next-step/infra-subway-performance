@@ -123,3 +123,10 @@ $ stress -c 2
     -[x] 개선 전/후를 직접 계측하여 확인
         -[x] 리버스 프록시 개선
         -[x] was 성능 개선
+
+## step2
+
+-[ ] springboot에 HTTP Cache, gzip 설정하기
+-[ ] Launch Template 작성하기
+-[ ] Auto Scaling Group 생성하기
+-[ ] Smoke, Load, Stress 테스트 후 결과를 기록
