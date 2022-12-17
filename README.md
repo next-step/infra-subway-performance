@@ -127,7 +127,7 @@ npm run dev
       - https://inf.run/NRHK
 
 ### 요구사항
-- [ ] springboot에 HTTP Cache, gzip 설정하기
+- [x] springboot에 HTTP Cache, gzip 설정하기
 - [ ] Launch Template 작성하기
 - [ ] Auto Scaling Group 생성하기
 - [ ] Smoke, Load, Stress 테스트 후 결과 기록

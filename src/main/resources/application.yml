@@ -32,3 +32,9 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
+
+server:
+  compression:
+    enabled: true
+    mime-types: text/html,text/plain,text/css,application/javascript,application/json
+    min-response-size: 500
