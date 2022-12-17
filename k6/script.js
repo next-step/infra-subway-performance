@@ -1,10 +1,31 @@
 import http from 'k6/http';
+import { targets } from './targets.js';
 import { check, group, sleep, fail } from 'k6';
 
-const BASE_URL = 'https://cwjonhpark-subway-px.o-r.kr/';
+const BASE_URL = 'https://cwjonhpark-subway-px.o-r.kr';
 const USERNAME = 'cwpark@mail.com';
 const PASSWORD = '1234';
 
+const getRandomTarget = (exclude) => {
+  const length = targets.length;
+  const rand = targets[Math.floor(Math.random() * length)];
+  if (rand == exclude) {
+    getRandomTarget(exclude);
+  }
+  return rand;
+}
+const checkFindPath = () => {
+
+  let source = getRandomTarget(-1);
+  let target = getRandomTarget(source);
+    let url = `${BASE_URL}/paths?source=${source}&target=${target}`;
+  let findpath = http.get(url);
+    if (findpath.status !== 200) {
+      return;
+    }
+    check(findpath, { 'find path': (r) => r.status === 200 });
+    sleep(1);
+}
 export default function ()  {
 
   var payload = JSON.stringify({
@@ -35,9 +56,7 @@ export default function ()  {
   check(myObjects, { 'retrieved member': (obj) => obj.id != 0 });
   sleep(1);
   
-  let source = Math.floor(Math.random() * 1000) % 439;
-  let target = Math.floor(Math.random() * 1000) % 439;
-  let url = `${BASE_URL}/paths?source=${source}&target=${target}`;	
-  let findpath = http.get(url, authHeaders);
-  check(findpath, { 'find path': (r) => r.status === 200});
+  checkFindPath();
 };
+
+
