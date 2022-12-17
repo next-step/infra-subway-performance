@@ -114,9 +114,17 @@ npm run dev
 
 ## 2단계 - 스케일 아웃
 ### 실습 요구사항
-- [ ] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-- [ ] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-- [ ] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [x] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - setCacheControl() 시, no-cache와 no-store는 CacheControl.noCache()와 같이 static으로 접근하기 때문에 둘을 함께 설정은 불가한 것으로 보입니다.
+    - 참고자료
+      - https://stackoverflow.com/a/58954702
+  - 다만, 특정 브라우저 환경에서 Cache-Control: no-cache로 하여도, 항상 revalidation 작업을 진행하지 않는 경우가 있어 그럴 경우를 대비해 no-store를 함께 사용합니다.
+    - 예를 들어, 웹 브라우저에서 뒤로가기/앞으로가기를 할 때에도 캐시를 볼 지 등 판단하기 어렵기도 하고, 브라우저의 버전에 따른 호환성 때문에 메이저 사이트는 Cache-Control: no-cache, no-store, must-revalidate을 함께 사용하기도 함
+    - 참고자료
+      - https://stackoverflow.com/a/866866
+      - https://inf.run/NRHK
 
 ### 요구사항
 - [ ] springboot에 HTTP Cache, gzip 설정하기
