@@ -1,5 +1,5 @@
 ## Launch Template 작성하기
-### 배포 명령어
+### 배포 스크립트
 ```shell
 #!/bin/bash
 
@@ -38,6 +38,8 @@ sudo -i -u ubuntu docker run -d -p 6379:6379 redis
 sudo -i -u ubuntu chmod 755 /nextstep/project/sh/deploy.sh
 sudo -i -u ubuntu /bin/bash /nextstep/project/sh/deploy.sh check infra-subway-performance step2
 ```
+### SpringBoot 구동 명령어
+`sh /nextstep/project/sh/deploy.sh check infra-subway-performance step2`
 
 ## Auto Scaling Group 생성하기
 - Auto Scaling Group명: earth-h-asg
