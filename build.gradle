@@ -33,6 +33,8 @@ dependencies {
 
 	implementation 'mysql:mysql-connector-java'
 
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	// cache
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
