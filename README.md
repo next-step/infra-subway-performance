@@ -74,50 +74,56 @@ npm run dev
 
 ### Load 테스트 결과
 ```markdown
-     ✓ logged in successfully
-     ✓ retrieved member
+    ✓ logged in successfully
+    ✓ retrieved member
+    ✓ find path
 
-     checks.....................: 100.00% ✓ 13706     ✗ 0
-     data_received..............: 5.1 MB  8.4 kB/s
-     data_sent..................: 2.7 MB  4.6 kB/s
-     http_req_blocked...........: avg=14.68µs min=954ns   med=2.81µs  max=47.07ms  p(90)=5.13µs  p(95)=5.59µs
-     http_req_connecting........: avg=1.15µs  min=0s      med=0s      max=7.11ms   p(90)=0s      p(95)=0s
-   ✓ http_req_duration..........: avg=3.67ms  min=1.93ms  med=3.35ms  max=34.16ms  p(90)=5.13ms  p(95)=6.35ms
-     http_req_failed............: 100.00% ✓ 13706     ✗ 0
-     http_req_receiving.........: avg=53.92µs min=13.53µs med=47.5µs  max=3.76ms   p(90)=74.45µs p(95)=87.72µs
-     http_req_sending...........: avg=20.28µs min=5.15µs  med=16.97µs max=871.88µs p(90)=32.21µs p(95)=41.48µs
-     http_req_tls_handshaking...: avg=7.17µs  min=0s      med=0s      max=30.33ms  p(90)=0s      p(95)=0s
-     http_req_waiting...........: avg=3.59ms  min=1.89ms  med=3.27ms  max=34.08ms  p(90)=5.04ms  p(95)=6.26ms
-     http_reqs..................: 13706   22.808168/s
-     iteration_duration.........: avg=1s      min=1s      med=1s      max=1.05s    p(90)=1.01s   p(95)=1.01s
-     iterations.................: 6853    11.404084/s
-     vus........................: 22      min=1       max=22
-     vus_max....................: 23      min=23      max=23
+    checks.........................: 100.00% ✓ 10365     ✗ 0    
+    data_received..................: 11 MB   18 kB/s
+    data_sent......................: 2.4 MB  4.0 kB/s
+    http_req_blocked...............: avg=12.72µs min=1.04µs  med=4.26µs  max=16.58ms  p(90)=5.28µs  p(95)=5.72µs 
+    http_req_connecting............: avg=693ns   min=0s      med=0s      max=481.18µs p(90)=0s      p(95)=0s     
+    ✓ http_req_duration..............: avg=11.46ms min=2.66ms  med=4.18ms  max=363.64ms p(90)=27.19ms p(95)=32.91ms
+    { expected_response:true }...: avg=11.72ms min=2.71ms  med=4.22ms  max=363.64ms p(90)=27.42ms p(95)=33.27ms
+    http_req_failed................: 3.22%   ✓ 345       ✗ 10365
+    http_req_receiving.............: avg=63.21µs min=15.46µs med=59.74µs max=4.51ms   p(90)=80.71µs p(95)=89.82µs
+    http_req_sending...............: avg=21.52µs min=5.47µs  med=19.55µs max=3.94ms   p(90)=29.87µs p(95)=34.18µs
+    http_req_tls_handshaking.......: avg=6.14µs  min=0s      med=0s      max=12.83ms  p(90)=0s      p(95)=0s     
+    http_req_waiting...............: avg=11.38ms min=2.59ms  med=4.09ms  max=363.56ms p(90)=27.1ms  p(95)=32.81ms
+    http_reqs......................: 10710   17.792301/s
+    iteration_duration.............: avg=1.93s   min=1s      med=2.03s   max=2.37s    p(90)=2.04s   p(95)=2.05s  
+    iterations.....................: 3570    5.930767/s
+    vus............................: 13      min=1       max=22
+    vus_max........................: 23      min=23      max=23
 ```
 
 ### Stress 테스트 결과
 
 ```markdown
-     ✗ logged in successfully
-      ↳  75% — ✓ 89600 / ✗ 29468
-     ✓ retrieved member
+    ✗ logged in successfully
+     ↳  99% — ✓ 6026 / ✗ 12
+    ✓ retrieved member
+    ✓ find path
 
-     checks.....................: 85.78%  ✓ 177828     ✗ 29468
-     data_received..............: 304 MB  778 kB/s
-     data_sent..................: 63 MB   160 kB/s
-     http_req_blocked...........: avg=114.41ms min=0s       med=2.19µs  max=2.55s    p(90)=429.55ms p(95)=939.04ms
-     http_req_connecting........: avg=50.31ms  min=0s       med=0s      max=1.56s    p(90)=235.77ms p(95)=348.14ms
-   ✗ http_req_duration..........: avg=24.98ms  min=0s       med=4.04ms  max=2.69s    p(90)=40.47ms  p(95)=113.54ms
-     http_req_failed............: 100.00% ✓ 208668     ✗ 0
-     http_req_receiving.........: avg=863.01µs min=0s       med=25.39µs max=958.63ms p(90)=53.16µs  p(95)=111.33µs
-     http_req_sending...........: avg=4.02ms   min=0s       med=10.4µs  max=2.22s    p(90)=1.1ms    p(95)=16.65ms
-     http_req_tls_handshaking...: avg=91.58ms  min=0s       med=0s      max=2.39s    p(90)=352.07ms p(95)=702.03ms
-     http_req_waiting...........: avg=20.09ms  min=0s       med=3.65ms  max=2.29s    p(90)=26.8ms   p(95)=84.5ms
-     http_reqs..................: 208668  533.729869/s
-     iteration_duration.........: avg=1.07s    min=296.01µs med=1s      max=4.89s    p(90)=1.46s    p(95)=1.92s
-     iterations.................: 119068  304.551479/s
-     vus........................: 72      min=1        max=998
-     vus_max....................: 1000    min=1000     max=1000
+    checks.........................: 99.92% ✓ 17058     ✗ 12    
+    data_received..................: 19 MB  38 kB/s
+    data_sent......................: 4.2 MB 8.4 kB/s
+    http_req_blocked...............: avg=37.18ms min=0s       med=2.84µs  max=5m30s   p(90)=5.03µs  p(95)=8.06µs  
+    http_req_connecting............: avg=7.2µs   min=0s       med=0s      max=14.78ms p(90)=0s      p(95)=0s      
+    ✗ http_req_duration..............: avg=2.89s   min=0s       med=5ms     max=5m49s   p(90)=53.88ms p(95)=85.74ms
+    { expected_response:true }...: avg=1.28s   min=2.54ms   med=5.31ms  max=5m49s   p(90)=53.85ms p(95)=83.41ms
+    http_req_failed................: 5.51%  ✓ 996       ✗ 17058
+    http_req_receiving.............: avg=1.05s   min=0s       med=42.15µs max=5m44s   p(90)=79.85µs p(95)=111.24µs
+    http_req_sending...............: avg=72.67ms min=0s       med=13.22µs max=5m36s   p(90)=28.64µs p(95)=39.33µs
+    http_req_tls_handshaking.......: avg=50.25µs min=0s       med=0s      max=30.82ms p(90)=0s      p(95)=0s      
+    http_req_waiting...............: avg=1.77s   min=0s       med=4.92ms  max=5m36s   p(90)=53.76ms p(95)=85.59ms
+    http_reqs......................: 18054  36.34331/s
+    iteration_duration.............: avg=4.32s   min=254.36µs med=2.03s   max=5m50s   p(90)=2.12s   p(95)=2.19s   
+    iterations.....................: 5892   11.860794/s
+    vus............................: 716    min=1       max=716
+    vus_max........................: 1000   min=1000    max=1000
+    
+    time="2022-12-17T13:45:22Z" level=error msg="some thresholds have failed"
 ```
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
