@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FavoriteService {
@@ -30,12 +31,14 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
         favoriteRepository.save(favorite);
     }
 
-    @Cacheable(value = "favorite", key = "#loginMember.id")
+    @Transactional(readOnly = true)
+    @Cacheable(value = "member_favorites", key = "#loginMember.id", unless = "#result.isEmpty()")
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         Map<Long, Station> stations = extractStations(favorites);
@@ -48,7 +51,8 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "favorite", key = "#id")
+    @Transactional
+    @CacheEvict(value = "member_favorites", key = "#loginMember.id")
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
         if (!favorite.isCreatedBy(loginMember.getId())) {
