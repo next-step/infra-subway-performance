@@ -13,8 +13,8 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private String createdDate;
+    private String modifiedDate;
 
     public LineResponse() {
     }
@@ -24,8 +24,8 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+        this.createdDate = createdDate.toString();
+        this.modifiedDate = modifiedDate.toString();
     }
 
     public static LineResponse of(Line line) {
@@ -61,11 +61,11 @@ public class LineResponse {
         return stations;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public LocalDateTime getModifiedDate() {
+    public String getModifiedDate() {
         return modifiedDate;
     }
 }
