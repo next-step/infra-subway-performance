@@ -12,12 +12,12 @@ export let options = {
         { duration: '1m', target: 0 },
     ],
     thresholds: {
-        http_req_duration: ['p(99)<200'], // 99% of requests must complete below 0.2s
+        http_req_duration: ['p(95)<200'], // 95% of requests must complete below 0.2s
     },
 };
 
 const BASE_URL = 'https://nextstep.paki1019.o-r.kr/';
-const USERNAME = 'paki1019@gmail.com';
+const USERNAME = 'test@gmail.com';
 const PASSWORD = 'test123!';
 
 export default function ()  {
