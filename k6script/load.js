@@ -15,7 +15,7 @@ export let options = {
   },
 };
 
-const BASE_URL = 'https://snh15978.p-e.kr/';
+const BASE_URL = 'https://snh15978.p-e.kr';
 const USERNAME = 'test@gmail.com';
 const PASSWORD = 'test1234!';
 
