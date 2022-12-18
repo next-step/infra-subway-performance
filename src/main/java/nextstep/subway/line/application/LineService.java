@@ -23,7 +23,7 @@ import static nextstep.subway.common.CacheConstant.*;
 @Transactional
 public class LineService {
     private final LineRepository lineRepository;
-    private StationService stationService;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
