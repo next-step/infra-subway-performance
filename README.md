@@ -1,82 +1,43 @@
-<p align="center">
-    <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
-</p>
-<p align="center">
-  <img alt="npm" src="https://img.shields.io/badge/npm-%3E%3D%205.5.0-blue">
-  <img alt="node" src="https://img.shields.io/badge/node-%3E%3D%209.3.0-blue">
-  <a href="https://edu.nextstep.camp/c/R89PYi5H" alt="nextstep atdd">
-    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fedu.nextstep.camp%2Fc%2FR89PYi5H">
-  </a>
-  <img alt="GitHub" src="https://img.shields.io/github/license/next-step/atdd-subway-service">
-</p>
+# 안정적인 서비스 만들기
 
-<br>
+## Step1. 화면 응답 개선하기
 
-# 인프라공방 샘플 서비스 - 지하철 노선도
+### 요구사항
 
-<br>
+- [x] 부하테스트 각 시나리오의 요청시간을 목표값 이하로 개선
+  - [x] Reverse Proxy 개선하기
+    - [x] gzip 압축
+    - [x] cache
+    - [x] TLS, HTTP/2 설정
+  - [x] WAS 성능 개선하기
+    - [x] Spring Data Cache
+      - [x] StationService 캐시적용
+      - [x] LineService 캐시적용
+      - [x] MapService 캐시적용
+      - 캐시 적용시, 추가보다는 evict 부분에 좀 더 신경쓰기
+    - [-] 비동기 처리 : 외부 API 를 사용하지 않으므로 현재 서비스에선 미적용.
+- [x] 개선 전 / 후를 직접 계측하여 확인
+  - [x] 개선 전 k6 확인
+    - [x] 스크립트 작성 및 결과값 추가
+  - [x] 개선 후 k6 확인
+    - [x] Reverse Proxy 개선하기 적용 후 결과
+    - [x] 캐시 적용 후 결과
+      - [x] 캐시 적용 후 결과 (MAX 727)
+      - [x] 캐시 적용 후 결과 (MAX 50) - task.js의 STATION_MAX_COUNT 값을 변경
 
-## 🚀 Getting Started
+### 결과 정리
+- 목표 : p(99) <200
 
-### Install
-#### npm 설치
-```
-cd frontend
-npm install
-```
-> `frontend` 디렉토리에서 수행해야 합니다.
-
-### Usage
-#### webpack server 구동
-```
-npm run dev
-```
-#### application 구동
-```
-./gradlew clean build
-```
-<br>
-
-## 미션
-
-* 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
-
-
-### 1단계 - 화면 응답 개선하기
-1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
----
-
-### 2단계 - 스케일 아웃
-
-1. Launch Template 링크를 공유해주세요.
-
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
-
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
----
-
-### 3단계 - 쿼리 최적화
-
-1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
-
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
----
-
-### 4단계 - 인덱스 설계
-
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
-
----
-
-### 추가 미션
-
-1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- 개선 전 -> 1차개선(리버스프록시) -> 2차개선 (캐시적용) -> 3차개선 (캐시적용 - 경로제한)
+- 검증 항목 : http-req-duration p(95)
+  - smoke
+    - 30ms -> 22ms -> 17ms
+  - load
+    - 25ms -> 15ms -> 15ms
+  - stress
+    - 350ms -> 21ms -> 49ms -> 17ms
+- 결론
+  - 가장 큰 결과 변화는, 리버스프록시 개선 (gzip 압축)에서 이루어졌다. 
+  - 캐시 적용의 경우, 727개의 항목 경로조회에서는 cash-hit가 많지 않을 것같아 유의미한 변화가 없었음.
+    - 오히려 캐시 저장하는 프로세스가 추가되어서인지 스트레스 테스트에서는 오히려 응답시간이 지연됨
+  - 그리하여, 경로조회 대상 역을 50개로 줄였을때는 cache-hit가 많이 올라가서인지 결과 개선이 많이 되었음
