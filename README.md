@@ -393,7 +393,7 @@ default ✓ [======================================] 000/384 VUs  28m10s
 - http_req_duration(avg) 기준
   - smoke : 19.79ms -> 3.71ms
   - load : 65.52ms -> 6.62ms
-  - stess : 912.86ms -> 85.49ms
+  - stress : 912.86ms -> 85.49ms
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -428,13 +428,21 @@ default ✓ [======================================] 000/384 VUs  28m10s
 
 1. Launch Template 링크를 공유해주세요.
 
+- [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0457a0b9effa7719a)
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+- /step2/cloudwatch 경로에 파일 첨부했습니다.
+- cpu 부하를 주고 난 이후 기본서버 2대에서 오토스케일링으로 최대 8개까지 추가 생성되는 것을 확인했습니다.
+- 이후 5개의 ec2 서버가 종료되면서 총 5대의 ec2 서버로(추가된 3개의 ec와 기존 2대 서버)로 약 32%의 cpu 사용률을 유지함을 확인할 수 있었습니다.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+- /step2/k6 경로에 파일 첨부했습니다.
+- http_req_duration(avg) 기준(서버 6대)
+  - smoke : 19.79ms -> 3.71ms(step1) ->3.01ms(step2)
+  - load : 65.52ms -> 6.62ms(step1) -> 3.81ms(step2)
+  - stress : 912.86ms -> 85.49ms(step1) -> 28.89ms(step2)
 
 ---
 
