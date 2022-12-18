@@ -27,14 +27,19 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "path", allEntries = true)})
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
+    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
@@ -43,15 +48,9 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "lines", unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<Line> findLines() {
         return lineRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Transactional(readOnly = true)
@@ -60,18 +59,34 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "path", allEntries = true)})
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "path", allEntries = true)})
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "path", allEntries = true)})
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -79,7 +94,11 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @Caching(evict = {@CacheEvict(value = "lines", allEntries = true), @CacheEvict(value = "path", allEntries = true)})
+    @Caching(evict = {
+            @CacheEvict(value = "lines", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    })
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
