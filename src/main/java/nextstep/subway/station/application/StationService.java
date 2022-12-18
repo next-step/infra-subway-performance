@@ -21,7 +21,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-//    @CacheEvict(value = "stations", allEntries = true)
+    @CacheEvict(value = "stations", allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -37,7 +37,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-//    @CacheEvict(value = "stations", allEntries = true)
+    @CacheEvict(value = "stations", allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
