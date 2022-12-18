@@ -3,13 +3,10 @@ import { check, group, sleep, fail } from 'k6';
 
 export let options = {
     stages: [
-        { duration: '1m', target: 40 },
-        { duration: '2m', target: 90 },
-        { duration: '2m', target: 160 },
-        { duration: '4m', target: 300 },
-        { duration: '2m', target: 160 },
-        { duration: '2m', target: 90 },
-        { duration: '1m', target: 40 },
+        { duration: '15m', target: 1000 },
+        { duration: '3m', target: 400 },
+        { duration: '2m', target: 200 },
+        { duration: '1m', target: 100 },
         {duration: '10s', target: 0},
     ],
     thresholds: {
@@ -27,6 +24,7 @@ export default function ()  {
     authMember(authHeaders);
     path();
     findPath(authHeaders);
+    getFavorites(authHeaders);
     sleep(1);
 }
 
@@ -77,9 +75,22 @@ function path() {
 }
 
 function findPath(authHeaders) {
-    const response = http.get(`${BASE_URL}/path?source=7&target=395`, authHeaders);
+    const response = http.get(`${BASE_URL}/path?source=50&target=77`, authHeaders);
 
     check(response, {
         'find path status 200': (res) => res.status === 200
     });
+}
+
+function getFavorites(accessToken) {
+    let header = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        }
+    }
+
+    let response = http.get(`${BASE_URL}/favorites`, header).json();
+
+    check(response, { 'getFavorites successfully': (obj) => obj.id != 0});
 }

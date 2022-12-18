@@ -19,6 +19,7 @@ export default function ()  {
     authMember(authHeaders);
     path();
     findPath(authHeaders);
+    getFavorites(authHeaders);
     sleep(1);
 }
 
@@ -74,4 +75,17 @@ function findPath(authHeaders) {
     check(response, {
         'find path status 200': (res) => res.status === 200
     });
+}
+
+function getFavorites(accessToken) {
+    let header = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        }
+    }
+
+    let response = http.get(`${BASE_URL}/favorites`, header).json();
+
+    check(response, { 'getFavorites successfully': (obj) => obj.id != 0});
 }

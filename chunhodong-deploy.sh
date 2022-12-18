@@ -9,12 +9,11 @@ txtgra='\033[1;30m' # Gray
 
 BRANCH=$1
 
-function check_df() {
-  do_deploy
-}
-
 function do_deploy() {
   echo -e "${txtgrn}>> do deploy ${txtrst}"
+  git clone https://github.com/chunhodong/infra-subway-performance.git
+  cd infra-subway-performance
+  git checkout step2
   gradle_build
   find_process
   kill_process
@@ -55,4 +54,4 @@ function start_deploy() {
     echo -e "${txtgrn}=======================================${txtrst}"
 }
 
-start_deploy;
+do_deploy;
