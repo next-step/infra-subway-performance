@@ -44,8 +44,44 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
++ k6 파일 폴더에 넣어뒀습니다 !
+
+
+#### 성능 개선 전 (http_req_duration 기준 표 작성)
+|        | http_req_duration(mean) | http_req_duration(max) | http_req_duration(med) |
+|--------|-------------------------|------------------------|------------------------|
+| LOAD   | 24.46ms                 | 724.37ms               | 13.52ms                | 
+| SMOKE  | 69.74ms                 | 439.84ms               | 50.24ms                | 
+| STRESS | 41.42ms                 | 664.61ms               | 19.03ms                | 
+
+
+#### 성능 개선 후 (http_req_duration 기준 표 작성)
+|        | http_req_duration(mean) | http_req_duration(max) | http_req_duration(med) |
+|--------|-------------------------|------------------------|------------------------|
+| LOAD   | 8.10ms                  | 46.91ms                | 7.78ms                 | 
+| SMOKE  | 25.99ms                 | 223.40ms               | 16.69ms                | 
+| STRESS | 13.89ms                 | 218.22ms               | 9.70ms                 | 
+
+
+### API 성능 개선 !
+
+![](k6/smoke/smoke_cloud_before.png)
+`경로 조회 API` 가 속도 측정에서 가장 느린걸 볼 수 있음 (평균 360ms)
+
+캐싱을 통한 성능 개선 이후 
+![](k6/smoke/smoke_cloud_after.png)
+
+개선이후 평균 160ms의 속도인것을 볼 수 있다.
+
+결과 : 360ms -> 160ms
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
++ web
+  + gzip 압축
+  + http2
+  + cache 설정
++ was
+  + redis cache 를 이용한 성능 개선
 
 ---
 
