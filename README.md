@@ -270,6 +270,13 @@ export default function ()  {
 | ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzipAndCacheAndHttp2/load_test.png)     |
 | ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzipAndCacheAndHttp2/stress_test.png) |
 
+### redis
+
+| gzip 압축 적용 + cache 적용                                        | redis 추가                                                                     |
+|--------------------------------------------------------------|------------------------------------------------------------------------------|
+| ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test]()   |
+| ![after_load_test](image/step1/after/gzipAndCache/load_test.png) | ![after_load_test]()     |
+| ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test]() |
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -279,7 +286,7 @@ export default function ()  {
   - TLS, HTTP/2 설정
     - 원인은 모르겠으나 위 설정 후에 부하 테스트 시에 "ERRO[1804] some thresholds have failed"가 보임. 
 
-- 
+- redis
 
 ---
 
