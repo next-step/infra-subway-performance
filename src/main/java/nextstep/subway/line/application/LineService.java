@@ -40,7 +40,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-//    @Cacheable(value = "line_stations", unless = "#result.isEmpty()")
+    @Cacheable(value = "line_stations", unless = "#result.isEmpty()")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
