@@ -12,3 +12,14 @@ spring:
 logging:
   level:
     nextstep.subway: INFO
+
+management:
+  metrics:
+    export:
+      cloudwatch:
+        namespace: earth-h
+        batch-size: 20
+  endpoints:
+    web:
+      exposure:
+        include: "*"

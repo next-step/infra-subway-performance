@@ -113,16 +113,52 @@ npm run dev
 ---
 
 ## 2단계 - 스케일 아웃
+### 실습 요구사항
+- [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [x] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - setCacheControl() 시, no-cache와 no-store는 CacheControl.noCache()와 같이 static으로 접근하기 때문에 둘을 함께 설정은 불가한 것으로 보입니다.
+    - 참고자료
+      - https://stackoverflow.com/a/58954702
+  - 다만, 특정 브라우저 환경에서 Cache-Control: no-cache로 하여도, 항상 revalidation 작업을 진행하지 않는 경우가 있어 그럴 경우를 대비해 no-store를 함께 사용합니다.
+    - 예를 들어, 웹 브라우저에서 뒤로가기/앞으로가기를 할 때에도 캐시를 볼 지 등 판단하기 어렵기도 하고, 브라우저의 버전에 따른 호환성 때문에 메이저 사이트는 Cache-Control: no-cache, no-store, must-revalidate을 함께 사용하기도 함
+    - 참고자료
+      - https://stackoverflow.com/a/866866
+      - https://inf.run/NRHK
+
+### 요구사항
+- [x] springboot에 HTTP Cache, gzip 설정하기
+- [x] Launch Template 작성하기
+  - docs/step2/README.md 내 작성
+    - nginx 관련 주석은 로드밸런서가 대상 그룹으로 보낼 때 8080 포트로 보내게 해두었고, 앞단 로드밸런서에 의해 이미 HTTP, HTTPS 설정이 되어있다고 판단하여 붙이지 않게되어 주석해두었습니다.
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과 기록
+
+#### cache-control
+- no-cache
+  - 데이터는 캐시해도 되지만, 항상 원 서버에 검증하고 사용
+- no-store
+  - 데이터에 민감한 정보가 있으므로 저장하면 안됨
+- must-revalidate
+  - 리소스가 오래된 것으로 간주될 경우 유효성 검사
+
+- 재사용 가능한 응답인가?
+  - X ➝ no-store
+- 매번 검증을 해야하는가?
+  - O ➝ no-cache
+- 중간 매개체가 캐시해도 되는가?
+  - X ➝ private 
+  - O ➝ public
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-04892f934559a6b5f
+  - docs/step2/README.md 내에도 작성되어 있습니다.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+- docs/step2/cloudwatch 패키지 내에 결과 올려두었습니다.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- docs/step2/k6 하위 패키지에 결과 올려두었습니다.
 
 ---
 
