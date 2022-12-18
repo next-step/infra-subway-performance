@@ -55,19 +55,19 @@ npm run dev
 
 - smoke
     - before
-        - <img src="./docs/before/smoke.png">
+        - <img src="./docs/step1/before/smoke.png">
     - after
-        - <img src="./docs/after/smoke.png">
+        - <img src="./docs/step1/after/smoke.png">
 - load
     - before
-        - <img src="docs/before/load.png">
+        - <img src="docs/step1/before/load.png">
     - after
-        - <img src="./docs/after/load.png">
+        - <img src="./docs/step1/after/load.png">
 - stress
     - before
-        - <img src="./docs/before/stress.png">
+        - <img src="./docs/step1/before/stress.png">
     - after
-        - <img src="./docs/after/stress.png">
+        - <img src="./docs/step1/after/stress.png">
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -87,13 +87,29 @@ npm run dev
 
 1. Launch Template 링크를 공유해주세요.
 
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-01322c68e058cdff7
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
+```
+At 2022-12-17T14:54:00Z a monitor alarm TargetTracking-velcronicity-asg-AlarmHigh-864259ef-64f1-44ea-810a-bc8fe4b72ea4 in state ALARM triggered policy Target Tracking Policy changing the desired capacity from 1 to 2. At 2022-12-17T14:54:12Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 1 to 2.
+At 2022-12-17T14:56:00Z a monitor alarm TargetTracking-velcronicity-asg-AlarmHigh-864259ef-64f1-44ea-810a-bc8fe4b72ea4 in state ALARM triggered policy Target Tracking Policy changing the desired capacity from 2 to 3. At 2022-12-17T14:56:14Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 2 to 3.
+At 2022-12-17T14:57:00Z a monitor alarm TargetTracking-velcronicity-asg-AlarmHigh-864259ef-64f1-44ea-810a-bc8fe4b72ea4 in state ALARM triggered policy Target Tracking Policy changing the desired capacity from 3 to 4. At 2022-12-17T14:57:05Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 3 to 4.
 ```
 
+- <img src="./docs/step2/ec2_cloudwatch.png">
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+- smoke
+    - <img src="./docs/step2/smoke.png">
+- load
+    - <img src="./docs/step2/load.png">
+- stress
+    - <img src="./docs/step2/stress.png">
+
+- 부하 상황에서 최대설정 인스턴스 값인 4까지 증가하는 것을 확인했습니다.
+- 스케일아웃 적용 전인 지난번 스텝에서 stress 테스트 시 오류가 많이 났지만 이번엔 동적 확장되면서 에러가 발생하지 않았습니다.
 
 ---
 
@@ -123,3 +139,11 @@ $ stress -c 2
     -[x] 개선 전/후를 직접 계측하여 확인
         -[x] 리버스 프록시 개선
         -[x] was 성능 개선
+
+## step2
+
+-[x] springboot에 HTTP Cache, gzip 설정하기
+    -[x] test code
+-[ ] Launch Template 작성하기
+-[ ] Auto Scaling Group 생성하기
+-[ ] Smoke, Load, Stress 테스트 후 결과를 기록
