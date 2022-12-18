@@ -1,0 +1,6 @@
+spring:
+  cache:
+    type: redis
+  redis:
+    host: 13.125.226.177
+    port: 6379

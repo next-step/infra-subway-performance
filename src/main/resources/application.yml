@@ -7,11 +7,14 @@ spring:
         - mysql
         - security
         - aws
+        - redis
       test:
         - h2
         - security
         - aws
+        - redis-test
       prod:
         - mysql
         - security
         - aws
+        - redis
