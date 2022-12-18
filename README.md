@@ -44,8 +44,11 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+  - /src/main/k6 before에 개선 전, After에 개선 후 테스트결과 첨부하였습니다.
+  
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+  - Reverse Proxy nginx서버 개선 진행하였습니다. (gzip 압축, cache 설정, TLS, HTTP/2 설정)
+  - WAS 성능 개선 진행하였습니다. (Spring data cache 적용 LineService, MapService, StationService)
 
 ---
 
