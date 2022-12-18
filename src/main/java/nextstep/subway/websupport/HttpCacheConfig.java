@@ -1,6 +1,5 @@
-package nextstep.websupport;
+package nextstep.subway.websupport;
 
-import java.util.concurrent.TimeUnit;
 import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,19 +20,20 @@ public class HttpCacheConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**/*.css")
-                .addResourceLocations("classpath:/static/css")
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/*.css")
+                .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(60 * 60 * 24 * 365);
 
-        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**/*.js")
-                .addResourceLocations("classpath:/static/js")
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/*.js")
+                .addResourceLocations("classpath:/static/js/")
                 .setCacheControl(CacheControl.noCache().cachePrivate());
     }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean(){
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new ShallowEtagHeaderFilter());
+        Filter etagHeaderFilter = new ShallowEtagHeaderFilter();
+        registration.setFilter(etagHeaderFilter);
         registration.addUrlPatterns(PREFIX_STATIC_RESOURCES + "/*");
         return registration;
     }

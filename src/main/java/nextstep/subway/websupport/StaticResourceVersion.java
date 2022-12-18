@@ -1,4 +1,4 @@
-package nextstep.websupport;
+package nextstep.subway.websupport;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
