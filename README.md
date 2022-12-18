@@ -272,11 +272,11 @@ export default function ()  {
 
 ### redis
 
-| gzip 압축 적용 + cache 적용                                        | redis 추가                                                                     |
-|--------------------------------------------------------------|------------------------------------------------------------------------------|
-| ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test]()   |
-| ![after_load_test](image/step1/after/gzipAndCache/load_test.png) | ![after_load_test]()     |
-| ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test]() |
+| gzip 압축 적용 + cache 적용                                        | redis 추가                                                      |
+|--------------------------------------------------------------|---------------------------------------------------------------|
+| ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test](image/step1/after/redis/smoke_test.png)   |
+| ![after_load_test](image/step1/after/gzipAndCache/load_test.png) | ![after_load_test](image/step1/after/redis/load_test.png)     |
+| ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test](image/step1/after/redis/stress_test.png) |
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -284,10 +284,11 @@ export default function ()  {
   - gzip 압축
   - cache
   - TLS, HTTP/2 설정
-    - 원인은 모르겠으나 위 설정 후에 부하 테스트 시에 "ERRO[1804] some thresholds have failed"가 보임. 
+    - 원인은 모르겠으나 위 설정 후에 부하 테스트 시에 "ERRO[1804] some thresholds have failed"가 보임.
+    - 성능을 위해서 제외
 
 - redis
-
+  - http_req_failed 수치가 증가함.
 ---
 
 ### 2단계 - 스케일 아웃
@@ -304,7 +305,7 @@ $ stress -c 2
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -312,7 +313,7 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
