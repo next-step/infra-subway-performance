@@ -150,10 +150,10 @@ default ✗ [=======>------------------------------] 01/14 VUs  06m30.9s/29m10.0
 <summary>smoke grafana 결과</summary>
 
 `이전결과`
-![smoke_grafana_before](./monitoring/smoke_grafana_before.png)
+![smoke_grafana_before](step1/smoke_grafana_before.png)
 
 `이후결과`
-![smoke_grafana_after](./monitoring/smoke_grafana_after.png)
+![smoke_grafana_after](step1/smoke_grafana_after.png)
 
 </details>
 
@@ -265,10 +265,10 @@ default ✓ [======================================] 00/14 VUs  29m10s
 <summary>load grafana 결과</summary>
 
 `이전결과`
-![load_grafana_before](./monitoring/load_grafana_before.png)
+![load_grafana_before](step1/load_grafana_before.png)
 
 `이후결과`
-![load_grafana_after](./monitoring/load_grafana_after.png)
+![load_grafana_after](step1/load_grafana_after.png)
 
 </details>
 
@@ -383,10 +383,10 @@ default ✓ [======================================] 000/384 VUs  28m10s
 <summary>stress grafana 결과</summary>
 
 `이전결과`
-![stress_grafana_before](./monitoring/stress_grafana_before.png)
+![stress_grafana_before](step1/stress_grafana_before.png)
 
 `이후결과`
-![stress_grafana_after](./monitoring/stress_grafana_after.png)
+![stress_grafana_after](step1/stress_grafana_after.png)
 
 </details>
 
