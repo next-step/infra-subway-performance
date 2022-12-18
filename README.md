@@ -44,8 +44,21 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* `/k6/origin` - 기존 어플리케이션
+* `/k6/reverse-proxy` - 리버스 프록시 개선
+* `/k6/redis-cache` - 레디스 캐시 설정
+* `/k6/test-script` - k6 테스트 스크립트
+
+- Reverse Proxy 개선을 통해 웹페이지 속도가 향상되었습니다.
+- WAS 성능 개선을 통해 http_req_duration이 향상되었습니다.
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선
+  - gzip 압축 (정적 컨텐츠 파일 압축)
+  - cache 설정 (정적 컨텐츠 대상으로 유저의 쿠키를 통해 캐싱)
+  - TLS, HTTP/2 설정
+- WAS 성능 개선
+  - Redis(In-Memory DB)를 사용하여 각 조회 결과 캐싱
 
 ---
 
