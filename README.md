@@ -59,16 +59,18 @@ npm run dev
 - [x] 캐싱 설정
   - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증하기
   - [x] css 확장자 파일의 경우 max-age를 1년, js인 경우 no-cache, private 설정하기
-- [ ] Launch Template 작성하기
-- [ ] 로드 밸런서 생성하기
-- [ ] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록하기  
+- [x] Launch Template 작성하기
+- [x] 로드 밸런서 생성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록하기  
 
 <br/>
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0b2cdf2e301dfb7b1  
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+해당 프로젝트에 auto-scale 폴더에 추가 해두었습니다.
 
 ```sh
 $ stress -c 2
