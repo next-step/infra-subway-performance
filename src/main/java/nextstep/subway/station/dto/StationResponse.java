@@ -1,5 +1,6 @@
 package nextstep.subway.station.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
@@ -7,7 +8,10 @@ import java.time.LocalDateTime;
 public class StationResponse {
     private Long id;
     private String name;
+
+    @JsonIgnore
     private LocalDateTime createdDate;
+    @JsonIgnore
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
