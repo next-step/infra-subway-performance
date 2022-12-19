@@ -164,10 +164,67 @@ npm run dev
 
 ## 3단계 - 쿼리 최적화
 
-1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 200ms 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+```sql
+select	e.id as '사원번호'
+	  , e.last_name as '이름'
+      , e.annual_income as '연봉'
+	  , e.position_name as '직급명'
+      , r.time as '입출입시간'
+      , r.region as '지역'
+      , r.record_symbol as '입출입구분'
+from 	record r
+	  , (
+			select 	e.id 
+				  , e.last_name
+                  , s.annual_income
+				  , p.position_name
+			from	(
+						select 	m.employee_id
+						from 	manager m, department d
+						where	1               = 1
+						and		m.department_id = d.id
+                        and		d.note		    = 'active'
+						and		m.end_date 	    > now()
+					) m
+				 , (
+						select 	p.id, p.position_name
+                        from	position p
+                        where	1               = 1
+                        and 	p.end_date 		> now()
+						and 	p.position_name = 'Manager'
+					) p                    
+				  , (
+						select  ed.employee_id
+						from	employee_department ed
+						where	1					= 1
+						and		ed.end_date			> now()
+					) ed
+				  , employee e
+				  , (
+						select	s.id, s.annual_income
+                        from	salary s
+                        where	1           = 1
+                        and		s.end_date  > now()
+					) s
+			where		1 				= 1
+            and			p.id			= m.employee_id
+			and			m.employee_id	= ed.employee_id
+			and			ed.employee_id	= e.id
+            and			e.join_date		<= now()
+			and			s.id			= e.id
+			order by	s.annual_income desc
+			limit 5
+		) e
+where	  1                 = 1
+and		  r.record_symbol   = 'O'
+and		  r.employee_id 	= e.id
+order by   e.annual_income  desc
+;
+```
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+![step3 결과물](./docs/step3/step3%20결과.png)
 ---
 
 ### 4단계 - 인덱스 설계
