@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active:
+      - test
+    group:
+      local:
+        - mysql
+        - security
+        - aws
+        - redis
+      test:
+        - h2
+        - security
+        - aws
+        - redis
+      prod:
+        - mysql
+        - security
+        - aws
+        - redis
