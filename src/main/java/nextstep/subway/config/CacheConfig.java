@@ -10,9 +10,11 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair.fromSerializer;
+
 @EnableCaching
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
