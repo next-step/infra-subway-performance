@@ -6,9 +6,19 @@ export let options = {
         http_req_duration: ['p(99)<100'],
     },
     stages: [
-        {duration: '10s', target: 23},
-        {duration: '3600s', target: 64},
-        {duration: '10s', target: 0},
+        {duration: '10s', target: 23}, // ramping up
+        {duration: '3m', target: 23},
+        {duration: '10s', target: 44},// ramping up
+        {duration: '3m', target: 44},
+        {duration: '10s', target: 64},// load peak
+        {duration: '3m', target: 64},
+        {duration: '10s', target: 44},// ramping down
+        {duration: '1m', target: 44},
+        {duration: '10s', target: 22},// ramping down
+        {duration: '1m', target: 22},
+        {duration: '10s', target: 10},// ramping down
+        {duration: '1m', target: 10},
+        {duration: '10s', target: 0},// ramping down
     ],
 };
 
