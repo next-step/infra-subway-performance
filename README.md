@@ -63,11 +63,11 @@ npm run dev
 #### 요구사항
 - [ ] Reverse Proxy 개선
   - [x] 개선 전 측정 
-  - [ ] gzip 압축
-  - [ ] cache
-  - [ ] TLS, HTTP/2 설정
+  - [x] gzip 압축
+  - [x] cache
+  - [x] TLS, HTTP/2 설정
 - [ ] WAS 성능 개선
-  - [ ] Spring Data Cache
+  - [x] Spring Data Cache
   - [ ] 비동기 처리
 - [ ] Scale out - 초간단 Blue-Green 배포 구성
 - [ ] 정적 파일 경량화
