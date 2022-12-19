@@ -1,7 +1,7 @@
 /**
   1. 활동중인 부서(Active)의 현재 관리자
      * 묵시적 형변환 방지를 위해 convert를 명시적으로 사용하였다.
-     * department가 9건으로 manager 24건보다 작기 때문에 드라이빙 테이블로 선택되도록 하였.
+     * department가 9건으로 manager 24건보다 작기 때문에 드라이빙 테이블로 선택되도록 하였다.
      * manager가 드리븐 테이블이 되면서 활동 중인 부서만큼 `idx_manager_department_id` 인덱스를 반복해서 스캔하게 된다.
 */
 select man.department_id, man.employee_id
