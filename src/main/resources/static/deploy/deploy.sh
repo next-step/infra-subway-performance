@@ -75,7 +75,7 @@ pull() {
 build() {
     echo -e ""
     echo -e "${txtgra}>> Build Project 🏃♂️ "
-    cd ${PROJECT_PATH} && ./gradlew clean build
+    cd ${PROJECT_PATH} && ./gradlew clean build -x test
 }
 
 ## jar 파일 생성 확인
