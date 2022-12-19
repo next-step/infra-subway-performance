@@ -22,14 +22,14 @@ public class StationService {
     }
 
     @Transactional
-    @CacheEvict(value = "allStation", allEntries = true)
+    //@CacheEvict(value = "allStation", allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "allStation")
+    //@Cacheable(value = "allStation")
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -39,7 +39,7 @@ public class StationService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = {"allStation"}, allEntries = true)
+    //@CacheEvict(cacheNames = {"allStation"}, allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
