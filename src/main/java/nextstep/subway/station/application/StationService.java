@@ -1,5 +1,7 @@
 package nextstep.subway.station.application;
 
+import static nextstep.subway.common.CacheNames.STATIONS;
+
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -15,19 +17,19 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
-    @CacheEvict(cacheNames = "stations", allEntries = true)
+    @CacheEvict(cacheNames = STATIONS, allEntries = true)
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
-    @Cacheable(value = "stations", unless = "#result.isEmpty()")
+    @Cacheable(value = STATIONS, unless = "#result.isEmpty()")
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
@@ -37,7 +39,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @CacheEvict(cacheNames = "stations", allEntries = true)
+    @CacheEvict(cacheNames = STATIONS, allEntries = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

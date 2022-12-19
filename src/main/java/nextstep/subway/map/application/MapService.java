@@ -1,5 +1,7 @@
 package nextstep.subway.map.application;
 
+import static nextstep.subway.common.CacheNames.PATH;
+
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.map.domain.SubwayPath;
@@ -16,9 +18,9 @@ import java.util.List;
 @Service
 @Transactional
 public class MapService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathService pathService;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathService pathService;
 
     public MapService(LineService lineService, StationService stationService, PathService pathService) {
         this.lineService = lineService;
@@ -26,7 +28,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    @Cacheable(value = "path", key = "{#source, #target}")
+    @Cacheable(value = PATH, key = "{#source, #target}")
     @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();

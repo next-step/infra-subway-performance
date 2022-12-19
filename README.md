@@ -54,10 +54,33 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
+#### 기능 구현 목록
+- [x] gzip 설정하기
+- [x] 캐싱 설정
+  - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증하기
+  - [x] css 확장자 파일의 경우 max-age를 1년, js인 경우 no-cache, private 설정하기
+  - [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?   
+  > 캐시가 필요하지 않은 상황이라면 no-cache, no-store 설정을 동시에 진행할 수 있을 것 같습니다.   
+  > 아래 참고한 내용에 따르면 HTTP 스펙이라는 것이 모호한 부분이 존재하고, 
+  > HTTP1.1을 지원하지만 조금 오래된 브라우저의 호환, 그리고 버그 등의 문제들로 인해   
+  > 구글이나 주요 네이버 등 메이저 사이트의 응답에는 캐시가 필요하지 않은 상황에서는
+  > no-cache와 no-store를 동시에 사용하는 것을 확인할 수 있었습니다.   
+  > 따라서 정적 자원도 필요한 경우 설정할 수 있지 않을까 라는 생각이 듭니다!..   
+  > [참고](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94)
+  
+
+- [x] Launch Template 작성하기
+- [x] 로드 밸런서 생성하기
+- [x] Auto Scaling Group 생성하기
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록하기  
+
+<br/>
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0b2cdf2e301dfb7b1  
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+해당 프로젝트에 auto-scale 폴더에 추가 해두었습니다.
 
 ```sh
 $ stress -c 2
