@@ -119,6 +119,46 @@ At 2022-12-17T14:57:00Z a monitor alarm TargetTracking-velcronicity-asg-AlarmHig
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```
+select employee.id                   AS 사원번호,
+       employee.last_name            AS 이름,
+       employee_salary.annual_income AS 연봉,
+       employee_salary.position_name AS 직급명,
+       record.time                   AS 입출입시간,
+       record.region                 AS 지역,
+       record.record_symbol          AS 입출입구분
+from (select salary.id, salary.annual_income, position.position_name
+      from (select *
+            from salary
+            where end_date = '9999-01-01') salary
+               join (select employee_id, department_id
+                     from manager
+                     where end_date = '9999-01-01') manaer
+                    on manaer.employee_id = salary.id
+               join (select id
+                     from department
+                     where note = 'active') department
+                    on department.id = manaer.department_id
+               join (select id, position_name
+                     from position
+                     where `end_date` = '9999-01-01'
+                       and position_name = 'manager') position
+                    on position.id = manaer.employee_id
+      order by salary.annual_income desc
+      limit 5) employee_salary
+         join (select id, last_name
+               from employee) employee
+              on employee.id = employee_salary.id
+         join (select employee_id, time, region, record_symbol
+               from record
+               where record_symbol = 'O') record
+              on record.employee_id = employee.id
+         join (select employee_id, department_id
+               from employee_department
+               where end_date = '9999-01-01') employee_department
+              on employee_department.employee_id = employee.id
+order by employee_salary.annual_income desc;
+```
 ---
 
 ### 4단계 - 인덱스 설계
@@ -144,6 +184,13 @@ At 2022-12-17T14:57:00Z a monitor alarm TargetTracking-velcronicity-asg-AlarmHig
 
 -[x] springboot에 HTTP Cache, gzip 설정하기
     -[x] test code
--[ ] Launch Template 작성하기
--[ ] Auto Scaling Group 생성하기
--[ ] Smoke, Load, Stress 테스트 후 결과를 기록
+-[x] Launch Template 작성하기
+-[x] Auto Scaling Group 생성하기
+-[x] Smoke, Load, Stress 테스트 후 결과를 기록
+
+## step3
+
+-[x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+    - (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+-[x] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+    - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2s를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
