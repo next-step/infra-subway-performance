@@ -40,8 +40,8 @@ npm run dev
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
-
-
+    - 미션 수행 url: https://www.aws-nextstep-deokmoo.kro.kr/
+    
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 #### 개선전후 측정
@@ -78,7 +78,7 @@ npm run dev
         - gzip 압축
         - cache 설정
         - TLS, HTTP/2 설정
-    - WAS 성능은 `Spring Data Cache`를 이용하여 개선한다.
+    - WAS 성능은 `Spring Data Cache`를 이용하여 개선
 ---
 
 ### 2단계 - 스케일 아웃
