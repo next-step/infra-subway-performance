@@ -14,22 +14,22 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair.fromSerializer;
 
-@EnableCaching
-@Configuration
+//@EnableCaching
+//@Configuration
 public class CacheConfig extends CachingConfigurerSupport {
 
-    @Autowired
-    RedisConnectionFactory connectionFactory;
-
-
-    @Bean
-    public CacheManager redisCacheManager() {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-            .serializeKeysWith(fromSerializer(StringRedisSerializer.UTF_8))
-            .serializeValuesWith(fromSerializer(new GenericJackson2JsonRedisSerializer()));
-
-        RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
-            fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
-        return redisCacheManager;
-    }
+    //@Autowired
+    //RedisConnectionFactory connectionFactory;
+    //
+    //
+    //@Bean
+    //public CacheManager redisCacheManager() {
+    //    RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+    //        .serializeKeysWith(fromSerializer(StringRedisSerializer.UTF_8))
+    //        .serializeValuesWith(fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    //
+    //    RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
+    //        fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
+    //    return redisCacheManager;
+    //}
 }
