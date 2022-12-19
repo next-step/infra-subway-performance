@@ -59,7 +59,7 @@
 [X] springboot에서 HTTP Cache, gzip 설정하기
 [X] Launch Template 작성하기
 [X] Auto Scaling Group 생성하기
-[ ] Smoke, Load, Stress 테스트 후 결과를 기록
+[X] Smoke, Load, Stress 테스트 후 결과를 기록
 ```
 
 <br />
@@ -89,12 +89,13 @@
 * [Launch Template 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-019f4c7c7f0594cc0)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+* `src/main/resources/static/scaleout`에 포함해두었습니다.
+* 부하 테스트 진행 시 CPU 수치가 크게 올라가지 않아 Auto Scaling이 되지 않고 `Request Failed`만 발생하여 Auto Scaling이 발생하는 CPU 수치를 10%로 낮춰서 테스트하였습니다.
+  그 결과로, VUser 350을 테스트하는데 6개의 ec2가 생성되었고 모든 요청이 정상적으로 수행되었습니다.
+  6개의 ec2로 요청이 분산되어 CPU 수치도 낮아지고 요청도 정상적으로 빠르게 수행되는 것을 확인할 수 있었습니다.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* `src/main/resources/static/scaleout`에 포함해두었습니다.
 
 ---
 
