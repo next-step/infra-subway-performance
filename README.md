@@ -150,10 +150,10 @@ default ✗ [=======>------------------------------] 01/14 VUs  06m30.9s/29m10.0
 <summary>smoke grafana 결과</summary>
 
 `이전결과`
-![smoke_grafana_before](./monitoring/smoke_grafana_before.png)
+![smoke_grafana_before](step1/smoke_grafana_before.png)
 
 `이후결과`
-![smoke_grafana_after](./monitoring/smoke_grafana_after.png)
+![smoke_grafana_after](step1/smoke_grafana_after.png)
 
 </details>
 
@@ -265,10 +265,10 @@ default ✓ [======================================] 00/14 VUs  29m10s
 <summary>load grafana 결과</summary>
 
 `이전결과`
-![load_grafana_before](./monitoring/load_grafana_before.png)
+![load_grafana_before](step1/load_grafana_before.png)
 
 `이후결과`
-![load_grafana_after](./monitoring/load_grafana_after.png)
+![load_grafana_after](step1/load_grafana_after.png)
 
 </details>
 
@@ -383,17 +383,17 @@ default ✓ [======================================] 000/384 VUs  28m10s
 <summary>stress grafana 결과</summary>
 
 `이전결과`
-![stress_grafana_before](./monitoring/stress_grafana_before.png)
+![stress_grafana_before](step1/stress_grafana_before.png)
 
 `이후결과`
-![stress_grafana_after](./monitoring/stress_grafana_after.png)
+![stress_grafana_after](step1/stress_grafana_after.png)
 
 </details>
 
 - http_req_duration(avg) 기준
   - smoke : 19.79ms -> 3.71ms
   - load : 65.52ms -> 6.62ms
-  - stess : 912.86ms -> 85.49ms
+  - stress : 912.86ms -> 85.49ms
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -408,15 +408,41 @@ default ✓ [======================================] 000/384 VUs  28m10s
 
 ### 2단계 - 스케일 아웃
 
+#### 요구사항
+
+- springboot에 HTTP Cache, gzip 설정하기
+  - 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
+  - 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
+  - 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가?
+
+  ```text
+  가능합니다.
+  HTTP의 스펙이 모든 상황을 완벽하게 대응하고 있지 못하기 때문에 
+  no-cache 또는 no-store만으로는 캐시 무효화를 만족하지 못하는 상황이 있을 수 있습니다.
+  그래서 이러한 옵션들을 같이 설정할 수 있는 것으로 알고 있습니다.
+  (실제 네이버에서 정적 리소스 호출에 대한 response header를 찾아보면 no-cache와 no-store 를 같이 사용하는 것을 확인할 수 있습니다.)
+  ```
+- Launch Template 작성하기
+- Auto Scaling Group 생성하기
+- Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
+
+- [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0457a0b9effa7719a)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+- /step2/cloudwatch 경로에 파일 첨부했습니다.
+- cpu 부하를 주고 난 이후 기본서버 2대에서 오토스케일링으로 최대 8개까지 추가 생성되는 것을 확인했습니다.
+- 이후 5개의 ec2 서버가 종료되면서 총 5대의 ec2 서버로(추가된 3개의 ec와 기존 2대 서버)로 약 32%의 cpu 사용률을 유지함을 확인할 수 있었습니다.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+- /step2/k6 경로에 파일 첨부했습니다.
+- http_req_duration(avg) 기준(서버 6대)
+  - smoke : 19.79ms -> 3.71ms(step1) ->3.01ms(step2)
+  - load : 65.52ms -> 6.62ms(step1) -> 3.81ms(step2)
+  - stress : 912.86ms -> 85.49ms(step1) -> 28.89ms(step2)
 
 ---
 
