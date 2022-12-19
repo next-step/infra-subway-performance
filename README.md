@@ -47,6 +47,18 @@ npm run dev
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
+#### 요구사항
+- [ ] Reverse Proxy 개선
+  - [ ] 적용 전 테스트 이미지 캡처 smoke, load, stress 
+  - [ ] gzip 압축
+  - [ ] cache
+  - [ ] TLS, HTTP/2 설정
+- [ ] WAS 성능 개선
+  - [ ] Spring Data Cache
+  - [ ] 비동기 처리
+- [ ] Scale out - 초간단 Blue-Green 배포 구성
+- [ ] 정적 파일 경량화
+
 ---
 
 ### 2단계 - 스케일 아웃
