@@ -146,6 +146,11 @@ js 파일의 크기가 최대 20배까지 줄었음을 알 수 있습니다.
 
 ### 2단계 - 스케일 아웃
 
+- springboot에서 HTTP Cache, gzip 설정하기
+- Launch Template 작성하기
+- Auto Scaling Group 생성하기
+- Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
 
 https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-06947fbc479ee9bef
@@ -156,8 +161,7 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 
-
-## Smoke
+## Smoke 테스트 결과
 ![img](img/step2-smoke-tobe.png)
 ```markdown
 running (5m00.8s), 0/1 VUs, 200 complete and 0 interrupted iterations
@@ -186,7 +190,7 @@ default ✓ [======================================] 1 VUs  5m0s
      vus_max........................: 1       min=1      max=1
 ```
 
-## Load
+## Load 테스트 결과
 ![img](img/step2-load-tobe.png)
 ```markdown
 running (10m02.0s), 00/23 VUs, 4543 complete and 0 interrupted iterations
@@ -215,7 +219,7 @@ default ✓ [ 100% ] 00/23 VUs  10m0s
      vus_max........................: 23      min=23      max=23
 ```
 
-## Stress
+## Stress 테스트 결과
 
 ### 오토 스케일 적용 후
 ```markdown
