@@ -76,15 +76,31 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+[템플릿 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0cf08f503f24c1f8c)
+
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+![Auto Scaling Cloudwatch](performance/stress/auto_scaling.png)
+
 
 ```sh
 $ stress -c 2
 ```
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+   **http_req_duration**
+
+| 종류            | Before   | Nginx   | Nginx + WAS | Auto Scaling |
+|---------------|----------|---------|-------------|--------------|
+| smoke         | 5.22ms   | 1.44ms  | 5.75ms      | 3.81ms       |
+| load          | 5.72ms   | 1.19ms  | 1.13ms      | 3.6ms        |
+| stress        | 100.62ms | 10.25ms | 6.61ms      | 5.2ms        |
+| stress 600VUs | -        | -       | -           | 7.39ms       |
+
+속도의 개선보다는 VUs를 늘린 stress 테스트에서 Auto Scaling 이 동작해서 부하 분산을 통해
+병목 현상 및 서버 다운을 방지하는 모습을 확인했습니다.
+
 
 ---
 
