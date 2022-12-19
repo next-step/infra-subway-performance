@@ -159,11 +159,129 @@ from (select salary.id, salary.annual_income, position.position_name
               on employee_department.employee_id = employee.id
 order by employee_salary.annual_income desc;
 ```
+
 ---
 
 ### 4단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+```
+select hobby '취미', round(count(1) / (select count(1) from programmer) * 100, 1) '비율'
+from programmer
+group by hobby
+order by hobby desc;
+```
+
+- 개선 전
+  - `2 rows retrieved starting from 1 in 4 s 441 ms (execution: 4 s 413 ms, fetching: 28 ms)`
+  - ![img.png](docs/step4/1_before.png)
+- 개선
+  - `create index programmer_hobby_index on programmer (hobby);`
+- 개선 후
+  - `2 rows retrieved starting from 1 in 480 ms (execution: 463 ms, fetching: 17 ms)`
+  - ![img.png](docs/step4/1_after.png)
+
+2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```
+select c.id, h.name
+from hospital h
+         join covid c on h.id = c.hospital_id
+         join programmer p on c.programmer_id = p.id;
+```
+
+- 개선 전
+  - `500 rows retrieved starting from 501 in 6 s 430 ms (execution: 6 s 424 ms, fetching: 6 ms)`
+  - ![img.png](docs/step4/2_before.png)
+- 개선
+  - `alter table programmer add constraint programmer_pk primary key (id);`
+  - `alter table hospital add constraint hospital_pk primary key (id);`
+  - `alter table covid add constraint covid_pk primary key (id);`
+  - `create index covid_programmer_id_index on covid (programmer_id);`
+- 개선 후
+  - `500 rows retrieved starting from 1 in 44 ms (execution: 22 ms, fetching: 22 ms)`
+  - ![img.png](docs/step4/2_after.png)
+
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+
+```
+select c.id, h.name, user.hobby, user.dev_type, user.years_coding
+from hospital h
+         join covid c on h.id = c.hospital_id
+         join (select id, hobby, dev_type, years_coding
+               from programmer
+               where (hobby = 'yes' and student != 'no')
+                  or years_coding = '0-2 years') user
+              on c.programmer_id = user.id
+order by user.id;
+```
+
+- 개선 전
+  - slow query ...
+- 개선
+  - `alter table programmer add constraint programmer_pk primary key (id);`
+  - `alter table hospital add constraint hospital_pk primary key (id);`
+  - `alter table covid add constraint covid_pk primary key (id);`
+  - `create index covid_programmer_id_index on covid (programmer_id);`
+- 개선 후
+  - `500 rows retrieved starting from 1 in 72 ms (execution: 25 ms, fetching: 47 ms)`
+  - ![img.png](docs/step4/3_after.png)
+
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+
+```
+select c.stay, count(1)
+from hospital h
+         join covid c on h.id = c.hospital_id
+         join member m on c.member_id = m.id
+         join programmer p on c.programmer_id = p.id
+where h.name = '서울대병원'
+  and m.age between 20 and 29
+  and p.country = 'India'
+group by c.stay;
+```
+
+- 개선 전
+  - slow query ...
+- 개선
+  - `alter table programmer add constraint programmer_pk primary key (id);`
+  - `alter table hospital add constraint hospital_pk primary key (id);`
+  - `alter table covid add constraint covid_pk primary key (id);`
+  - `alter table member add constraint member_pk primary key (id);`
+  - `create index programmer_country_index on programmer (country);`
+  - `create index member_age_index on member (age);`
+  - `create index covid_stay_index on covid (stay);`
+
+- 개선 후
+  - `10 rows retrieved starting from 1 in 783 ms (execution: 771 ms, fetching: 12 ms)`
+  - ![img.png](docs/step4/4_after.png)
+
+5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+
+```
+select p.exercise, count(1)
+from hospital h
+         join covid c on h.id = c.hospital_id
+         join member m on c.member_id = m.id
+         join programmer p on c.programmer_id = p.id
+where h.name = '서울대병원'
+  and m.age between 30 and 39
+group by p.exercise;
+```
+
+- 개선 전
+  - slow query ...
+- 개선
+  - `alter table programmer add constraint programmer_pk primary key (id);`
+  - `alter table hospital add constraint hospital_pk primary key (id);`
+  - `alter table covid add constraint covid_pk primary key (id);`
+  - `alter table member add constraint member_pk primary key (id);`
+  - `create index member_age_index on member (age);`
+
+- 개선 후
+  - `5 rows retrieved starting from 1 in 676 ms (execution: 657 ms, fetching: 19 ms)`
+  - ![img.png](docs/step4/5_after.png)
 
 ---
 
@@ -197,9 +315,9 @@ order by employee_salary.annual_income desc;
 
 ## step4
 
--[ ] Coding as a Hobby 와 같은 결과를 반환하세요.
--[ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
--[ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
+-[x] Coding as a Hobby 와 같은 결과를 반환하세요.
+-[x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+-[x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType,
  user.YearsCoding)
--[ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
--[ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+-[x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+-[x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
