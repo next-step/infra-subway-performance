@@ -81,7 +81,7 @@ function pull() {
 function build() {
   echo_empty_line
   echo -e "${txtgrn}>> Gradle Clean Build ${txtrst}"
-  cd ${PROJECT_PATH}${REPO} && ./gradlew clean build
+  cd ${PROJECT_PATH}${REPO} && ./gradlew clean build -x test
 }
 
 ## 프로세스 pid를 찾는 명령어
