@@ -10,7 +10,6 @@ PROJECT_PATH='/home/ubuntu/infra-subway-performance'
 JAR_PATH=${PROJECT_PATH}/build/libs
 JAR=$(cd ${JAR_PATH} && find ./* -name "*jar" | cut -c 3-)
 JAR_PID=$(ps -ef | grep $JAR | grep -v grep | awk '{print $2}')
-LOG_FILE='/home/ubuntu/infra-subway-performance/subway.log'
 
 function git_clone() {
   echo "저장소의 정보를 복사합니다."
@@ -33,7 +32,7 @@ function stop_process() {
 
 
 function start_process() {
-  nohup java -jar -Dspring.profiles.active=prod $JAR_PATH/$JAR 1> $LOG_FILE 2>&1
+  nohup java -jar -Dspring.profiles.active=prod $JAR_PATH/$JAR
 }
 
 echo -e "${txtylw}=======================================${txtrst}"

@@ -108,14 +108,45 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+    - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c9861cf3286fac64
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
+   <details>
+   <summary>cpu 부하 실행 후 추가생성 결과</summary>
+
+    - clout watch monitoring
+        - ![clout-watch-monitoring](./docs/step2/new_stress_cloud_watch_monitoring.png)
+
+   </details>
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+   기존 스트레스 테스트의 경우 경로를 조회하는 간단한 로직이라 부하를 줘도 캐시 및 was 설정으로 부하가 심하지 않아
+   같은 로직에서 **vus를 5000까지 설정한 테스트**와 **DB를 자주 접근하는 스트레스 테스트**를 진행했습니다.  
+   생각보다 cpu성능이 높아지지 않아 동적 크기 정책을 30%로 설정했습니다.
+
+   <details>
+   <summary>성능 개선 결과</summary>
+
+    - 기존 Stress 테스트
+        - ![stress-k6](./docs/step2/stress_k6.png)
+        - ![stress-grafana](./docs/step2/stress_grafana.png)
+    - 강화 Stress 테스트
+        - [force script](./docs/step2/force_stress.js)
+        - ![stress-k6](./docs/step2/force_stress_k6.png)
+        - ![stress-grafana](./docs/step2/force_stress_grafana.png)
+    - 새로운 Stress 테스트
+        - [script](./docs/step2/new_stress.js)
+        - ![stress-k6](./docs/step2/new_stress_k6.png)
+        - ![stress-grafana](./docs/step2/new_stress_grafana.png)
+
+   </details>
+
+4. 모든 정적 자원에 대해 no-cache, no-store 설정 가능한가요?
+
+   가능합니다. 컨트롤러에서 HttpServletResponse 를 받은 후 직접 `Cache-Controle`을 할당하여 설정할 수 있습니다.
+   [참조 링크](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
 
 ---
 
@@ -150,12 +181,12 @@ $ stress -c 2
 ### 2단계 - 스케일 아웃 (with ASG)
 
 1. 요구사항
-    - [ ] springboot에 HTTP Cache, gzip 설정하기
-    - [ ] Launch Template 작성하기
-    - [ ] Auto Scaling Group 생성하기
-    - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+    - [x] springboot에 HTTP Cache, gzip 설정하기
+    - [x] Launch Template 작성하기
+    - [x] Auto Scaling Group 생성하기
+    - [x] Smoke, Load, Stress 테스트 후 결과를 기록
 2. 실습 요구사항
-    - [ ] 모든 정적 자원에 대해 no-cache, private 설정과 테스트 코드 검증
-    - [ ] 확장자는 css인 경우 max-age 1년, js인 경우 no-cache, private 설정
-    - [ ] 모든 정적 자원에 대해 no-cache, no-store 설정?
+    - [x] 모든 정적 자원에 대해 no-cache, private 설정과 테스트 코드 검증
+    - [x] 확장자는 css인 경우 max-age 1년, js인 경우 no-cache, private 설정
+    - [x] 모든 정적 자원에 대해 no-cache, no-store 설정?
 
