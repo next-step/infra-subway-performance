@@ -7,21 +7,7 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-EXECUTION_PATH=$(pwd)
-LOG_FILE_PATH=${EXECUTION_PATH}/log/nohub.log
-PROFILE=$1
 PROJECT_NAME=subway
-JAR_PATH=${EXECUTION_PATH}/build/libs/
-
-if [[ $# -ne 1 ]]
-then
-  echo -e "${txtylw}=======================================${txtrst}"
-  echo -e "${txtgrn}  << 배포 스크립트 🧐 >>${txtrst}"
-  echo -e ""
-  echo -e "${txtgrn} $0 ${txtylw}{ 프로파일 }"
-  echo -e "${txtylw}=======================================${txtrst}"
-  exit
-fi
 
 echo -e "${txtylw}=======================================${txtrst}"
 echo -e "${txtgrn}  << 배포 스크립트 🧐 >>${txtrst}"
@@ -29,10 +15,17 @@ echo -e ""
 echo -e "${txtgrn} $0 ${txtred}$1 ${txtylw}$2"
 echo -e "${txtylw}=======================================${txtrst}"
 
+function clone() {
+  echo -e ""
+  git clone https://github.com/paki1019/infra-subway-performance.git
+  cd infra-subway-performance
+  git checkout step2
+}
+
 ## gradle build
 function build() {
   echo -e ""
-  ./gradlew clean build
+  ./gradlew clean build -x test
 }
 
 ## 어플리케이션 종료
@@ -47,7 +40,7 @@ function stopApplication() {
 
 ## 프로세스를 찾는 명령어
 function findPid() {
-  echo "$(ps -ef | grep -v 'grep' | grep ${JAR_PATH} | awk '{print $2}')"
+  echo "$(ps -ef | grep java | grep ${PROJECT_NAME} | awk '{print $2}')"
 }
 
 ## 프로세스를 종료하는 명령어
@@ -62,7 +55,7 @@ function killPid() {
 function findJar() {
   echo -e ""
   echo -e ">> find jar"
-  JAR_FILE=$(find ${EXECUTION_PATH}/* -name '*jar')
+  JAR_FILE=$(find ./* -name '*jar')
 }
 
 ## 어플리케이션 시작
@@ -70,7 +63,7 @@ function startApplication() {
   findJar
   echo -e ""
   echo -e ">> start application"
-  nohup java -jar -Dspring.profiles.active=${PROFILE} ${JAR_FILE} 1> ${LOG_FILE_PATH} 2>&1  &
+  nohup java -jar -Dspring.profiles.active=prod ${JAR_FILE} 1> nohup.log 2>&1  &
   NEW_PID=$(findPid)
   if [[ -n ${NEW_PID} ]]
   then
@@ -80,6 +73,8 @@ function startApplication() {
   fi
 }
 
+clone
+sleep 5
 build
 sleep 5
 stopApplication
