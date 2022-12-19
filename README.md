@@ -148,11 +148,10 @@ js 파일의 크기가 최대 20배까지 줄었음을 알 수 있습니다.
 
 1. Launch Template 링크를 공유해주세요.
 
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-06947fbc479ee9bef
+ 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![img](img/step2-autoscale-dashboard.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
