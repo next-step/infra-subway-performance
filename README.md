@@ -155,6 +155,93 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+
+
+## Smoke
+![img](img/step2-smoke-tobe.png)
+```markdown
+running (5m00.8s), 0/1 VUs, 200 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  5m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 100.00% ✓ 494      ✗ 0
+     data_received..................: 341 kB  1.1 kB/s
+     data_sent......................: 73 kB   244 B/s
+     http_req_blocked...............: avg=39.53µs  min=224ns   med=396ns   max=23.46ms  p(90)=459ns    p(95)=496ns
+     http_req_connecting............: avg=1.05µs   min=0s      med=0s      max=630.92µs p(90)=0s       p(95)=0s
+    ✓ http_req_duration..............: avg=10.73ms  min=2.6ms   med=6.07ms  max=56.94ms  p(90)=29.45ms  p(95)=41.51ms
+        { expected_response:true }...: avg=11.98ms  min=3.18ms  med=6.6ms   max=56.94ms  p(90)=35.4ms   p(95)=42.61ms
+     http_req_failed................: 17.66%  ✓ 106      ✗ 494
+     http_req_receiving.............: avg=118.27µs min=24.41µs med=55.88µs max=10.26ms  p(90)=129.11µs p(95)=205.25µs
+     http_req_sending...............: avg=48.55µs  min=21.33µs med=47.42µs max=159.63µs p(90)=68.26µs  p(95)=80.91µs
+     http_req_tls_handshaking.......: avg=33.5µs   min=0s      med=0s      max=20.1ms   p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=10.57ms  min=2.47ms  med=5.93ms  max=56.83ms  p(90)=29.32ms  p(95)=41.28ms
+     http_reqs......................: 600     1.994997/s
+     iteration_duration.............: avg=1.5s     min=1.01s   med=1.02s   max=2.07s    p(90)=2.05s    p(95)=2.06s
+     iterations.....................: 200     0.664999/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+## Load
+![img](img/step2-load-tobe.png)
+```markdown
+running (10m02.0s), 00/23 VUs, 4543 complete and 0 interrupted iterations
+default ✓ [ 100% ] 00/23 VUs  10m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 100.00% ✓ 11302     ✗ 0
+     data_received..................: 8.2 MB  14 kB/s
+     data_sent......................: 1.7 MB  2.8 kB/s
+     http_req_blocked...............: avg=12.46µs min=162ns   med=379ns   max=57.24ms p(90)=457ns   p(95)=506ns
+     http_req_connecting............: avg=1.04µs  min=0s      med=0s      max=3.21ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=11.32ms min=2.82ms  med=6.25ms  max=97.52ms p(90)=39.08ms p(95)=41.51ms
+       { expected_response:true }...: avg=12.7ms  min=2.82ms  med=6.55ms  max=97.52ms p(90)=39.85ms p(95)=42.29ms
+     http_req_failed................: 17.07%  ✓ 2327      ✗ 11302
+     http_req_receiving.............: avg=74.21µs min=13.63µs med=53.29µs max=7.95ms  p(90)=94.55µs p(95)=144.38µs
+     http_req_sending...............: avg=51.3µs  min=15.54µs med=46.78µs max=3.51ms  p(90)=75.73µs p(95)=85.57µs
+     http_req_tls_handshaking.......: avg=8.31µs  min=0s      med=0s      max=39.26ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=11.2ms  min=2.2ms   med=6.15ms  max=97.08ms p(90)=38.95ms p(95)=41.38ms
+     http_reqs......................: 13629   22.640546/s
+     iteration_duration.............: avg=1.52s   min=1.01s   med=1.02s   max=2.17s   p(90)=2.05s   p(95)=2.06s
+     iterations.....................: 4543    7.546849/s
+     vus............................: 7       min=1       max=22
+     vus_max........................: 23      min=23      max=23
+```
+
+## Stress
+
+### 오토 스케일 적용 후
+```markdown
+     ✗ logged in successfully
+      ↳  98% — ✓ 21714 / ✗ 282
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 99.46% ✓ 51954      ✗ 282
+     data_received..................: 42 MB  80 kB/s
+     data_sent......................: 8.8 MB 17 kB/s
+     http_req_blocked...............: avg=5.38ms   min=0s       med=300ns   max=806.85ms p(90)=387ns    p(95)=431ns
+     http_req_connecting............: avg=1.06ms   min=0s       med=0s      max=373.12ms p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=1.02s    min=0s       med=37.92ms max=2m53s    p(90)=501.1ms  p(95)=740.53ms
+       { expected_response:true }...: avg=510.2ms  min=3.48ms   med=49.06ms max=2m53s    p(90)=565.99ms p(95)=769.03ms
+     http_req_failed................: 20.27% ✓ 13211      ✗ 51963
+     http_req_receiving.............: avg=93.67ms  min=0s       med=37.32µs max=2m51s    p(90)=216.01µs p(95)=546.28µs
+     http_req_sending...............: avg=2.3ms    min=0s       med=29.19µs max=1m38s    p(90)=64.75µs  p(95)=95.47µs
+     http_req_tls_handshaking.......: avg=3.47ms   min=0s       med=0s      max=678.76ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=925.35ms min=0s       med=37.75ms max=2m51s    p(90)=496.37ms p(95)=731.4ms
+     http_reqs......................: 65174  124.889305/s
+     iteration_duration.............: avg=5.63s    min=106.54µs med=2s      max=4m44s    p(90)=3.15s    p(95)=3.99s
+     iterations.....................: 21421  41.047869/s
+     vus............................: 0      min=0        max=899
+     vus_max........................: 1000   min=1000     max=1000
+```
 ---
 
 ### 3단계 - 쿼리 최적화
