@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -13,7 +14,9 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    @JsonIgnore
     private LocalDateTime createdDate;
+    @JsonIgnore
     private LocalDateTime modifiedDate;
 
     public LineResponse() {
