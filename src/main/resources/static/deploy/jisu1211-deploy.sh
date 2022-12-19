@@ -115,7 +115,8 @@ start_ps() {
     echo -e ""
     echo -e "${txtgra}>> Start Process 🏃♂️ "
 
-    nohup java -jar -Dspring.profiles.active=prod ${PROJECT_PATH}/build/libs/$JAR 1> ${PROJECT_PATH}/log/subway.log 2>&1 &
+    mkdir -p $PROJECT_PATH/logs
+    nohup java -jar -Dspring.profiles.active=prod ${PROJECT_PATH}/build/libs/$JAR 1> ${PROJECT_PATH}/logs/subway.log 2>&1 &
 }
 
 deploy;

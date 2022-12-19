@@ -57,8 +57,8 @@
 #### 요구사항
 ```
 [X] springboot에서 HTTP Cache, gzip 설정하기
-[ ] Launch Template 작성하기
-[ ] Auto Scaling Group 생성하기
+[X] Launch Template 작성하기
+[X] Auto Scaling Group 생성하기
 [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 ```
 
@@ -86,6 +86,7 @@
 <br />
 
 1. Launch Template 링크를 공유해주세요.
+* [Launch Template 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-019f4c7c7f0594cc0)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
