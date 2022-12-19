@@ -22,6 +22,7 @@ public class StationService {
     }
 
     @Transactional
+    @Cacheable(value = "stationName", key = "#stationRequest.getName()")
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
