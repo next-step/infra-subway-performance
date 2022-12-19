@@ -221,31 +221,67 @@ default ✓ [ 100% ] 00/23 VUs  10m0s
 
 ## Stress 테스트 결과
 
-### 오토 스케일 적용 후
+### 오토 스케일 적용 전
 ```markdown
+running (3m25.3s), 110/500 VUs, 4662 complete and 0 interrupted iterations
+default   [  49% ] 111/500 VUs  3m27.8s/7m00.0s
+time="2022-12-19T17:16:14Z" level=warning msg="Request Failed" error="Post \"https://cwjonhpark-subway-px.o-r.kr/login/token\": write tcp 192.168.91.173:49844->3.34.75.117:443: write: broken pipe"
+...
+running (7m20.5s), 108/500 VUs, 4745 complete and 382 interrupted iterations
+default ↓ [ 100% ] 112/500 VUs  7m0s
+
+```
+- Request 실패 지점이 110 VUser 에서 발생합니다.
+- 부하가 낮아지며 정상적으로 돌아오는 지점은 108 VUser 에서 부터입니다.
+```markdown
+
      ✗ logged in successfully
-      ↳  98% — ✓ 21714 / ✗ 282
+      ↳  99% — ✓ 4826 / ✗ 27
      ✓ retrieved member
      ✓ find path
 
-     checks.........................: 99.46% ✓ 51954      ✗ 282
-     data_received..................: 42 MB  80 kB/s
-     data_sent......................: 8.8 MB 17 kB/s
-     http_req_blocked...............: avg=5.38ms   min=0s       med=300ns   max=806.85ms p(90)=387ns    p(95)=431ns
-     http_req_connecting............: avg=1.06ms   min=0s       med=0s      max=373.12ms p(90)=0s       p(95)=0s
-   ✗ http_req_duration..............: avg=1.02s    min=0s       med=37.92ms max=2m53s    p(90)=501.1ms  p(95)=740.53ms
-       { expected_response:true }...: avg=510.2ms  min=3.48ms   med=49.06ms max=2m53s    p(90)=565.99ms p(95)=769.03ms
-     http_req_failed................: 20.27% ✓ 13211      ✗ 51963
-     http_req_receiving.............: avg=93.67ms  min=0s       med=37.32µs max=2m51s    p(90)=216.01µs p(95)=546.28µs
-     http_req_sending...............: avg=2.3ms    min=0s       med=29.19µs max=1m38s    p(90)=64.75µs  p(95)=95.47µs
-     http_req_tls_handshaking.......: avg=3.47ms   min=0s       med=0s      max=678.76ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=925.35ms min=0s       med=37.75ms max=2m51s    p(90)=496.37ms p(95)=731.4ms
-     http_reqs......................: 65174  124.889305/s
-     iteration_duration.............: avg=5.63s    min=106.54µs med=2s      max=4m44s    p(90)=3.15s    p(95)=3.99s
-     iterations.....................: 21421  41.047869/s
-     vus............................: 0      min=0        max=899
-     vus_max........................: 1000   min=1000     max=1000
+     checks.........................: 99.76% ✓ 11316     ✗ 27
+     data_received..................: 8.0 MB 18 kB/s
+     data_sent......................: 1.9 MB 4.2 kB/s
+     http_req_blocked...............: avg=3.72ms   min=0s       med=318ns   max=6.39s    p(90)=415ns    p(95)=473ns
+     http_req_connecting............: avg=6.51ms   min=0s       med=0s      max=19.04s   p(90)=0s       p(95)=0s
+    ✗ http_req_duration..............: avg=233.66ms min=0s       med=6.14ms  max=4m13s    p(90)=38.51ms  p(95)=43.44ms
+    { expected_response:true }...: avg=100.94ms min=3.56ms   med=6.76ms  max=1m20s    p(90)=39.65ms  p(95)=45.09ms
+    http_req_failed................: 21.98% ✓ 3188      ✗ 11316
+    http_req_receiving.............: avg=84.97ms  min=0s       med=39.84µs max=45.13s   p(90)=117.02µs p(95)=214.95µs
+    http_req_sending...............: avg=41.48ms  min=0s       med=32.04µs max=1m1s     p(90)=63.8µs   p(95)=82.52µs
+    http_req_tls_handshaking.......: avg=904.21µs min=0s       med=0s      max=253.94ms p(90)=0s       p(95)=0s
+    http_req_waiting...............: avg=107.2ms  min=0s       med=6.04ms  max=4m13s    p(90)=38.31ms  p(95)=43.08ms
+    http_reqs......................: 14504  32.742068/s
+    iteration_duration.............: avg=8.07s    min=221.82µs med=1.02s   max=5m17s    p(90)=2.06s    p(95)=2.07s
+    iterations.....................: 4851   10.950894/s
+    vus............................: 29     min=1       max=112
+    vus_max........................: 500    min=500     max=500
 ```
+
+### 오토 스케일 적용 후
+![img](img/step2-stress-tobe.png)
+- 오토 스케일링 적용후 10개 인스턴스까지 로드 밸런싱되어 최대 1000 VUser 까지 부하를 받을 수 있는 것을 확인했습니다.
+```markdown
+     checks.........................: 100.00% ✓ 327214     ✗ 0
+     data_received..................: 78 MB   326 kB/s
+     data_sent......................: 49 MB   204 kB/s
+     http_req_blocked...............: avg=12.37µs  min=122ns  med=280ns   max=34.38ms  p(90)=349ns    p(95)=378ns
+     http_req_connecting............: avg=2.08µs   min=0s     med=0s      max=21.16ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=5.53ms   min=1.7ms  med=4.82ms  max=1.13s    p(90)=8.43ms   p(95)=9.24ms
+       { expected_response:true }...: avg=5.53ms   min=1.7ms  med=4.82ms  max=1.13s    p(90)=8.43ms   p(95)=9.24ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 327214
+     http_req_receiving.............: avg=104.19µs min=9.69µs med=37.1µs  max=488.61ms p(90)=162.63µs p(95)=231.6µs
+     http_req_sending...............: avg=36.32µs  min=11.8µs med=25.83µs max=16.89ms  p(90)=48.14µs  p(95)=82.76µs
+     http_req_tls_handshaking.......: avg=9.53µs   min=0s     med=0s      max=23.77ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=5.39ms   min=1.03ms med=4.71ms  max=1.13s    p(90)=8.29ms   p(95)=9.11ms
+     http_reqs......................: 327214  1357.68146/s
+     iteration_duration.............: avg=1.01s    min=1s     med=1.01s   max=2.14s    p(90)=1.01s    p(95)=1.01s
+     iterations.....................: 163607  678.84073/s
+     vus............................: 294     min=4        max=1000
+     vus_max........................: 1000    min=1000     max=1000
+```
+
 ---
 
 ### 3단계 - 쿼리 최적화
