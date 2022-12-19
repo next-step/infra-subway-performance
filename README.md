@@ -45,8 +45,250 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
+- 성능 테스트 조건 근거
+  - https://github.com/seogineer/infra-subway-monitoring/tree/step3
+
+### smoke.js
+```javascript
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
+
+export let options = {
+  vus: 600, // 1 user looping for 1 minute
+  duration: '1800s',
+
+  thresholds: {
+    http_req_duration: ['p(99)<1500'], // 99% of requests must complete below 1.5s
+  },
+};
+
+const BASE_URL = 'https://seogineer.kro.kr';
+const USERNAME = 'dgseo8981@gmail.com';
+const PASSWORD = '1234';
+
+export default function ()  {
+  // login
+  var payload = JSON.stringify({
+    email: USERNAME,
+    password: PASSWORD,
+  });
+
+  var params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+
+  check(loginRes, {
+    'logged in successfully': (resp) => resp.json('accessToken') !== '',
+  });
+
+  let authHeaders = {
+    headers: {
+      Authorization: `Bearer ${loginRes.json('accessToken')}`,
+    },
+  };
+  let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
+  check(myObjects, { 'retrieved member': (obj) => obj.id != 0 });
+  sleep(1);
+
+  // lending page
+  let homeUrl = `${BASE_URL}`;
+  let lendingPageResponse = http.get(homeUrl);
+  check(lendingPageResponse, {
+      'lending page running': (response) => response.status === 200
+  });
+};
+```
+
+### load.js
+```javascript
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
+
+export let options = {
+    stages: [
+      { duration: '600s', target: 300 },
+    ],
+
+    thresholds: {
+        http_req_duration: ['p(99)<1500'],
+    },
+};
+
+const BASE_URL = 'https://seogineer.kro.kr';
+const USERNAME = 'dgseo8981@gmail.com';
+const PASSWORD = '1234';
+
+export default function () {
+    // login
+    var payload = JSON.stringify({
+        email: USERNAME,
+        password: PASSWORD,
+    });
+    
+    var params = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+    };
+    
+    let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+    
+    check(loginRes, {
+        'logged in successfully': (resp) => resp.json('accessToken') !== '',
+    });
+    
+    // myinfo
+    let authHeaders = {
+        headers: {
+            Authorization: `Bearer ${loginRes.json('accessToken')}`,
+        },
+    };
+    let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
+    check(myObjects, {'retrieved member': (obj) => obj.id != 0});
+
+    // create line
+    let createLineUrl = `${BASE_URL}/lines`;
+    let lineRandomNumber = Math.random().toString().split('.')[1];
+    let createLinePayload = JSON.stringify({
+        name: `testLine-${lineRandomNumber}`,
+        color: "grey darken-4",
+        upStationId: 1,
+        downStationId: 2,
+        distance: 10,
+    });
+    let createLineParams = {
+        headers: {
+            'Authorization': `Bearer ${loginRes.json('accessToken')}`,
+            'Content-Type': 'application/json',
+        },
+    };
+    let createLinesResponse = http.post(createLineUrl, createLinePayload, createLineParams);
+    check(createLinesResponse, {
+        'created Line successfully': (response) => response.status === 201,
+    });
+}
+```
+
+### stress.js
+```javascript
+import http from 'k6/http';
+import { check, group, sleep, fail } from 'k6';
+
+export let options = {
+    stages: [
+      { duration: '300s', target: 100 },
+      { duration: '300s', target: 200 },
+      { duration: '300s', target: 300 },
+      { duration: '300s', target: 400 },
+      { duration: '300s', target: 500 },
+      { duration: '300s', target: 600 },
+    ],
+    thresholds: {
+        http_req_duration: ['p(99)<1500'],
+    },
+};
+
+const BASE_URL = 'https://seogineer.kro.kr';
+const USERNAME = 'dgseo8981@gmail.com';
+const PASSWORD = '1234';
+
+export default function ()  {
+  // login
+  var payload = JSON.stringify({
+    email: USERNAME,
+    password: PASSWORD,
+  });
+
+  var params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
+
+  check(loginRes, {
+    'logged in successfully': (resp) => resp.json('accessToken') !== '',
+  });
+
+  // myinfo
+  let authHeaders = {
+    headers: {
+      Authorization: `Bearer ${loginRes.json('accessToken')}`,
+    },
+  };
+  let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
+  check(myObjects, { 'retrieved member': (obj) => obj.id != 0 });
+
+  // create line
+  let createLineUrl = `${BASE_URL}/lines`;
+  let lineRandomNumber = Math.random().toString().split('.')[1];
+  let createLinePayload = JSON.stringify({
+      name: `testLine-${lineRandomNumber}`,
+      color: "grey darken-4",
+      upStationId: 1,
+      downStationId: 2,
+      distance: 10,
+  });
+  let createLineParams = {
+      headers: {
+          'Authorization': `Bearer ${loginRes.json('accessToken')}`,
+          'Content-Type': 'application/json',
+      },
+  };
+  let createLinesResponse = http.post(createLineUrl, createLinePayload, createLineParams);
+  check(createLinesResponse, {
+      'created Line successfully': (response) => response.status === 201,
+  });
+}
+```
+### gzip 압축 적용
+
+| Before                                                    | After                                                        |
+|-----------------------------------------------------------|--------------------------------------------------------------|
+| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzip/smoke_test.png)   |
+| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzip/load_test.png)     |
+| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzip/stress_test.png) |
+
+### gzip 압축 적용 + cache 적용
+
+| Before                                                    | After                                                                |
+|-----------------------------------------------------------|----------------------------------------------------------------------|
+| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png)   |
+| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzipAndCache/load_test.png)     |
+| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) |
+
+### gzip 압축 적용 + cache 적용 + TLS, HTTP/2 설정
+
+| Before                                                    | After                                                                        |
+|-----------------------------------------------------------|------------------------------------------------------------------------------|
+| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzipAndCacheAndHttp2/smoke_test.png)   |
+| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzipAndCacheAndHttp2/load_test.png)     |
+| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzipAndCacheAndHttp2/stress_test.png) |
+
+### redis
+
+| gzip 압축 적용 + cache 적용                                        | redis 추가                                                      |
+|--------------------------------------------------------------|---------------------------------------------------------------|
+| ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test](image/step1/after/redis/smoke_test.png)   |
+| ![after_load_test](image/step1/after/gzipAndCache/load_test.png) | ![after_load_test](image/step1/after/redis/load_test.png)     |
+| ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test](image/step1/after/redis/stress_test.png) |
+
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
+- Reverse Proxy 개선
+  - gzip 압축
+  - cache
+  - TLS, HTTP/2 설정
+    - 원인은 모르겠으나 위 설정 후에 부하 테스트 시에 "ERRO[1804] some thresholds have failed"가 보임.
+    - 성능을 위해서 제외
+
+- redis
+  - http_req_failed 수치가 증가함.
 ---
 
 ### 2단계 - 스케일 아웃
@@ -63,7 +305,7 @@ $ stress -c 2
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -71,7 +313,7 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
