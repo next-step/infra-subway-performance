@@ -44,12 +44,20 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   - resources/docs/load
+   - resources/docs/smoke
+   - resources/docs/stress
+   - https://subway.sixthou.kro.kr/
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+  - 리버스 프록시개선과 was성능개선 두가지 스탭으로 나눠서 진행했습니다.
+  - 리버스 프로시개선
+    - gzip, cache, tls, https/2
+  - was 성능개선
+    - redis 설정
+    
 #### 요구사항
-- [ ] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선 
-  - [ ] 개선 전 / 후를 직접 계측하여 확인
+- [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선 
+  - [x] 개선 전 / 후를 직접 계측하여 확인
 ---
 
 ### 2단계 - 스케일 아웃
