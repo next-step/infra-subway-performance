@@ -45,7 +45,59 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+<details>
+<summary>smoke 스크립트 실행 이전 결과</summary>
+
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m30s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+running (1m00.1s), 0/1 VUs, 502 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 3012     ✗ 0
+     data_received..................: 19 MB  316 kB/s
+     data_sent......................: 4.7 MB 78 kB/s
+     http_req_blocked...............: avg=6.89µs  min=1.5µs    med=2.61µs  max=29.22ms  p(90)=3.57µs  p(95)=4.18µs
+     http_req_connecting............: avg=231ns   min=0s       med=0s      max=330.12µs p(90)=0s      p(95)=0s
+    ✓ http_req_duration..............: avg=2.42ms  min=529µs    med=1.88ms  max=55.54ms  p(90)=4.5ms   p(95)=6.23ms
+        { expected_response:true }...: avg=2ms     min=529µs    med=1.1ms   max=47.52ms  p(90)=3.45ms  p(95)=5.25ms
+     http_req_failed................: 16.66% ✓ 3900       ✗ 19500
+     http_req_receiving.............: avg=55.7µs  min=25.28µs  med=47.37µs max=29.33ms  p(90)=69.81µs p(95)=77.51µs
+     http_req_sending...............: avg=15.11µs min=6.39µs   med=12.42µs max=8.27ms   p(90)=18.61µs p(95)=23.01µs
+     http_req_tls_handshaking.......: avg=3µs     min=0s       med=0s      max=12.62ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=2.35ms  min=486.83µs med=1.82ms  max=55.45ms  p(90)=4.41ms  p(95)=6.13ms
+     http_reqs......................: 23400  389.846775/s
+     iteration_duration.............: avg=15.37ms min=8.26ms   med=12.43ms max=109.12ms p(90)=23.9ms  p(95)=30.79ms
+     iterations.....................: 3900   64.974463/s
+     vus............................: 1      min=1        max=1
+     vus_max........................: 1      min=1        max=1
+```
+
+</details>
+
+
+
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
 ---
 
