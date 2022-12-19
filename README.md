@@ -49,7 +49,7 @@ npm run dev
 
 #### 요구사항
 - [ ] Reverse Proxy 개선
-  - [ ] 적용 전 테스트 이미지 캡처 smoke, load, stress 
+  - [ ] 적용 전 테스트 이미지 캡처 (smoke, load, stress) 
   - [ ] gzip 압축
   - [ ] cache
   - [ ] TLS, HTTP/2 설정
