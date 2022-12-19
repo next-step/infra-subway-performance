@@ -48,15 +48,21 @@ npm run dev
 #### 개선 전 측정
 - Smoke : `k6/smoke/*`
 ![Smoke](k6/smoke/before_smoke_k6.png)
+![Smoke](k6/smoke/after_smoke_k6.png)
 ![Smoke](k6/smoke/before_smoke_grafana.png)
+![Smoke](k6/smoke/after_smoke_grafana.png)
 
 - Load : `k6/load/*`
 ![Load](k6/load/before_load_k6.png)
+![Load](k6/load/after_load_k6.png)
 ![Load](k6/load/before_load_grafana.png)
+![Load](k6/load/after_load_grafana.png)
 
 - Stress : `k6/stress/*`
 ![Stress](k6/stress/before_stress_k6.png)
+![Stress](k6/stress/after_stress_k6.png)
 ![Stress](k6/stress/before_stress_grafana.png)
+![Stress](k6/stress/after_stress_grafana.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
