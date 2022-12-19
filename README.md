@@ -58,13 +58,13 @@ npm run dev
 - After
 ![load_after.png](k6test%2Fload%2Fafter%2Fload_after.png)
 ![load_after_dashboard.png](k6test%2Fload%2Fafter%2Fload_after_dashboard.png)
-* Stress
+* StressF
 - Before
-![smoke.png](k6test%2Fsmoke%2Fbefore%2Fsmoke.png)
-![smoke_dashboard.png](k6test%2Fsmoke%2Fbefore%2Fsmoke_dashboard.png)
+![stress.png](k6test%2Fstress%2Fbefore%2Fstress.png)
+![smoke_dashboard.png](k6test%2Fstress%2Fbefore%2Fsmoke_dashboard.png)
 - After
-![smoke_after.png](k6test%2Fsmoke%2Fafter%2Fsmoke_after.png)
-![smoke_after_dashboard.png](k6test%2Fsmoke%2Fafter%2Fsmoke_after_dashboard.png)
+![stress_after.png](k6test%2Fstress%2Fafter%2Fstress_after.png)
+![stress_after_dashboard.png](k6test%2Fstress%2Fafter%2Fstress_after_dashboard.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 * Reverse Proxy
