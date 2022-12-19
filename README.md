@@ -44,9 +44,14 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- load : 2.64ms -> 2.84ms
+- smoke : 4.96ms -> 7.82ms
+- stress : 1.04s -> 304ms
+- 다른 부분은 차이가 없거나 더 늘어났으나 stress는 크게 개선됐습니다.
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- 1차 튜닝 :  gzip 압축, cache, HTTP2 적용
+- 2차 튜닝 : Spring Data Cache를 적용했습니다.
 ---
 
 ### 2단계 - 스케일 아웃
