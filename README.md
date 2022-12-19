@@ -46,7 +46,14 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+   1. Nginx 개편
+      1. HTTP2 적용
+         ![img.png](image/http2.png)
+      2. Cache Control 처리
+         ![img.png](image/cache.png)
+      3. GZIP을 통한 압축
+         ![img.png](image/gzip.png)
+   2. 
 ---
 
 ### 2단계 - 스케일 아웃
