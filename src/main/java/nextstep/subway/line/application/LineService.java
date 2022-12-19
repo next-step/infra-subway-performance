@@ -33,8 +33,8 @@ public class LineService {
     })
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
@@ -75,7 +75,7 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
-            @CacheEvict(value = "path", allEntries = true)
+            @CacheEvict(value = "path", allEntries = true),
     })
     @Transactional
     public void deleteLineById(Long id) {
@@ -84,19 +84,19 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
-            @CacheEvict(value = "path", allEntries = true)
+            @CacheEvict(value = "path", allEntries = true),
     })
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
     @Caching(evict = {
             @CacheEvict(value = "lines", allEntries = true),
-            @CacheEvict(value = "path", allEntries = true)
+            @CacheEvict(value = "path", allEntries = true),
     })
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {

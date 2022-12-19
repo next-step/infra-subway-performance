@@ -54,16 +54,48 @@
 ---
 
 ### 2단계 - 스케일 아웃
-
-1. Launch Template 링크를 공유해주세요.
-
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
+#### 요구사항
+```
+[X] springboot에서 HTTP Cache, gzip 설정하기
+[X] Launch Template 작성하기
+[X] Auto Scaling Group 생성하기
+[X] Smoke, Load, Stress 테스트 후 결과를 기록
 ```
 
+<br />
+
+#### ETag로 캐시된 응답에 대한 유효성 검사 수행
+* 서버는 ETag HTTP 헤더를 사용하여 유효성 검사 토큰을 전달한다.
+* 유효성 검사 토큰을 사용하면 효율적인 리소스 업데이트 검사가 가능하다. 리소스가 변경되지 않은 경우 데이터가 전송되지 않는다.
+  * <b> If-None-Match </b>: 캐시된 리소스의 `ETag`값과 현재 서버 리소스의 `ETag` 값이 같은지 확인한다.
+  * <b> If-Modified-Since </b>: 캐시된 리소스의 `Last-Modified` 값 이후에 서버 리소스가 수정되었는지 확인한다.
+
+#### Cache-Control
+* 각 리소스는 Cache-Control HTTP 헤더를 통해 캐싱 정책을 정의할 수 있다.
+* Cache-Control 지시문은 응답을 캐시할 수 있는 사용자, 해당 조건 및 기간을 제어한다.
+* no-cache, no-store
+  * `no-cache`: 매 요청마다 중간에 있는 캐시 서버들은 `ETag`를 통해 자원의 유효성을 확인한다. Cache-Control의 `max-age=0`와 같다.
+    * 로컬 저장소에 저장하는 것을 막지는 않아서 변경이 있는 경우에만 바로 캐시에 업데이트해 최신 상태로 유지한다.
+  * `no-store`: 자원은 캐시하지 않는다.
+    * 로컬 저장소에 저장되는 것을 막아 데이터가 유출되는 것을 막기 위함이다.
+* private, public
+  * `public`: 중간 단계를 포함해 모든 캐시 서버에 캐시가 가능하다.
+  * `private`: 요청한 사용자만 캐시할 수 있다. 즉, CDN과 같은 범용 캐시서버에서도 캐시할 수 있긴 하지만 그 응답을 모든 사용자에게 공유할 수는 없어서
+     결국 최종 사용자의 브라우저에서만 응답을 캐시할 수 있다.
+
+<br />
+
+1. Launch Template 링크를 공유해주세요.
+* [Launch Template 링크](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-019f4c7c7f0594cc0)
+
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+* `src/main/resources/static/scaleout`에 포함해두었습니다.
+* 부하 테스트 진행 시 CPU 수치가 크게 올라가지 않아 Auto Scaling이 되지 않고 `Request Failed`만 발생하여 Auto Scaling이 발생하는 CPU 수치를 10%로 낮춰서 테스트하였습니다.
+  그 결과로, VUser 350을 테스트하는데 6개의 ec2가 생성되었고 모든 요청이 정상적으로 수행되었습니다.
+  6개의 ec2로 요청이 분산되어 CPU 수치도 낮아지고 요청도 정상적으로 빠르게 수행되는 것을 확인할 수 있었습니다.
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* `src/main/resources/static/scaleout`에 포함해두었습니다.
 
 ---
 
