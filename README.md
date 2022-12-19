@@ -452,6 +452,31 @@ default ✓ [======================================] 000/384 VUs  28m10s
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+<details>
+<summary>쿼리</summary>
+
+```sql
+select 
+    t.id as '사원번호', 
+    t.last_name as '이름', 
+    t.annual_income as '연봉', 
+    t.position_name as '직급', 
+    r.region as '지역', 
+    r.record_symbol as '입출입구분', 
+    r.time as '입출입시간'
+from record r
+       inner join (select e.id, e.last_name, s.annual_income, p.position_name
+                   from employee e
+                          inner join position p on p.id = e.id and p.position_name = 'manager' and p.start_date <= now() and p.end_date >= now()
+                          inner join manager m on m.employee_id = e.id and m.start_date <= now() and m.end_date >= now()
+                          inner join department d on d.id = m.department_id and d.note = 'active'
+                          inner join salary s on s.id = e.id and s.start_date <= now() and s.end_date >= now()
+                   where e.join_date <= now()
+                   order by s.annual_income desc limit 5) t on t.id = r.employee_id and r.record_symbol = 'o';
+```
+
+</details>
+
 ---
 
 ### 4단계 - 인덱스 설계
