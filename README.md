@@ -44,9 +44,41 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+#### 개선전후 측정
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+---
+- Smoke : `k6/smoke/*`
+    - 개선 전
+      ![Smoke](k6/smoke/before_smoke_k6.JPG)
+      ![Smoke](k6/smoke/before_smoke_grafana.JPG)
+    - 개선 후
+      ![Smoke](k6/smoke/after_smoke_k6.JPG)      
+      ![Smoke](k6/smoke/after_smoke_grafana.JPG)
+---
+- Load : `k6/load/*`
+    - 개선 전
+      ![Load](k6/load/before_load_k6.JPG)
+      ![Load](k6/load/before_load_grafana.JPG)
+    - 개선 후
+      ![Load](k6/load/after_load_k6.JPG)      
+      ![Load](k6/load/after_load_grafana.JPG)
+---
+- Stress : `k6/stress/*`
+    - 개선 전
+      ![Stress](k6/stress/before_stress_k6.JPG)
+      ![Stress](k6/stress/before_stress_grafana.JPG)
+    - 개선 후
+      ![Stress](k6/stress/after_stress_k6.JPG)      
+      ![Stress](k6/stress/after_stress_grafana.JPG)
 
+---    
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요 
+    - 개선 전 먼저 측정한다. 
+    - 아래 nginx 설정을 통해 Revers Proxy 개선한다.
+        - gzip 압축
+        - cache 설정
+        - TLS, HTTP/2 설정
+    - WAS 성능은 `Spring Data Cache`를 이용하여 개선한다.
 ---
 
 ### 2단계 - 스케일 아웃
