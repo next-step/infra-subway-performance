@@ -66,3 +66,24 @@
 - [x] DNS 설정
 - [x] TLS 설정
 - [x] Smoke, Load, Stress 테스트 후 결과를 기록
+  - smoke
+    - <img src="/k6/smoke/smoke_asg.png">
+  - load
+    - <img src="/k6/smoke/load_asg.png">
+  - stress
+    - <img src="/k6/smoke/stress_asg.png">
+    - <img src="/k6/smoke/stress_asg_550.png">
+  
+  
+## 결과 정리
+
+- ASG 전(캐싱) <> 후
+  - smoke : 18ms <> 21ms
+  - load : 15ms <> 21ms
+  - stress : 17ms <> 25ms
+
+- ASG 적용 이후, 전반적으로 속도는 증가하였다. 
+  - 예상 이유
+    - 인스턴스 타입을 줄임 -> t4g ->t3m
+    - 캐시와 프록시 설정으로 이미 stress 테스트 350(~550)에서는 부하문제가 없었어서 인스턴스 추가생성 없었음
+

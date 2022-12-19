@@ -4,7 +4,7 @@ import { check, sleep } from 'k6';
 const BASE_URL = 'https://next-bada.n-e.kr/';
 const USERNAME = 'tester@test.com';
 const PASSWORD = 'test123';
-const STATION_MAX_COUNT = 727;
+const STATION_MAX_COUNT = 50;
 const STATION_MIN_COUNT = 1;
 
 export default function task()  {
