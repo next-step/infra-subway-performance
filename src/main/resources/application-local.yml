@@ -5,6 +5,12 @@ spring:
     password: masterpw
     hikari:
       max-lifetime: 58000
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
 
   jpa:
     properties:
@@ -13,3 +19,4 @@ spring:
           show_sql: true
           nodeValue: org.hibernate.dialect.MySQL57Dialect
           storage_engine: innodb
+
