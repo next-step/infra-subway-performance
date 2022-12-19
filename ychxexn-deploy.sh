@@ -8,8 +8,8 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-SUBWAY_PATH="/home/ubuntu/nextstep/infra-subway-performance"
-LOG_PATH="/home/ubuntu/logs/subway"
+SUBWAY_PATH="/nextstep/project/"
+LOG_PATH="/nextstep/log"
 BRANCH=$1
 PROFILE=$2
 
@@ -18,6 +18,8 @@ echo -e "${txtgrn}  << 배포 스크립트 시작 >>${txtrst}"
 echo -e "${txtylw}=======================================${txtrst}"
 
 function clone() {
+  sudo mkdir -p /home/ubuntu/nextstep
+  sudo mkdir -p
   echo -e ""
   echo -e ">> Git Clone"
   git clone "https://github.com/ychxexn/infra-subway-performance.git"
