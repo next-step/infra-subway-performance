@@ -76,7 +76,7 @@ function pull() {
   echo -e "${txtgrn}<< Pull Request 🏃♂ >>${txtrst}"
   echo -e "${txtylw}=======================================${txtrst}"
   git pull origin $BRANCH
-  pullSubModule();
+  pullSubModule;
 }
 
 function pullSubModule() {
