@@ -44,8 +44,12 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- test_result 디렉토리 하위에 성능 개선 전후의 k6, grafana 결과 첨부하였습니다.
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- reverse proxy : gzip, cache 적용, TLS, HTTP/2 설정
+- was : redis cache 적용
+- URL : https://cylee9409-subway.o-r.kr/
 
 ---
 
