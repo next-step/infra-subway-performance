@@ -39,6 +39,10 @@ dependencies {
 
 	runtimeOnly 'com.h2database:h2'
 	implementation("mysql:mysql-connector-java")
+
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 
 test {
