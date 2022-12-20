@@ -46,7 +46,7 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 <details>
-<summary>smoke 스크립트 실행 이전 결과</summary>
+<summary>smoke.js 실행 이전 결과</summary>
 
 ```text
 
@@ -98,7 +98,7 @@ default ✓ [======================================] 1 VUs  1m0s
 
 
 <details>
-<summary>stress 스크립트 실행 이전 결과</summary>
+<summary>load.js 실행 이전 결과</summary>
 
 ```text
 
@@ -150,7 +150,7 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 
 <details>
-<summary>laod 스크립트 실행 이전 결과</summary>
+<summary>stress.js 실행 이전 결과</summary>
 
 ```text
 
@@ -161,11 +161,11 @@ default ✓ [======================================] 00/14 VUs  29m10s
   / __________ \  |__| \__\ \_____/ .io
 
   execution: local
-     script: load.js
+     script: stress.js
      output: InfluxDBv1 (http://localhost:8086)
 
-  scenarios: (100.00%) 1 scenario, 14 max VUs, 29m40s max duration (incl. graceful stop):
-           * default: Up to 14 looping VUs for 29m10s over 12 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+  scenarios: (100.00%) 1 scenario, 384 max VUs, 28m40s max duration (incl. graceful stop):
+           * default: Up to 384 looping VUs for 28m10s over 16 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
 running (1m00.1s), 0/1 VUs, 502 complete and 0 interrupted iterations
@@ -197,8 +197,14 @@ default ✓ [======================================] 00/14 VUs  29m10s
      vus_max........................: 14      min=14       max=14
 ```
 
+</details>
 
-3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+   - WEB 성능 개선 (nginx.conf 설정 수정)
+     - gzip 압축
+     - cache 설정
+     - http/2
 
 ---
 
