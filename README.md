@@ -84,16 +84,16 @@ npm run dev
   - [x] gzip 설정하기
 - [x] Launch Template 작성하기
 - [x] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 - https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a86898e1489db9b9
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+* `/step2/cloudwatch` - 폴더 내 결과 캡쳐
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+* `/step2/k6` - 폴더 내 결과 캡처
 
 ---
 
