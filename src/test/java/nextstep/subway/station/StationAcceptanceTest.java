@@ -54,7 +54,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철역_목록_조회_요청(createResponse1.as(StationResponse.class).getId());
 
         // then
         지하철역_목록_응답됨(response);
@@ -92,10 +92,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철역_목록_조회_요청(Long id) {
         return RestAssured.given().log().all().
                 when().
-                get("/stations").
+                get("/stations?id={id}", id).
                 then().
                 log().all().
                 extract();
