@@ -14,7 +14,7 @@ import javax.servlet.Filter;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private static final String PREFIX_STATIC_RESOURCES = "/resources";
+    public static final String PREFIX_STATIC_RESOURCES = "/resources";
     private static final String CLASS_PATH_STATIC = "classpath:/static/";
 
     private final SubwayVersionSupport subwayVersionSupport;
