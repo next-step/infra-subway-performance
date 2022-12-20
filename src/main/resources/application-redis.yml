@@ -1,11 +1,23 @@
 spring:
   config:
     activate:
-      on-profile: "test"
+      on-profile: "local"
   cache:
     type: redis
   redis:
     host: 13.125.226.177
+    port: 6379
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "test"
+  cache:
+    type: redis
+  redis:
+    host: 192.168.80.154
     port: 6379
 
 ---
