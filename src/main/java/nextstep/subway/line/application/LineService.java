@@ -29,7 +29,8 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
+            @CacheEvict(cacheNames = "lines", allEntries = true),
+            @CacheEvict(cacheNames = "stations", allEntries = true)
     })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
@@ -61,7 +62,6 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "paths", allEntries = true),
             @CacheEvict(cacheNames = "lines", allEntries = true)
     })
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -71,13 +71,18 @@ public class LineService {
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "paths", allEntries = true),
-            @CacheEvict(cacheNames = "lines", allEntries = true)
+            @CacheEvict(cacheNames = "lines", allEntries = true),
+            @CacheEvict(cacheNames = "stations", allEntries = true)
     })
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "paths", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "paths", allEntries = true),
+            @CacheEvict(cacheNames = "lines", allEntries = true),
+            @CacheEvict(cacheNames = "stations", allEntries = true)
+    })
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -85,7 +90,11 @@ public class LineService {
         line.addLineSection(upStation, downStation, request.getDistance());
     }
 
-    @CacheEvict(value = "paths", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "paths", allEntries = true),
+            @CacheEvict(cacheNames = "lines", allEntries = true),
+            @CacheEvict(cacheNames = "stations", allEntries = true)
+    })
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
