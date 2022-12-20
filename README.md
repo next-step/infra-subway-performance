@@ -44,10 +44,15 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+   - http_req_duration(avg) 기준
+     - smoke : 21.42ms -> 4.21ms
+     - load : 67.16ms -> 7.27ms
+     - stess : 914.32ms -> 87.82ms
 
 <details>
-<summary>smoke.js 실행 이전 결과</summary>
+<summary>smoke.js</summary>
 
+- smoke.js 실행 이전 결과
 ```text
 
           /\      |‾‾| /‾‾/   /‾‾/
@@ -65,7 +70,7 @@ npm run dev
 
 
 running (1m00.1s), 0/1 VUs, 502 complete and 0 interrupted iterations
-default ✓ [======================================] 1 VUs  1m0s
+default ✓ [======================================] 1 VUs  06m30.9s/29m10.0s
 
      ✓ [Result] Main Page
      ✓ [Result] Login Page
@@ -75,35 +80,88 @@ default ✓ [======================================] 1 VUs  1m0s
      ✓ [Result] Search Path
 
      checks.........................: 100.00% ✓ 3012     ✗ 0
-     data_received..................: 19 MB  316 kB/s
-     data_sent......................: 4.7 MB 78 kB/s
-     http_req_blocked...............: avg=6.89µs  min=1.5µs    med=2.61µs  max=29.22ms  p(90)=3.57µs  p(95)=4.18µs
-     http_req_connecting............: avg=231ns   min=0s       med=0s      max=330.12µs p(90)=0s      p(95)=0s
-    ✓ http_req_duration..............: avg=2.42ms  min=529µs    med=1.88ms  max=55.54ms  p(90)=4.5ms   p(95)=6.23ms
-        { expected_response:true }...: avg=2ms     min=529µs    med=1.1ms   max=47.52ms  p(90)=3.45ms  p(95)=5.25ms
-     http_req_failed................: 16.66% ✓ 3900       ✗ 19500
-     http_req_receiving.............: avg=55.7µs  min=25.28µs  med=47.37µs max=29.33ms  p(90)=69.81µs p(95)=77.51µs
-     http_req_sending...............: avg=15.11µs min=6.39µs   med=12.42µs max=8.27ms   p(90)=18.61µs p(95)=23.01µs
-     http_req_tls_handshaking.......: avg=3µs     min=0s       med=0s      max=12.62ms  p(90)=0s      p(95)=0s
-     http_req_waiting...............: avg=2.35ms  min=486.83µs med=1.82ms  max=55.45ms  p(90)=4.41ms  p(95)=6.13ms
-     http_reqs......................: 23400  389.846775/s
-     iteration_duration.............: avg=15.37ms min=8.26ms   med=12.43ms max=109.12ms p(90)=23.9ms  p(95)=30.79ms
-     iterations.....................: 3900   64.974463/s
-     vus............................: 1      min=1        max=1
-     vus_max........................: 1      min=1        max=1
+     data_received..................: 3.7 MB  62 kB/s
+     data_sent......................: 624 kB  10 kB/s
+     http_req_blocked...............: avg=11.98µs  min=1.18µs   med=2.32µs   max=13.82ms  p(90)=3.48µs   p(95)=4.25µs
+     http_req_connecting............: avg=951ns    min=0s       med=0s       max=938.6µs  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=21.42ms  min=887.92µs med=4.03ms   max=534.68ms p(90)=85.41ms  p(95)=104.58ms
+       { expected_response:true }...: avg=21.42ms  min=887.92µs med=4.03ms   max=534.68ms p(90)=85.41ms  p(95)=104.58ms
+     http_req_failed................: 0.00%   ✓ 0        ✗ 3012
+     http_req_receiving.............: avg=63.87µs  min=22.04µs  med=54.16µs  max=4.35ms   p(90)=88.51µs  p(95)=102.86µs
+     http_req_sending...............: avg=17.35µs  min=6.2µs    med=12.73µs  max=813.69µs p(90)=25.13µs  p(95)=30.07µs
+     http_req_tls_handshaking.......: avg=7.7µs    min=0s       med=0s       max=12.71ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=19.7ms   min=846.43µs med=3.95ms   max=534.58ms p(90)=85.28ms  p(95)=104.49ms
+     http_reqs......................: 3012    50.13412/s
+     iteration_duration.............: avg=119.66ms min=67.59ms  med=113.65ms max=576.87ms p(90)=156.07ms p(95)=176.29ms
+     iterations.....................: 502     8.355687/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+
+- smoke.js 실행 이후 결과
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m30s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
+
+running (1m00.1s), 0/1 VUs, 502 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 236806     ✗ 0
+     data_received..................: 209 MB  534 kB/s
+     data_sent......................: 14 MB   37 kB/s
+     http_req_blocked...............: avg=6.45µs  min=151ns    med=286ns   max=65.29ms  p(90)=413ns   p(95)=464ns
+     http_req_connecting............: avg=1.01µs  min=0s       med=0s      max=27.48ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=4.21ms  min=669.93µs med=1.96ms  max=93.05ms  p(90)=8.82ms  p(95)=11.17ms
+       { expected_response:true }...: avg=4.21ms  min=669.93µs med=1.96ms  max=93.05ms  p(90)=8.82ms  p(95)=11.17ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 236806
+     http_req_receiving.............: avg=45.48µs min=10.67µs  med=26.9µs  max=47.46ms  p(90)=47.78µs p(95)=62.5µs
+     http_req_sending...............: avg=31.97µs min=9.47µs   med=24.55µs max=20.91ms  p(90)=44.46µs p(95)=52.39µs
+     http_req_tls_handshaking.......: avg=4.8µs   min=0s       med=0s      max=37.7ms   p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.63ms  min=0s       med=1.9ms   max=92.51ms  p(90)=8.74ms  p(95)=11.04ms
+     http_reqs......................: 236806  605.839848/s
+     iteration_duration.............: avg=22.92ms min=10.35ms  med=19.39ms max=253.69ms p(90)=32.44ms p(95)=46.64ms
+     iterations.....................: 39465   100.966486/s
+     vus............................: 6       min=1        max=6
+     vus_max........................: 14      min=14       max=14
 ```
 
 </details>
 
-![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
-
-![img.png](src/main/resources/image/stress_grafana_after.png)
-
-
 
 <details>
-<summary>load.js 실행 이전 결과</summary>
+<summary>grafana</summary>
 
+- 개선 이전 grafana
+  ![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
+- 개선 이후 grafana
+  ![stress_grafana_after](src/main/resources/image/stress_grafana_after.png)
+</details>   
+
+<br>
+
+<details>
+<summary>load.js</summary>
+
+- load.js 실행 이전 결과
 ```text
 
           /\      |‾‾| /‾‾/   /‾‾/
@@ -130,32 +188,89 @@ default ✓ [======================================] 00/14 VUs  29m10s
      ✓ [Result] Path Page
      ✓ [Result] Search Path
 
-     hecks.........................: 83.30% ✓ 368179     ✗ 73773
-     data_received..................: 362 MB 214 kB/s
-     data_sent......................: 89 MB  53 kB/s
-     http_req_blocked...............: avg=9.54ms   min=0s       med=2.69µs   max=49.35s p(90)=4.34µs   p(95)=5.7µs
-     http_req_connecting............: avg=1.71ms   min=0s       med=0s       max=1m2s   p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=411.95ms min=0s       med=32.1ms   max=4m58s  p(90)=262.85ms p(95)=420.4ms
-       { expected_response:true }...: avg=146.29ms min=513.73µs med=29.07ms  max=4m58s  p(90)=248.94ms p(95)=396.03ms
-     http_req_failed................: 16.71% ✓ 73906      ✗ 368190
-     http_req_receiving.............: avg=43.9ms   min=0s       med=45.59µs  max=4m58s  p(90)=478.32µs p(95)=1.31ms
-     http_req_sending...............: avg=2.06ms   min=0s       med=13.52µs  max=30.22s p(90)=27.14µs  p(95)=55.4µs
-     http_req_tls_handshaking.......: avg=6.37ms   min=0s       med=0s       max=46.59s p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=365.98ms min=0s       med=31.55ms  max=4m58s  p(90)=258.94ms p(95)=413.19ms
-     http_reqs......................: 442096 261.593439/s
-     iteration_duration.............: avg=2.63s    min=7.22ms   med=224.14ms max=7m6s   p(90)=1.59s    p(95)=2.84s
-     iterations.....................: 73674  43.593778/s
-     vus............................: 1      min=1        max=331
-     vus_max........................: 384    min=384      max=384
+     checks.........................: 100.00% ✓ 222492     ✗ 0
+     data_received..................: 277 MB  158 kB/s
+     data_sent......................: 46 MB   26 kB/s
+     http_req_blocked...............: avg=8.78µs   min=803ns    med=1.99µs   max=32.76ms p(90)=3.27µs   p(95)=3.91µs
+     http_req_connecting............: avg=1.07µs   min=0s       med=0s       max=22.92ms p(90)=0s       p(95)=0s
+   ✗ http_req_duration..............: avg=67.16ms  min=723.95µs med=2.64ms   max=5.1s    p(90)=170.61ms p(95)=298.36ms
+       { expected_response:true }...: avg=67.16ms  min=723.95µs med=2.64ms   max=5.1s    p(90)=170.61ms p(95)=298.36ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 222492
+     http_req_receiving.............: avg=58.66µs  min=13.96µs  med=44.7µs   max=29.76ms p(90)=84.12µs  p(95)=100.26µs
+     http_req_sending...............: avg=17.48µs  min=4.7µs    med=11.55µs  max=28.15ms p(90)=24µs     p(95)=28.93µs
+     http_req_tls_handshaking.......: avg=4.64µs   min=0s       med=0s       max=31.86ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=65.44ms  min=684µs    med=2.58ms   max=5.1s    p(90)=170.53ms p(95)=298.24ms
+     http_reqs......................: 222492  127.121754/s
+     iteration_duration.............: avg=393.95ms min=59.63ms  med=219.34ms max=5.74s   p(90)=467.89ms p(95)=2.17s
+     iterations.....................: 37082   21.186959/s
+     vus............................: 1       min=1        max=14
+     vus_max........................: 14      min=14       max=14
+```
+
+- load.js 실행 이후 결과
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 14 max VUs, 29m40s max duration (incl. graceful stop):
+           * default: Up to 14 looping VUs for 29m10s over 12 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (29m10.2s), 00/14 VUs, 37082 complete and 0 interrupted iterations
+default ✓ [======================================] 00/14 VUs  29m10s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 2166810     ✗ 0
+     data_received..................: 1.9 GB  1.1 MB/s
+     data_sent......................: 132 MB  75 kB/s
+     http_req_blocked...............: avg=9.41µs  min=123ns    med=302ns   max=102.94ms p(90)=398ns   p(95)=440ns
+     http_req_connecting............: avg=1µs     min=0s       med=0s      max=32.52ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=7.27ms  min=646.48µs med=3.52ms  max=732.58ms p(90)=16.41ms p(95)=21.24ms
+       { expected_response:true }...: avg=7.27ms  min=646.48µs med=3.52ms  max=732.58ms p(90)=16.41ms p(95)=21.24ms
+     http_req_failed................: 0.00%   ✓ 0           ✗ 2166810
+     http_req_receiving.............: avg=98.8µs  min=10.02µs  med=26.68µs max=76.96ms  p(90)=92µs    p(95)=219.53µs
+     http_req_sending...............: avg=32.67µs min=8.54µs   med=22.4µs  max=58.21ms  p(90)=41.64µs p(95)=49.88µs
+     http_req_tls_handshaking.......: avg=7.83µs  min=0s       med=0s      max=53.92ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=6.49ms  min=0s       med=3.44ms  max=732.46ms p(90)=16.2ms  p(95)=20.91ms
+     http_reqs......................: 2166810 1238.151737/s
+     iteration_duration.............: avg=40.4ms  min=9.87ms   med=25.28ms max=1.81s    p(90)=93.51ms p(95)=117.95ms
+     iterations.....................: 361135  206.358623/s
+     vus............................: 1       min=1         max=14
+     vus_max........................: 14      min=14        max=14
 ```
 
 </details>
 
+<details>
+<summary>grafana</summary>
+
+- 개선 이전 grafana
+  ![load_grafana_before](src/main/resources/image/load_grafana_before.png)
+- 개선 이후 grafana
+  ![load_grafana_after](src/main/resources/image/load_grafana_after.png)
+</details>
+
+<br>
 
 
 <details>
-<summary>stress.js 실행 이전 결과</summary>
+<summary>stress.js</summary>
 
+- stress.js 실행 이전 결과
 ```text
 
           /\      |‾‾| /‾‾/   /‾‾/
@@ -182,25 +297,82 @@ default ✓ [======================================] 00/14 VUs  29m10s
      ✓ [Result] Path Page
      ✓ [Result] Search Path
 
-     checks.........................: 66.66%  ✓ 789980     ✗ 394990
-     data_received..................: 965 MB  551 kB/s
-     data_sent......................: 183 MB  104 kB/s
-     http_req_blocked...............: avg=22.27µs  min=856ns    med=2.57µs  max=139.47ms p(90)=3.79µs   p(95)=4.66µs
-     http_req_connecting............: avg=1.62µs   min=0s       med=0s      max=24.12ms  p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=11.99ms  min=482.8µs  med=7.38ms  max=204.49ms p(90)=28.3ms   p(95)=35.68ms
-       { expected_response:true }...: avg=9.9ms    min=482.8µs  med=5.16ms  max=196.47ms p(90)=25.43ms  p(95)=32.32ms
-     http_req_failed................: 50.00%  ✓ 592485     ✗ 592485
-     http_req_receiving.............: avg=170.92µs min=13.13µs  med=41.63µs max=72.02ms  p(90)=233.25µs p(95)=534.94µs
-     http_req_sending...............: avg=41.38µs  min=4.43µs   med=12.81µs max=62.47ms  p(90)=25.99µs  p(95)=42.32µs
-     http_req_tls_handshaking.......: avg=13.71µs  min=0s       med=0s      max=132.29ms p(90)=0s       p(95)=0s
-     http_req_waiting...............: avg=11.78ms  min=445.86µs med=7.13ms  max=204.45ms p(90)=28.07ms  p(95)=35.45ms
-     http_reqs......................: 1184970 677.118897/s
-     iteration_duration.............: avg=73.88ms  min=6.15ms   med=53.64ms max=583.96ms p(90)=161.72ms p(95)=199.18ms
-     iterations.....................: 197495  112.853149/s
-     vus............................: 1       min=1        max=14
-     vus_max........................: 14      min=14       max=14
+     checks.........................: 99.99% ✓ 264424     ✗ 15
+     data_received..................: 330 MB 195 kB/s
+     data_sent......................: 55 MB  33 kB/s
+     http_req_blocked...............: avg=14.75µs  min=923ns    med=2.06µs  max=50.38ms p(90)=3.37µs  p(95)=4.02µs
+     http_req_connecting............: avg=1.51µs   min=0s       med=0s      max=14.78ms p(90)=0s      p(95)=0s
+   ✗ http_req_duration..............: avg=914.32ms min=709.84µs med=4.27ms  max=32.18s  p(90)=2.46s   p(95)=3.74s
+       { expected_response:true }...: avg=910.6ms  min=709.84µs med=4.27ms  max=32.18s  p(90)=2.46s   p(95)=3.74s
+     http_req_failed................: 0.00%  ✓ 23         ✗ 264416
+     http_req_receiving.............: avg=58.86µs  min=13.81µs  med=46.47µs max=17.47ms p(90)=87.67µs p(95)=105.56µs
+     http_req_sending...............: avg=17.83µs  min=4.8µs    med=12.37µs max=20.79ms p(90)=25.09µs p(95)=32µs
+     http_req_tls_handshaking.......: avg=9.85µs   min=0s       med=0s      max=28.24ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=912.78ms min=677.02µs med=4.18ms  max=32.18s  p(90)=2.46s   p(95)=3.74s
+     http_reqs......................: 264439 156.464657/s
+     iteration_duration.............: avg=5.45s    min=56.68ms  med=2.27s   max=1m13s   p(90)=10.37s  p(95)=24.86s
+     iterations.....................: 44047  26.06196/s
+     vus............................: 1      min=1        max=384
+     vus_max........................: 384    min=384      max=384
 ```
 
+
+- stress.js 실행 이후 결과
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: stress.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 384 max VUs, 28m40s max duration (incl. graceful stop):
+           * default: Up to 384 looping VUs for 28m10s over 16 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (1m00.1s), 0/1 VUs, 502 complete and 0 interrupted iterations
+default ✓ [======================================] 00/14 VUs  29m10s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 2774892     ✗ 0
+     data_received..................: 2.4 GB  1.4 MB/s
+     data_sent......................: 194 MB  115 kB/s
+     http_req_blocked...............: avg=33.71µs  min=136ns    med=308ns    max=472.33ms p(90)=393ns    p(95)=433ns
+     http_req_connecting............: avg=2.28µs   min=0s       med=0s       max=125.2ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+       { expected_response:true }...: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+     http_req_failed................: 0.00%   ✓ 0           ✗ 2774892
+     http_req_receiving.............: avg=734.29µs min=10.69µs  med=35.86µs  max=163.46ms p(90)=1.07ms   p(95)=2.35ms
+     http_req_sending...............: avg=49.86µs  min=8.29µs   med=24.38µs  max=137.8ms  p(90)=44.34µs  p(95)=56.32µs
+     http_req_tls_handshaking.......: avg=30.84µs  min=0s       med=0s       max=469.73ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=84.7ms   min=0s       med=52.54ms  max=7.49s    p(90)=173.72ms p(95)=227.9ms
+     http_reqs......................: 2774892 1641.937747/s
+     iteration_duration.............: avg=513.8ms  min=10.49ms  med=388.84ms max=11.09s   p(90)=1.03s    p(95)=1.65s
+     iterations.....................: 462482  273.656291/s
+     vus............................: 1       min=1         max=384
+     vus_max........................: 384     min=384       max=384
+```
+
+</details>
+
+
+<details>
+<summary>stress.js</summary>
+
+- 개선 이전 grafana
+  ![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
+- 개선 이후 grafana
+  ![stress_grafana_after](src/main/resources/image/stress_grafana_after.png)
 </details>
 
 
