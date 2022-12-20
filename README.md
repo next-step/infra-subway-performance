@@ -61,21 +61,20 @@ npm run dev
 
 #### 요구사항
 - [X] springboot에 HTTP Cache, gzip 설정하기
-- [ ] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c73c379d348a403a
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+- /monitoring/asg/cloudwatch/cloudwatch_asg.png
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
----
+- /monitoring/asg/smoke
+- /monitoring/asg/load
+- /monitoring/asg/stress
 
 ### 3단계 - 쿼리 최적화
 
