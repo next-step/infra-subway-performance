@@ -46,14 +46,13 @@ function cloneIfNotExistApplication() {
     echo -e "${txtylw} >> 경로 : ${txtred}$REPOSITORY${txtrst}"
     git clone -b $BRANCH $GIT_URL $REPOSITORY
     git submodule init
-    git submodule set-url src/main/resources/config https://${GIT_SUB_TOKEN}@github.com/SanghoonSon/infra-subway-deploy-config.git
-    git submodule update
-
+    pullSubModule
     buildAndRestartApp
     exit 0
   fi
   cd ${REPOSITORY}
 }
+
 
 function check_df() {
   echo -e "${txtylw}=======================================${txtrst}"
@@ -77,6 +76,15 @@ function pull() {
   echo -e "${txtgrn}<< Pull Request 🏃♂ >>${txtrst}"
   echo -e "${txtylw}=======================================${txtrst}"
   git pull origin $BRANCH
+  pullSubModule();
+}
+
+function pullSubModule() {
+  if [[ -n "$GIT_SUB_TOKEN" ]]; then
+    git submodule set-url src/main/resources/config https://${GIT_SUB_TOKEN}@github.com/SanghoonSon/infra-subway-deploy-config.git
+    git submodule update
+    git checkout HEAD -- .gitmodules
+  fi
 }
 
 function makeJar() {
