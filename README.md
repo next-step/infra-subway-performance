@@ -240,7 +240,117 @@ order by   e.annual_income  desc
   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1-1. Coding as a Hobby 와 같은 결과를 반환하세요.
+**[ 쿼리 ]**
+```sql
+select	p.hobby
+	  , round(round(count(1) * 100 / (select count(1) from programmer)), 1) as rate
+from programmer p
+group by p.hobby
+order by p.hobby desc
+;
+```
+**[ index, PK 추가 ]**
+```sql
+alter table programmer add constraint primary key(id);
+```
 
+1-2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+**[ 쿼리 ]**
+```sql
+select  c.id as 'covid.id'
+      , h.name as 'hospital.name'
+from    programmer p
+   , covid c
+   , hospital h
+where 1=1
+  and p.id = c.programmer_id
+  and h.id = c.hospital_id
+;
+```
+**[ index, PK 추가 ]**
+```sql
+alter table covid add constraint primary key(id);
+alter table hospital add constraint primary key(id);
+```
+
+1-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+**[ 쿼리 ]**
+```sql
+select c.id as 'covid.id', h.name as 'hospital.name', p.hobby as 'user.Hobby', p.dev_type as 'user.DevType', p.years_coding as 'user.YearsCoding'
+from 	covid c
+inner join hospital h
+on c.hospital_id = h.id
+inner join (
+			select p.hobby, p.dev_type, p.years_coding, p.id
+			from programmer p
+			where 1=1
+			and ((p.hobby = 'Yes' and p.student LIKE 'Yes%') -- 프로그래밍이 취미인
+			or p.years_coding = '0-2 years'
+			)
+		) p
+on c.programmer_id = p.id
+order by p.id
+;
+```
+**[ index, PK 추가 ]**
+```sql
+
+```
+
+1-4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+**[ 쿼리 ]**
+```sql
+select c.stay as 'covid.Stay', count(1) as 'count'
+from  	covid c
+inner join programmer p
+on (
+	c.programmer_id = p.id
+and p.country = 'India'
+)
+inner join hospital h
+on (
+	c.hospital_id = h.id
+and h.name = '서울대병원'
+)1
+inner join member m
+on (
+	c.member_id = m.id
+and m.age between 20 and 29
+)
+group by c.stay
+;
+
+```
+**[ index, PK 추가 ]**
+```sql
+alter table member add constraint primary key(id);
+```
+
+1-5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+**[ 쿼리 ]**
+```sql
+select p.exercise as 'user.Exercise', count(1) as 'count'
+from covid c
+inner join member m
+on (
+	c.member_id = m.id
+and m.age between 30 and 39
+)
+inner join hospital h
+on (
+	c.hospital_id = h.id
+and h.name = '서울대병원'
+)
+inner join programmer p
+on c.programmer_id = p.id
+group by p.exercise
+;
+```
+**[ index, PK 추가 ]**
+```sql
+
+```
 
 ---
 
