@@ -64,12 +64,23 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-- [ ] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-- [ ] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-- [ ] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+* `cache-control` - 헤더에 설정하여 HTTP Caching 설정을 한다.
+  * `no-store` - Cache를 사용하지 않는다는 의미
+  * `no-cache` - `max-age=0`과 동일한 의미, Cache를 사용하며, 요청시 유효성 검사를 통해 올바른 경우에만 Cache를 사용
+  * `max-age` - Cache의 유효기간을 설정
 
-- [ ] springboot에 HTTP Cache, gzip 설정하기
-  - [ ] HTTP Cache 설정하기
+
+  * `public`은 모든 사용자와 중간 서버가 캐시를 저장할 수 있음을 나타내고, `private`은 엔드포인트의 사용자 브라우저만 캐시를 저장할 수 있음 나타낸다.
+  * `Etag` - 리소스의 특정 버전에 대한 식별자로, HTTP 컨텐츠가 바뀌었는지를 검사할 수 있는 태그
+
+- [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [x] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - HTTP 스펙이 모든 상황을 완벽하게 제어하는 것이 아니기 때문에 가능합니다.
+  - 오래된 브라우저, HTTP 1.0, 버그, 수 많은 프록시 캐시 업체들과 그에 대한 구현방법등이 다르기 때문에 대처하기 위해 함께 사용될 수도 있습니다.
+
+- [x] springboot에 HTTP Cache, gzip 설정하기
+  - [x] HTTP Cache 설정하기
   - [x] gzip 설정하기
 - [ ] Launch Template 작성하기
 - [ ] Auto Scaling Group 생성하기
