@@ -40,13 +40,45 @@ npm run dev
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
-
-
+    - 미션 수행 url: https://www.aws-nextstep-deokmoo.kro.kr/
+    
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+#### 개선전후 측정
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+---
+- Smoke : `k6/smoke/*`
+    - 개선 전
+      ![Smoke](k6/smoke/before_smoke_k6.JPG)
+      ![Smoke](k6/smoke/before_smoke_grafana.JPG)
+    - 개선 후
+      ![Smoke](k6/smoke/after_smoke_k6.JPG)      
+      ![Smoke](k6/smoke/after_smoke_grafana.JPG)
+---
+- Load : `k6/load/*`
+    - 개선 전
+      ![Load](k6/load/before_load_k6.JPG)
+      ![Load](k6/load/before_load_grafana.JPG)
+    - 개선 후
+      ![Load](k6/load/after_load_k6.JPG)      
+      ![Load](k6/load/after_load_grafana.JPG)
+---
+- Stress : `k6/stress/*`
+    - 개선 전
+      ![Stress](k6/stress/before_stress_k6.JPG)
+      ![Stress](k6/stress/before_stress_grafana.JPG)
+    - 개선 후
+      ![Stress](k6/stress/after_stress_k6.JPG)      
+      ![Stress](k6/stress/after_stress_grafana.JPG)
 
+---    
+2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요 
+    - 개선 전 먼저 측정한다. 
+    - 아래 nginx 설정을 통해 Revers Proxy 개선한다.
+        - gzip 압축
+        - cache 설정
+        - TLS, HTTP/2 설정
+    - WAS 성능은 `Spring Data Cache`를 이용하여 개선
 ---
 
 ### 2단계 - 스케일 아웃
@@ -63,7 +95,7 @@ $ stress -c 2
 
 ---
 
-### 1단계 - 쿼리 최적화
+### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
@@ -71,7 +103,7 @@ $ stress -c 2
 
 ---
 
-### 2단계 - 인덱스 설계
+### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
