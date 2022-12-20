@@ -1,4 +1,4 @@
-import http from 'k6/http';
+import http from 'step1/k6/http';
 import { check, group, sleep, fail } from 'k6';
 
 
