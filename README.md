@@ -95,6 +95,10 @@ default ✓ [======================================] 1 VUs  1m0s
 
 </details>
 
+![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
+
+![img.png](src/main/resources/image/stress_grafana_after.png)
+
 
 
 <details>
