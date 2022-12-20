@@ -5,13 +5,11 @@ export let options = {
   // 평균 VUser : 10
   // 최대 VUser : 20
   stages: [
-    { duration: '10s', target: 5 }, // ramping up
-    { duration: '1m', target: 5 },
     { duration: '10s', target: 7 }, // ramping up
-    { duration: '2m', target: 7 },
+    { duration: '1m', target: 5 },
+    { duration: '2m', target: 9 },
     { duration: '10s', target: 10 }, // ramping up
     { duration: '4m', target: 10 },
-    { duration: '10s', target: 7 }, // ramping down
     { duration: '2m', target: 7 },
     { duration: '10s', target: 5 }, // ramping down
     { duration: '1m', target: 5 },
@@ -47,8 +45,8 @@ function loadPathPage() {
 }
 
 function findPath() {
-  let source = Math.floor(Math.random() * 10 + 1);
-  let target = Math.floor(Math.random() * 10 + 1);
+  let source = Math.floor(Math.random() * 49 + 1);
+  let target = Math.floor(Math.random() * 49 + 1);
   const response = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`);
   check(response, {
     'get path info in successfully': (res) => res.status === 200,
