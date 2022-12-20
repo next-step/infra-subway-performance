@@ -17,6 +17,10 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
 @EnableCaching
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
@@ -31,7 +35,8 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .serializeKeysWith(RedisSerializationContext
                         .SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper())));
+                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper())))
+                .entryTtl(Duration.ofHours(1L));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder.
                 fromConnectionFactory(connectionFactory).cacheDefaults(redisCacheConfiguration).build();
@@ -47,4 +52,5 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModules(new JavaTimeModule());
     }
+
 }

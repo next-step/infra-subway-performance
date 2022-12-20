@@ -53,11 +53,16 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
- - [] 미션1 : 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
- - [] 미션2 : 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
- - [] 미션3 : 모든 정적 자원에 대해 no-cache, no-store설정이 가능한가?
- - 
- - [] springboot에 HTTP Cache, gzip 설정하기
+ - [x] springboot에 HTTP Cache, gzip 설정하기
+   - 미션1 : 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+   - 미션2 : 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+   - 미션3 : 모든 정적 자원에 대해 no-cache, no-store설정이 가능한가?
+     - no-cache값은 대부분의 브라우저에서 max-age=0과 동일한 뜻입니다. 즉, 캐시는 저장하지만 사용하려고 할 때마다 서버에 재검증 요청을 보내야 합니다.
+     - no-store값은 캐시를 절대로 해서는 안 되는 리소스일 때 사용합니다. 캐시를 만들어서 저장조차 하지말라는 가장 강력한 Cache-Control값입니다. no-store를 사용하면 브라우저는 어떤 경우에도 캐시 저장소에 해당 리소스를 저장하지 않습니다.
+     - 두 캐시 컨트롤 정의를 보면 항상 캐시가 무효화 되어야 맞지만, 오래된 브라우저와의 호환 및 버그, 수많은 프록시 캐시 업체들과 그 구현 서버 등등 여러 이슈로 no-store만 사용하지 않고 메이저 사이트에서는 cache-control로 no-cache, no-store, must-revalidate를 함께 설정하고 있습니다.
+     - https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94
+     - https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+    
  - [] Launch Template 작성하기
  - [] Auto Scailing Group 생성하기
  - [] Smoke, Load, Stress 테스트 후 결과를 기록
