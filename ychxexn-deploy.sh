@@ -51,7 +51,7 @@ function killProcess() {
 function deploy() {
   echo -e ""
   echo -e "${txtylw}>> deploy${txtrst}"
-  JAR_PATH=$(find $SUBWAY_PATH/build/libs/* -name "*.jar")
+  JAR_PATH=$(find $REPO/build/libs/* -name "*.jar")
   nohup java -jar -Dspring.profiles.active=$PROFILE $JAR_PATH 1> $LOG_PATH/out.log 2>&1  &
 }
 
