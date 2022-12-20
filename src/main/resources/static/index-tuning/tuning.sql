@@ -1,11 +1,9 @@
 /**
   생성된 인덱스 목록
 */
-alter table programmer add primary key (id);
-alter table hospital add primary key (id);
+alter table `subway`.`programmer` change column `id` `id` BIGINT(20) NOT NULL, add primary key (`id`);
+alter table `subway`.`hospital` change column `id` `id` BIGINT(20) NOT NULL, add primary key (`id`);
 alter table covid add foreign key (programmer_id) references programmer (id);
-/** covid hospital_id와 hospital의 id 컬럼의 타입이 일치하지 않아서 일치하도록 수정하였다. */
-alter table `subway`.`hospital` change column `id` `id` BIGINT(20) NOT NULL ;
 alter table covid add foreign key (hospital_id) references hospital (id);
 create index idx_programmer_01 on programmer (hobby);
 
