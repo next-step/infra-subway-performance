@@ -94,6 +94,7 @@ npm run dev
 #### 미션
 
 - 실습환경 세팅
+
 ```
 $ docker run -d -p 23306:3306 brainbackdoor/data-tuning:0.0.3
 ```  
@@ -108,6 +109,30 @@ workbench를 설치한 후 localhost:23306 (ID : user, PW : password) 로 접속
 - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+- SQL 쿼리
+```
+select 
+  t.id as '사원번호', 
+  t.name as '이름', 
+  t.income as '연봉', 
+  t.position_name as '직급명', 
+  record.time as '입출입시간', 
+  record.region as '지역', 
+  record.record_symbol as '입출입구분' 
+from 
+(
+  select employee.id as id, employee.last_name as name, salary.annual_income as income, position.position_name as position_name
+  from department
+  inner join manager on manager.department_id = department.id
+  inner join salary on salary.id = manager.employee_id
+  inner join employee on employee.id = manager.employee_id
+  inner join position on position.id = employee.id
+  where note = 'active' and manager.end_date = '9999-01-01' and salary.end_date = '9999-01-01' and position.end_date = '9999-01-01'
+  order by salary.annual_income desc limit 5 
+) t
+inner join record on record.employee_id = t.id
+where record.record_symbol = 'O';
+```
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
