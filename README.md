@@ -44,10 +44,10 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-* `/k6/origin` - 기존 어플리케이션
-* `/k6/reverse-proxy` - 리버스 프록시 개선
-* `/k6/redis-cache` - 레디스 캐시 설정
-* `/k6/test-script` - k6 테스트 스크립트
+* `/step1/k6/origin` - 기존 어플리케이션
+* `/step1/k6/reverse-proxy` - 리버스 프록시 개선
+* `/step1/k6/redis-cache` - 레디스 캐시 설정
+* `/step1/k6/test-script` - k6 테스트 스크립트
 
 - Reverse Proxy 개선을 통해 웹페이지 속도가 향상되었습니다.
 - WAS 성능 개선을 통해 http_req_duration이 향상되었습니다.
@@ -83,7 +83,7 @@ npm run dev
   - [x] HTTP Cache 설정하기
   - [x] gzip 설정하기
 - [x] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성하기
+- [x] Auto Scaling Group 생성하기
 - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
@@ -91,11 +91,9 @@ npm run dev
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
-```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
 
 ---
 
