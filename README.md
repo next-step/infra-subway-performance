@@ -41,11 +41,38 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
+--- 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- URL : https://yomni-subway.kro.kr/
+- 테스트 결과는 monitoring/step1 하위에 모두 모아놓았습니다.
+  - smoke / load / stress 각각 before / after 결과
+  - Pagespeed 성능 테스트 before / after 결과
+
+- Pagespeed 성능 테스트 결과 요약
+
+|        | FCP      | LCP      | TTI      |
+|--------|----------|----------|----------|
+| Before | 2.6s     | 2.7s     | 2.7s     |
+| After  | **1.2s** | **1.3s** | **1.3s** |
+--> 대략 1/2 이하로 성능이 크게 개선되었습니다.
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
+#### reverse-proxy 개선
+- gzip 압축 : 텍스트 압축
+- cache 설정 : nginx 의 cache 적용
+- TLS, HTTP/2 설정 : http 1.1의 문제점인 HOL 블로킹 문제를 해결
+
+#### WAS 성능 개선하기
+- Spring Data Cache(with Redis)
+  - 경로검색 기능에 Cache 적용
+- 적절한 Thread pool size 구하기 : 사용 가능한 코어 수의 `1 ~ 2 배` 내로 수렴
+  - CPU 모델명 : `Intel(R)Xeon(R) Platinum 8259CL CPU @2.50GHz`
+  - CPU 당 물리 코어 수 : `1`
+  - 물리 CPU 수 : `1`
+  - 리눅스 전체 코어(프로세스) 개수 : `2`
+  - AsyncThreadPool 적용
 
 ---
 
