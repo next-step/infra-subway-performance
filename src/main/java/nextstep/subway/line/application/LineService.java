@@ -63,9 +63,11 @@ public class LineService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "line_station", key = "#id"),
-            @CacheEvict(value = "line_stations", allEntries = true)
-    })
+            @CacheEvict(value = "line_stations", allEntries = true),
+            @CacheEvict(value = "path", allEntries = true)
+    },
+            put = @CachePut(value = "line_station", key = "#id")
+    )
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
