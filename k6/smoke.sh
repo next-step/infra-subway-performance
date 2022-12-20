@@ -1,3 +1,3 @@
 #!/bin/bash
 
-k6 run --out influxdb=http://localhost:8086/subwayk6db --config smoke.json script.js
+k6 run --out influxdb=http://monitoring:8086/k6_subway --config smoke.json script.js

@@ -146,15 +146,141 @@ js 파일의 크기가 최대 20배까지 줄었음을 알 수 있습니다.
 
 ### 2단계 - 스케일 아웃
 
+- springboot에서 HTTP Cache, gzip 설정하기
+- Launch Template 작성하기
+- Auto Scaling Group 생성하기
+- Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
 
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-06947fbc479ee9bef
+ 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+![img](img/step2-autoscale-dashboard.png)
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+
+## Smoke 테스트 결과
+![img](img/step2-smoke-tobe.png)
+```markdown
+running (5m00.8s), 0/1 VUs, 200 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  5m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 100.00% ✓ 494      ✗ 0
+     data_received..................: 341 kB  1.1 kB/s
+     data_sent......................: 73 kB   244 B/s
+     http_req_blocked...............: avg=39.53µs  min=224ns   med=396ns   max=23.46ms  p(90)=459ns    p(95)=496ns
+     http_req_connecting............: avg=1.05µs   min=0s      med=0s      max=630.92µs p(90)=0s       p(95)=0s
+    ✓ http_req_duration..............: avg=10.73ms  min=2.6ms   med=6.07ms  max=56.94ms  p(90)=29.45ms  p(95)=41.51ms
+        { expected_response:true }...: avg=11.98ms  min=3.18ms  med=6.6ms   max=56.94ms  p(90)=35.4ms   p(95)=42.61ms
+     http_req_failed................: 17.66%  ✓ 106      ✗ 494
+     http_req_receiving.............: avg=118.27µs min=24.41µs med=55.88µs max=10.26ms  p(90)=129.11µs p(95)=205.25µs
+     http_req_sending...............: avg=48.55µs  min=21.33µs med=47.42µs max=159.63µs p(90)=68.26µs  p(95)=80.91µs
+     http_req_tls_handshaking.......: avg=33.5µs   min=0s      med=0s      max=20.1ms   p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=10.57ms  min=2.47ms  med=5.93ms  max=56.83ms  p(90)=29.32ms  p(95)=41.28ms
+     http_reqs......................: 600     1.994997/s
+     iteration_duration.............: avg=1.5s     min=1.01s   med=1.02s   max=2.07s    p(90)=2.05s    p(95)=2.06s
+     iterations.....................: 200     0.664999/s
+     vus............................: 1       min=1      max=1
+     vus_max........................: 1       min=1      max=1
+```
+
+## Load 테스트 결과
+![img](img/step2-load-tobe.png)
+```markdown
+running (10m02.0s), 00/23 VUs, 4543 complete and 0 interrupted iterations
+default ✓ [ 100% ] 00/23 VUs  10m0s
+
+     ✓ logged in successfully
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 100.00% ✓ 11302     ✗ 0
+     data_received..................: 8.2 MB  14 kB/s
+     data_sent......................: 1.7 MB  2.8 kB/s
+     http_req_blocked...............: avg=12.46µs min=162ns   med=379ns   max=57.24ms p(90)=457ns   p(95)=506ns
+     http_req_connecting............: avg=1.04µs  min=0s      med=0s      max=3.21ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=11.32ms min=2.82ms  med=6.25ms  max=97.52ms p(90)=39.08ms p(95)=41.51ms
+       { expected_response:true }...: avg=12.7ms  min=2.82ms  med=6.55ms  max=97.52ms p(90)=39.85ms p(95)=42.29ms
+     http_req_failed................: 17.07%  ✓ 2327      ✗ 11302
+     http_req_receiving.............: avg=74.21µs min=13.63µs med=53.29µs max=7.95ms  p(90)=94.55µs p(95)=144.38µs
+     http_req_sending...............: avg=51.3µs  min=15.54µs med=46.78µs max=3.51ms  p(90)=75.73µs p(95)=85.57µs
+     http_req_tls_handshaking.......: avg=8.31µs  min=0s      med=0s      max=39.26ms p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=11.2ms  min=2.2ms   med=6.15ms  max=97.08ms p(90)=38.95ms p(95)=41.38ms
+     http_reqs......................: 13629   22.640546/s
+     iteration_duration.............: avg=1.52s   min=1.01s   med=1.02s   max=2.17s   p(90)=2.05s   p(95)=2.06s
+     iterations.....................: 4543    7.546849/s
+     vus............................: 7       min=1       max=22
+     vus_max........................: 23      min=23      max=23
+```
+
+## Stress 테스트 결과
+
+### 오토 스케일 적용 전
+```markdown
+running (3m25.3s), 110/500 VUs, 4662 complete and 0 interrupted iterations
+default   [  49% ] 111/500 VUs  3m27.8s/7m00.0s
+time="2022-12-19T17:16:14Z" level=warning msg="Request Failed" error="Post \"https://cwjonhpark-subway-px.o-r.kr/login/token\": write tcp 192.168.91.173:49844->3.34.75.117:443: write: broken pipe"
+...
+running (7m20.5s), 108/500 VUs, 4745 complete and 382 interrupted iterations
+default ↓ [ 100% ] 112/500 VUs  7m0s
+
+```
+- Request 실패 지점이 110 VUser 에서 발생합니다.
+- 부하가 낮아지며 정상적으로 돌아오는 지점은 108 VUser 에서 부터입니다.
+```markdown
+
+     ✗ logged in successfully
+      ↳  99% — ✓ 4826 / ✗ 27
+     ✓ retrieved member
+     ✓ find path
+
+     checks.........................: 99.76% ✓ 11316     ✗ 27
+     data_received..................: 8.0 MB 18 kB/s
+     data_sent......................: 1.9 MB 4.2 kB/s
+     http_req_blocked...............: avg=3.72ms   min=0s       med=318ns   max=6.39s    p(90)=415ns    p(95)=473ns
+     http_req_connecting............: avg=6.51ms   min=0s       med=0s      max=19.04s   p(90)=0s       p(95)=0s
+    ✗ http_req_duration..............: avg=233.66ms min=0s       med=6.14ms  max=4m13s    p(90)=38.51ms  p(95)=43.44ms
+    { expected_response:true }...: avg=100.94ms min=3.56ms   med=6.76ms  max=1m20s    p(90)=39.65ms  p(95)=45.09ms
+    http_req_failed................: 21.98% ✓ 3188      ✗ 11316
+    http_req_receiving.............: avg=84.97ms  min=0s       med=39.84µs max=45.13s   p(90)=117.02µs p(95)=214.95µs
+    http_req_sending...............: avg=41.48ms  min=0s       med=32.04µs max=1m1s     p(90)=63.8µs   p(95)=82.52µs
+    http_req_tls_handshaking.......: avg=904.21µs min=0s       med=0s      max=253.94ms p(90)=0s       p(95)=0s
+    http_req_waiting...............: avg=107.2ms  min=0s       med=6.04ms  max=4m13s    p(90)=38.31ms  p(95)=43.08ms
+    http_reqs......................: 14504  32.742068/s
+    iteration_duration.............: avg=8.07s    min=221.82µs med=1.02s   max=5m17s    p(90)=2.06s    p(95)=2.07s
+    iterations.....................: 4851   10.950894/s
+    vus............................: 29     min=1       max=112
+    vus_max........................: 500    min=500     max=500
+```
+
+### 오토 스케일 적용 후
+![img](img/step2-stress-tobe.png)
+- 오토 스케일링 적용후 10개 인스턴스까지 로드 밸런싱되어 최대 1000 VUser 까지 부하를 받을 수 있는 것을 확인했습니다.
+```markdown
+     checks.........................: 100.00% ✓ 327214     ✗ 0
+     data_received..................: 78 MB   326 kB/s
+     data_sent......................: 49 MB   204 kB/s
+     http_req_blocked...............: avg=12.37µs  min=122ns  med=280ns   max=34.38ms  p(90)=349ns    p(95)=378ns
+     http_req_connecting............: avg=2.08µs   min=0s     med=0s      max=21.16ms  p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=5.53ms   min=1.7ms  med=4.82ms  max=1.13s    p(90)=8.43ms   p(95)=9.24ms
+       { expected_response:true }...: avg=5.53ms   min=1.7ms  med=4.82ms  max=1.13s    p(90)=8.43ms   p(95)=9.24ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 327214
+     http_req_receiving.............: avg=104.19µs min=9.69µs med=37.1µs  max=488.61ms p(90)=162.63µs p(95)=231.6µs
+     http_req_sending...............: avg=36.32µs  min=11.8µs med=25.83µs max=16.89ms  p(90)=48.14µs  p(95)=82.76µs
+     http_req_tls_handshaking.......: avg=9.53µs   min=0s     med=0s      max=23.77ms  p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=5.39ms   min=1.03ms med=4.71ms  max=1.13s    p(90)=8.29ms   p(95)=9.11ms
+     http_reqs......................: 327214  1357.68146/s
+     iteration_duration.............: avg=1.01s    min=1s     med=1.01s   max=2.14s    p(90)=1.01s    p(95)=1.01s
+     iterations.....................: 163607  678.84073/s
+     vus............................: 294     min=4        max=1000
+     vus_max........................: 1000    min=1000     max=1000
+```
 
 ---
 

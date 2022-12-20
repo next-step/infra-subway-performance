@@ -15,7 +15,7 @@ const getRandomTarget = (exclude) => {
   return rand;
 }
 const checkFindPath = () => {
-
+  
   let source = getRandomTarget(-1);
   let target = getRandomTarget(source);
     let url = `${BASE_URL}/paths?source=${source}&target=${target}`;
