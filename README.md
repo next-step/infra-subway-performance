@@ -76,6 +76,15 @@ npm run dev
 - /monitoring/asg/load
 - /monitoring/asg/stress
 
+4. 모든 정적 자원에 대해 no-cache, no-store 설정 가능한가요?
+   - 가능합니다. Controller에서 HttpServletResponse 를 받은 후 직접 `Cache-Controle`을 할당하여 설정할 수도 있고, WebContentInterceptor를 활용할 수 도 있습니다.
+   - 로그인용 사용자 이름, 비밀번호 및 기타 민감한 정보들을 보호하기 위해 SSL 을 로그인 페이지나 회원 정보 페이지등은 SSL로 암호화하는 경우가 많습니다.
+   SSL 을 사용해서 민감한 정보들을 보호한다고 해도 브라우저에 이 정보가 캐싱되면 문제가 발생할 수 있기 때문에 `Cache-Control: no-cache, no-store, must-revalidate`
+    와 같이 사용하면 브라우저 캐싱을 방지할 수 있습니다. 단 캐싱을 하지 않으면 성능 저하가 발생할 수 있으므로 로그인 페이지등에 제한적으로 사용해야 합니다.
+   - [참고] https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control 
+   - [참고] https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+   - [참고] https://www.lesstif.com/software-architect/http-https-browser-caching-http-header-20775788.html
+
 ### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
