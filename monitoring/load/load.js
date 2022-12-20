@@ -5,16 +5,16 @@ export let options = {
   // 평균 VUser : 10
   // 최대 VUser : 20
   stages: [
+    { duration: '10s', target: 5 }, // ramping up
+    { duration: '1m', target: 5 },
+    { duration: '10s', target: 7 }, // ramping up
+    { duration: '2m', target: 7 },
     { duration: '10s', target: 10 }, // ramping up
-    { duration: '1m', target: 10 },
-    { duration: '10s', target: 15 }, // ramping up
-    { duration: '2m', target: 15 },
-    { duration: '10s', target: 20 }, // ramping up
-    { duration: '4m', target: 20 },
-    { duration: '10s', target: 15 }, // ramping down
-    { duration: '2m', target: 15 },
-    { duration: '10s', target: 10 }, // ramping down
-    { duration: '1m', target: 10 },
+    { duration: '4m', target: 10 },
+    { duration: '10s', target: 7 }, // ramping down
+    { duration: '2m', target: 7 },
+    { duration: '10s', target: 5 }, // ramping down
+    { duration: '1m', target: 5 },
     { duration: '10s', target: 0 }
   ],
   thresholds: {
