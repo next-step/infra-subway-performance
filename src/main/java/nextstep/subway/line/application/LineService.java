@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @CacheEvict(value = "stations", allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
