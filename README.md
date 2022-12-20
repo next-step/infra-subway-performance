@@ -174,36 +174,35 @@ select	e.id as '사원번호'
       , r.region as '지역'
       , r.record_symbol as '입출입구분'
 from 	record r
-          inner join (
-  (
-    select  e.id
-         , e.last_name
-         , s.annual_income
-         , p.position_name
-    from	employee e
-              inner join employee_department ed
-                         on (e.id = ed.employee_id and ed.end_date  > now() and ed.start_date <= now())
-              inner join position p
-                         on (e.id = p.id and p.start_date <= now() and p.end_date      > now() and p.position_name = 'Manager')
-              inner join (
-      select 	m.employee_id
-      from 	manager m
-         , department d
-      where	1               = 1
-        and     m.department_id = d.id
-        and     d.note          = 'active'
-        and     m.end_date      > now()
-        and		m.start_date   <= now()
-    ) m
-                         on e.id = m.employee_id
-              inner join salary s
-                         on (e.id	        = s.id and s.start_date <= now() and s.end_date > now())
-    where e.join_date     <= now()
-    order by    s.annual_income desc
-      limit 5
-  ) e
-  )
-                     on e.id = r.employee_id and r.record_symbol = 'o'
+inner join (
+    (
+        select  e.id
+              , e.last_name
+              , s.annual_income
+              , p.position_name
+        from	employee e
+                inner join employee_department ed
+                on (e.id = ed.employee_id and ed.end_date  > now() and ed.start_date <= now())
+                inner join position p
+                on (e.id = p.id and p.start_date <= now() and p.end_date      > now() and p.position_name = 'Manager')
+                inner join (
+                    select 	m.employee_id
+                    from 	manager m
+                          , department d
+                    where	m.department_id = d.id
+                    and     d.note          = 'active'
+                    and     m.end_date      > now()
+                    and		m.start_date   <= now()
+                ) m
+                on e.id = m.employee_id
+                inner join salary s
+                on (e.id = s.id and s.start_date <= now() and s.end_date > now())
+        where e.join_date     <= now()
+        order by    s.annual_income desc
+        limit 5
+    ) e
+)
+on (e.id = r.employee_id and r.record_symbol = 'o')
 ;
 ```
 
