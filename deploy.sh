@@ -9,6 +9,9 @@ txtgra='\033[1;30m' # Gray
 
 EXECUTION_PATH=$(pwd)
 SHELL_SCRIPT_PATH=$(dirname $0)
+DEFAULT_PATH='/home/ubuntu/'
+PROJECT_NAME='infra-subway-performance'
+GIT_URL='https://github.com/hahoho87/infra-subway-performance.git'
 BRANCH=$1
 PROFILE=$2
 JAR_NAME="subway-0.0.1-SNAPSHOT.jar"
@@ -24,6 +27,12 @@ function check_df() {
   fi
 }
 
+## clone repository
+function clone() {
+  echo -e "${txtgrn}>> [$(date)] Clone repository.${txtrst}"
+  cd ${DEFAULT_PATH} && git clone -b ${BRANCH} ${GIT_URL}
+}
+
 ## pull origin repository
 function pull() {
   echo -e ""
@@ -36,17 +45,8 @@ function pull() {
 function build() {
   echo -e ""
   echo -e "${txtgrn}>> [$(date)] GRADLE BUILD. ${txtrst}"
-  read -p ">> [$(date)] build with tests? (y)es | (n)o. " -n 1 -r
-  echo -e ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo -e "${txtgrn}>> [$(date)] cmd : ./gradlew clean build${txtrst}"
-    ./gradlew clean build
-  elif [[ $REPLY =~ ^[Nn]$ ]]; then
-    echo -e "${txtgrn}>> [$(date)] cmd : ./gradlew clean build -x test${txtrst}"
-    ./gradlew clean build -x test
-  else
-    build
-  fi
+  echo -e "${txtgrn}>> [$(date)] cmd : ./gradlew clean build -x test${txtrst}"
+  ./gradlew clean build -x test
 }
 
 ## terminate existing process
