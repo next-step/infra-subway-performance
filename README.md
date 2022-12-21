@@ -409,9 +409,8 @@ default ✓ [======================================] 00/14 VUs  29m10s
 ![img.png](src/main/resources/image/step2/autosacle_server.png)
 
 * cloudwatch_autoscales
-
-[//]: # (![img.png]&#40;src/main/resources/image/step2/autoscale_monitoring.png&#41;)
-[//]: # (- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.)
+![img.png](src/main/resources/image/step2/autoscale_monitoring.png)
+- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.
 </details>
 
 
@@ -494,32 +493,36 @@ default ✓ [======================================] 1 VUs  1m0s
            * default: Up to 14 looping VUs for 29m10s over 12 stages (gracefulRampDown: 30s, gracefulStop: 30s)
 
 
-running (29m10.0s), 00/14 VUs, 622455 complete and 0 interrupted iterations
+
+running (29m10.0s), 00/14 VUs, 224983 complete and 0 interrupted iterations
 default ✓ [======================================] 00/14 VUs  29m10s
 
      ✓ [Result] Main Page
      ✓ [Result] Login Page
-     ✓ [Result] Login
+     ✗ [Result] Login
+      ↳  0% — ✓ 0 / ✗ 224983
      ✓ [Result] me
      ✓ [Result] Path Page
      ✓ [Result] Search Path
 
-     checks.....................: 100.00% ✓ 3734730     ✗ 0
-     data_received..............: 3.2 GB  1.9 MB/s
-     data_sent..................: 223 MB  128 kB/s
-     http_req_blocked...........: avg=939ns    min=121ns    med=307ns   max=65.52ms  p(90)=381ns   p(95)=415ns
-     http_req_connecting........: avg=111ns    min=0s       med=0s      max=42.17ms  p(90)=0s      p(95)=0s
-   ✓ http_req_duration..........: avg=3.81ms   min=620.25µs med=2.14ms  max=877.01ms p(90)=9.27ms  p(95)=11.05ms
-     http_req_failed............: 0.00%   ✓ 0           ✗ 3734730
-     http_req_receiving.........: avg=171.56µs min=9.5µs    med=35.94µs max=135.66ms p(90)=311.6µs p(95)=591.61µs
-     http_req_sending...........: avg=29.87µs  min=8.09µs   med=20.17µs max=65.41ms  p(90)=37.45µs p(95)=45.44µs
-     http_req_tls_handshaking...: avg=401ns    min=0s       med=0s      max=42.35ms  p(90)=0s      p(95)=0s
-     http_req_waiting...........: avg=3.61ms   min=0s       med=2.01ms  max=876.2ms  p(90)=9.01ms  p(95)=10.64ms
-     http_reqs..................: 3734730 2134.107853/s
-     iteration_duration.........: avg=23.43ms  min=8.49ms   med=20.74ms max=2.12s    p(90)=34.83ms p(95)=42.32ms
-     iterations.................: 622455  355.684642/s
-     vus........................: 1       min=1         max=14
-     vus_max....................: 14      min=14        max=14
+     checks.........................: 83.33%  ✓ 1124915    ✗ 224983
+     data_received..................: 1.6 GB  907 kB/s
+     data_sent......................: 79 MB   45 kB/s
+     http_req_blocked...............: avg=13.55µs  min=145ns    med=423ns    max=48.23ms p(90)=537ns    p(95)=608ns
+     http_req_connecting............: avg=1.07µs   min=0s       med=0s       max=16.96ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.46ms  min=495.94µs med=7.1ms    max=1.05s   p(90)=24.26ms  p(95)=29.53ms
+       { expected_response:true }...: avg=8.76ms   min=495.94µs med=5.19ms   max=139.5ms p(90)=21.85ms  p(95)=26.43ms
+     http_req_failed................: 33.33%  ✓ 449966     ✗ 899932
+     http_req_receiving.............: avg=677.45µs min=10.52µs  med=169.97µs max=61.35ms p(90)=1.88ms   p(95)=3.03ms
+     http_req_sending...............: avg=112.32µs min=12.41µs  med=32.26µs  max=52.48ms p(90)=101.41µs p(95)=351.24µs
+     http_req_tls_handshaking.......: avg=10.96µs  min=0s       med=0s       max=44.58ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=9.67ms   min=0s       med=6.05ms   max=1.04s   p(90)=23.59ms  p(95)=28.89ms
+     http_reqs......................: 1349898 771.367257/s
+     iteration_duration.............: avg=64.84ms  min=10.97ms  med=46.15ms  max=1.12s   p(90)=142.33ms p(95)=165.96ms
+     iterations.....................: 224983  128.561209/s
+     vus............................: 1       min=1        max=14
+     vus_max........................: 14      min=14       max=14
+
 ```
 
 * grafana   
@@ -1066,7 +1069,7 @@ const mainRoutes = [
 <details>
 <summary> 🚀 2단계 - 스케일 아웃 (with ASG)</summary>
 
-![img.png](src/main/resources/image/scond-imge-1.png)
+![img.png](src/main/resources/image/file/second-image-1.png)
 
 지금까지 단일 서버 구성에서 성능 개선을 진행해보았어요.   
 단일 사용자에게는 빠르지만 부하가 많아질 경우 속도가 느려질 경우, 확장성에 문제가 있는 경우로 부하분산이 필요합니다.   
@@ -1101,33 +1104,33 @@ server.compression.min-response-size: 500
 #### 요구사항
 * [x] springboot에 HTTP Cache, gzip 설정하기
 * [x] Launch Template 작성하기
-* [ ] Auto Scaling Group 생성하기
-* [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+* [x] Auto Scaling Group 생성하기
+* [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 #### 힌트
 아래 설정들은 자신의 상황에 맞게 세팅합니다. 이미지의 정보는 단순 예시입니다.
 
 1. 배포 스크립트 업로드
-![img.png](src/main/resources/image/second-imgae-2.png)
+![img.png](src/main/resources/image/file/second-imgae-2.png)
    * S3 의 nextstep-camp-pro 버킷에 배포 스크립트를 업로드합니다.
 
 2. Launch Template 작성하기
   * Auto Scaling Group에서 자동으로 생성할 EC2 템플릿을 생성합니다.
   1. ubuntu 이미지 선택
-![img.png](src/main/resources/image/second-image-3.png)
+![img.png](src/main/resources/image/file/second-image-3.png)
   * 이미지는 최신 버전이 보안상 안전합니다.
 
   2. EC2 설정
-![img.png](src/main/resources/image/second-image-4.png)
+![img.png](src/main/resources/image/file/second-image-4.png)
   * 인스턴스 유형, Key pair, 서브넷, 보안그룹 등을 `WAS에 적용할 정책`을 설정합니다.
 
   3. IAM 권한 설정
-![img.png](src/main/resources/image/second-image-5.png)
+![img.png](src/main/resources/image/file/second-image-5.png)
   * 배포 스크립트를 받기 위해서는 EC2에서 S3로 접근 가능해야 합니다.
   * 사전에 강사가 생성해둔 IAM 역할 `ec2-s3-api` 을 설정합니다.
 
   4. 배포 명령어 설정
-![img.png](src/main/resources/image/second-image-6.png)
+![img.png](src/main/resources/image/file/second-image-6.png)
   * EC2가 정상적으로 실행된 후에 동작해야 할 명령어들을 입력합니다.
   ```
   #!/bin/bash
@@ -1146,34 +1149,34 @@ sudo -i -u ubuntu /bin/bash /home/ubuntu/[자신의스크립트]
 
 3. Auto Scaling Group 생성
    1. Launch Template 설정
-   ![img.png](src/main/resources/image/second-image-7.png)
+   ![img.png](src/main/resources/image/file/second-image-7.png)
   * Launch Template 보안 패치 등의 이유로 버전이 바뀐다면 추후 Auto scaling group 상 템플릿 버전만 바꿔도 보안 패치가 이루어집니다.
   
   2. 네트워크 설정
-![img.png](src/main/resources/image/second-image-8.png)
+![img.png](src/main/resources/image/file/second-image-8.png)
   * 자신의 VPC 인지 다시 확인합니다. 설정되어 있지 않다면, 여기서 설정합니다.
   * WAS 용도로 사용할 예정이므로 외부망 2개 서브넷을 설정해줍니다.
 
   3. 로드밸런서 생성
-![img.png](src/main/resources/image/second-image-12.png)
+![img.png](src/main/resources/image/file/second-image-12.png)
      * EC2 앞단에 부하분산 용도의 로드밸런서를 생성합니다.
      * Application Load Balancer 로 생성해야 이 후 WAF 등을 추가할 수 있습니다.
 
   4. 타겟 대상 생성
-     ![img.png](src/main/resources/image/second-image-9.png)
+     ![img.png](src/main/resources/image/file/second-image-9.png)
      * 로드밸런서의 트래픽을 전달할 대상그룹을 생성합니다.
      * 우리가 앞서 작성해둔 LaunchTemplate을 통해 생성되는 EC2 인스턴스가 타겟 대상 그룹에 속하게 됩니다. 
 
   5. 그룹 크기 설정
-  ![img.png](src/main/resources/image/second-image-10.png)
+  ![img.png](src/main/resources/image/file/second-image-10.png)
      * 생성하길 희망하는 EC2 인스턴스 갯수, 최소 갯수, 최대 갯수 등을 설정합니다. 사용하지 않는다면 0으로 두어도 좋습니다.
 
   6. 임계값 설정
-![img.png](src/main/resources/image/second-image-11.png)
+![img.png](src/main/resources/image/file/second-image-11.png)
      * CPU 사용률, 네트워크 트래픽 등 특정 지표가 임계값에 이르면 EC2 인스턴스를 증설하도록 구성할 수 있어요.
 
   7. 종료 정책 구성
-![img.png](src/main/resources/image/second-image-13.png)
+![img.png](src/main/resources/image/file/second-image-13.png)
 
 * 이 정책은 Auto Scaling Group 을 생성한 후에 편집을 통해 설정할 수 있어요.
 * 기본 정책으로 둔다면, 그룹 크기를 줄일 때 임의로 서버를 종료시킵니다.
@@ -1184,13 +1187,13 @@ sudo -i -u ubuntu /bin/bash /home/ubuntu/[자신의스크립트]
 
 5. TLS설정하기
 기존에 생성한 인증서를 ACM에 가져옵니다.
-![img.png](src/main/resources/image/second-image-15.png)
+![img.png](src/main/resources/image/file/second-image-15.png)
 BEGIN CERTIFICATE와 END CERTIFICATE 까지 포함하여야 합니다.
    * 인증서 본문 -> cert.pem
    * 프라이빗 키 -> privkey.pem
    * 체인 -> chain.pem
 
 * ALB에 인증서 적용하기
-![img.png](src/main/resources/image/second-image-14.png)
+![img.png](src/main/resources/image/file/second-image-14.png)
 
 </details>
