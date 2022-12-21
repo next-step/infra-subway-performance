@@ -351,7 +351,6 @@ FROM (
 	ON E.id = P.id
 	INNER JOIN (SELECT id, annual_income FROM salary WHERE end_date >= now()) AS S
 	ON E.id = S.id
-	ORDER BY annual_income DESC
 	LIMIT 5
 ) AS MANAGER_TOP5_SALARY
 INNER JOIN (
@@ -363,6 +362,7 @@ INNER JOIN (
     FROM record
     WHERE record_symbol = 'O') AS R
 ON MANAGER_TOP5_SALARY.id = R.employee_id
+ORDER BY MANAGER_TOP5_SALARY.annual_income DESC
 ```
 
 ---
