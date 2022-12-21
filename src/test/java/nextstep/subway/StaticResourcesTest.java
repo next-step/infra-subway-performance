@@ -12,6 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.concurrent.TimeUnit;
+
+import static nextstep.subway.configuration.WebMvcConfig.MAX_AGE_CACHE_PERIOD;
 import static nextstep.subway.configuration.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
 @ActiveProfiles("test")
@@ -26,13 +29,33 @@ public class StaticResourcesTest {
 
     @DisplayName("모든 정적 자원에 대해 no-cache, private 설정 테스트")
     @Test
-    void get_static_resources() {
+    void get_static_js_resources() {
         String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/main.js";
         EntityExchangeResult<String> response = webTestClient
                 .get().uri(uri).exchange()
                 .expectStatus().isOk()
                 .expectHeader()
                 .cacheControl(CacheControl.noCache().cachePrivate())
+                .expectBody(String.class)
+                .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response.getResponseHeaders()
+                .getETag();
+
+        assertIsNotModified(uri, etag);
+    }
+
+    @DisplayName("확장자가 .css 인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다.")
+    @Test
+    void get_static_css_resources() {
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/logo.css";
+        EntityExchangeResult<String> response = webTestClient
+                .get().uri(uri).exchange()
+                .expectStatus().isOk()
+                .expectHeader()
+                .cacheControl(CacheControl.maxAge(MAX_AGE_CACHE_PERIOD, TimeUnit.SECONDS))
                 .expectBody(String.class)
                 .returnResult();
 

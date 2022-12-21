@@ -154,8 +154,8 @@ Cache-Control 정책 정의 알고리듬
 
 ### 2단계 기능 목록
 - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증한다.
-- [ ] 확장자가 `.css`인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다
-- [ ] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능?
+- [x] 확장자가 `.css`인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다
+- [ ] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요? 
 
 
 ---

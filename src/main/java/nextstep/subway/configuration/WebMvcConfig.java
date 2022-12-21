@@ -14,7 +14,7 @@ import javax.servlet.Filter;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
-    private static final int MAX_AGE_CACHE_PERIOD = 60 * 60 * 24 * 365;
+    public static final int MAX_AGE_CACHE_PERIOD = 60 * 60 * 24 * 365;
 
     @Autowired
     private ResourceVersion version;
@@ -23,8 +23,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
                 .addResourceLocations("classpath:/static/")
-                .setCacheControl(CacheControl.noCache().cachePrivate())
+                .setCacheControl(CacheControl.noCache().cachePrivate());
+
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/*.js")
+                .addResourceLocations("classpath:/static/js/")
+                .setCacheControl(CacheControl.noCache().cachePrivate());
+
+        registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/*.css")
+                .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(MAX_AGE_CACHE_PERIOD);
+
     }
 
     @Bean
