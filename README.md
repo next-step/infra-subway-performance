@@ -342,14 +342,14 @@ FROM (
             E.last_name, 
             S.annual_income, 
             P.position_name
-	FROM (SELECT * FROM department WHERE note LIKE 'active') AS D
-	INNER JOIN (SELECT * FROM manager WHERE end_date >= now()) AS M
+	FROM (SELECT id FROM department WHERE note LIKE 'active') AS D
+	INNER JOIN (SELECT department_id, employee_id FROM manager WHERE end_date >= now()) AS M
 	ON D.id = M.department_id
-	INNER JOIN (SELECT * FROM employee) AS E
+	INNER JOIN (SELECT id, last_name FROM employee) AS E
 	ON M.employee_id = E.id
-	INNER JOIN (SELECT * FROM position WHERE position_name LIKE 'Manager') AS P
+	INNER JOIN (SELECT id, position_name FROM position WHERE position_name LIKE 'Manager') AS P
 	ON E.id = P.id
-	INNER JOIN (SELECT * FROM salary WHERE end_date >= now()) AS S
+	INNER JOIN (SELECT id, annual_income FROM salary WHERE end_date >= now()) AS S
 	ON E.id = S.id
 	ORDER BY annual_income DESC
 	LIMIT 5
