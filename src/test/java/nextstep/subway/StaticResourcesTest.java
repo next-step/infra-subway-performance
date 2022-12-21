@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import static nextstep.subway.configuration.WebMvcConfig.MAX_AGE_CACHE_PERIOD;
 import static nextstep.subway.configuration.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
+@DisplayName("정적 리소스 캐싱 테스트")
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StaticResourcesTest {
@@ -47,7 +48,7 @@ public class StaticResourcesTest {
         assertIsNotModified(uri, etag);
     }
 
-    @DisplayName("확장자가 .css 인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다.")
+    @DisplayName("확장자가 .css 인 경우, max-age 를 1년으로 캐시 설정을 한다.")
     @Test
     void get_static_css_resources() {
         String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/logo.css";
