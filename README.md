@@ -138,7 +138,7 @@ where record.record_symbol = 'O';
 ```
 
 **조회결과**
-![조회결과](query/step3_query_result.png)
+![조회결과](query/step3/step3_query_result.png)
 
 **arch**
 ![m1](query/m1.png)
@@ -150,6 +150,121 @@ where record.record_symbol = 'O';
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+#### 요구사항
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환  
+- M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+  - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+  - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+<br/>
+
+**추가한 인덱스**
+```sql
+ALTER TABLE `subway`.`covid` ADD INDEX `index_covid_id` (`id` ASC);
+ALTER TABLE `subway`.`covid` ADD INDEX `index_covid_hospital_id` (`hospital_id` ASC);
+ALTER TABLE `subway`.`covid` ADD INDEX `index_covid_programmer_id` (`programmer_id` ASC);
+ALTER TABLE `subway`.`covid` ADD INDEX `index_covid_member_id` (`member_id` ASC);
+ALTER TABLE `subway`.`hospital` ADD INDEX `index_hospital_id` (`id` ASC);
+ALTER TABLE `subway`.`hospital` ADD INDEX `index_hospital_name` (`name` ASC);
+ALTER TABLE `subway`.`member` ADD INDEX `index_member_id` (`id` ASC);
+ALTER TABLE `subway`.`programmer` ADD INDEX `index_programmer_id` (`id` ASC);
+ALTER TABLE `subway`.`programmer` ADD INDEX `index_programmer_hobby` (`hobby` ASC);
+```
+
+<br/>
+
+**Coding as a Hobby 와 같은 결과를 반환하세요.**  
+- query
+```sql
+select hobby as 취미,
+       concat(round(count(*) / (select count(*) from programmer) * 100, 1), '%') as 퍼센트
+from programmer
+group by hobby
+order by hobby desc;
+```
+
+- 결과
+![4-1](query/step4/step4_1_query_result.png)
+
+<br/>
+
+**프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
+- query
+```sql
+select covid.id,
+       hospital.name
+from hospital
+         join covid on covid.hospital_id = hospital.id
+         join programmer on programmer.id = covid.programmer_id;
+```
+
+- 결과
+![4-2](query/step4/step4_2_query_result.png)
+
+<br/>
+
+**프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
+- query
+```sql
+select covid.id,
+       hospital.name,
+       programmer.hobby,
+       programmer.dev_type,
+       programmer.years_coding
+from programmer
+         join covid on covid.programmer_id = programmer.id
+         join hospital on hospital.id = covid.hospital_id
+where programmer.hobby = 'yes'
+  and (programmer.student like 'Yes%' or programmer.years_coding = '0-2 years')
+order by programmer.id;
+```
+
+- 결과
+![4-3](query/step4/step4_3_query_result.png)
+
+<br/>
+
+**서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
+- query
+```sql
+select covid.stay,
+       count(*)
+from programmer
+         join covid on covid.programmer_id = programmer.id
+         join hospital on hospital.id = covid.hospital_id
+         join member on member.id = programmer.id
+where hospital.name = '서울대병원'
+  and programmer.country = 'india'
+  and member.age between 20 and 29
+group by covid.stay;    
+```
+
+- 결과
+![4-4](query/step4/step4_4_query_result.png)
+
+<br/>
+
+**서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+- query
+```sql
+select programmer.exercise,
+       count(*)
+from programmer
+         join covid on covid.programmer_id = programmer.id
+         join hospital on hospital.id = covid.hospital_id
+         join member on member.id = programmer.id
+where hospital.name = '서울대병원'
+  and member.age between 30 and 39
+group by programmer.exercise;
+```
+
+- 결과
+![4-5](query/step4/step4_5_query_result.png)
+
 
 ---
 
