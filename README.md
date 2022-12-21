@@ -81,12 +81,12 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 #### 요구사항
-- [ ] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
-- [ ] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
-- [ ] 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가?
-- [ ] springboot에 HTTP Cache, gzip 설정
-- [ ] Launch Template 작성
-- [ ] Auto Scaling Group 생성
+- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
+- [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
+- [x] 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가? - 가능합니다.
+- [x] springboot에 HTTP Cache, gzip 설정
+- [x] Launch Template 작성
+- [x] Auto Scaling Group 생성
 - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
