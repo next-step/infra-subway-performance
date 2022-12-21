@@ -60,15 +60,27 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplates:sort=launchTemplateId;search=lt-0bd2361c81213d79e
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+- autoscaling 디렉토리에 Cloudwatch 캡쳐 이미지 추가해두었습니다.
+- 아래와 같이 실습 진행하였습니다.
+  1. 1번 서버 cpu 부하 실행
+  2. CPU 사용률 평균이 50%를 넘어 2번 서버 스케일 아웃
+  3. 2번 서버 스케일 아웃했음에도 CPU 사용률 평균 50%를 넘어 3,4번 서버 스케일 아웃
+  4. 1번 서버 cpu 부하 종료
+  5. CPU 사용률 평균이 50%대로 감소, CPU 사용률 평균이 50%가 유지되도록 1, 2, 3 서버 점진적으로 종료
+  6. 마지막으로 생성된 4번 서버만 남음.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+- autoscaling 디렉토리 이하 smoke, load, stress 디렉토리에 캡쳐 이미지 추가해두었습니다.
+- stress 테스트간 VU가 높아짐에 따라 자동으로 autoscaling됨을 볼수 있었습니다.
+  - stress1 테스트에서 VU가 400으로 높아지자 Instance를 1개 추가로 스케일 아웃됨을 확인할 수 있었고, 안정적인 테스트 결과를 유지했습니다.
+  - stress2 테스트에서 VU가 800으로 높이지자 Instance를 2개 추가로 스케일 아웃됨을 확인할 수 있었고, 약간의 지연이 발생하는것을 확인할 수 있었습니다.(약간의 지연은 단일 인스턴스로 운영중인 DB 부하가 원인이 아닐까 추측중입니다.)
+  
 ---
 
 ### 3단계 - 쿼리 최적화
