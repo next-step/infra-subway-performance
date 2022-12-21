@@ -62,7 +62,7 @@ npm run dev
 [X] springboot에 HTTP Cache, gzip 설정하기
 [X] Launch Template 작성하기
 [X] Auto Scaling Group 생성하기
-[ ] Smoke, Load, Stress 테스트 후 결과를 기록
+[X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
    https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-00d9887dcaf8aed79
