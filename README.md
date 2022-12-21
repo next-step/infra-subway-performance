@@ -250,33 +250,33 @@ export default function ()  {
 
 | Before                                                    | After                                                        |
 |-----------------------------------------------------------|--------------------------------------------------------------|
-| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzip/smoke_test.png)   |
-| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzip/load_test.png)     |
-| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzip/stress_test.png) |
+| ![before_smoke_test](docs/step1/before/smoke_test.png)   | ![after_smoke_test](docs/step1/after/gzip/smoke_test.png)   |
+| ![before_load_test](docs/step1/before/load_test.png)     | ![after_load_test](docs/step1/after/gzip/load_test.png)     |
+| ![before_stress_test](docs/step1/before/stress_test.png) | ![after_stress_test](docs/step1/after/gzip/stress_test.png) |
 
 ### gzip 압축 적용 + cache 적용
 
 | Before                                                    | After                                                                |
 |-----------------------------------------------------------|----------------------------------------------------------------------|
-| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png)   |
-| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzipAndCache/load_test.png)     |
-| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) |
+| ![before_smoke_test](docs/step1/before/smoke_test.png)   | ![after_smoke_test](docs/step1/after/gzipAndCache/smoke_test.png)   |
+| ![before_load_test](docs/step1/before/load_test.png)     | ![after_load_test](docs/step1/after/gzipAndCache/load_test.png)     |
+| ![before_stress_test](docs/step1/before/stress_test.png) | ![after_stress_test](docs/step1/after/gzipAndCache/stress_test.png) |
 
 ### gzip 압축 적용 + cache 적용 + TLS, HTTP/2 설정
 
 | Before                                                    | After                                                                        |
 |-----------------------------------------------------------|------------------------------------------------------------------------------|
-| ![before_smoke_test](image/step1/before/smoke_test.png)   | ![after_smoke_test](image/step1/after/gzipAndCacheAndHttp2/smoke_test.png)   |
-| ![before_load_test](image/step1/before/load_test.png)     | ![after_load_test](image/step1/after/gzipAndCacheAndHttp2/load_test.png)     |
-| ![before_stress_test](image/step1/before/stress_test.png) | ![after_stress_test](image/step1/after/gzipAndCacheAndHttp2/stress_test.png) |
+| ![before_smoke_test](docs/step1/before/smoke_test.png)   | ![after_smoke_test](docs/step1/after/gzipAndCacheAndHttp2/smoke_test.png)   |
+| ![before_load_test](docs/step1/before/load_test.png)     | ![after_load_test](docs/step1/after/gzipAndCacheAndHttp2/load_test.png)     |
+| ![before_stress_test](docs/step1/before/stress_test.png) | ![after_stress_test](docs/step1/after/gzipAndCacheAndHttp2/stress_test.png) |
 
 ### redis
 
 | gzip 압축 적용 + cache 적용                                        | redis 추가                                                      |
 |--------------------------------------------------------------|---------------------------------------------------------------|
-| ![after_smoke_test](image/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test](image/step1/after/redis/smoke_test.png)   |
-| ![after_load_test](image/step1/after/gzipAndCache/load_test.png) | ![after_load_test](image/step1/after/redis/load_test.png)     |
-| ![after_stress_test](image/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test](image/step1/after/redis/stress_test.png) |
+| ![after_smoke_test](docs/step1/after/gzipAndCache/smoke_test.png) | ![after_smoke_test](docs/step1/after/redis/smoke_test.png)   |
+| ![after_load_test](docs/step1/after/gzipAndCache/load_test.png) | ![after_load_test](docs/step1/after/redis/load_test.png)     |
+| ![after_stress_test](docs/step1/after/gzipAndCache/stress_test.png) | ![after_stress_test](docs/step1/after/redis/stress_test.png) |
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
@@ -295,13 +295,29 @@ export default function ()  {
 
 1. Launch Template 링크를 공유해주세요.
 
+https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a68f3abccc8e0ce5
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+인스턴스 개수가 늘어나는 것은 확인했는데 cloudwatch에서 그래프가 증가하는 것은 확인하지 못 했습니다.
+
+![instance](docs/step2/instance.png)
+![instance2](docs/step2/instance2.png)
+
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+### smoke test
+![smoke_test](docs/step2/k6/smoke/smoke_test.png)
+
+### load test
+![load_test](docs/step2/k6/load/load_test.png)
+
+### stress test
+![stress_test](docs/step2/k6/stress/stress_test.png)
 
 ---
 
