@@ -156,6 +156,47 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+   ``` sql
+   SELECT 
+     e.id AS '사원번호',
+     e.last_name AS '이름',
+     top.annual_income AS '연봉',
+     p.position_name AS '직급명',
+     r.time AS '입출입시간',
+     r.region AS '지역',
+     r.record_symbol AS '입출입구분'
+   FROM employee e
+   INNER JOIN 
+   (
+     SELECT s.id, s.annual_income
+     FROM salary s
+     WHERE s.id IN
+     (
+       SELECT employee_id
+       FROM manager
+       WHERE department_id IN (SELECT id FROM department WHERE note = 'active')
+         AND start_date <= now() 
+         AND end_date >= now()
+     )
+       AND s.start_date <= now()
+       AND s.end_date >= now()
+     ORDER BY s.annual_income DESC
+     LIMIT 5
+   ) top ON top.id = e.id
+   INNER JOIN record r ON r.employee_id = e.id AND r.record_symbol = 'O'
+   INNER JOIN position p ON p.id = e.id AND p.start_date <= now() AND p.end_date >= now()
+   ORDER BY top.annual_income DESC, r.time DESC
+   ```
+   <details>
+   <summary>결과</summary>
+  
+   - Visual Explain
+   - ![visual-explain](./docs/step3/visual_explain.png)
+   - Result
+   - ![result](./docs/step3/result.png) 
+     
+   </details>
+
 ---
 
 ### 4단계 - 인덱스 설계
@@ -188,5 +229,12 @@ npm run dev
 2. 실습 요구사항
     - [x] 모든 정적 자원에 대해 no-cache, private 설정과 테스트 코드 검증
     - [x] 확장자는 css인 경우 max-age 1년, js인 경우 no-cache, private 설정
-    - [x] 모든 정적 자원에 대해 no-cache, no-store 설정?
+    - [x] 모든 정적 자원에 대해 no-cache, no-store 설정
+
+### 3단계 - 쿼리 최적화
+
+1. 요구사항
+    - [ ] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에
+      각 지역별로 언제 퇴실(O)했는지 조회하기(사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+    - [ ] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
 
