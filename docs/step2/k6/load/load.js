@@ -11,7 +11,7 @@ export let options = {
     },
 };
 
-const BASE_URL = 'https://alb.seogineer.kro.kr';
+const BASE_URL = 'https://seogineer.kro.kr';
 const USERNAME = 'dgseo8981@gmail.com';
 const PASSWORD = '1234';
 const SOURCE = 3;
