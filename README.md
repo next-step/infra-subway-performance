@@ -190,7 +190,7 @@ select result.employee_id as '사원번호',
         result.annual_income as '연봉',
         result.position_name as '직급명',
         r.region as '지역',
-        r.door as '입출입구분',
+        r.record_symbol as '입출입구분',
         r.time as '입출입시간'
 from (select m.employee_id,
              e.last_name,
