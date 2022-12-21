@@ -327,11 +327,54 @@ $ stress -c 2
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```mysql
+SELECT
+    MANAGER_TOP5_SALARY.id AS 사원번호,
+    MANAGER_TOP5_SALARY.last_name AS 이름,
+    MANAGER_TOP5_SALARY.annual_income AS 연봉,
+    MANAGER_TOP5_SALARY.position_name AS 직급명,
+    R.time AS 입출입시간,
+    R.region AS 지역,
+    R.record_symbol AS 입출입구분
+FROM (
+	SELECT 
+            E.id, 
+            E.last_name, 
+            S.annual_income, 
+            P.position_name
+	FROM (SELECT id FROM department WHERE note LIKE 'active') AS D
+	INNER JOIN (SELECT department_id, employee_id FROM manager WHERE end_date >= now()) AS M
+	ON D.id = M.department_id
+	INNER JOIN (SELECT id, last_name FROM employee) AS E
+	ON M.employee_id = E.id
+	INNER JOIN (SELECT id, position_name FROM position WHERE position_name LIKE 'Manager') AS P
+	ON E.id = P.id
+	INNER JOIN (SELECT id, annual_income FROM salary WHERE end_date >= now()) AS S
+	ON E.id = S.id
+	LIMIT 5
+) AS MANAGER_TOP5_SALARY
+INNER JOIN (
+    SELECT 
+        employee_id,
+        time,
+        record_symbol,
+        region 
+    FROM record
+    WHERE record_symbol = 'O') AS R
+ON MANAGER_TOP5_SALARY.id = R.employee_id
+ORDER BY MANAGER_TOP5_SALARY.annual_income DESC
+```
+
+PRIMARY 키만 남겨두고 모든 인덱스를 DROP한 후에 시간 측정    
+![execute_time](docs/step3/execute_time.png)
+
 ---
 
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+
 
 ---
 
