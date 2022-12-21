@@ -19,41 +19,59 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+
 - [x] gzip 압축
 - [x] TLS, HTTP/2 설정
 - [x] WAS 캐싱 적용
 - [x] nginx cache 적용
 - https://yohan-subway.n-e.kr/
+
 ---
 
 ### 2단계 - 스케일 아웃
+
+- [x] gzip 설정
+- [x] springboot에 HTTP Cache 설정
+    - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+    - [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [ ] Launch Template 작성
+- [ ] Auto Scaling Group 생성
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 
