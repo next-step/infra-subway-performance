@@ -6,6 +6,7 @@ alter table `subway`.`hospital` change column `id` `id` BIGINT(20) NOT NULL, add
 alter table covid add foreign key (programmer_id) references programmer (id);
 alter table covid add foreign key (hospital_id) references hospital (id);
 create index idx_programmer_01 on programmer (hobby);
+create index idx_hospital_01 on hospital (name);
 
 alter table member add primary key (id);
 alter table programmer add foreign key (member_id) references member (id);
@@ -42,7 +43,7 @@ order by p.id;
 
 /**
   4.서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계한다.
-    * Rows: 10 / Duration Time: 84ms
+    * Rows: 10 / Duration Time: 51ms
 */
 select c.stay, count(1)
 from hospital h
@@ -56,7 +57,7 @@ group by c.stay;
 
 /**
   5.서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계한다.
-    * Rows: 5 / Duration Time: 58ms
+    * Rows: 5 / Duration Time: 54ms
 */
 select p.exercise, count(1)
 from hospital h
