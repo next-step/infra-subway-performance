@@ -8,15 +8,11 @@ export let options = {
     { duration: '10s', target: 160 }, // ramping up
     { duration: '2m', target: 160 },
     { duration: '10s', target: 320 }, // ramping up
-    { duration: '2m', target: 320 },
+    { duration: '3m', target: 320 },
     { duration: '10s', target: 640 }, // ramping up
-    { duration: '2m', target: 640 },
-    { duration: '10s', target: 1280 }, // ramping up
-    { duration: '4m', target: 1280 },
-    { duration: '10s', target: 640 }, // ramping down
-    { duration: '2m', target: 640 },
+    { duration: '4m', target: 640 },
     { duration: '10s', target: 320 }, // ramping down
-    { duration: '2m', target: 320 },
+    { duration: '3m', target: 320 },
     { duration: '10s', target: 160 }, // ramping down
     { duration: '2m', target: 160 },
     { duration: '10s', target: 80 }, // ramping down
@@ -30,7 +26,7 @@ export let options = {
 
 const BASE_URL = 'https://shshon-infra.o-r.kr';
 const USERNAME = 'test@test.com';
-const PASSWORD = '1234';
+const PASSWORD = 'test';
 
 export default function ()  {
   // 메인 페이지 -> 로그인 페이지 -> 로그인 -> 경로 탐색 페이지 -> 경로 탐색 요청
