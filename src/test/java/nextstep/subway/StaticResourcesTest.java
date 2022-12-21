@@ -68,6 +68,24 @@ public class StaticResourcesTest {
         assertIsNotModified(uri, etag);
     }
 
+    @DisplayName("모든 정적 자원에 대해, no-cache, no-store 적용")
+    @Test
+    void get_static_all_resources() {
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/images/logo_small.png";
+        EntityExchangeResult<String> response = webTestClient
+                .get().uri(uri).exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response.getResponseHeaders()
+                .getETag();
+
+        assertIsNotModified(uri, etag);
+    }
+
     private void assertIsNotModified(String uri, String etag) {
         webTestClient
                 .get()

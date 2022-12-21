@@ -23,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
                 .addResourceLocations("classpath:/static/")
+                .setCacheControl(CacheControl.noStore())
                 .setCacheControl(CacheControl.noCache().cachePrivate());
 
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/*.js")
@@ -32,11 +33,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/*.css")
                 .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(MAX_AGE_CACHE_PERIOD);
-
     }
 
     @Bean
-    public FilterRegistrationBean filterRegistrationBean(){
+    public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         Filter etagHeaderFilter = new ShallowEtagHeaderFilter();
         registration.setFilter(etagHeaderFilter);

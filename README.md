@@ -156,10 +156,14 @@ Cache-Control 정책 정의 알고리듬
 - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증한다.
 - [x] 확장자가 `.css`인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다
 - [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
-  - **_불가능 합니다_** 그 이유는 아래와 같습니다.
+  - **_가능합니다._** 
     - no-cache : 캐시를 저장함. 다만 **_리소스 사용 시점마다 서버에 재검증 요청_** 을 보낸다
     - no-store : **_캐시를 절대 저장하지 않음_**, 가장 강력한 Cache-Control
   - 따라서, no-cache, no-store 설정을 같이 한다는 것은 **_주먹을 쥐지 않고 모래를 잡는 방법을 찾아라_** 라고 주문하는 것과 같습니다.
+  - 처음엔 불가능하다고 생각했지만, 착각이었습니다. 하지만 Spring의 CacheControl.java 내 javadoc 문서를 참고하자면,
+  - `noStore`와 `noCache`의 차이점을 설명하고, 동시에 필요하지 않은 이유에 대해서 설명하고 있습니다.
+  - 하지만, no-store, no-cache 를 강력한 통제 수단으로 함께 사용하기도 합니다.
+  - [no-store 로도 충분할 것 같은데..](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94)
 - [x] SpringBoot 에 HTTP Cache, gzip 설정
 - [ ] Launch Template 작성하기
 - [ ] Auto Scaling Group 생성
