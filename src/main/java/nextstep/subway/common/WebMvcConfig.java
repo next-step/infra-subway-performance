@@ -25,19 +25,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
-        resourceHandlerRegistry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/**")
-                .addResourceLocations(CLASS_PATH_STATIC)
+        resourceHandlerRegistry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/static/js/**")
+                .addResourceLocations("classpath:/static/js/")
                 .setCacheControl(CacheControl.noCache().cachePrivate());
 
-        resourceHandlerRegistry.addResourceHandler(
-                        PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/js/*.js")
-                .addResourceLocations(CLASS_PATH_STATIC + "js/")
-                .setCacheControl(CacheControl.noCache().cachePrivate());
+        resourceHandlerRegistry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/static/**")
+                .addResourceLocations("classpath:/static/")
+                .setCacheControl(CacheControl.noStore().mustRevalidate());
 
-        resourceHandlerRegistry.addResourceHandler(
-                        PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/css/*.css")
-                .addResourceLocations(CLASS_PATH_STATIC + "css/")
+        resourceHandlerRegistry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/static/css/**")
+                .addResourceLocations("classpath:/static/css/")
                 .setCachePeriod(60 * 60 * 24 * 365);
+
+
+        resourceHandlerRegistry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + subwayVersionSupport.getVersion() + "/static/images/**")
+                .addResourceLocations("classpath:/static/images/")
+                .setCacheControl(CacheControl.noCache().cachePrivate());
     }
 
     @Bean

@@ -1,28 +1,18 @@
-package nextstep.subway.web;
+package nextstep.subway.staticTest;
 
-import nextstep.subway.support.SubwayVersionSupport;
-import org.junit.jupiter.api.DisplayName;
+import nextstep.subway.support.version.SubwayVersionSupport;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static nextstep.subway.common.WebMvcConfig.PREFIX_STATIC_RESOURCES;
-import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient
 public class StaticResourceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(StaticResourceTest.class);
 
     @Autowired
     private WebTestClient client;
@@ -30,12 +20,10 @@ public class StaticResourceTest {
     @Autowired
     private SubwayVersionSupport version;
 
-    @DisplayName("스크립트 리소스를 확인한다.")
     @Test
-    void staticScriptResources() {
+    void getJsStaticResources() {
         String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/js/main.js";
-        EntityExchangeResult<String> response = client
-                .get()
+        EntityExchangeResult<String> response = client.get()
                 .uri(uri)
                 .exchange()
                 .expectStatus()
@@ -45,45 +33,21 @@ public class StaticResourceTest {
                 .expectBody(String.class)
                 .returnResult();
 
-        client
-                .get()
+        String etag = response.getResponseHeaders()
+                .getETag();
+
+        client.get()
                 .uri(uri)
-                .header("If-None-Match", response.getResponseHeaders().getETag())
+                .header("If-None-Match", etag)
                 .exchange()
                 .expectStatus()
                 .isNotModified();
     }
 
-    @DisplayName("이미지 리소스를 확인한다.")
     @Test
-    void staticImageResources() {
-        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/images/main_logo.png";
-        EntityExchangeResult<String> response = client
-                .get()
-                .uri(uri)
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectHeader()
-                .cacheControl(CacheControl.noStore().mustRevalidate())
-                .expectBody(String.class)
-                .returnResult();
-
-        client
-                .get()
-                .uri(uri)
-                .header("If-None-Match", response.getResponseHeaders().getETag())
-                .exchange()
-                .expectStatus()
-                .isOk();
-    }
-
-    @DisplayName("스타일 리소스를 확인한다.")
-    @Test
-    void staticCssResources() {
+    void getCssStaticResources() {
         String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/css/main.css";
-        EntityExchangeResult<String> response = client
-                .get()
+        EntityExchangeResult<String> response = client.get()
                 .uri(uri)
                 .exchange()
                 .expectStatus()
@@ -93,10 +57,36 @@ public class StaticResourceTest {
                 .expectBody(String.class)
                 .returnResult();
 
-        client
-                .get()
+        String etag = response.getResponseHeaders()
+                .getETag();
+
+        client.get()
                 .uri(uri)
-                .header("If-None-Match", response.getResponseHeaders().getETag())
+                .header("If-None-Match", etag)
+                .exchange()
+                .expectStatus()
+                .isNotModified();
+    }
+
+    @Test
+    void getImageStaticResources() {
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/images/main_logo.png";
+        EntityExchangeResult<String> response = client.get()
+                .uri(uri)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .cacheControl(CacheControl.noCache().cachePrivate())
+                .expectBody(String.class)
+                .returnResult();
+
+        String etag = response.getResponseHeaders()
+                .getETag();
+
+        client.get()
+                .uri(uri)
+                .header("If-None-Match", etag)
                 .exchange()
                 .expectStatus()
                 .isNotModified();
