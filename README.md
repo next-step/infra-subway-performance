@@ -365,11 +365,16 @@ ON MANAGER_TOP5_SALARY.id = R.employee_id
 ORDER BY MANAGER_TOP5_SALARY.annual_income DESC
 ```
 
+PRIMARY 키만 남겨두고 모든 인덱스를 DROP한 후에 시간 측정    
+![execute_time](docs/step3/execute_time.png)
+
 ---
 
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+
 
 ---
 
