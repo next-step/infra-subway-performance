@@ -147,7 +147,7 @@ where record.record_symbol = 'O';
 #### 진행 목록
 - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
@@ -173,6 +173,28 @@ select c.id, h.name from hospital h
 inner join covid c on c.hospital_id = h.id
 inner join programmer p on p.id= c.programmer_id;
 ```
+
+1.3 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 아래와 같은 쿼리를 작성 후 실행하니 1.2s의 결과를 얻었습니다.
+```sql
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer p
+inner join covid c on c.programmer_id = p.id
+inner join hospital h on h.id = c.hospital_id
+where (p.hobby = 'Yes' and p.student like 'Yes%') or p.years_coding = '0-2 years'
+order by p.id;
+```
+- covid, hospital 테이블 역시 id가 PK로 지정되어 있지 않아 추가하고 확인해보니 0.9s 성능을 얻었습니다.
+```sql
+ALTER TABLE covid ADD PRIMARY KEY (id);
+ALTER TABLE hospital ADD PRIMARY KEY (id);
+```
+- 조건절이 되는 student, years_coding는 카디널리티가 작아 인덱스에서 제외했고 살펴보니 join 절에 covid의 programmer_id, hospital_id
+에 인덱스를 걸면 어떻게 될지 확인해봤습니다. 테이블마다 인덱스는 1개만 타기 때문에 복합 인덱스로 생성했고 그 후, 성능 요구사항을 만족시킬 수 있었습니다.
+```sql
+CREATE INDEX idx_covid_programmer_id_and_hospital_id ON covid(programmer_id, hospital_id);
+```
+
 
 
 ---
