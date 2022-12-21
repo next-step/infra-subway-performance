@@ -123,8 +123,8 @@ ALTER TABLE programmer
 CREATE INDEX programmer_hobby_index ON programmer (hobby);
 
 SELECT hobby,
-       Round(Count(*) * 100.0 / (SELECT Count(*)
-                                 FROM   programmer), 1) AS rate
+       Count(*) / (SELECT Count(*)
+                   FROM   programmer) * 100 AS rate
 FROM   programmer
 GROUP  BY hobby
 ORDER  BY hobby DESC; 
@@ -151,7 +151,64 @@ FROM   covid
                ON covid.hospital_id = hospital.id; 
 ```
 - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```roomsql
+SELECT covid.id,
+       hospital.NAME,
+       USER.hobby,
+       USER.dev_type,
+       USER.years_coding
+FROM   covid
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+       INNER JOIN (SELECT id,
+                          years_coding,
+                          hobby,
+                          dev_type
+                   FROM   programmer
+                   WHERE  hobby = 'Yes'
+                          AND ( years_coding = '0-2 years'
+                                 OR student IN ( 'Yes, full-time',
+                                                 'Yes, part-time' ) )) USER
+               ON covid.programmer_id = USER.id
+ORDER  BY USER.id; 
+```
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```roomsql
+ALTER TABLE member
+  ADD CONSTRAINT member_pk PRIMARY KEY (id); 
 
+SELECT covid.stay,
+       Count(*)
+FROM   covid
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+                  AND hospital.NAME = '서울대병원'
+       INNER JOIN member
+               ON covid.member_id = member.id
+                  AND member.age BETWEEN 20 AND 29
+       INNER JOIN programmer
+               ON covid.programmer_id = programmer.id
+                  AND programmer.country = 'india'
+GROUP  BY covid.stay; 
+```
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```roomsql
+CREATE INDEX covid_member_id_index ON covid (member_id);
+
+SELECT exercise,
+       Count(*)
+FROM   programmer
+       INNER JOIN covid
+               ON programmer.id = covid.programmer_id
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+                  AND hospital.NAME = '서울대병원'
+       INNER JOIN member
+               ON covid.member_id = member.id
+                  AND member.age BETWEEN 30 AND 39
+GROUP  BY exercise;
+```
 ---
 
 ### 추가 미션
