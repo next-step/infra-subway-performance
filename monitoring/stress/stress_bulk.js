@@ -53,8 +53,8 @@ function loadPathPage() {
 }
 
 function findPath() {
-  let source = Math.floor(Math.random() * 49 + 1);
-  let target = Math.floor(Math.random() * 49 + 1);
+  let source = Math.floor(Math.random() * 10 + 1);
+  let target = Math.floor(Math.random() * 10 + 1);
   const response = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`);
   check(response, {
     'get path info in successfully': (res) => res.status === 200,
