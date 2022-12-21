@@ -82,9 +82,9 @@ select
     t.last_name as '이름', 
     t.annual_income as '연봉', 
     t.position_name as '직급',
-    r.time as '입출입시간' 
+    r.time as '입출입시간',
     r.region as '지역', 
-    r.record_symbol as '입출입구분', 
+    r.record_symbol as '입출입구분' 
 from 
     record r
 inner join (
