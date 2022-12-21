@@ -160,7 +160,10 @@ Cache-Control 정책 정의 알고리듬
     - no-cache : 캐시를 저장함. 다만 **_리소스 사용 시점마다 서버에 재검증 요청_** 을 보낸다
     - no-store : **_캐시를 절대 저장하지 않음_**, 가장 강력한 Cache-Control
   - 따라서, no-cache, no-store 설정을 같이 한다는 것은 **_주먹을 쥐지 않고 모래를 잡는 방법을 찾아라_** 라고 주문하는 것과 같습니다.
-
+- [ ] SpringBoot 에 HTTP Cache, gzip 설정
+- [ ] Launch Template 작성하기
+- [ ] Auto Scaling Group 생성
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ---
 
