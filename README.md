@@ -148,7 +148,7 @@ where record.record_symbol = 'O';
 - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
@@ -195,7 +195,34 @@ ALTER TABLE hospital ADD PRIMARY KEY (id);
 CREATE INDEX idx_covid_programmer_id_and_hospital_id ON covid(programmer_id, hospital_id);
 ```
 
+1.4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 아래와 같은 쿼리를 작성 후 실행하니 1.2s의 결과를 얻었습니다.
+```sql
+select c.stay, count(1)
+from hospital h
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on p.id= c.programmer_id
+inner join member m on m.id = c.member_id
+where h.name = '서울대병원' and p.country = 'India' and m.age between 20 and 29
+group by c.stay;
+```
 
+- member 테이블에 id를 PK로 설정후 0.18s의 성능을 얻었습니다.
+```sql
+ALTER TABLE member ADD PRIMARY KEY (id);
+```
+
+- 100ms 이하의 성능을 만족시켜야 함으로 더 개선해야 합니다. 우선 조건절의 country, age는 카디널리티가 낮은것으로 확인했습니다.
+```sql
+select count(distinct country) from programmer; -- 184개
+select count(distinct age) from member;         -- 43개
+```
+
+- 마찬가지로 covid의 hospital_id, programmer_id, member_id를 조인절에 사용하는 것을 확인할 수 있습니다. 따라서 아래와 같은 복합
+인덱스를 생성해 성능을 개선할 수 있었습니다.
+```sql
+CREATE INDEX idx_covid_hospital_id_and_programmer_id_and_member_id ON covid(hospital_id, programmer_id, member_id);
+```
 
 ---
 
