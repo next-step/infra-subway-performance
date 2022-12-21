@@ -72,11 +72,9 @@ npm run dev
   - [x] gzip 압축
   - [x] cache
   - [x] TLS, HTTP/2 설정
-- [ ] WAS 성능 개선
+- [x] WAS 성능 개선
   - [x] Spring Data Cache
-  - [ ] 비동기 처리
-- [ ] Scale out - 초간단 Blue-Green 배포 구성
-- [ ] 정적 파일 경량화
+  - [x] 비동기 처리
 
 ---
 
