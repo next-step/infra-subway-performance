@@ -74,6 +74,13 @@ npm run dev
   - 리눅스 전체 코어(프로세스) 개수 : `2`
   - AsyncThreadPool 적용
 
+### 1단계 피드백
+- [x] 구간별로 나눈 이유에 대한 확인
+  - 구간별로 나눈 이유는 stress test 에서 터지는 시점의 데이터를 확인하기 용이하기 때문
+  - load test 는 peak 까지 스무스하게 ramping up 하여, 오랜 시간동안 이상이 없는 지 확인하기 위함 
+- [x] Async Thread pool은 생성했지만, `@Async`를 사용하는 곳이 없음
+  - 아무리 생각해봐도 `@Async`를 적용할 곳이 없어서, 학습차원에서 AsyncThreadPool 만 구현 
+
 ---
 
 ### 2단계 - 스케일 아웃
