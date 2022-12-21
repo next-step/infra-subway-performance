@@ -47,7 +47,7 @@ npm run dev
    - http_req_duration(avg) 기준
      - smoke : 21.42ms -> 4.21ms
      - load : 67.16ms -> 7.27ms
-     - stess : 914.32ms -> 87.82ms
+     - stess : 914.32ms -> 612.21ms
 
 <details>
 <summary>smoke.js</summary>
@@ -349,8 +349,8 @@ default ✓ [======================================] 00/14 VUs  29m10s
      data_sent......................: 194 MB  115 kB/s
      http_req_blocked...............: avg=33.71µs  min=136ns    med=308ns    max=472.33ms p(90)=393ns    p(95)=433ns
      http_req_connecting............: avg=2.28µs   min=0s       med=0s       max=125.2ms  p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
-       { expected_response:true }...: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+   ✓ http_req_duration..............: avg=871.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+       { expected_response:true }...: avg=612.21ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
      http_req_failed................: 0.00%   ✓ 0           ✗ 2774892
      http_req_receiving.............: avg=734.29µs min=10.69µs  med=35.86µs  max=163.46ms p(90)=1.07ms   p(95)=2.35ms
      http_req_sending...............: avg=49.86µs  min=8.29µs   med=24.38µs  max=137.8ms  p(90)=44.34µs  p(95)=56.32µs
@@ -401,6 +401,12 @@ default ✓ [======================================] 00/14 VUs  29m10s
     - [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a51deb0d23640730)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.
+
+- http_req_duration(avg) 기준(서버 6대)
+  - smoke : 21.42ms -> 4.21ms(step1) -> 3.52ms(step2)
+  - load : 67.16ms -> 7.27ms(step1) -> 6.72ms(step2)
+  - stess : 914.32ms -> 612.21ms(step1) -> 161.7ms(step2)
 
 <details>
 <summary>cloudwatch</summary>
@@ -410,7 +416,6 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 * cloudwatch_autoscales
 ![img.png](src/main/resources/image/step2/autoscale_monitoring.png)
-- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.
 </details>
 
 
@@ -511,7 +516,7 @@ default ✓ [======================================] 00/14 VUs  29m10s
      http_req_blocked...............: avg=13.55µs  min=145ns    med=423ns    max=48.23ms p(90)=537ns    p(95)=608ns
      http_req_connecting............: avg=1.07µs   min=0s       med=0s       max=16.96ms p(90)=0s       p(95)=0s
    ✓ http_req_duration..............: avg=10.46ms  min=495.94µs med=7.1ms    max=1.05s   p(90)=24.26ms  p(95)=29.53ms
-       { expected_response:true }...: avg=8.76ms   min=495.94µs med=5.19ms   max=139.5ms p(90)=21.85ms  p(95)=26.43ms
+       { expected_response:true }...: avg=6.72ms   min=495.94µs med=5.19ms   max=139.5ms p(90)=21.85ms  p(95)=26.43ms
      http_req_failed................: 33.33%  ✓ 449966     ✗ 899932
      http_req_receiving.............: avg=677.45µs min=10.52µs  med=169.97µs max=61.35ms p(90)=1.88ms   p(95)=3.03ms
      http_req_sending...............: avg=112.32µs min=12.41µs  med=32.26µs  max=52.48ms p(90)=101.41µs p(95)=351.24µs
@@ -536,31 +541,38 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 * stress.js
 ```text
+running (28m10.0s), 000/384 VUs, 238902 complete and 0 interrupted iterations
 default ✓ [======================================] 000/384 VUs  28m10s
 
-     ✓ [Result] Main Page
-     ✓ [Result] Login Page
-     ✓ [Result] Login
+     ✗ [Result] Main Page
+      ↳  99% — ✓ 238834 / ✗ 68
+     ✗ [Result] Login Page
+      ↳  99% — ✓ 238860 / ✗ 42
+     ✗ [Result] Login
+      ↳  99% — ✓ 238858 / ✗ 44
      ✓ [Result] me
-     ✓ [Result] Path Page
-     ✓ [Result] Search Path
+     ✗ [Result] Path Page
+      ↳  99% — ✓ 238747 / ✗ 61
+     ✗ [Result] Search Path
+      ↳  99% — ✓ 238770 / ✗ 38
 
-     checks.....................: 100.00% ✓ 8182242    ✗ 0
-     data_received..............: 7.1 GB  4.2 MB/s
-     data_sent..................: 518 MB  306 kB/s
-     http_req_blocked...........: avg=9.41µs   min=146ns    med=282ns    max=451.21ms p(90)=338ns    p(95)=369ns
-     http_req_connecting........: avg=2.84µs   min=0s       med=0s       max=191.54ms p(90)=0s       p(95)=0s
-   ✓ http_req_duration..........: avg=28.89ms  min=402.77µs med=18.98ms  max=678.37ms p(90)=67.68ms  p(95)=83.32ms
-     http_req_failed............: 0.00%   ✓ 0          ✗ 8182242
-     http_req_receiving.........: avg=7.88ms   min=9.7µs    med=3.05ms   max=272.9ms  p(90)=22.67ms  p(95)=30.73ms
-     http_req_sending...........: avg=125.16µs min=9.28µs   med=22.24µs  max=205.4ms  p(90)=37.56µs  p(95)=46.94µs
-     http_req_tls_handshaking...: avg=6.05µs   min=0s       med=0s       max=298.77ms p(90)=0s       p(95)=0s
-     http_req_waiting...........: avg=20.88ms  min=0s       med=14.8ms   max=661.56ms p(90)=47.59ms  p(95)=58.02ms
-     http_reqs..................: 8182242 4841.53234/s
-     iteration_duration.........: avg=174.16ms min=8.23ms   med=118.31ms max=1.21s    p(90)=387.58ms p(95)=448.51ms
-     iterations.................: 1363707 806.922057/s
-     vus........................: 1       min=1        max=384
-     vus_max....................: 384     min=384      max=384
+     checks.........................: 99.98%  ✓ 1432877    ✗ 253
+     data_received..................: 1.8 GB  1.1 MB/s
+     data_sent......................: 126 MB  74 kB/s
+     http_req_blocked...............: avg=12.5ms   min=0s       med=421ns    max=2.04s    p(90)=565ns    p(95)=703ns
+     http_req_connecting............: avg=561.87µs min=0s       med=0s       max=579.57ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=161.76ms min=0s       med=107.38ms max=4.35s    p(90)=345.81ms p(95)=463.57ms
+       { expected_response:true }...: avg=161.7ms  min=558.28µs med=107.36ms max=4.35s    p(90)=345.66ms p(95)=463.17ms
+     http_req_failed................: 0.02%   ✓ 303        ✗ 1432877
+     http_req_receiving.............: avg=33.09ms  min=0s       med=13.86ms  max=762.44ms p(90)=94.58ms  p(95)=127.74ms
+     http_req_sending...............: avg=14.81ms  min=0s       med=36.86µs  max=4.27s    p(90)=324.88µs p(95)=1.7ms
+     http_req_tls_handshaking.......: avg=2.13ms   min=0s       med=0s       max=1.5s     p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=113.86ms min=0s       med=79.99ms  max=1.68s    p(90)=244.41ms p(95)=328.31ms
+     http_reqs......................: 1433180 848.012665/s
+     iteration_duration.............: avg=995ms    min=17.01ms  med=762.53ms max=8.62s    p(90)=2.16s    p(95)=2.57s
+     iterations.....................: 238902  141.358323/s
+     vus............................: 1       min=1        max=384
+     vus_max........................: 384     min=384      max=384
 ```
 
 * grafana   
