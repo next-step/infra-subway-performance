@@ -149,11 +149,11 @@ where record.record_symbol = 'O';
 - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
-1.1 Coding as a Hobby 와 같은 결과를 반환하세요.
+1.1 **Coding as a Hobby 와 같은 결과를 반환하세요.**
 - 우선 아래와 같은 쿼리를 작성하고 성능을 확인하니 0.5s가 나왔습니다.
 ```sql
 select hobby, round((count(1) / (select count(id) from programmer) * 100), 2) as is_coding
@@ -166,7 +166,7 @@ ALTER TABLE programmer ADD PRIMARY KEY (id);
 CREATE INDEX idx_programmer_hobby ON programmer(hobby);
 ```
 
-1.2 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+1.2 **프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)**
 - 아래와 같은 쿼리를 작성하고 성능을 확인하니 문제가 없어 추가 인덱스를 생성하진 않았습니다. (0.016s)
 ```sql
 select c.id, h.name from hospital h 
@@ -174,7 +174,7 @@ inner join covid c on c.hospital_id = h.id
 inner join programmer p on p.id= c.programmer_id;
 ```
 
-1.3 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+1.3 **프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)**
 - 아래와 같은 쿼리를 작성 후 실행하니 1.2s의 결과를 얻었습니다.
 ```sql
 select c.id, h.name, p.hobby, p.dev_type, p.years_coding
@@ -195,7 +195,7 @@ ALTER TABLE hospital ADD PRIMARY KEY (id);
 CREATE INDEX idx_covid_programmer_id_and_hospital_id ON covid(programmer_id, hospital_id);
 ```
 
-1.4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+1.4 **서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)**
 - 아래와 같은 쿼리를 작성 후 실행하니 1.2s의 결과를 얻었습니다.
 ```sql
 select c.stay, count(1)
@@ -222,6 +222,19 @@ select count(distinct age) from member;         -- 43개
 인덱스를 생성해 성능을 개선할 수 있었습니다.
 ```sql
 CREATE INDEX idx_covid_hospital_id_and_programmer_id_and_member_id ON covid(hospital_id, programmer_id, member_id);
+```
+
+1.5 **서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)**
+- 아래 쿼리를 작성하였고 1.4와 동일한 인덱스를 타기 떄문에 성능 이슈는 없었습니다.
+
+```sql
+select p.exercise, count(1)
+from hospital h
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on p.id= c.programmer_id
+inner join member m on m.id = c.member_id
+where h.name = '서울대병원' and m.age between 30 and 39
+group by p.exercise;
 ```
 
 ---
