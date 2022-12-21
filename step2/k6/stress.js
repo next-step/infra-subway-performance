@@ -1,28 +1,24 @@
 import http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
 
-
 export let options = {
     thresholds: {
         http_req_duration: ['p(99)<1500'],
     },
     stages: [
-        { duration : '10s', target : 1 },
-        { duration : '10s', target : 2 },
-        { duration : '10s', target : 3 },
-        { duration : '10s', target : 4 },
-        { duration : '10s', target : 7 },
-        { duration : '10s', target : 8 },
-        { duration : '1m', target : 9 },
-        { duration : '10s', target : 7 },
-        { duration : '10s', target : 5 },
-        { duration : '30s', target : 4 },
-        { duration : '10s', target : 8 },
-        { duration : '1m', target : 9 },
-        { duration : '10s', target : 8 },
-        { duration : '10s', target : 6 },
-        { duration : '10s', target : 2 },
-        { duration : '20s', target : 1 },
+        { duration : '30s', target : 10 },
+        { duration : '1m', target : 30 },
+        { duration : '1m', target : 70 },
+        { duration : '1m', target : 120 },
+        { duration : '1m', target : 170 },
+	{ duration : '1m', target : 260 },
+	{ duration : '1m', target : 350 },
+	{ duration : '1m', target : 260 },
+	{ duration : '1m', target : 170 },
+	{ duration : '1m', target : 120 },
+	{ duration : '1m', target : 70 },
+	{ duration : '1m', target : 30 },
+        { duration : '1m', target : 10 },
         { duration : '10s', target : 0 },
     ],
 };
@@ -91,11 +87,15 @@ function pathPage() {
     });
 }
 
+function randomId() {
+  return Math.floor(Math.random() * 15) + 1;
+}
+
 function findPath() {
-    let findPathResponse = http.get(`${BASE_URL}/paths?source=78&target=122`);
+    let findPathResponse = http.get(`${BASE_URL}/paths?source=${randomId()}&target=${randomId()}`);
     check(findPathResponse, {
         'Find path': (response) => response.status === 200,
-        'Path distance': (response) => response.json().distance > 0,
+        'Path distance': (response) => response.json().distance >= 0,
     })
 }
 

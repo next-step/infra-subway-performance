@@ -1,21 +1,28 @@
-import http from 'k6/http';
+import http from 'step1/k6/http';
 import { check, group, sleep, fail } from 'k6';
+
 
 export let options = {
     thresholds: {
         http_req_duration: ['p(99)<1500'],
     },
     stages: [
-        { duration : '10s', target : 10 },
-        { duration : '20s', target : 50 },
-        { duration : '30s', target : 100 },
-        { duration : '1m', target : 180 },
-        { duration : '1m', target : 250 },
-        { duration : '1m', target : 180 },
-        { duration : '1m', target : 100 },
-        { duration : '30s', target : 50 },
-        { duration : '20s', target : 20 },
-	{ duration : '10s', target : 10 },
+        { duration : '10s', target : 1 },
+        { duration : '10s', target : 2 },
+        { duration : '10s', target : 3 },
+        { duration : '10s', target : 4 },
+        { duration : '10s', target : 7 },
+        { duration : '10s', target : 8 },
+        { duration : '1m', target : 9 },
+        { duration : '10s', target : 7 },
+        { duration : '10s', target : 5 },
+        { duration : '30s', target : 4 },
+        { duration : '10s', target : 8 },
+        { duration : '1m', target : 9 },
+        { duration : '10s', target : 8 },
+        { duration : '10s', target : 6 },
+        { duration : '10s', target : 2 },
+        { duration : '20s', target : 1 },
         { duration : '10s', target : 0 },
     ],
 };
