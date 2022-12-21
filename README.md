@@ -367,7 +367,7 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 
 <details>
-<summary>stress.js</summary>
+<summary>grafana</summary>
 
 - 개선 이전 grafana
   ![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
@@ -379,8 +379,9 @@ default ✓ [======================================] 00/14 VUs  29m10s
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - WEB 성능 개선 (nginx.conf 설정 수정)
      - gzip 압축
-     - cache 설정
+     - cache 설정(redis 이용)
      - http/2
+     
 
 ---
 
@@ -888,4 +889,8 @@ const mainRoutes = [
   src: url(/fonts/BMHANNAPro.otf) format('woff2');
 }
 ```
+
+### 피드백
+- reverse proxy개선 후 부하 테스트, was개선 추가해서 부하 테스트를 진행 -> 어디서 성능 개선이 되었는지 파악 용이
+  - stress같은 경우에는 시스템의 한계치를 확인하는 테스트이기 때문에 VUser를 증가시키면서 한계를 확인하고 성능 개선 전과 비교했을 때 VUser가 얼마나 증가했는지 확인
 </details>
