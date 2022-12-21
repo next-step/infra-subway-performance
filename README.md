@@ -145,7 +145,7 @@ where record.record_symbol = 'O';
 - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
 
 #### 진행 목록
-- [ ] Coding as a Hobby 와 같은 결과를 반환하세요.
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
 - [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
@@ -153,6 +153,18 @@ where record.record_symbol = 'O';
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+1.1 Coding as a Hobby 와 같은 결과를 반환하세요.
+- 우선 아래와 같은 쿼리를 작성하고 성능을 확인하니 0.5s가 나왔습니다.
+```sql
+select hobby, round((count(1) / (select count(id) from programmer) * 100), 2) as is_coding
+from programmer
+group by hobby;
+```
+- 인덱스를 확인해보니 programmer 테이블에는 인덱스가 없어서 id를 PK로 설정하고 hobby를 인덱스로 설정한 후에 원하는 성능을 얻을수 있었습니다.
+```sql
+ALTER TABLE programmer ADD PRIMARY KEY (id);
+CREATE INDEX idx_programmer_hobby ON programmer(hobby);
+```
 ---
 
 ### 추가 미션
