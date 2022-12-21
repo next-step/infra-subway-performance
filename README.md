@@ -85,15 +85,66 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+[yomni-template 입니다.](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0ad1e535b08ecca79)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
+EC2 추가 생성을 위해 VU 를 다소 많이 잡아서 부하 테스트를 진행했습니다.
+peak VU = 5000 으로 설정하였습니다
+```stress_peak.js
+import http from 'k6/http';
+import {check} from 'k6';
+
+  export let options = {
+    threshold: {
+        http_req_duration: ['p(99)<100'],
+    },
+    stages: [
+        {duration: '5s', target: 200}, // ramping up
+        {duration: '30s', target: 200},
+        {duration: '5s', target: 1000}, // ramping up
+        {duration: '30s', target: 1000},
+        {duration: '5s', target: 2000}, // ramping up
+        {duration: '30s', target: 2000},
+
+        {duration: '5s', target: 5000}, // stress peak
+        {duration: '30s', target: 5000},
+
+        {duration: '3s', target: 2000}, // ramping down
+        {duration: '15s', target: 2000},
+        {duration: '3s', target: 1000}, // ramping down
+        {duration: '15s', target: 1000},
+        {duration: '3s', target: 200}, // ramping down
+        {duration: '15s', target: 200},
+        {duration: '5s', target: 0}, // ramping down
+    ],
+  };
+  ...
+} 
 ```
 
+- Auto - Scaling 캡처
+
+![auto-scaling.png](monitoring/step2/asg/auto-scaling.png)
+
+- EC2 사용량 캡처
+
+![EC2.png](monitoring/step2/asg/EC2.png)
+
+- 인스턴스 갯수 캡처
+
+![instance.png](monitoring/step2/asg/instance.png)
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- URL : https://yomni-subway.kro.kr/
+- k6 test
+  - smoke test  
+![smoke-k6.png](monitoring/step2/k6test/smoke-k6.png)
+  - load test  
+![load-k6.png](monitoring/step2/k6test/load-k6.png)
+  - stress test  
+![stress-k6.png](monitoring/step2/k6test/stress-k6.png)
 
 ### 2단계 미션에 필요한 개념 정리
 
@@ -165,9 +216,9 @@ Cache-Control 정책 정의 알고리듬
   - 하지만, no-store, no-cache 를 강력한 통제 수단으로 함께 사용하기도 합니다.
   - [no-store 로도 충분할 것 같은데..](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94)
 - [x] SpringBoot 에 HTTP Cache, gzip 설정
-- [ ] Launch Template 작성하기
-- [ ] Auto Scaling Group 생성
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ---
 
