@@ -32,17 +32,29 @@ function path() {
     });
 }
 
-function findPath(authHeaders) {
-    let findPathRes = http.get(`${BASE_URL}/path?source=1&target=50`, authHeaders);
+function findPath(source, target, authHeaders) {
+    let findPathRes = http.get(`${BASE_URL}/path?source=${source}&target=${target}`, authHeaders);
     check(findPathRes, {
         'Found path': (res) => res.status === 200,
     });
 }
 
+function randomSource() {
+    return randomNumber(1, 50);
+}
+
+function randomTarget() {
+    return randomNumber(100, 200);
+}
+
+function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export default function () {
     main();
     path();
-    findPath();
+    findPath(randomSource(), randomTarget());
 
     sleep(1);
 };
