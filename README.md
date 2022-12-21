@@ -147,7 +147,7 @@ sudo -i -u ubuntu /bin/bash /home/ubuntu/nextstep/scripts/seonghyeoklee-deploy.s
 
 1. Launch Template 링크를 공유해주세요.
 
-https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a0ccc43093453b96
+https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-041d861683ba4c81f
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
