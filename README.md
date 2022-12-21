@@ -148,7 +148,7 @@ WHERE r.record_symbol = 'O';
   - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
   - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
   - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
-  - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
   - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
@@ -194,6 +194,24 @@ FROM hospital h
 WHERE p.hobby = 'Yes'
   AND p.student LIKE 'Yes%'
   AND p.years_coding = '0-2 years';
+```
+
+- stay
+```mysql
+# 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+# Return rows : 10 / Duration time : 0.217s
+ALTER TABLE `subway`.`member` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+ALTER TABLE `subway`.`covid` ADD INDEX `ix_covid_member_id` (`member_id`);
+ALTER TABLE `subway`.`hospital` ADD INDEX `ix_hospital_name` (`name`);
+ALTER TABLE `subway`.`programmer` ADD INDEX `ix_programmer_country` (`country`);
+ALTER TABLE `subway`.`member` ADD INDEX `ix_member_age` (`age` ASC);
+
+SELECT c.stay, COUNT(c.id) AS count
+FROM member m
+       INNER JOIN covid c ON c.member_id = m.id AND m.age BETWEEN 20 AND 29
+       INNER JOIN hospital h ON h.id = c.hospital_id AND h.`name` = '서울대병원'
+       INNER JOIN programmer p ON p.id = c.programmer_id AND p.country = 'India'
+GROUP BY c.stay;
 ```
 
 ---
