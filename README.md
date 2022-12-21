@@ -419,9 +419,8 @@ $ stress -c 2
 
 ---
 
-### 🚀 1단계 - 화면 응답 개선하기
 <details>
-<summary> </summary>
+<summary> 🚀 1단계 - 화면 응답 개선하기 </summary>
 
 #### 요구사항
 * [ ] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
@@ -893,4 +892,139 @@ const mainRoutes = [
 ### 피드백
 - reverse proxy개선 후 부하 테스트, was개선 추가해서 부하 테스트를 진행 -> 어디서 성능 개선이 되었는지 파악 용이
   - stress같은 경우에는 시스템의 한계치를 확인하는 테스트이기 때문에 VUser를 증가시키면서 한계를 확인하고 성능 개선 전과 비교했을 때 VUser가 얼마나 증가했는지 확인
+</details>
+
+---
+
+
+<details>
+<summary> 🚀 2단계 - 스케일 아웃 (with ASG)</summary>
+
+![img.png](src/main/resources/image/scond-imge-1.png)
+
+지금까지 단일 서버 구성에서 성능 개선을 진행해보았어요.   
+단일 사용자에게는 빠르지만 부하가 많아질 경우 속도가 느려질 경우, 확장성에 문제가 있는 경우로 부하분산이 필요합니다.   
+원활한 부하분산을 위해 시작 템플릿을 구성해고 Scale out을 해봅니다   
+
+
+#### * Spring Boot에 컨테이너 설정 및 HTTP 캐싱 적용하기
+소스코드는 Spring Boot 학습 저장소의 step1-container-http 브랜치 참고하시면 되어요
+- https://github.com/woowacourse/jwp-spring-boot
+  * git clone https://github.com/woowacourse/jwp-spring-boot
+  * git checkout -t origin/step1-container-http
+  
+* **캐싱 설정, 테스트 코드**
+  * myblog.WebMvcConfig: Spring Boot에서 캐싱, ETag 설정
+  * support.handlebars.BlogHandlebarsHelper: 캐싱 무효화를 위한 Handlerbars.java template engine Helper
+    * Helper가 사용된 곳은 src/main/resources/templates의 include/header.html에서 확인 가능합니다.
+  * myblog.web.StaticResourcesTest: 테스트 코드를 활용해 ETag 학습할 수 있어요.
+  
+* **미션 요구사항**
+  * 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+  * 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+  * 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+
+**Spring Boot에 gzip 설정하기**
+```
+# gzip 압축
+server.compression.enabled: true
+server.compression.mime-types: text/html,text/plain,text/css,application/javascript,application/json
+server.compression.min-response-size: 500
+```
+
+#### 요구사항
+* [ ] springboot에 HTTP Cache, gzip 설정하기
+* [ ] Launch Template 작성하기
+* [ ] Auto Scaling Group 생성하기
+* [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+
+#### 힌트
+아래 설정들은 자신의 상황에 맞게 세팅합니다. 이미지의 정보는 단순 예시입니다.
+
+1. 배포 스크립트 업로드
+![img.png](src/main/resources/image/second-imgae-2.png)
+   * S3 의 nextstep-camp-pro 버킷에 배포 스크립트를 업로드합니다.
+
+2. Launch Template 작성하기
+  * Auto Scaling Group에서 자동으로 생성할 EC2 템플릿을 생성합니다.
+  1. ubuntu 이미지 선택
+![img.png](src/main/resources/image/second-image-3.png)
+  * 이미지는 최신 버전이 보안상 안전합니다.
+
+  2. EC2 설정
+![img.png](src/main/resources/image/second-image-4.png)
+  * 인스턴스 유형, Key pair, 서브넷, 보안그룹 등을 `WAS에 적용할 정책`을 설정합니다.
+
+  3. IAM 권한 설정
+![img.png](src/main/resources/image/second-image-5.png)
+  * 배포 스크립트를 받기 위해서는 EC2에서 S3로 접근 가능해야 합니다.
+  * 사전에 강사가 생성해둔 IAM 역할 `ec2-s3-api` 을 설정합니다.
+
+  4. 배포 명령어 설정
+![img.png](src/main/resources/image/second-image-6.png)
+  * EC2가 정상적으로 실행된 후에 동작해야 할 명령어들을 입력합니다.
+  ```
+  #!/bin/bash
+
+sudo apt-get update
+sudo apt install unzip 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/[자신의스크립트] /home/ubuntu
+sudo -i -u ubuntu chmod 755 /home/ubuntu/[자신의스크립트] 
+sudo -i -u ubuntu /bin/bash /home/ubuntu/[자신의스크립트] 
+
+  ```
+
+3. Auto Scaling Group 생성
+   1. Launch Template 설정
+   ![img.png](src/main/resources/image/second-image-7.png)
+  * Launch Template 보안 패치 등의 이유로 버전이 바뀐다면 추후 Auto scaling group 상 템플릿 버전만 바꿔도 보안 패치가 이루어집니다.
+  
+  2. 네트워크 설정
+![img.png](src/main/resources/image/second-image-8.png)
+  * 자신의 VPC 인지 다시 확인합니다. 설정되어 있지 않다면, 여기서 설정합니다.
+  * WAS 용도로 사용할 예정이므로 외부망 2개 서브넷을 설정해줍니다.
+
+  3. 로드밸런서 생성
+![img.png](src/main/resources/image/second-image-12.png)
+     * EC2 앞단에 부하분산 용도의 로드밸런서를 생성합니다.
+     * Application Load Balancer 로 생성해야 이 후 WAF 등을 추가할 수 있습니다.
+
+  4. 타겟 대상 생성
+     ![img.png](src/main/resources/image/second-image-9.png)
+     * 로드밸런서의 트래픽을 전달할 대상그룹을 생성합니다.
+     * 우리가 앞서 작성해둔 LaunchTemplate을 통해 생성되는 EC2 인스턴스가 타겟 대상 그룹에 속하게 됩니다. 
+
+  5. 그룹 크기 설정
+  ![img.png](src/main/resources/image/second-image-10.png)
+     * 생성하길 희망하는 EC2 인스턴스 갯수, 최소 갯수, 최대 갯수 등을 설정합니다. 사용하지 않는다면 0으로 두어도 좋습니다.
+
+  6. 임계값 설정
+![img.png](src/main/resources/image/second-image-11.png)
+     * CPU 사용률, 네트워크 트래픽 등 특정 지표가 임계값에 이르면 EC2 인스턴스를 증설하도록 구성할 수 있어요.
+
+  7. 종료 정책 구성
+![img.png](src/main/resources/image/second-image-13.png)
+
+* 이 정책은 Auto Scaling Group 을 생성한 후에 편집을 통해 설정할 수 있어요.
+* 기본 정책으로 둔다면, 그룹 크기를 줄일 때 임의로 서버를 종료시킵니다.
+* Launch Template 버전, 오래전에 생성된 인스턴스 순으로 먼저 종료시키도록 종료 정책을 구성해봅니다.
+
+4. DNS 설정
+이제 DNS에는 CNAME으로 ALB도메인을 설정합니다.
+
+5. TLS설정하기
+기존에 생성한 인증서를 ACM에 가져옵니다.
+![img.png](src/main/resources/image/second-image-15.png)
+BEGIN CERTIFICATE와 END CERTIFICATE 까지 포함하여야 합니다.
+   * 인증서 본문 -> cert.pem
+   * 프라이빗 키 -> privkey.pem
+   * 체인 -> chain.pem
+
+* ALB에 인증서 적용하기
+![img.png](src/main/resources/image/second-image-14.png)
+
 </details>
