@@ -115,6 +115,8 @@ WHERE  record.record_symbol = 'O';
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+##### 실행결과는 docs/step4 폴더에 순서대로 저장해뒀습니다
+
 - Coding as a Hobby 와 같은 결과를 반환하세요.
 ```roomsql
 ALTER TABLE programmer
