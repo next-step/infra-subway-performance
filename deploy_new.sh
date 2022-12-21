@@ -6,10 +6,12 @@ SHELL_SCRIPT_PATH=$(dirname $0)
 BRANCH=$1
 PROFILE=$2
 
-GIT_PULL_SCRIPT="git pull origin $BRANCH"
+GIT_CLONE_SCRIPT="git clone https://github.com/next-step/infra-subway-performance.git subway"
+CD_PROJECT_DIRECTORY_SCRIPT="cd subway"
+CHECKOUT_SCRIPT="git checkout step2"
 BUILD_SCRIPT="./gradlew clean build -x test"
 FIND_PID_SCRIPT="java -jar -Dspring.profiles.active=$PROFILE build/libs/*.jar"
-RUN_SCRIPT_PATH=$EXECUTION_PATH"/run_$PROFILE.sh"
+RUN_SCRIPT_PATH=$EXECUTION_PATH"/run_prod.sh"
 
 txtrst='\033[1;37m' # White
 txtred='\033[1;31m' # Red
@@ -28,21 +30,23 @@ then
   exit
 fi
 
-function check_df() {
-  git fetch
-  master=$(git rev-parse $BRANCH)
-  remote=$(git rev-parse origin/$BRANCH)
-
-  if [[ $master == $remote ]]; then
-    echo -e "[$(date)] Nothing to do!!! 😫"
-    exit 0
-  fi
-}
-
-function pull() {
+function do_new_deploy() {
   echo -e ""
-  echo -e ">> Pull Request 🏃🏃🏃🏃🏃"
+  echo -e ">> Clone 🏃🏃🏃🏃🏃"
   $GIT_PULL_SCRIPT
+  $CD_PROJECT_DIRECTORY_SCRIPT
+  $CHECKOUT_SCRIPT
+  EXECUTION_PATH=$(pwd)
+  ## gradle build
+  build;
+  ## 프로세스 pid를 찾는 명령어
+  findPid;
+  ## 프로세스를 종료하는 명령어
+  killProcess;
+  ## 프로세스 pid를 찾는 명령어
+  findPid;
+  ## 실행
+  run;
 }
 
 function build() {
@@ -80,23 +84,5 @@ function run() {
 }
 
 
-## diff 확인
-#check_df;
-
 ## 저장소 pull
-pull;
-
-## gradle build
-build;
-
-## 프로세스 pid를 찾는 명령어
-findPid;
-
-## 프로세스를 종료하는 명령어
-killProcess;
-
-## 프로세스 pid를 찾는 명령어
-findPid;
-
-## 실행
-run;
+do_new_deploy;
