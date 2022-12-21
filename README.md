@@ -53,8 +53,13 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
+- spring boot에 HTTP Cache, gzip 설정하기 
+- Launch Template 작성하기 
+- Auto Scaling Group 생성하기
+- Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
+- [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a8521e6842d65ea9)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
@@ -62,8 +67,10 @@ npm run dev
 $ stress -c 2
 ```
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- /src/main/resources/step2 디렉토리 내 이미지 파일 참고 부탁드립니다.
 
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- /src/main/resources/step2 디렉토리 내 이미지 파일 참고 부탁드립니다.
 ---
 
 ### 3단계 - 쿼리 최적화
