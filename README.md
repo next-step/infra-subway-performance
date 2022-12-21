@@ -108,12 +108,46 @@ location ~* \.(?:css|js|gif|png|jpg|jpeg)$ {
 ### 2단계 - 스케일 아웃
 
 #### 요구사항
+
 - [X] springboot에 HTTP Cache, gzip 설정하기
 - [X] Launch Template 작성하기
 - [X] Auto Scaling Group 생성하기
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
+
+#### 인증서 설정하기
+
+```sh
+sudo cp /etc/letsencrypt/live/nextstep.o-r.kr/cert.pem cert.pem
+sudo cp /etc/letsencrypt/live/nextstep.o-r.kr/chain.pem chain.pem
+sudo cp /etc/letsencrypt/live/nextstep.o-r.kr/private.pem private.pem
+```
+
+시작 템플릿 스크립트
+
+```text
+#!/bin/bash
+
+sudo apt-get update
+sudo apt install unzip 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+sudo mkdir -p /home/ubuntu/nextstep/scripts
+sudo chown ubuntu.ubuntu -R /home/ubuntu/nextstep
+sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/seonghyeoklee-deploy.sh /home/ubuntu/nextstep/scripts
+
+sudo apt update
+sudo apt install -y default-jre
+sudo apt install -y default-jdk
+
+sudo -i -u ubuntu chmod 755 /home/ubuntu/nextstep/scripts/seonghyeoklee-deploy.sh
+sudo -i -u ubuntu /bin/bash /home/ubuntu/nextstep/scripts/seonghyeoklee-deploy.sh step2
+```
 
 1. Launch Template 링크를 공유해주세요.
+
+https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a0ccc43093453b96
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
@@ -122,6 +156,11 @@ $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+아래 디렉토리 이하에 테스트 결과 공유 드립니다.
+
+/autoscaling 
+
 
 ---
 
