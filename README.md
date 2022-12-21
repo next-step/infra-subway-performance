@@ -59,17 +59,31 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 
+#### 요구사항
+- [X] springboot에 HTTP Cache, gzip 설정하기
+- [X] Launch Template 작성하기
+- [X] Auto Scaling Group 생성하기
+- [X] Smoke, Load, Stress 테스트 후 결과를 기록
+
 1. Launch Template 링크를 공유해주세요.
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0c73c379d348a403a
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+- /monitoring/asg/cloudwatch/cloudwatch_asg.png
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- /monitoring/asg/smoke
+- /monitoring/asg/load
+- /monitoring/asg/stress
 
----
+4. 모든 정적 자원에 대해 no-cache, no-store 설정 가능한가요?
+   - 가능합니다. Controller에서 HttpServletResponse 를 받은 후 직접 `Cache-Controle`을 할당하여 설정할 수도 있고, WebContentInterceptor를 활용할 수 도 있습니다.
+   - 로그인용 사용자 이름, 비밀번호 및 기타 민감한 정보들을 보호하기 위해 SSL 을 로그인 페이지나 회원 정보 페이지등은 SSL로 암호화하는 경우가 많습니다.
+   SSL 을 사용해서 민감한 정보들을 보호한다고 해도 브라우저에 이 정보가 캐싱되면 문제가 발생할 수 있기 때문에 `Cache-Control: no-cache, no-store, must-revalidate`
+    와 같이 사용하면 브라우저 캐싱을 방지할 수 있습니다. 단 캐싱을 하지 않으면 성능 저하가 발생할 수 있으므로 로그인 페이지등에 제한적으로 사용해야 합니다.
+   - [참고] https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control 
+   - [참고] https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
+   - [참고] https://www.lesstif.com/software-architect/http-https-browser-caching-http-header-20775788.html
 
 ### 3단계 - 쿼리 최적화
 
