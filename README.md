@@ -400,7 +400,20 @@ default ✓ [======================================] 00/14 VUs  29m10s
 1. Launch Template 링크를 공유해주세요.
     - [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a51deb0d23640730)
 
-3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
+<details>
+<summary>cloudwatch</summary>
+
+* autosacle server
+![img.png](src/main/resources/image/step2/autosacle_server.png)
+
+* cloudwatch_autoscales
+
+[//]: # (![img.png]&#40;src/main/resources/image/step2/autoscale_monitoring.png&#41;)
+[//]: # (- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.)
+</details>
+
 
 ```sh
 $ stress -c 2
@@ -427,7 +440,7 @@ $ stress -c 2
            * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
 
 
-running (1m00.0s), 0/1 VUs, 3184 complete and 0 interrupted iterations
+running (1m00.0s), 0/1 VUs, 2738 complete and 0 interrupted iterations
 default ✓ [======================================] 1 VUs  1m0s
 
      ✓ [Result] Main Page
@@ -437,21 +450,21 @@ default ✓ [======================================] 1 VUs  1m0s
      ✓ [Result] Path Page
      ✓ [Result] Search Path
 
-     checks.........................: 100.00% ✓ 19104      ✗ 0
-     data_received..................: 16 MB   271 kB/s
-     data_sent......................: 1.1 MB  19 kB/s
-     http_req_blocked...............: avg=2.58µs  min=197ns    med=365ns   max=37.32ms  p(90)=580ns   p(95)=654ns
-     http_req_connecting............: avg=48ns    min=0s       med=0s      max=654.19µs p(90)=0s      p(95)=0s
-   ✓ http_req_duration..............: avg=3.01ms  min=763.6µs  med=1.96ms  max=69.06ms  p(90)=6.74ms  p(95)=7.19ms
-       { expected_response:true }...: avg=3.01ms  min=763.6µs  med=1.96ms  max=69.06ms  p(90)=6.74ms  p(95)=7.19ms
-     http_req_failed................: 0.00%   ✓ 0          ✗ 19104
-     http_req_receiving.............: avg=54.49µs min=15.64µs  med=36.1µs  max=10.23ms  p(90)=67.75µs p(95)=98.16µs
-     http_req_sending...............: avg=33.33µs min=13.35µs  med=27.69µs max=7.53ms   p(90)=44.46µs p(95)=52.29µs
-     http_req_tls_handshaking.......: avg=295ns   min=0s       med=0s      max=2.99ms   p(90)=0s      p(95)=0s
-     http_req_waiting...............: avg=2.93ms  min=577.51µs med=1.89ms  max=68.97ms  p(90)=6.64ms  p(95)=7.09ms
-     http_reqs......................: 19104   318.332461/s
-     iteration_duration.............: avg=18.83ms min=14.27ms  med=17.94ms max=180.51ms p(90)=22.46ms p(95)=24.77ms
-     iterations.....................: 3184    53.05541/s
+     checks.........................: 100.00% ✓ 16428      ✗ 0
+     data_received..................: 19 MB   322 kB/s
+     data_sent......................: 973 kB  16 kB/s
+     http_req_blocked...............: avg=4.46µs  min=259ns    med=464ns   max=21.39ms  p(90)=595ns   p(95)=663ns
+     http_req_connecting............: avg=213ns   min=0s       med=0s      max=279.59µs p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=3.52ms  min=537.03µs med=1.65ms  max=859.61ms p(90)=8.42ms  p(95)=9.62ms
+       { expected_response:true }...: avg=3.52ms  min=537.03µs med=1.65ms  max=859.61ms p(90)=8.42ms  p(95)=9.62ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 16428
+     http_req_receiving.............: avg=52.22µs min=24.26µs  med=45.47µs max=7.82ms   p(90)=66.54µs p(95)=75.04µs
+     http_req_sending...............: avg=38.96µs min=18.49µs  med=33.67µs max=4.45ms   p(90)=53.23µs p(95)=61.16µs
+     http_req_tls_handshaking.......: avg=2.99µs  min=0s       med=0s      max=11.77ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.42ms  min=0s       med=1.56ms  max=859.48ms p(90)=8.32ms  p(95)=9.51ms
+     http_reqs......................: 16428   273.717028/s
+     iteration_duration.............: avg=21.9ms  min=15.39ms  med=19.95ms max=997.12ms p(90)=28.27ms p(95)=32.96ms
+     iterations.....................: 2738    45.619505/s
      vus............................: 1       min=1        max=1
      vus_max........................: 1       min=1        max=1
 ```
