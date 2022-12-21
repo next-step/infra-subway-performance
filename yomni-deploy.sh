@@ -1,17 +1,7 @@
 #!/bin/bash
 
 ## 변수 설정
-EXECUTION_PATH=$(pwd)
-SHELL_SCRIPT_PATH=$(dirname $0)
-BRANCH=$1
-PROFILE=$2
-
-GIT_CLONE_SCRIPT="git clone https://github.com/next-step/infra-subway-performance.git subway"
-CD_PROJECT_DIRECTORY_SCRIPT="cd subway"
-CHECKOUT_SCRIPT="git checkout step2"
-BUILD_SCRIPT="./gradlew clean build -x test"
-FIND_PID_SCRIPT="java -jar -Dspring.profiles.active=$PROFILE build/libs/*.jar"
-RUN_SCRIPT_PATH=$EXECUTION_PATH"/run_prod.sh"
+FIND_PID_SCRIPT="java -jar -Dspring.profiles.active=prod build/libs/*.jar"
 
 txtrst='\033[1;37m' # White
 txtred='\033[1;31m' # Red
@@ -20,23 +10,13 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-## 조건 설정
-if [[ $# -ne 2 ]]
-then
-  echo -e "${txtylw}=======================================${txtrst}"
-  echo -e "${txtgrn}  << 배포 스크립트 🧐 >>${txtrst}"
-  echo -e "${txtgrn} $0 브랜치이름 ${txtred}{ local | prod }"
-  echo -e "${txtylw}=======================================${txtrst}"
-  exit
-fi
-
 function do_new_deploy() {
   echo -e ""
   echo -e ">> Clone 🏃🏃🏃🏃🏃"
-  $GIT_PULL_SCRIPT
-  $CD_PROJECT_DIRECTORY_SCRIPT
-  $CHECKOUT_SCRIPT
-  EXECUTION_PATH=$(pwd)
+  git clone https://github.com/next-step/infra-subway-performance.git subway
+  cd subway
+  git checkout step2
+
   ## gradle build
   build;
   ## 프로세스 pid를 찾는 명령어
@@ -52,7 +32,7 @@ function do_new_deploy() {
 function build() {
   echo -e ""
   echo -e ">> Gradle Build 🛠🛠🛠🛠🛠"
-  $BUILD_SCRIPT
+  ./gradlew clean build -x test
 }
 
 function findPid() {
@@ -76,13 +56,9 @@ function killProcess() {
 
 function run() {
   echo -e ""
-  if [ -z $JAVA_PROCESS_ID ]; then
-    echo -e ">> New Run 🏃🏃🏃🏃🏃"
-    "$RUN_SCRIPT_PATH"
-    exit 0
-  fi
+  mkdir logs
+  nohup java -jar -Dspring.profiles.active=prod ./build/libs/*.jar 1> ./logs/prod_exec.log 2>&1  &
 }
 
-
-## 저장소 pull
+## 저장소 clone
 do_new_deploy;
