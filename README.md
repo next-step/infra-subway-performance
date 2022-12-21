@@ -65,16 +65,21 @@ npm run dev
 [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
-   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f39af934127fa5c9
+  - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f39af934127fa5c9
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
+  - 아래 경로 참고 부탁드립니다.
+    - ./monitoring/stress/step2/step2_stress_bulk_asg_ec2
+    - ./monitoring/stress/step2/step2_stress_bulk_AutoScaling
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+  - 아래 경로 참고 부탁드립니다.
+    - ./monitoring/smoke/step2
+    - ./monitoring/load/step2
+    - ./monitoring/stress/step2
 ---
 
 ### 3단계 - 쿼리 최적화
