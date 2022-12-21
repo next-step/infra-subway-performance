@@ -302,8 +302,22 @@ https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#Lau
 ```sh
 $ stress -c 2
 ```
+인스턴스 개수가 늘어나는 것은 확인했는데 cloudwatch에서 그래프가 증가하는 것은 확인하지 못 했습니다.
+
+![instance](docs/step2/instance.png)
+![instance2](docs/step2/instance2.png)
+
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+### smoke test
+![smoke_test](docs/step2/k6/smoke/smoke_test.png)
+
+### load test
+![load_test](docs/step2/k6/load/load_test.png)
+
+### stress test
+![stress_test](docs/step2/k6/stress/stress_test.png)
 
 ---
 
