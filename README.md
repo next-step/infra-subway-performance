@@ -65,7 +65,7 @@ npm run dev
 [X] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
-   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-00d9887dcaf8aed79
+   https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f39af934127fa5c9
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
