@@ -168,7 +168,56 @@ $ stress -c 2
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
+```sql
+-- 가능하면 적은 결과가 반환될 것으로 예상되는 테이블을 드라이빙 테이블로 선정
+select m.employee_id, e.last_name
+from department d
+         inner join manager m
+                    on d.id = m.department_id
+         inner join employee e
+                    on e.id = m.employee_id
+where m.end_date = convert('9999-01-01', date)
+  and d.note = 'ACTIVE';
+```
+
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+  - [X] 서브쿼리보단 조인문을 활용
+  - [X] 모수 테이블 크기를 줄이기
+
+```sql
+select result.employee_id as '사원번호',
+        result.last_name as '이름',
+        result.annual_income as '연봉',
+        result.position_name as '직급명',
+        r.region as '지역',
+        r.record_symbol as '입출입구분',
+        r.time as '입출입시간'
+from (select m.employee_id,
+             e.last_name,
+             s.annual_income,
+             p.position_name
+      from department d
+             inner join manager m
+                        on d.id = m.department_id
+             inner join employee e
+                        on e.id = m.employee_id
+             inner join position p
+                        on p.id = m.employee_id
+                          and p.end_date = convert('9999-01-01', date)
+             inner join salary s
+                        on s.id = m.employee_id
+                          and s.end_date = convert('9999-01-01', date)
+      where m.end_date = convert('9999-01-01', date)
+        and d.note = 'ACTIVE'
+      order by annual_income desc
+        limit 5) result
+       inner join record r
+                  on r.employee_id = result.employee_id
+where r.record_symbol = 'O'
+order by result.annual_income desc;
+```
+
+![실행계획](performance/query/실행계획.png)
 
 ---
 
