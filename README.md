@@ -60,12 +60,20 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+- https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplates:sort=launchTemplateId;search=lt-0bd2361c81213d79e
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+- autoscaling 디렉토리에 Cloudwatch 캡쳐 이미지 추가해두었습니다.
+- 아래와 같이 실습 진행하였습니다.
+  1. 1번 서버 cpu 부하 실행
+  2. CPU 사용률 평균이 50%를 넘어 2번 서버 스케일 아웃
+  3. 2번 서버 스케일 아웃했음에도 CPU 사용률 평균 50%를 넘어 3,4번 서버 스케일 아웃
+  4. 1번 서버 cpu 부하 종료
+  5. CPU 사용률 평균이 50%대로 감소, CPU 사용률 평균이 50%가 유지되도록 1, 2, 3 서버 점진적으로 종료
+  6. 마지막으로 생성된 4번 서버만 남음.
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
