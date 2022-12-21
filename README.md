@@ -88,8 +88,18 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
++ https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0e3462b3fe3b4dc51
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
++ step2 폴더에 첨부하였습니다~!
+
+3. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+가능합니다! HTTP스펙 자체가 모든 상황을 완벽하게 제어하는것은 불가능하기 때문에 가능은 하긴합니다.
+
+추가로 오래된 IE version ,Http1.0 등 캐시 구현하는 방법이 전부 다르기때문에 이를 대처하기 위해 사용 될 수 있습니다.
+
+> https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers 
+
+
 
 ```sh
 $ stress -c 2
