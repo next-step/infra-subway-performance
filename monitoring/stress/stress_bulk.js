@@ -2,20 +2,26 @@ import http from 'k6/http';
 import { check, group, sleep, fail } from 'k6';
 
 export let options = {
-  // 평균 VUser : 10
-  // 최대 VUser : 20
   stages: [
-    { duration: '10s', target: 10 }, // ramping up
-    { duration: '1m', target: 10 },
-    { duration: '10s', target: 15 }, // ramping up
-    { duration: '2m', target: 15 },
-    { duration: '10s', target: 20 }, // ramping up
-    { duration: '4m', target: 20 },
-    { duration: '10s', target: 15 }, // ramping down
-    { duration: '2m', target: 15 },
-    { duration: '10s', target: 10 }, // ramping down
-    { duration: '1m', target: 10 },
-    { duration: '10s', target: 0 }
+    { duration: '10s', target: 40 }, // ramping up
+    { duration: '10s', target: 80 }, // ramping up
+    { duration: '10s', target: 160 }, // ramping up
+    { duration: '2m', target: 160 },
+    { duration: '10s', target: 320 }, // ramping up
+    { duration: '3m', target: 320 },
+    { duration: '10s', target: 640 }, // ramping up
+    { duration: '4m', target: 640 },
+    { duration: '10s', target: 1280 }, // ramping up
+    { duration: '4m', target: 1280 },
+    { duration: '10s', target: 640 }, // ramping down
+    { duration: '4m', target: 640 },
+    { duration: '10s', target: 320 }, // ramping down
+    { duration: '3m', target: 320 },
+    { duration: '10s', target: 160 }, // ramping down
+    { duration: '2m', target: 160 },
+    { duration: '10s', target: 80 }, // ramping down
+    { duration: '10s', target: 40 }, // ramping down
+    { duration: '10s', target: 0 }, // ramping down
   ],
   thresholds: {
     http_req_duration: ['p(99)<500'], // 99% of requests must complete below 0.5s

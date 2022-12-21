@@ -4,23 +4,15 @@ import { check, group, sleep, fail } from 'k6';
 export let options = {
   stages: [
     { duration: '10s', target: 40 }, // ramping up
+    { duration: '2m', target: 40 },
     { duration: '10s', target: 80 }, // ramping up
+    { duration: '3m', target: 80 },
     { duration: '10s', target: 160 }, // ramping up
-    { duration: '2m', target: 160 },
-    { duration: '10s', target: 320 }, // ramping up
-    { duration: '3m', target: 320 },
-    { duration: '10s', target: 640 }, // ramping up
-    { duration: '4m', target: 640 },
-    { duration: '10s', target: 1280 }, // ramping up
-    { duration: '4m', target: 1280 },
-    { duration: '10s', target: 640 }, // ramping down
-    { duration: '4m', target: 640 },
-    { duration: '10s', target: 320 }, // ramping down
-    { duration: '3m', target: 320 },
-    { duration: '10s', target: 160 }, // ramping down
-    { duration: '2m', target: 160 },
+    { duration: '4m', target: 160 },
     { duration: '10s', target: 80 }, // ramping down
+    { duration: '3m', target: 80 },
     { duration: '10s', target: 40 }, // ramping down
+    { duration: '2m', target: 40 },
     { duration: '10s', target: 0 }, // ramping down
   ],
   thresholds: {
