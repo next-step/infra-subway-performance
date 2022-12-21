@@ -13,7 +13,7 @@ txtgra='\033[1;30m' # Gray
 function do_new_deploy() {
   echo -e ""
   echo -e ">> Clone 🏃🏃🏃🏃🏃"
-  git clone https://github.com/next-step/infra-subway-performance.git subway
+  git clone https://github.com/yomni/infra-subway-performance.git subway
   cd subway
   git checkout step2
 
