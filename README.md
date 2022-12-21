@@ -116,7 +116,7 @@ on
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 * [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 
 와 같은 결과를 반환
-  * 쿼리를 작성 후 313ms가 나온 것을 확인 후 hobby에 인덱스를 적용한 뒤에 062ms 감소하였습니다.
+  * 아래의 쿼리를 작성 후 313ms가 나온 것을 확인 후 hobby에 인덱스 생성 쿼리 적용한 뒤에 062ms 감소하였습니다.
   * [결과 이미지](/step4/1)
 ```
 -- 쿼리
@@ -128,8 +128,21 @@ group by hobby;
 create index programmer_hobby_index on programmer (hobby);
 ```
 * 프로그래머별로 해당하는 병원 이름을 반환 (covid.id, hospital.name)
+  * 아래의 쿼리를 작성 후 360ms가 나온 것을 확인했고 조인 컬럼인 각 테이블의 id에 인덱스 생성 쿼리를 적용한 뒤에
+  031ms로 감소했습니다.
+  * [결과 이미지](/step4/2)
 ```
+-- 쿼리
+select c.id, h.name from hospital h 
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on p.id= c.programmer_id;
 
+-- 인덱스 생성 쿼리
+create index covid_hospital_id_index
+     on covid (hospital_id);
+     
+create index covid_programmer_id_index
+     on covid (programmer_id);
 ```
 * 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
