@@ -51,15 +51,26 @@ https://infra.wootechcamp-sonyoon7.p-e.kr/
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+   https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-029aae93e884b7ad8
+
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
+* [Cloudwatch](/step2/cloudwatch)
 
-3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)  
+
+* [smoke](/step2/smoke)
+* [load](/step2/load)
+* [stress](/step2/stress)
+
+4. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+* [답변](/step2/답변.txt)
 
 ---
 
