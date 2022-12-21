@@ -387,16 +387,169 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+* 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+* 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+* 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  <details>
+  <summary> 가능한가? </summary>
+    HTTP의 스펙이 모든 상황을 완벽하게 대응하고 있지 못하기 때문에 no-cache 또는 no-store만으로는 캐시 무효화를 만족하지 못하는 상황이 있을 수 있습니다.
+    따라서 이러한 옵션들을 같이 설정할 수 있음
+  </details>
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
+1. Launch Template 링크를 공유해주세요.
+    - [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a51deb0d23640730)
+
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+<details>
+<summary>smoke</summary>
+   
+* smoke.js
+```text
 
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m30s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+running (1m00.0s), 0/1 VUs, 3184 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 19104      ✗ 0
+     data_received..................: 16 MB   271 kB/s
+     data_sent......................: 1.1 MB  19 kB/s
+     http_req_blocked...............: avg=2.58µs  min=197ns    med=365ns   max=37.32ms  p(90)=580ns   p(95)=654ns
+     http_req_connecting............: avg=48ns    min=0s       med=0s      max=654.19µs p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=3.01ms  min=763.6µs  med=1.96ms  max=69.06ms  p(90)=6.74ms  p(95)=7.19ms
+       { expected_response:true }...: avg=3.01ms  min=763.6µs  med=1.96ms  max=69.06ms  p(90)=6.74ms  p(95)=7.19ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 19104
+     http_req_receiving.............: avg=54.49µs min=15.64µs  med=36.1µs  max=10.23ms  p(90)=67.75µs p(95)=98.16µs
+     http_req_sending...............: avg=33.33µs min=13.35µs  med=27.69µs max=7.53ms   p(90)=44.46µs p(95)=52.29µs
+     http_req_tls_handshaking.......: avg=295ns   min=0s       med=0s      max=2.99ms   p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=2.93ms  min=577.51µs med=1.89ms  max=68.97ms  p(90)=6.64ms  p(95)=7.09ms
+     http_reqs......................: 19104   318.332461/s
+     iteration_duration.............: avg=18.83ms min=14.27ms  med=17.94ms max=180.51ms p(90)=22.46ms p(95)=24.77ms
+     iterations.....................: 3184    53.05541/s
+     vus............................: 1       min=1        max=1
+     vus_max........................: 1       min=1        max=1
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/smoke_grafana.png)
+</details>
+
+
+<details>
+<summary>load</summary>
+
+* load.js
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 14 max VUs, 29m40s max duration (incl. graceful stop):
+           * default: Up to 14 looping VUs for 29m10s over 12 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (29m10.0s), 00/14 VUs, 622455 complete and 0 interrupted iterations
+default ✓ [======================================] 00/14 VUs  29m10s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.....................: 100.00% ✓ 3734730     ✗ 0
+     data_received..............: 3.2 GB  1.9 MB/s
+     data_sent..................: 223 MB  128 kB/s
+     http_req_blocked...........: avg=939ns    min=121ns    med=307ns   max=65.52ms  p(90)=381ns   p(95)=415ns
+     http_req_connecting........: avg=111ns    min=0s       med=0s      max=42.17ms  p(90)=0s      p(95)=0s
+   ✓ http_req_duration..........: avg=3.81ms   min=620.25µs med=2.14ms  max=877.01ms p(90)=9.27ms  p(95)=11.05ms
+     http_req_failed............: 0.00%   ✓ 0           ✗ 3734730
+     http_req_receiving.........: avg=171.56µs min=9.5µs    med=35.94µs max=135.66ms p(90)=311.6µs p(95)=591.61µs
+     http_req_sending...........: avg=29.87µs  min=8.09µs   med=20.17µs max=65.41ms  p(90)=37.45µs p(95)=45.44µs
+     http_req_tls_handshaking...: avg=401ns    min=0s       med=0s      max=42.35ms  p(90)=0s      p(95)=0s
+     http_req_waiting...........: avg=3.61ms   min=0s       med=2.01ms  max=876.2ms  p(90)=9.01ms  p(95)=10.64ms
+     http_reqs..................: 3734730 2134.107853/s
+     iteration_duration.........: avg=23.43ms  min=8.49ms   med=20.74ms max=2.12s    p(90)=34.83ms p(95)=42.32ms
+     iterations.................: 622455  355.684642/s
+     vus........................: 1       min=1         max=14
+     vus_max....................: 14      min=14        max=14
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/load_grafana.png)
+</details>
+
+
+
+<details>
+<summary>stress</summary>
+
+* stress.js
+```text
+default ✓ [======================================] 000/384 VUs  28m10s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.....................: 100.00% ✓ 8182242    ✗ 0
+     data_received..............: 7.1 GB  4.2 MB/s
+     data_sent..................: 518 MB  306 kB/s
+     http_req_blocked...........: avg=9.41µs   min=146ns    med=282ns    max=451.21ms p(90)=338ns    p(95)=369ns
+     http_req_connecting........: avg=2.84µs   min=0s       med=0s       max=191.54ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..........: avg=28.89ms  min=402.77µs med=18.98ms  max=678.37ms p(90)=67.68ms  p(95)=83.32ms
+     http_req_failed............: 0.00%   ✓ 0          ✗ 8182242
+     http_req_receiving.........: avg=7.88ms   min=9.7µs    med=3.05ms   max=272.9ms  p(90)=22.67ms  p(95)=30.73ms
+     http_req_sending...........: avg=125.16µs min=9.28µs   med=22.24µs  max=205.4ms  p(90)=37.56µs  p(95)=46.94µs
+     http_req_tls_handshaking...: avg=6.05µs   min=0s       med=0s       max=298.77ms p(90)=0s       p(95)=0s
+     http_req_waiting...........: avg=20.88ms  min=0s       med=14.8ms   max=661.56ms p(90)=47.59ms  p(95)=58.02ms
+     http_reqs..................: 8182242 4841.53234/s
+     iteration_duration.........: avg=174.16ms min=8.23ms   med=118.31ms max=1.21s    p(90)=387.58ms p(95)=448.51ms
+     iterations.................: 1363707 806.922057/s
+     vus........................: 1       min=1        max=384
+     vus_max....................: 384     min=384      max=384
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/stress_grafana.png)
+</details>
 ---
 
 ### 3단계 - 쿼리 최적화
@@ -423,7 +576,7 @@ $ stress -c 2
 <summary> 🚀 1단계 - 화면 응답 개선하기 </summary>
 
 #### 요구사항
-* [ ] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
+* [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
   * 개선 전 / 후를 직접 계측하여 확인
 
 #### 힌트
@@ -934,7 +1087,7 @@ server.compression.min-response-size: 500
 
 #### 요구사항
 * [x] springboot에 HTTP Cache, gzip 설정하기
-* [ ] Launch Template 작성하기
+* [x] Launch Template 작성하기
 * [ ] Auto Scaling Group 생성하기
 * [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
