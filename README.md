@@ -91,6 +91,21 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+```sql
+select ranker.employee_id as '사원번호', ranker.last_name as '이름', ranker.annual_income as '연봉', ranker.annual_income as '직급명', r.time as '입출입시간', r.region as '지역', r.record_symbol as '입출입구분'
+from (
+	select m.employee_id, dep.id, s.annual_income, e.last_name
+	from (select d.id from department d where d.note = 'Active') dep
+			inner join manager m on m.department_id = dep.id
+			inner join salary s on s.id = m.employee_id
+			inner join position p on p.position_name = 'Manager' and p.id = m.employee_id
+			inner join employee e on e.id = m.employee_id
+            where (m.start_date <= now() and m.end_date > now()) and (s.start_date <= now() and s.end_date > now()) and (p.start_date <= now() and p.end_date > now())
+			order by s.annual_income desc
+	limit 5
+) ranker
+inner join record r on r.record_symbol = 'O' and r.employee_id = ranker.employee_id 
+```
 ---
 
 ### 4단계 - 인덱스 설계
