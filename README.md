@@ -109,7 +109,41 @@ on
 
 ### 4단계 - 인덱스 설계
 
+#### 요구사항
+* 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  * M1의 경우엔 시간 제약사항을 달성하기 어렵워서 2배를 기준으로 해본 후 일단 리뷰요청
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+* [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 
+와 같은 결과를 반환
+  * 쿼리를 작성 후 313ms가 나온 것을 확인 후 hobby에 인덱스를 적용한 뒤에 062ms 감소하였습니다.
+  * [결과 이미지](/step4/1)
+```
+-- 쿼리
+select hobby, round(count(*) / (select count(*) from programmer p) * 100, 1) AS percent
+from programmer
+group by hobby;
+
+-- 인덱스 생성 쿼리
+create index programmer_hobby_index on programmer (hobby);
+```
+* 프로그래머별로 해당하는 병원 이름을 반환 (covid.id, hospital.name)
+```
+
+```
+* 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
+  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```
+
+```
+* 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계 (covid.Stay)
+```
+
+```
+* 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계 (user.Exercise)
+```
+
+```
 
 ---
 
