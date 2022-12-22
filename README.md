@@ -203,8 +203,20 @@ create index hospital_name_index
     on hospital (name);
 ```
 * 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계 (user.Exercise)
+  * 이번 쿼리는 바로 078ms로 이번 미션의 요구사항을 충족시켰는데 해당 이유는 4번째 사항에 추가된 pk값과 인덱스를 같이
+  사용되서 무리 없이 요구사항이 충족되는 쿼리였습니다.
+  * [결과 이미지](/step4/5)
 ```
-
+-- 쿼리
+select p.exercise, count(*)
+from hospital h
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on c.programmer_id = p.id
+inner join member m on m.id = c.member_id
+where
+   m.age between 30 and 39
+   and h.name = '서울대병원'
+group by p.exercise;
 ```
 
 ---
