@@ -85,9 +85,47 @@ $ stress -c 2
 
 ### 3단계 - 쿼리 최적화
 
-1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 200ms 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+```sql
+SELECT 
+	top_salary_manager.id AS id,
+	top_salary_manager.name AS name,
+	top_salary_manager.max_salary AS max_salary,
+	top_salary_manager.position_name AS position_name,
+	MAX(r.time) AS time,
+	r.region AS region,
+	r.record_symbol AS record_symbol
+FROM(
+	SELECT 
+		e.id id, 
+		e.last_name name,
+		p.position_name position_name,
+		MAX(s.annual_income) max_salary
+	FROM department d
+	INNER JOIN manager m ON m.department_id = d.id
+		AND m.start_date < NOW()
+		AND m.end_date > NOW()
+	INNER JOIN employee e ON e.id = m.employee_id
+	INNER JOIN position p
+	ON p.id = e.id
+	AND position_name = 'Manager'
+	INNER JOIN salary s ON s.id = e.id
+	WHERE d.note = 'active'
+	GROUP BY s.id
+	ORDER BY max_salary DESC
+	LIMIT 5
+) top_salary_manager
+INNER JOIN record r
+ON r.employee_id = top_salary_manager.id
+AND r.record_symbol = 'O'
+GROUP BY id, region
+```
+
+실행 계획 캡처본을 step3.explain 디렉토리에 동봉해두었습니다.
+
 
 ---
 
