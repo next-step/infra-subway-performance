@@ -45,18 +45,17 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-
+    @Cacheable(value = "line", key = "#id")
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "line", key = "#id")
+    @CachePut(value = "line", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    @CachePut(value = "line", key = "#id")
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
