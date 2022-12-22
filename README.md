@@ -53,7 +53,11 @@ npm run dev
          ![img.png](image/cache.png)
       3. GZIP을 통한 압축
          ![img.png](image/gzip.png)
-   2. 
+   2. 캐싱 처리
+      1. Line 조회, 수정, 삭제 캐싱처리
+      2. Station 조회, 삭제 캐싱 처리.
+      ![img.png](image/redis-cache.png)
+   3. Scale Out [2단계에서 로드밸런서 포함해서 테스트 해보겠습니다.]
 ---
 
 ### 2단계 - 스케일 아웃
