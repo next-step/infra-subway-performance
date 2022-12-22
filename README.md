@@ -335,9 +335,161 @@ WHERE r.employee_id = e.id and n.id = e.id;
 ---
 
 ### 4단계 - 인덱스 설계
+### 실습환경 세팅
+```bash
+$ docker run -d -p 13306:3306 brainbackdoor/data-subway:0.0.3
+```
+- workbench를 설치한 후 localhost:13306 (ID : root, PW : masterpw) 로 접속합니다.
 
+* 요구사항
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환 (M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요)
+- Coding as a Hobby 와 같은 결과를 반환하세요.
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - 쿼리 수행 시간: 4ms
+```sql
+SELECT c.id, h.name
+FROM (SELECT id, name
+	FROM hospital
+	) h,
+    (SELECT id, hospital_id
+    FROM covid
+    ) c
+WHERE c.hospital_id = h.id;
+```
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - 쿼리수행시간: 9.1ms
+  - covid 테이블에 id unique index 만 추가하였습니다.
+  - programmer 테이블에 id 에 unique index를 추가하였을 때, 쿼리 수행시간은 40ms가 나왔습니다.
+```sql
+SELECT covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding
+FROM( 
+	(SELECT id, name
+	FROM hospital
+	) hospital,
+	(SELECT id, hospital_id
+	FROM covid
+	) covid ,
+    (SELECT id, years_coding, hobby, student, dev_type
+	FROM programmer
+	WHERE (hobby = 'Yes' AND student like 'Yes%')
+	OR years_coding like '0%'
+	) user
+    )
+	WHERE hospital.id = covid.hospital_id
+    AND covid.id = user.id
+	;
+```
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  -- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+/*
+1. 20대 India 회원
+- member.id에 unique index 추가시 7s-> 60ms 개선
+- programmer.country에 index 추가시 60ms -> 30ms 개선
+  */
+  SELECT id
+  FROM (SELECT id, age FROM member WHERE id > 0 and age BETWEEN 20 AND 29) member,
+  (SELECT member_id FROM programmer WHERE country = 'India') india
+  WHERE member.id = india.member_id;
 
+/*
+2. 서울대 병원의 환자가 병원에 머문기간
+- 인덱스 추가 없이 30ms
+- covid.hospital_id index 추가시 30ms -> 10s 개선
+  */
+  SELECT member_id, stay
+  FROM (SELECT hospital_id, member_id, stay FROM covid) covid,
+  (SELECT id FROM hospital WHERE name = '서울대병원') hospital
+  WHERE covid.hospital_id = hospital.id;
+
+/*
+3. 서울대 병원에 다닌 20대 India 회원이 병원에 머문 기간
+- 인덱스를 추가하지 않을 경우 Timeout 발생
+- programmer.id 에 unique index 추가시 100ms
+- covid.member_id 에 index 추가시 100ms -> 50ms
+  */
+  SELECT stay, count(stay)
+  FROM ( SELECT id
+    FROM
+        ( SELECT id, age FROM member WHERE age BETWEEN 20 AND 29 ) member,
+        ( SELECT member_id FROM programmer WHERE country = 'India' ) india
+            WHERE member.id = india.member_id ) member,
+        ( SELECT member_id, stay
+            FROM ( SELECT hospital_id, member_id, stay FROM covid ) covid,
+                (SELECT id FROM hospital WHERE name = '서울대병원' ) hospital
+            WHERE covid.hospital_id = hospital.id) hospital
+      WHERE member.id = hospital.member_id
+  GROUP BY stay
+  ;
+```
+![img](img/step4-3.png)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+/*
+1. 서울대병원에 다닌 환자
+- 모수가 적은 드라이빙 테이블을  hospital로 지정
+- 조인 키가 되는 covid.hospital_id 에 Index 부여
+*/
+SELECT member_id, stay 
+FROM covid, ( SELECT id FROM hospital WHERE name = '서울대병원') hospital
+WHERE covid.hospital_id = hospital.id;
+
+/*
+2. 30대 환자의 운동 횟수
+- member, programmer 두 테이블의 크기는 비슷함
+- 조인 키가 되는 programmer.member_id를 Index로 지정
+*/
+SELECT exercise 
+FROM programmer, 
+	( SELECT id, age 
+      FROM member 
+      WHERE age BETWEEN 30 AND 39
+	) member
+WHERE programmer.member_id = member.id
+;
+
+/*
+서울대병원에 다닌 환자의 운동 횟수 집계
+- 드라이빙 테이블을 모수가 적은 member와 조인된 hospital로 지정
+- 수행시간: 90ms 
+*/
+SELECT exercise, count(exercise)
+FROM programmer, 
+	( SELECT id, age 
+      FROM member 
+      WHERE age BETWEEN 30 AND 39
+	) member,
+	( SELECT member_id, stay 
+	FROM covid, ( SELECT id FROM hospital WHERE name = '서울대병원') hospital
+	WHERE covid.hospital_id = hospital.id ) covid
+WHERE programmer.member_id = member.id AND covid.member_id = member.id
+GROUP BY exercise
+;
+```
+![img](img/step4-4-lessthan-1s.png)
+
+```sql
+/*
+만약, 임의로 드리븐 테이블을 covid 로 둘 경우, 수행시간이 1초 이상 발생
+이유는, member의 9만개의 행을 full scan된 드라이빙 테이블이 되기 때문에 조인시 느려짐
+*/
+SELECT exercise, count(exercise)
+FROM programmer, 
+	( SELECT id, age 
+      FROM member 
+      WHERE age BETWEEN 30 AND 39
+	) member
+		STRAIGHT_JOIN ( SELECT member_id, stay 
+			FROM covid, ( SELECT id FROM hospital WHERE name = '서울대병원') hospital
+			WHERE covid.hospital_id = hospital.id ) covid
+		ON covid.member_id = member.id
+WHERE programmer.member_id = member.id 
+GROUP BY exercise
+;
+```
+![img](img/step4-4-arbitrary-driven-table.png)
 ---
 
 ### 추가 미션
