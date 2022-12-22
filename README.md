@@ -606,3 +606,7 @@ group by exercise;
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+- https://ilmare-cbk-subway.kro.kr/stations?id=1&size=2
+- https://ilmare-cbk-subway.kro.kr/lines?id=1&size=2
+- step5 디렉토리에 지하철역, 지하철노선에 대한 페이징 조회 결과 및 replication 적용한 조회 결과를 첨부해두었습니다!
