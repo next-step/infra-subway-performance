@@ -1,4 +1,19 @@
 spring:
+  config:
+    activate:
+      on-profile: "test"
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "prod"
   cache:
     type: redis
   redis:

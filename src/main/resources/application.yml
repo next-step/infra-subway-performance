@@ -8,13 +8,16 @@ spring:
         - security
         - aws
         - redis
+        - web
       test:
         - h2
         - security
         - aws
         - redis
+        - web
       prod:
         - mysql
         - security
         - aws
         - redis
+        - web
