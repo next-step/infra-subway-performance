@@ -618,6 +618,9 @@ INNER JOIN (
     LIMIT 5
 ) ST ON ST.id = r.employee_id AND r.record_symbol = 'o'
 ```
+
+* 실행계획 결과
+![실행계획](src/main/resources/image/step3/query_explain.png)
 </details>
 
 ---
