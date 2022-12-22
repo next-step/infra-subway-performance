@@ -156,45 +156,47 @@ npm run dev
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-   ``` sql
-   SELECT 
-     e.id AS '사원번호',
-     e.last_name AS '이름',
-     top.annual_income AS '연봉',
-     p.position_name AS '직급명',
-     r.time AS '입출입시간',
-     r.region AS '지역',
-     r.record_symbol AS '입출입구분'
-   FROM employee e
-   INNER JOIN 
-   (
-     SELECT s.id, s.annual_income
-     FROM salary s
-     WHERE s.id IN
-     (
-       SELECT employee_id
-       FROM manager
-       WHERE department_id IN (SELECT id FROM department WHERE note = 'active')
-         AND start_date <= now() 
-         AND end_date >= now()
-     )
-       AND s.start_date <= now()
-       AND s.end_date >= now()
-     ORDER BY s.annual_income DESC
-     LIMIT 5
-   ) top ON top.id = e.id
-   INNER JOIN record r ON r.employee_id = e.id AND r.record_symbol = 'O'
-   INNER JOIN position p ON p.id = e.id AND p.start_date <= now() AND p.end_date >= now()
-   ORDER BY top.annual_income DESC, r.time DESC
-   ```
    <details>
    <summary>결과</summary>
-  
-   - Visual Explain
-   - ![visual-explain](./docs/step3/visual_explain.png)
-   - Result
-   - ![result](./docs/step3/result.png) 
-     
+
+    - query
+      ``` sql
+         SELECT 
+           e.id AS '사원번호',
+           e.last_name AS '이름',
+           top.annual_income AS '연봉',
+           p.position_name AS '직급명',
+           r.time AS '입출입시간',
+           r.region AS '지역',
+           r.record_symbol AS '입출입구분'
+         FROM employee e
+         INNER JOIN 
+         (
+           SELECT s.id, s.annual_income
+           FROM salary s
+           WHERE s.id IN
+           (
+             SELECT employee_id
+             FROM manager
+             WHERE department_id IN (SELECT id FROM department WHERE note = 'active')
+               AND start_date <= now() 
+               AND end_date >= now()
+           )
+             AND s.start_date <= now()
+             AND s.end_date >= now()
+           ORDER BY s.annual_income DESC
+           LIMIT 5
+         ) top ON top.id = e.id
+         INNER JOIN record r ON r.employee_id = e.id AND r.record_symbol = 'O'
+         INNER JOIN position p ON p.id = e.id AND p.start_date <= now() AND p.end_date >= now()
+         ORDER BY top.annual_income DESC, r.time DESC
+      ```
+
+    - Visual Explain
+    - ![visual-explain](./docs/step3/visual_explain.png)
+    - Result
+    - ![result](./docs/step3/result.png)
+
    </details>
 
 ---
@@ -202,6 +204,127 @@ npm run dev
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+    <details>
+    <summary>결과</summary>
+
+    1. Coding as a Hobby 와 같은 결과를 반환
+        - query
+          ``` sql
+          SELECT
+            p.hobby,
+            CONCAT
+            (
+              ROUND
+              (
+                COUNT(*) / (SELECT COUNT(*) FROM programmer) * 100, 1
+              ), '%'
+            ) AS 'percent'
+          FROM programmer p
+          GROUP BY p.hobby;
+          ```
+        - 설정
+            - programmer.id pk 추가
+            - programmer.hobby index 설정
+        - 결과: 280ms
+        - ![result](./docs/step4/quiz1_result.png)
+
+    2. 프로그래머별로 해당하는 병원 이름을 반환
+        - query
+          ``` sql
+          SELECT
+            c.id,
+            h.name
+          FROM hospital h
+          INNER JOIN covid c ON h.id = c.hospital_id
+          INNER JOIN programmer p ON p.id = c.programmer_id;
+          ```
+        - 설정
+            - hospital.id pk 추가
+            - programmer.id pk 추가
+            - covid.id pk 추가
+            - covid.programmer_id index 설정
+        - 결과: 20ms
+        - ![result](./docs/step4/quiz2_result.png)
+
+    3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
+        - query
+          ``` sql
+           SELECT
+             c.id,
+             h.name,
+             p.hobby,
+             p.dev_type,
+             p.years_coding
+           FROM programmer p
+           INNER JOIN covid c ON c.programmer_id = p.id
+           INNER JOIN hospital h ON h.id = c.hospital_id
+           WHERE p.hobby = 'yes'
+             AND
+             (
+               (p.years_coding = '0-2 years')
+               OR
+               (p.student LIKE 'yes%')
+             )
+           ORDER BY p.id;
+          ```
+        - 설정
+            - programmer.id pk 추가
+            - covid.id pk 추가
+            - hospital.id pk 추가
+            - programmer.hobby index 설정
+        - 결과: 3.6s -> 46ms
+        - ![result](./docs/step4/quiz3_result.png)
+
+    4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계
+        - query
+          ``` sql
+          SELECT
+            c.stay,
+            count(*)
+          FROM hospital h
+          INNER JOIN covid c ON c.hospital_id = h.id
+          INNER JOIN programmer p ON p.id = c.programmer_id
+          INNER JOIN member m ON m.id = p.member_id
+          WHERE h.name = '서울대병원'
+            AND m.age BETWEEN 20 AND 29
+            AND p.country = 'India'
+          GROUP BY c.stay;
+          ```
+        - 설정
+            - hospital.id pk 추가
+            - covid.id pk 추가
+            - programmer.id pk 추가
+            - member.id pk 추가
+            - covid.hospital_id index 설정
+            - covid.programmer_id index 설정
+            - hospital.name index 설정
+        - 결과: 11s -> 193ms
+        - ![result](./docs/step4/quiz4_result.png)
+
+    5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계
+        - query
+          ``` sql
+          SELECT
+            p.exercise,
+            count(*)
+          FROM hospital h
+          INNER JOIN covid c ON c.hospital_id = h.id
+          INNER JOIN programmer p ON p.id = c.programmer_id
+          INNER JOIN member m ON m.id = c.member_id
+          WHERE h.name = '서울대병원'
+            AND m.age BETWEEN 30 AND 39
+          GROUP BY p.exercise;
+          ```
+        - 설정
+            - hospital.id pk 추가
+            - covid.id pk 추가
+            - programmer.id pk 추가
+            - member.id pk 추가
+            - hospital.name index 설정
+        - 결과: 251ms
+        - ![result](./docs/step4/quiz5_result.png)
+    </details>
 
 ---
 
@@ -234,7 +357,18 @@ npm run dev
 ### 3단계 - 쿼리 최적화
 
 1. 요구사항
-    - [ ] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에
+    - [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에
       각 지역별로 언제 퇴실(O)했는지 조회하기(사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-    - [ ] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+    - [x] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+
+### 4단계 - 인덱스 설계
+
+1. 요구사항
+    - [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+        - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+        - [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+        - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
+          (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+        - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+        - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) 
 
