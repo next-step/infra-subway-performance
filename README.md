@@ -145,10 +145,11 @@ CREATE INDEX idx_hospital_name_id ON subway.hospital (name, id);
 1-1. Coding as a Hobby 와 같은 결과를 반환하세요.
 ```sql
 SELECT
-    CONCAT(ROUND(COUNT(CASE WHEN hobby = 'Yes' THEN 1 END) / COUNT(*) * 100, 1), '%') as yes,
-    CONCAT(ROUND(COUNT(CASE WHEN hobby = 'No' THEN 1 END) / COUNT(*) * 100, 1), '%') as No
-FROM
-    subway.programmer;
+    hobby,
+    CONCAT(ROUND((COUNT(hobby) * 100) / (SELECT COUNT(hobby) FROM subway.programmer), 1), '%') as rate
+FROM subway.programmer
+GROUP BY hobby
+ORDER BY hobby DESC;
 ```
 1-2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```sql
