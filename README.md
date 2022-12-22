@@ -151,7 +151,7 @@ inner join record r on r.record_symbol = 'O' and r.employee_id = ranker.employee
     inner join covid c on c.hospital_id = h.id
     inner join programmer p on p.id = c.programmer_id
 ```
-![explain1](explain/step4_explain_2.png)
+![explain2](explain/step4_explain_2.png)
 
 - [X] 프로그래밍이 취미인 학생 혹은  주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```sql
@@ -165,8 +165,25 @@ inner join record r on r.record_symbol = 'O' and r.employee_id = ranker.employee
     where (p.hobby = 'Yes' and p.student in ('Yes, full-time', 'Yes, part-time')) or p.years_coding = '0-2 years'
     order by p.id
 ```
-![explain1](explain/step4_explain_3.png)
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+![explain3](explain/step4_explain_3.png)
+- [X] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+    alter table member
+    add constraint pk_member
+    primary key (id);
+
+    create index index_covid_stay
+    on covid (stay);
+
+    select c.stay, count(*) 
+    from hospital h
+    inner join covid c on c.hospital_id = h.id
+    inner join programmer p on p.id = c.programmer_id
+    inner join member m on m.id = p.id
+    where h.name = '서울대병원' and m.age >= 20 and m.age < 30 and p.country = 'India'
+    group by c.stay
+```
+![explain4](explain/step4_explain_4.png)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ---
 
