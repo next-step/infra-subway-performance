@@ -408,11 +408,12 @@ default ✓ [======================================] 00/14 VUs  29m10s
   - load : 67.16ms -> 7.27ms(step1) -> 6.72ms(step2)
   - stess : 914.32ms -> 612.21ms(step1) -> 161.7ms(step2)
 
-<details>
+<details open>
 <summary>cloudwatch</summary>
 
 * autosacle server
 ![img.png](src/main/resources/image/step2/autosacle_server.png)
+  * DNS 주소: yeojiin-alb-1510260166.ap-northeast-2.elb.amazonaws.com
 
 * cloudwatch_autoscales
 ![img.png](src/main/resources/image/step2/autoscale_monitoring.png)
