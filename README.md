@@ -258,7 +258,7 @@ and h.id   = c.hospital_id
 ```sql
 alter table covid add constraint primary key(id);
 alter table hospital add constraint primary key(id);
-create index covid_ix_hospital_id_n_programmer_id on covid(hospital_id, programmer_id);
+create index covid_ix_programmer_id_n_hospital_id on covid(programmer_id, hospital_id);
 ```
 
 1-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
@@ -293,15 +293,15 @@ order by p.id
 ```sql
 select c.stay as 'covid.Stay', count(1) as 'count'
 from  	covid c
-inner join programmer p
-on (
-        c.programmer_id = p.id
-    and p.country       = 'India'
-)
 inner join hospital h
 on (
         c.hospital_id   = h.id
     and h.name          = '서울대병원'
+)
+inner join programmer p
+on (
+        c.programmer_id = p.id
+    and p.country       = 'India'
 )
 inner join member m
 on (
