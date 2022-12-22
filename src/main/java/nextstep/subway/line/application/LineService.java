@@ -26,7 +26,10 @@ public class LineService {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
-
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "paths", allEntries = true),
+            @CacheEvict(cacheNames = "lines", allEntries = true)
+    })
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
