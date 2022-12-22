@@ -37,6 +37,8 @@ dependencies {
 	// mysql
 	implementation 'mysql:mysql-connector-java'
 
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
