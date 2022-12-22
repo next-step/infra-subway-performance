@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.cache.annotation.Cacheable;
 import java.util.List;
 
 @Service
@@ -25,6 +26,7 @@ public class MapService {
         this.pathService = pathService;
     }
 
+    @Cacheable(cacheNames = "paths", key = "{#source + ':' + #target}")
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
