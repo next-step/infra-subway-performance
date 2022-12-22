@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui;
 
+import java.awt.print.Pageable;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -28,6 +29,11 @@ public class StationController {
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStations());
+    }
+
+    @GetMapping(value = "/stations/page/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StationResponse>> showStations(@PathVariable Long id, Pageable pageable) {
+        return ResponseEntity.ok().body(stationService.findAllStations(id, pageable));
     }
 
     @DeleteMapping("/stations/{id}")
