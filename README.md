@@ -146,7 +146,27 @@ create index covid_programmer_id_index
 ```
 * 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
   (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  * 아래의 쿼리를 작성 후 1188ms의 속도를 확인했으며 제가 작성한 쿼리를 토대로 id에서 조인이 가장 많이 일어나는 사실로
+  현재 쿼리에서 사용되는 각 테이블의 id컬럼에 primary key를 지정해서 인덱스를 사용하도록 변경했습니다. 변경 후 속도는
+  015ms로 측정되었습니다.
 ```
+-- 쿼리
+select c.id, h.name, p.hobby, p.dev_type, p.Years_coding
+from covid c
+    inner join hospital h on c.hospital_id = h.id
+    inner join
+        (
+            select p.id, p.hobby, p.dev_type, p.Years_coding
+            from programmer p
+            where p.hobby = 'Yes'
+              and (p.student like 'Yes%' or p.years_coding = '0-2 years')
+        ) p on c.programmer_id = p.id
+order by p.id;
+
+-- primary key 지정
+alter table programmer add primary key (id);
+alter table covid add primary key (id);
+alter table hospital add primary key (id);
 
 ```
 * 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계 (covid.Stay)
