@@ -7,9 +7,9 @@ BRANCH=$1
 PROFILE=$2
 
 GIT_PULL_SCRIPT="git pull origin $BRANCH"
-BUILD_SCRIPT="./gradlew clean build"
+BUILD_SCRIPT="./gradlew clean build -x test"
 FIND_PID_SCRIPT="java -jar -Dspring.profiles.active=$PROFILE build/libs/*.jar"
-RUN_SCRIPT_PATH=$EXECUTION_PATH"/deploy/run_$PROFILE.sh"
+RUN_SCRIPT_PATH=$EXECUTION_PATH"/run_$PROFILE.sh"
 
 txtrst='\033[1;37m' # White
 txtred='\033[1;31m' # Red
@@ -66,7 +66,7 @@ function killProcess() {
   echo -e ""
   if [ $JAVA_PROCESS_ID -a -n $JAVA_PROCESS_ID  ]; then
     echo -e ">> Kill Running Java Process 🥺🥺🥺🥺🥺"
-    kill -2 $JAVA_PROCESS_ID
+    kill -9 $JAVA_PROCESS_ID
   fi
 }
 
@@ -81,7 +81,7 @@ function run() {
 
 
 ## diff 확인
-check_df;
+#check_df;
 
 ## 저장소 pull
 pull;

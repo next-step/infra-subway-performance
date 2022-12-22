@@ -74,19 +74,151 @@ npm run dev
   - 리눅스 전체 코어(프로세스) 개수 : `2`
   - AsyncThreadPool 적용
 
+### 1단계 피드백
+- [x] 구간별로 나눈 이유에 대한 확인
+  - 구간별로 나눈 이유는 stress test 에서 터지는 시점의 데이터를 확인하기 용이하기 때문
+  - load test 는 peak 까지 스무스하게 ramping up 하여, 오랜 시간동안 이상이 없는 지 확인하기 위함 
+- [x] Async Thread pool은 생성했지만, `@Async`를 사용하는 곳이 없음
+  - 아무리 생각해봐도 `@Async`를 적용할 곳이 없어서, 학습차원에서 AsyncThreadPool 만 구현 
+
 ---
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+1. Launch Template 링크를 공유해주세요.  
+[yomni-template 입니다.](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0ad1e535b08ecca79)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-```sh
-$ stress -c 2
+EC2 추가 생성을 위해 VU 를 다소 많이 잡아서 부하 테스트를 진행했습니다.
+peak VU = 5000 으로 설정하였습니다
+```stress_peak.js
+import http from 'k6/http';
+import {check} from 'k6';
+
+  export let options = {
+    threshold: {
+        http_req_duration: ['p(99)<100'],
+    },
+    stages: [
+        {duration: '5s', target: 200}, // ramping up
+        {duration: '30s', target: 200},
+        {duration: '5s', target: 1000}, // ramping up
+        {duration: '30s', target: 1000},
+        {duration: '5s', target: 2000}, // ramping up
+        {duration: '30s', target: 2000},
+
+        {duration: '5s', target: 5000}, // stress peak
+        {duration: '30s', target: 5000},
+
+        {duration: '3s', target: 2000}, // ramping down
+        {duration: '15s', target: 2000},
+        {duration: '3s', target: 1000}, // ramping down
+        {duration: '15s', target: 1000},
+        {duration: '3s', target: 200}, // ramping down
+        {duration: '15s', target: 200},
+        {duration: '5s', target: 0}, // ramping down
+    ],
+  };
+  ...
+} 
 ```
 
+- Auto - Scaling 캡처
+
+![auto-scaling.png](monitoring/step2/asg/auto-scaling.png)
+
+- EC2 사용량 캡처
+
+![EC2.png](monitoring/step2/asg/EC2.png)
+
+- 인스턴스 갯수 캡처
+
+![instance.png](monitoring/step2/asg/instance.png)
+
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- URL : https://yomni-subway.kro.kr/
+- k6 test
+  - smoke test  
+![smoke-k6.png](monitoring/step2/k6test/smoke-k6.png)
+  - load test  
+![load-k6.png](monitoring/step2/k6test/load-k6.png)
+  - stress test  
+![stress-k6.png](monitoring/step2/k6test/stress-k6.png)
+
+### 2단계 미션에 필요한 개념 정리
+
+- 캐싱
+  - HTTP 캐시는 불필요한 네트워크 요청을 줄이기 때문에 로드 성능을 향상시키는 효과적인 방법
+  - 다만 무분별한 캐시는 변경된 리소스를 갱신하지 못하거나, 브라우저에 캐싱되어 있는 리소스가 민감정보인 경우는 보안상 취약점이 될 수도 있음
+  - 이런 문제를 해결하고자 아래와 같은 절차로 캐싱 전략을 전개시켜야 함
+    - 사용하기 전에 서버에서 재검증해야하는 리소스의 경우 : `Cache-Control: no-cache`
+    - `보안`이나 기타 여러가지 이유로 `캐싱되지 않아야 하는 리소스`의 경우 : `Cache-Control: no-store`
+    - 버전 지정된 리소스의 경우 `Cache-Control: max-age=31536000`
+- ETag
+  - 캐시된 응답에 대한 유효성 검사 수행
+  - 서버는 ETag HTTP 헤더를 사용하여 유효성 검사 토큰을 전달함
+  - 캐싱을 적절히 사용하며, 캐싱된 리소스에 대한 유효성 검사를 ETag HTTP 헤더를 사용
+  - Etag 매커니즘
+    1. Client 가 최초로 임의의 리소스를 요청
+      - 서버는 이에 ETag 유효성 검사 토큰을 추가하여 리소스를 전달함(`20* 응답`)
+      - Client 는 수신한 리소스를 브라우저 내에서 캐싱함
+    2. ETag 유효성 토큰과 함께 동일한 리소스를 N 번째 요청
+      - 서버에서는 ETag 토큰으로 리소스가 변경되었는 지 확인
+      - 변경되지 않았다면 변경되지 않았다고 응답(`304 Not Modified`)
+
+no-cache vs no-store  
+- no-cache : 캐시를 저장함. 다만 **_리소스 사용 시점마다 서버에 재검증 요청_** 을 보낸다
+- no-store : **_캐시를 절대 저장하지 않음_**, 가장 강력한 Cache-Control
+
+public vs private
+- public : 공유 캐시(CDN 등등..)에 저장 가능
+- private : 브라우저같은 Client 환경에만 저장 가능
+
+Cache-Control 정책 정의 알고리듬  
+![cache-strategy.png](images/step2/cache-strategy.png)
+- 최대한 많이 / 오래 / 가까이 캐시해야 한다.
+- 개인화된 컨텐츠, API 호출 등은 캐시하기 어렵다
+- 캐시 주기는 특별한 이유가 없다면 1년 정도로 설정
+
+정적 자원을 캐싱할 때의 문제점과 해결책
+- 캐싱을 사용할 때의 문제 상황
+  - js, css, image 와 같은 정적 파일은 배포 후에 변경이 발생하지 않음
+  - 1년으로 캐싱 주기를 설정 (`max-age = 60 * 60 * 24 * 365`)
+  - 다음 배포에서 js, css 일부 파일에 변경이 발생했다.
+  - 브라우저에는 이전 버전의 파일이 캐싱되어 있어서 리소스 재요청을 보내지 않고 있다.
+  - 어떻게 해결할 것인가?
+    1. 배포 시간 / 버전 등을 활용해 리소스 요청의 URL 을 강제로 변경시킨다.
+    2. 파일명을 변경하지 않으려면, 캐시 무효화 방식으로 해당 이미지만 업데이트 가능
+
+배포 시간 또는 버전을 사용할 때의 문제 상황
+- 서버에서 점진적으로 배포를 진행하고 있다.
+- 만약 배포 진행중 as-is 내에 있는 old-main.js 에서 to-be 서버로 요청이 간다면?
+- 기능에 따라 심각한 문제를 야기할 수도 있다.
+
+- CDN 적용으로 점진적 배포시 문제 해결
+  - CDN : Content Delivery Network ; 여러 노드를 가진 네트워크에 컨텐츠를 저장하여 제공하는 프록시의 일종
+  - Client 와 비교적 가까운 곳에 위치하여 캐시된 컨텐츠를 전달하므로, RTT(Round Trip Time)이 줄어 컨텐츠를 빠르게 받을 수 있음
+  - CDN 의 Edge 서버가 캐시된 컨텐츠를 전송하므로 원본 서버의 부하를 줄일 수 있다.
+  - 인프라를 확충하는데 인력과 경비를 줄일 수 있다
+  - CDN 서비스는 Edge 서버들간에 캐시를 공유하고 있다.
+
+### 2단계 기능 목록
+- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증한다.
+- [x] 확장자가 `.css`인 경우, max-age를 1년, js인 경우는 no-cache, private 설정을 한다
+- [x] 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - **_가능합니다._** 
+    - no-cache : 캐시를 저장함. 다만 **_리소스 사용 시점마다 서버에 재검증 요청_** 을 보낸다
+    - no-store : **_캐시를 절대 저장하지 않음_**, 가장 강력한 Cache-Control
+  - 따라서, no-cache, no-store 설정을 같이 한다는 것은 **_주먹을 쥐지 않고 모래를 잡는 방법을 찾아라_** 라고 주문하는 것과 같습니다.
+  - 처음엔 불가능하다고 생각했지만, 착각이었습니다. 하지만 Spring의 CacheControl.java 내 javadoc 문서를 참고하자면,
+  - `noStore`와 `noCache`의 차이점을 설명하고, 동시에 필요하지 않은 이유에 대해서 설명하고 있습니다.
+  - 하지만, no-store, no-cache 를 강력한 통제 수단으로 함께 사용하기도 합니다.
+  - [no-store 로도 충분할 것 같은데..](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94)
+- [x] SpringBoot 에 HTTP Cache, gzip 설정
+- [x] Launch Template 작성하기
+- [x] Auto Scaling Group 생성
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 ---
 
