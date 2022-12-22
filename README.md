@@ -67,7 +67,7 @@ npm run dev
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
 #### 요구사항
-- [ ] Reverse Proxy 개선
+- [x] Reverse Proxy 개선
   - [x] 개선 전 측정 
   - [x] gzip 압축
   - [x] cache
@@ -81,17 +81,19 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 #### 요구사항
-- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
-- [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
-- [x] 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가? - 가능합니다.
+- [x] springboot에 HTTP Cache, gzip 설정
+  - [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
+  - [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
+  - [x] 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가?
+    - 네 가능합니다.
 - [x] springboot에 HTTP Cache, gzip 설정
 - [x] Launch Template 작성
 - [x] Auto Scaling Group 생성
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
 
 ```sh
 $ stress -c 2
