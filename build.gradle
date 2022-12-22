@@ -40,6 +40,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 	implementation("mysql:mysql-connector-java")
+
+	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0')
 }
 
 test {
