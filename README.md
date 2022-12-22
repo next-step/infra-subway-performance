@@ -78,27 +78,36 @@ $ stress -c 2
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-```
-select employee.id as "사원번호",
-       employee.name as "이름",
-       employee.income as "연봉",
-       employee.position as "직급명",
-       record.region as "지역",
-       record.record_symbol as "입출입구분",
-       record.time as "입출입시간"
-       from record
-inner join (
-    select manager.employee_id as id,
-           employee.last_name as name,
-           salary.annual_income as income,
-           position.position_name as position from manager
-    inner join employee on manager.employee_id = employee.id and manager.end_date > sysdate()
-    inner join department on manager.department_id = department.id and department.note = 'active'
-    inner join position on manager.employee_id = position.id and position_name = 'Manager'
-    inner join salary on manager.employee_id = salary.id and salary.end_date > sysdate()
-    order by salary.annual_income desc limit 5
-    ) employee on employee.id = record.employee_id
-where record.record_symbol = 'O';
+```roomsql
+SELECT employee.id          AS "사원번호",
+       employee.name        AS "이름",
+       employee.income      AS "연봉",
+       employee.position    AS "직급명",
+       record.region        AS "지역",
+       record.record_symbol AS "입출입구분",
+       record.time          AS "입출입시간"
+FROM   record
+       INNER JOIN (SELECT manager.employee_id    AS id,
+                          employee.last_name     AS name,
+                          salary.annual_income   AS income,
+                          position.position_name AS position
+                   FROM   manager
+                          INNER JOIN employee
+                                  ON manager.employee_id = employee.id
+                                     AND manager.end_date > Sysdate()
+                          INNER JOIN department
+                                  ON manager.department_id = department.id
+                                     AND department.note = 'active'
+                          INNER JOIN position
+                                  ON manager.employee_id = position.id
+                                     AND position_name = 'Manager'
+                          INNER JOIN salary
+                                  ON manager.employee_id = salary.id
+                                     AND salary.end_date > Sysdate()
+                   ORDER  BY salary.annual_income DESC
+                   LIMIT  5) employee
+               ON employee.id = record.employee_id
+WHERE  record.record_symbol = 'O'; 
 
 ```
 ---
@@ -106,7 +115,102 @@ where record.record_symbol = 'O';
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+##### 실행결과는 docs/step4 폴더에 순서대로 저장해뒀습니다
 
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+```roomsql
+ALTER TABLE programmer
+  ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+
+CREATE INDEX programmer_hobby_index ON programmer (hobby);
+
+SELECT hobby,
+       Count(*) / (SELECT Count(*)
+                   FROM   programmer) * 100 AS rate
+FROM   programmer
+GROUP  BY hobby
+ORDER  BY hobby DESC; 
+```
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요.
+```roomsql
+ALTER TABLE hospital
+  ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+
+ALTER TABLE covid
+  ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+
+CREATE INDEX covid_programmer_id_index ON covid (programmer_id);
+
+CREATE INDEX covid_hospital_id_index ON covid (hospital_id); 
+
+SELECT covid.id,
+       hospital.name
+FROM   covid
+       INNER JOIN programmer
+               ON covid.programmer_id = programmer.id
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id; 
+```
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```roomsql
+SELECT covid.id,
+       hospital.NAME,
+       USER.hobby,
+       USER.dev_type,
+       USER.years_coding
+FROM   covid
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+       INNER JOIN (SELECT id,
+                          years_coding,
+                          hobby,
+                          dev_type
+                   FROM   programmer
+                   WHERE  hobby = 'Yes'
+                          AND ( years_coding = '0-2 years'
+                                 OR student IN ( 'Yes, full-time',
+                                                 'Yes, part-time' ) )) USER
+               ON covid.programmer_id = USER.id
+ORDER  BY USER.id; 
+```
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```roomsql
+ALTER TABLE member
+  ADD CONSTRAINT member_pk PRIMARY KEY (id); 
+
+SELECT covid.stay,
+       Count(*)
+FROM   covid
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+                  AND hospital.NAME = '서울대병원'
+       INNER JOIN member
+               ON covid.member_id = member.id
+                  AND member.age BETWEEN 20 AND 29
+       INNER JOIN programmer
+               ON covid.programmer_id = programmer.id
+                  AND programmer.country = 'india'
+GROUP  BY covid.stay; 
+```
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```roomsql
+CREATE INDEX covid_member_id_index ON covid (member_id);
+
+SELECT exercise,
+       Count(*)
+FROM   programmer
+       INNER JOIN covid
+               ON programmer.id = covid.programmer_id
+       INNER JOIN hospital
+               ON covid.hospital_id = hospital.id
+                  AND hospital.NAME = '서울대병원'
+       INNER JOIN member
+               ON covid.member_id = member.id
+                  AND member.age BETWEEN 30 AND 39
+GROUP  BY exercise;
+```
 ---
 
 ### 추가 미션
