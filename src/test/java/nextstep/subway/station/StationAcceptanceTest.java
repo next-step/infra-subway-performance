@@ -20,6 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+    private static final String 낙성대역 = "낙성대역";
+    private static final String 사당역 = "사당역";
+    private static final String 방배역 = "방배역";
+    private static final String 서초역 = "서초역";
+    private static final String 교대역 = "교대역";
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
 
@@ -61,6 +66,27 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @DisplayName("지하철역을 페이징 조회한다.")
+    @Test
+    void getStationsPaging() {
+        // given
+        지하철역_등록되어_있음(낙성대역);
+        지하철역_등록되어_있음(사당역);
+        ExtractableResponse<Response> createResponse3 = 지하철역_등록되어_있음(방배역);
+        ExtractableResponse<Response> createResponse4 = 지하철역_등록되어_있음(서초역);
+        ExtractableResponse<Response> createResponse5 = 지하철역_등록되어_있음(교대역);
+        ExtractableResponse<Response> createResponse6 = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse7 = 지하철역_등록되어_있음(역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_목록_페이징_조회_요청(3L);
+
+        // then
+        지하철역_목록_응답됨(response);
+        지하철역_목록_포함됨(response, Arrays.asList(createResponse3, createResponse4, createResponse5, createResponse6, createResponse7));
+    }
+
+
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
@@ -96,6 +122,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all().
                 when().
                 get("/stations").
+                then().
+                log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_목록_페이징_조회_요청(Long id) {
+        return RestAssured.given().log().all().
+                when().
+                get("/stations/page/" + id).
                 then().
                 log().all().
                 extract();
