@@ -1243,3 +1243,21 @@ BEGIN CERTIFICATE와 END CERTIFICATE 까지 포함하여야 합니다.
 ![img.png](src/main/resources/image/file/second-image-14.png)
 
 </details>
+
+---
+
+<details> 
+<summary>🚀 3단계 - 쿼리 최적화</summary>
+
+#### 실습환경 세팅
+```
+$ docker run -d -p 23306:3306 brainbackdoor/data-tuning:0.0.3
+```
+
+#### 요구사항
+* [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+  (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+* [x] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+    * M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2s를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+    * 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+</details>
