@@ -1,5 +1,7 @@
 package nextstep.subway.common;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.servlet.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import nextstep.subway.support.version.SubwayVersion;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     public static final String PREFIX_STATIC_RESOURCES = "/resources";
+    public static final int CACHE_PERIOD = (int)TimeUnit.SECONDS.convert(365, TimeUnit.DAYS);
 
     @Autowired
     private SubwayVersion version;
@@ -28,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/**")
             .addResourceLocations("classpath:/static/css/")
-            .setCachePeriod(60 * 60 * 24 * 365);
+            .setCachePeriod(CACHE_PERIOD);
 
         registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/**")
             .addResourceLocations("classpath:/static/js/")
