@@ -402,11 +402,9 @@ GROUP BY hobby
 #### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 ```mysql
 SELECT covid.id, hospital.name
-FROM (SELECT id, hospital_id, programmer_id FROM covid) AS covid
-INNER JOIN (SELECT id FROM programmer) AS programmer
-ON covid.programmer_id = programmer.id
-INNER JOIN (SELECT id, name FROM hospital) AS hospital
-ON covid.hospital_id = hospital.id
+FROM hospital
+       JOIN covid ON covid.hospital_id = hospital.id
+       JOIN programmer ON programmer.id = covid.programmer_id
 ```
 ##### 실행 시간
 ![query2_time](docs/step4/time/query2_time.png)
@@ -414,13 +412,12 @@ ON covid.hospital_id = hospital.id
 ---
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 ```mysql
-SELECT covid.id, hospital.name, user.hobby, user.dev_type, user.years_coding
-FROM (SELECT id, hospital_id, programmer_id FROM covid) AS covid
-INNER JOIN (SELECT id, hobby, dev_type, years_coding FROM programmer WHERE hobby = 'Yes' AND (student LIKE 'Yes%' OR years_coding = '0-2%')) AS user
-ON covid.programmer_id = user.id
-INNER JOIN (SELECT id, name FROM hospital) AS hospital
-ON covid.hospital_id = hospital.id
-ORDER BY user.id
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+       JOIN covid c ON c.programmer_id = p.id
+       JOIN hospital h ON c.hospital_id = h.id
+WHERE p.hobby = 'YES'
+  AND (p.student LIKE 'Yes%' OR p.years_coding = '0-2%')
 ```
 ##### 실행 시간
 ![query3_time](docs/step4/time/query3_time.png)
@@ -429,15 +426,15 @@ ORDER BY user.id
 
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```mysql
-SELECT covid.stay, COUNT(covid.member_id)
-FROM (SELECT hospital_id, member_id, programmer_id, stay FROM covid) AS covid
-INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 20 AND 29) AS member
-ON covid.member_id = member.id
-INNER JOIN (SELECT member_id, country FROM programmer WHERE country LIKE 'India') AS programmer
-ON member.id = programmer.member_id
-INNER JOIN (SELECT id, name FROM hospital WHERE name LIKE '서울대병원') AS hospital
-ON covid.hospital_id = hospital.id
-GROUP BY covid.stay
+SELECT c.stay, COUNT(c.member_id)
+FROM hospital h
+       JOIN covid c ON c.hospital_id = h.id
+       JOIN member m ON c.member_id = m.id
+       JOIN programmer p ON m.id = p.member_id
+WHERE h.name LIKE '서울대병원'
+  AND p.country LIKE 'India'
+  AND m.age BETWEEN 20 AND 29
+GROUP BY c.stay
 ```
 ##### 실행 시간
 ![query4_time](docs/step4/time/query4_time.png)
@@ -446,15 +443,14 @@ GROUP BY covid.stay
 
 #### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 ```mysql
-SELECT programmer.exercise, count(covid.member_id)
-FROM (SELECT hospital_id, member_id, programmer_id, stay FROM covid) AS covid
-INNER JOIN (SELECT id, age FROM member WHERE age BETWEEN 30 AND 39) AS member
-ON covid.member_id = member.id
-INNER JOIN (SELECT member_id, exercise FROM programmer) AS programmer
-ON member.id = programmer.member_id
-INNER JOIN (SELECT id, name FROM hospital WHERE name LIKE '서울대병원') AS hospital
-ON covid.hospital_id = hospital.id
-GROUP BY programmer.exercise
+SELECT p.exercise, COUNT(c.member_id)
+FROM hospital h
+       JOIN covid c ON c.hospital_id = h.id
+       JOIN member m ON c.member_id = m.id
+       JOIN programmer p ON m.id = p.member_id
+WHERE h.name LIKE '서울대병원'
+  AND m.age BETWEEN 30 AND 39
+GROUP BY p.exercise
 ```
 
 ##### 실행 시간
