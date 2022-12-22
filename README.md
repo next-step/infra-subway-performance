@@ -315,8 +315,8 @@ FROM  (SELECT employee_id, region, time, record_symbol
     ( SELECT m.id, annual_income
 		FROM ( SELECT m.employee_id as id
 		FROM 
-		(SELECT id FROM department WHERE note LIKE 'a%' OR note LIKE 'A%' ) ad,
-		(SELECT employee_id, department_id FROM manager) m
+		(SELECT id FROM department WHERE note = 'active' ) ad,
+		(SELECT employee_id, department_id FROM manager WHERE end_date='9999-01-01') m
 		WHERE ad.id = m.department_id
 	) m, 
     ( SELECT id, annual_income
