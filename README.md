@@ -271,7 +271,7 @@ gzip 압축 설정
 
 ### cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
-부하 테스트 결과 인스턴스가 3개까지 auto scale out 되었으며 
+부하 테스트 결과 인스턴스가 3개까지 auto scale out 되었으며
 
 인스턴스가 늘어남에 따라 평균 cpu 사용량도 줄어든 것을 확인할 수 있습니다
 
@@ -296,7 +296,6 @@ gzip 압축 설정
 1. `http cache`, `gzip 압축` 적용 된 `WAS` 테스트
 2. `Auto Scale Out` 적용 된 `WAS Group` 테스트
 
-
 첫 번째 테스트는 `정적 리소스 호출이 잦은` 메인 페이지를 테스트 하는 것이 좋을 것 같아 `메인 테스트를 기준`으로 부하 테스트를 수행하여씁니다
 
 응답 시간에 대한 `기존 서비스 테스트 결과`는 다음과 같습니다.
@@ -320,7 +319,6 @@ gzip 압축 설정
 WAS 쪽 CPU는 초기 캐싱 및 gzip 압축 비용으로 cpu 사용률이 캐시 적용 전보다 높아졌다가
 
 점점 `안정을 되찾는 모습`이 인상적입니다
-
 
 다음은 `오토 스케일 아웃 적용` 후 테스트를 진행하였습니다
 
@@ -347,7 +345,6 @@ WAS 쪽 CPU는 초기 캐싱 및 gzip 압축 비용으로 cpu 사용률이 캐�
 | 경로 조회 페이지 - load                   |     8     |
 | 경로 조회 페이지 - stress (350) (3개 인스턴스) | 17 (안정적)  |
 
-
 가장 먼저 눈에 띄는 특징은 메인페이지 응답시간입니다
 
 사실상 이번 로드밸런싱 이슈와는 관계가 없어 보이는데요
@@ -373,11 +370,47 @@ sacle out 이 발생하는 임계치에 미치지 못하는 smoke, load 테스�
 
 ---
 
-### 3단계 - 쿼리 최적화
+# 3단계 - 쿼리 최적화
 
-1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+## 요구사항
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+* M1 : 2s 기준으로 작성
+* 급여(salary) 테이블의 사용여부 필드는 사용하지 않는다
+* 현재 근무중인지 여부는 종료 일자 (department_employ 테이블의 end_date = 9999-01-01) 로 판단한다
+
+## 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+
+``` 
+select r.employee_id   as 사원번호,
+       e.first_name    as 이름,
+       e.income        as 연봉,
+       e.position_name as 직급,
+       r.time          as 입출입시간,
+       r.region        as 지역,
+       r.record_symbol as 입출구분
+from record r
+         inner join (select e.id            as id,
+                            e.first_name    as first_name,
+                            s.annual_income as income,
+                            p.position_name as position_name
+                     from employee e
+                              inner join manager m on e.id = m.employee_id and m.end_date = '9999-01-01'
+                              inner join department d on d.id = m.department_id and d.note = 'Active'
+                              inner join position p on e.id = p.id and position_name = 'Manager'
+                              inner join salary s on s.id = e.id and s.end_date = '9999-01-01'
+                     order by s.annual_income desc
+                     limit 5) as e
+                    on r.employee_id = e.id
+where r.record_symbol = 'O';
+```
+
+### 실행 결과 = 1.627s (M1 기준)
+![](dbimage/실행결과.png)
+
+### 실행 계획
+![](dbimage/실행계획.png)
 
 ---
 
