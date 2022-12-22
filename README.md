@@ -174,55 +174,35 @@ select	e.id as '사원번호'
       , r.region as '지역'
       , r.record_symbol as '입출입구분'
 from 	record r
-      , (
-            select  e.id 
-                  , e.last_name
-                  , s.annual_income
-                  , p.position_name
-            from    (
-                        select 	m.employee_id
-                        from 	manager m
-                              , department d
-                        where	1               = 1
-                        and     m.department_id = d.id
-                        and     d.note          = 'active'
-                        and     m.end_date      > now()
-                    ) m
-                  , (
-                        select 	p.id
-                              , p.position_name
-                        from	position p
-                        where	1               = 1
-                        and     p.end_date      > now()
-                        and     p.position_name = 'Manager'
-                    ) p                    
-                  , (
-                        select  ed.employee_id
-                        from    employee_department ed
-                        where   1            = 1
-                        and     ed.end_date  > now()
-                    ) ed
-                  , employee e
-                  , (
-                        select  s.id
-                              , s.annual_income
-                        from	salary s
-                        where   1           = 1
-                        and     s.end_date  > now()
-                    ) s
-            where       1 	        	= 1
-            and	        p.id	        = m.employee_id
-            and	        m.employee_id	= ed.employee_id
-            and	        ed.employee_id	= e.id
-            and	        e.join_date     <= now()
-            and	        s.id	        = e.id
-            order by    s.annual_income desc
-            limit 5
-        ) e
-where     1                 = 1
-and       r.record_symbol   = 'O'
-and        r.employee_id    = e.id
-order by   e.annual_income  desc
+inner join (
+    (
+        select  e.id
+              , e.last_name
+              , s.annual_income
+              , p.position_name
+        from	employee e
+                inner join employee_department ed
+                on (e.id = ed.employee_id and ed.end_date  > now() and ed.start_date <= now())
+                inner join position p
+                on (e.id = p.id and p.start_date <= now() and p.end_date      > now() and p.position_name = 'Manager')
+                inner join (
+                    select 	m.employee_id
+                    from 	manager m
+                          , department d
+                    where	m.department_id = d.id
+                    and     d.note          = 'active'
+                    and     m.end_date      > now()
+                    and		m.start_date   <= now()
+                ) m
+                on e.id = m.employee_id
+                inner join salary s
+                on (e.id = s.id and s.start_date <= now() and s.end_date > now())
+        where e.join_date     <= now()
+        order by    s.annual_income desc
+        limit 5
+    ) e
+)
+on (e.id = r.employee_id and r.record_symbol = 'o')
 ;
 ```
 
@@ -230,9 +210,143 @@ order by   e.annual_income  desc
 ![step3 결과물](./docs/step3/step3%20결과.png)
 ---
 
-### 4단계 - 인덱스 설계
+## 4단계 - 인덱스 설계
+### 요구사항
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - Coding as a Hobby 와 같은 결과를 반환하세요.
+  - 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+> 각 요구사항의 결과물은 docs/step4/ 하단에 존재합니다.
+
+1-1. Coding as a Hobby 와 같은 결과를 반환하세요.
+
+**[ 쿼리 ]**
+```sql
+select  p.hobby
+      , round(round(count(1) * 100 / (select count(1) from programmer)), 1) as rate
+from    programmer p
+group by p.hobby
+order by p.hobby desc
+;
+```
+
+**[ index, PK 추가 ]**
+```sql
+alter table programmer add constraint primary key(id);
+create index programmer_ix_hobby on programmer(hobby);
+```
+
+1-2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+**[ 쿼리 ]**
+```sql
+select  c.id as 'covid.id'
+      , h.name as 'hospital.name'
+from    programmer p
+      , covid c
+      , hospital h
+where p.id = c.programmer_id
+and h.id   = c.hospital_id
+;
+```
+
+**[ index, PK 추가 ]**
+```sql
+alter table covid add constraint primary key(id);
+alter table hospital add constraint primary key(id);
+create index covid_ix_programmer_id_n_hospital_id on covid(programmer_id, hospital_id);
+```
+
+1-3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+**[ 쿼리 ]**
+```sql
+select c.id as 'covid.id', h.name as 'hospital.name', p.hobby as 'user.Hobby', p.dev_type as 'user.DevType', p.years_coding as 'user.YearsCoding'
+from   covid c
+inner join hospital h
+on c.hospital_id = h.id
+inner join  (
+                select p.hobby, p.dev_type, p.years_coding, p.id
+                from programmer p
+                where (
+                    (p.hobby = 'Yes' and p.student LIKE 'Yes%') -- 프로그래밍이 취미인
+                or  p.years_coding = '0-2 years'
+                )
+            ) p
+on c.programmer_id = p.id
+order by p.id
+;
+```
+
+**[ index, PK 추가 ]**
+```sql
+-
+```
+
+1-4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+**[ 쿼리 ]**
+```sql
+select c.stay as 'covid.Stay', count(1) as 'count'
+from  	covid c
+inner join hospital h
+on (
+        c.hospital_id   = h.id
+    and h.name          = '서울대병원'
+)
+inner join programmer p
+on (
+        c.programmer_id = p.id
+    and p.country       = 'India'
+)
+inner join member m
+on (
+        c.member_id     = m.id
+    and m.age between 20 and 29
+)
+group by c.stay
+;
+```
+
+**[ index, PK 추가 ]**
+```sql
+alter table member add constraint primary key(id);
+create index programmer_ix_id_n_country on programmer(id, country);
+create index hospital_ix_name on hospital(name);
+```
+
+1-5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+**[ 쿼리 ]**
+```sql
+select p.exercise as 'user.Exercise', count(1) as 'count'
+from covid c
+inner join member m
+on (
+        c.member_id   = m.id
+    and m.age between 30 and 39
+)
+inner join hospital h
+on (
+        c.hospital_id = h.id
+    and h.name        = '서울대병원'
+)
+inner join programmer p
+on c.programmer_id    = p.id
+group by p.exercise
+;
+```
+
+**[ index, PK 추가 ]**
+```sql
+create index member_ix_id_n_age on member(id, age);
+create index programmer_ix_member_id on programmer(member_id);
+create index covid_ix_member_id_n_hospital_id_n_programmer_id on covid(member_id, hospital_id, programmer_id);
+```
 
 ---
 
