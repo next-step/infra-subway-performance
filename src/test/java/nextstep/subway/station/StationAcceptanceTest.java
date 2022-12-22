@@ -27,6 +27,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 교대역 = "교대역";
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+    private static final String 삼성역 = "삼성역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
