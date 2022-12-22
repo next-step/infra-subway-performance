@@ -94,3 +94,49 @@
       - CPU 사용률은 요청이 많아서 fail이 되도 30%를 넘지 않으므로, 해당 서비스의 추적기준으론 부적합 하다고 판단하였음.
       - <img src="./k6/stress/stress_asg_1600.png">
 
+  
+## Step3. 쿼리최적화
+
+### 요구사항
+- [x] 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+  - (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+  - 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+  - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2s를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+  - 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+
+- 쿼리
+```sql
+
+select
+  employee.id as "사원번호",
+  employee.last_name as "이름",
+  FILTERED.annual_income as "연봉",
+  FILTERED.position_name as "직급",
+  record.time as "입출입시간",
+  record.region as "지역",
+  record.record_symbol as "입출입구분"
+from employee
+       right join (
+  select manager.employee_id, position.position_name, salary.annual_income
+  from manager
+         join department on manager.department_id = department.id
+         join salary on manager.employee_id = salary.id
+         join position on manager.employee_id = position.id
+  where position.position_name = 'manager'
+    and salary.end_date = '9999-01-01'
+    and department.note = 'active'
+    and position.end_date = '9999-01-01'
+  order by salary.annual_income desc limit 5) as FILTERED
+                  on employee.id = FILTERED.employee_id
+       left outer join record on employee.id = record.employee_id
+where record.record_symbol = 'O'
+
+
+```
+
+- 결과
+  - 수행 결과 : M1Pro -> 평균 1.6초
+  - <img src="./query/query_result.png.png">
+  - 쿼리 플랜
+  - <img src="./query/query_plan.png">
+
