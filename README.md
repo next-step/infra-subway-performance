@@ -82,9 +82,9 @@ select
     t.last_name as '이름', 
     t.annual_income as '연봉', 
     t.position_name as '직급',
-    r.time as '입출입시간' 
+    r.time as '입출입시간',
     r.region as '지역', 
-    r.record_symbol as '입출입구분', 
+    r.record_symbol as '입출입구분' 
 from 
     record r
 inner join (
@@ -109,7 +109,115 @@ on
 
 ### 4단계 - 인덱스 설계
 
+#### 요구사항
+* 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  * M1의 경우엔 시간 제약사항을 달성하기 어렵워서 2배를 기준으로 해본 후 일단 리뷰요청
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+* [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 
+와 같은 결과를 반환
+  * 아래의 쿼리를 작성 후 313ms가 나온 것을 확인 후 hobby에 인덱스 생성 쿼리 적용한 뒤에 062ms 감소하였습니다.
+  * [결과 이미지](/step4/1)
+```
+-- 쿼리
+select hobby, round(count(*) / (select count(*) from programmer p) * 100, 1) AS percent
+from programmer
+group by hobby;
+
+-- 인덱스 생성 쿼리
+create index programmer_hobby_index on programmer (hobby);
+```
+* 프로그래머별로 해당하는 병원 이름을 반환 (covid.id, hospital.name)
+  * 아래의 쿼리를 작성 후 360ms가 나온 것을 확인했고 조인 컬럼인 각 테이블의 id에 인덱스 생성 쿼리를 적용한 뒤에
+  031ms로 감소했습니다.
+  * [결과 이미지](/step4/2)
+```
+-- 쿼리
+select c.id, h.name from hospital h 
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on p.id= c.programmer_id;
+
+-- 인덱스 생성 쿼리
+create index covid_hospital_id_index
+     on covid (hospital_id);
+     
+create index covid_programmer_id_index
+     on covid (programmer_id);
+```
+* 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬
+  (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  * 아래의 쿼리를 작성 후 1188ms의 속도를 확인했으며 제가 작성한 쿼리를 토대로 id에서 조인이 가장 많이 일어나는 사실로
+  현재 쿼리에서 사용되는 각 테이블의 id컬럼에 primary key를 지정해서 인덱스를 사용하도록 변경했습니다. 변경 후 속도는
+  015ms로 측정되었습니다.
+  * [결과 이미지](/step4/3)
+```
+-- 쿼리
+select c.id, h.name, p.hobby, p.dev_type, p.Years_coding
+from covid c
+    inner join hospital h on c.hospital_id = h.id
+    inner join
+        (
+            select p.id, p.hobby, p.dev_type, p.Years_coding
+            from programmer p
+            where p.hobby = 'Yes'
+              and (p.student like 'Yes%' or p.years_coding = '0-2 years')
+        ) p on c.programmer_id = p.id
+order by p.id;
+
+-- primary key 지정
+alter table programmer add primary key (id);
+alter table covid add primary key (id);
+alter table hospital add primary key (id);
+
+```
+* 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계 (covid.Stay)
+  * 아래의 쿼리를 작성 후 실행되는 쿼리의 속도는 1000ms가 측정되었습니다. 측정 후 위 요구사항들은 진행하면서
+  추가되지 않은 member 테이블에 pk를 적용 후 측정했습니다. pk만 적용 후 인덱스를 통해서 078ms로 요구사항에 부합했지만
+  현재 쿼리에서 where절에 사용되는 컬럼을 복합 인덱스 및 인덱스를 구성해 조금 더 줄였습니다. 인덱스를 적용 후에는
+  063ms으로 줄었지만 미미한 차이로 데이터가 더 많아진다면 차이가 벌어진다고 생각합니다.
+  * [결과 이미지](/step4/4)
+```
+-- 쿼리
+select c.stay, count(*)
+from covid c
+inner join hospital h on c.hospital_id = h.id
+inner join programmer p on c.programmer_id = p.id
+inner join member m on c.member_id = m.id
+where
+    m.age between 20 and 29
+    and h.name = '서울대병원'
+    and p.country = 'India'
+group by c.stay;
+
+-- primary key 지정
+ALTER TABLE member ADD PRIMARY KEY (id);
+
+create index member_age_id_index
+	on member (age, id);
+	
+-- 해당 인덱스는 위 요구사항 중 적용된 사항
+create index covid_hospital_id_index
+     on covid (hospital_id);
+     
+create index hospital_name_index
+    on hospital (name);
+```
+* 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계 (user.Exercise)
+  * 이번 쿼리는 바로 078ms로 이번 미션의 요구사항을 충족시켰는데 해당 이유는 4번째 사항에 추가된 pk값과 인덱스를 같이
+  사용되서 무리 없이 요구사항이 충족되는 쿼리였습니다.
+  * [결과 이미지](/step4/5)
+```
+-- 쿼리
+select p.exercise, count(*)
+from hospital h
+inner join covid c on c.hospital_id = h.id
+inner join programmer p on c.programmer_id = p.id
+inner join member m on m.id = c.member_id
+where
+   m.age between 30 and 39
+   and h.name = '서울대병원'
+group by p.exercise;
+```
 
 ---
 
