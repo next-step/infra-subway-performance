@@ -104,13 +104,17 @@ npm run dev
 1. Launch Template 링크를 공유해주세요.
 - [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a5259d3742fa9297)
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+   ![Stress](step2/cloudwatch_auto_scaling.JPG)
 
+아래 명령어로 타임아웃 주어 수행하였습니다.
 ```sh
-$ stress -c 2
+$ stress -c 2 --timeout 1200
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   ![Stress](step2/smoke.JPG)
+   ![Stress](step2/load.JPG)
+   ![Stress](step2/stress.JPG) 
 ---
 
 ### 3단계 - 쿼리 최적화
