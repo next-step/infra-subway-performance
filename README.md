@@ -148,7 +148,7 @@ ALTER TABLE `subway`.`hospital` ADD INDEX index_hospital_name (name);
 ```
 
 - Coding as a Hobby 와 같은 결과를 반환하세요.
-  - 인덱스 적용후 : 0.426sec
+  - 인덱스 적용후 : ```0.426sec```
 ```mysql
 SELECT hobby, 
        ROUND(count(*) / (SELECT count(*) FROM programmer) * 100, 1) AS rate
