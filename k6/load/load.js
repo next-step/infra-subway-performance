@@ -6,12 +6,6 @@ export let options = {
   thresholds: {
     http_req_duration: ['p(95)<300'],
   },
-  ext: {
-    loadimpact: {
-      projectID: "******",
-      name: "LOAD TEST"
-    }
-  },
   scenarios: {
     loginTest: {
       executor: 'ramping-arrival-rate',
