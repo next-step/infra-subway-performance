@@ -78,8 +78,21 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+ - https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0f7f43df641776bc7
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- cloudWatch autoscaling
+![auto_scaling.PNG](k6test%2Fasg_ec2%2Fauto_scaling.PNG)
+- cloudWatch ec2
+![ec2.PNG](k6test%2Fasg_ec2%2Fec2.PNG)
+* smoke
+![smoke.png](k6test%2Fasg_smoke%2Fsmoke.png)
+![smoke_grafana_cache.png](k6test%2Fasg_smoke%2Fsmoke_grafana_cache.png)
+* Load
+![load.png](k6test%2Fasg_load%2Fload.png)
+![load_grafana_cache.png](k6test%2Fasg_load%2Fload_grafana_cache.png)
+* Stress
+![stress.png](k6test%2Fasg_stress%2Fstress.png)
+![stress_grafana_cache.png](k6test%2Fasg_stress%2Fstress_grafana_cache.png)
 
 ```sh
 $ stress -c 2
