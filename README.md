@@ -407,16 +407,205 @@ where r.record_symbol = 'O';
 ```
 
 ### 실행 결과 = 1.627s (M1 기준)
+
 ![](dbimage/실행결과.png)
 
 ### 실행 계획
+
 ![](dbimage/실행계획.png)
 
 ---
 
-### 4단계 - 인덱스 설계
+# 4단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+## 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+*  모든 설계는 M1 기반으로 수행하였습니다
+
+-- --
+
+## Coding as a Hobby와 같은 결과를 반환하세요
+
+### 쿼리문
+
+```
+SELECT hobby, ROUND((COUNT(id) / (SELECT COUNT(id) FROM programmer) * 100), 1) AS rate
+FROM programmer
+GROUP BY hobby;
+```
+
+### 조회 시간
+
+`463ms`
+
+![](dbindex/Codding_as_hobby_개선_후_조회시간.png)
+
+### 실행 계획
+
+![](dbindex/Codding_as_hobby_개선후_실행계획.png)
+
+### 인덱스
+
+![](dbindex/Codding_as_hobby_인덱스.png)
+
+초기에는 index를 (id, hobby)로 잡아서 테스트 진행했는데 file sorting 이슈가 발생했습니다
+
+따라서 group by 절에 있는 `hobby를 선행으로 인덱스 재생성`하여
+
+기존 인덱스 실행 결과 `781ms` -> `463ms` 로 개선 하였습니다
+
+-- --
+
+### 프로그래머 별로 해당하는 병원 이름을 반환하세요 (covid.id , hospital.name)
+
+**쿼리문**
+
+```
+SELECT c.id, h.name
+FROM covid c
+         INNER JOIN hospital h ON c.hospital_id = h.id;
+```
+
+### 조회 시간
+
+`68ms`
+
+![](dbindex/프로그래머_병원_조회시간.png)
+
+### 실행 계획
+
+![](dbindex/프로그래머_병원_실행계획.png)
+
+### 인덱스
+
+`인덱스는 추가하지 않았습니다`. `근거`는 다음과 같습니다
+
+먼저 위 쿼리문을 수행하면
+실행 계획에 `Using where` ; `join buffer nest roof` 로 수행되는데 이는 mysql 엔진이 조인 시 별도의 가공, 필터링 한 작업일 경우 발생합니다
+
+따라서 실험을 위해 `hospital` 테이블의 `id 컬럼`에 `인덱스`를 주었고, 결과는 `Using index condition` 으로 변경 되었습니다
+
+![](dbindex/프로그래머_병원_인덱스_실행계획.png)
+
+하지만 의외의 결과가 나왔는데
+
+바로 using where 조건을 타던 `기존 쿼리`와 `조회 시간에 차이가 없는 것` 입니다
+
+따라서 index condition을 태우기 위한 index 생성은
+
+현재로선 `불필요한 인덱스 생성`이라고 판단하였고 `인덱스를 제거`하였습니다 (불필요한 인덱스 생성을 최소화 하고자 합니다)
+
+### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 programmer.id 기준으로 정렬하세요. (covid.id, hospital.name, programmer.Hobby, programmer.DevType, programmer.YearsCoding)
+
+### 쿼리문
+
+```
+SELECT c.id, c.programmer_id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         INNER JOIN covid c ON p.id = c.programmer_id
+         INNER JOIN hospital h ON h.id = c.hospital_id
+WHERE p.hobby = 'Yes'
+  AND (p.years_coding = '0-2 years' OR p.student LIKE 'Y%');
+```
+
+### 조회 시간
+
+`110ms`
+
+![](dbindex/취미_학생_주니어_병원이름_조회시간.png)
+
+### 실행 계획
+
+![](dbindex/취미_학생_주니어_병원이름_실행계획.png)
+
+### 인덱스
+
+INDEX programmer (hobby, id)
+
+INDEX covid (programmer_id)
+
+INDEX hospital (id)
+
+를 사용하였습니다.
+
+programmer 테이블의 id 값으로 Ordring이 되어야 하기 때문에 Driving Table을 programmer 로 선정하였고, 별도의 order by 조건은 포함하지 않았습니다
+
+-- --
+
+### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+### 쿼리문
+
+```
+SELECT c.stay, COUNT(c.stay)
+FROM covid c
+         INNER JOIN hospital h ON c.hospital_id = h.id AND h.name = '서울대병원'
+         INNER JOIN member m
+                    ON c.member_id = m.id AND m.age IN ('20', '21', '22', '23', '24', '25', '26', '27', '28', '29')
+         INNER JOIN programmer p ON c.id = p.id AND p.country = 'India'
+GROUP BY c.stay;
+```
+
+### 조회 시간
+
+`193ms`
+
+![](dbindex/인도_20대_머문일수_개선후_조회시간.png)
+
+### 실행 계획
+
+![](dbindex/인도_20대_머문일수_개선후_실행계획.png)
+
+![](dbindex/인도_20대_머문일수_workbench_실행계획.png)
+
+### 인덱스
+
+UNIQUE KEY hospital (name)
+
+UNIQUE KEY programmer (id)
+
+INDEX covid (hospital_id)
+
+INDEX member (id, age)
+
+이번 개선 특징은 가장 크기가 큰 테이블인 `covid`를 `FROM` 절에 넣었고
+`hospital` 의 `name`에 `unique` 값을 주어 `const` 로 만들었습니다
+추가로 BETWEEN 조건을 사용할 때보다 `IN 절에 값을 명시`하는 filter 되는 데이터 양이 많아 더 효과적이라고 판단하여 그대로 적용하였습니다
+
+### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+**쿼리문**
+
+```
+SELECT exercise, COUNT(exercise)
+FROM covid c
+         INNER JOIN hospital h ON c.hospital_id = h.id AND h.name = '서울대병원'
+         INNER JOIN member m ON c.member_id = m.id AND m.age BETWEEN 30 AND 39
+         INNER JOIN programmer p ON p.id = c.id
+GROUP BY p.exercise;
+```
+
+### 조회 시간
+
+`199ms`
+
+![](dbindex/운동횟수_30대_조회시간.png)
+
+### 실행 계획
+
+![](dbindex/운동횟수_30대_실행계획.png)
+
+### 인덱스
+
+UNIQUE KEY hospital (name)
+
+UNIQUE KEY programmer (id)
+
+INDEX covid (hospital_id)
+
+INDEX member (id, age)
+
+이번 개선사항은 `age` 값을 `IN` 절로 표현하는 것보다 `BETWEEN` 절을 사용하는 것이 더 `filtered` 되는 데이터가 많이 `BETWEEN`을 사용하였습니다
 
 ---
 
