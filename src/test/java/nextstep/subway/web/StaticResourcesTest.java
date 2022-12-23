@@ -98,7 +98,7 @@ public class StaticResourcesTest {
     @Test
     void nonStaticRequestCacheControl() {
         EntityExchangeResult<String> response = client.get()
-                .uri("/lines")
+                .uri("/")
                 .exchange()
                 .expectStatus()
                 .isOk()
