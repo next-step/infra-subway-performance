@@ -89,9 +89,10 @@ npm run dev
 - [x] Auto Scaling Group 생성
 - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
-1. Launch Template 링크를 공유해주세요.
-
+1. Launch Template 링크를 공유해주세요.  
+* [LaunchTemplate](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-03c5b3a699b0a0c38)
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
 
 ```sh
 $ stress -c 2
