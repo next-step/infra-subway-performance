@@ -184,7 +184,17 @@ inner join record r on r.record_symbol = 'O' and r.employee_id = ranker.employee
     group by c.stay
 ```
 ![explain4](explain/step4_explain_4.png)
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [X] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+    select p.exercise, count(*) 
+    from hospital h
+    inner join covid c on c.hospital_id = h.id
+    inner join programmer p on p.id = c.programmer_id
+    inner join member m on m.id = p.id
+    where h.name = '서울대병원' and m.age >= 30 and m.age < 40
+    group by p.exercise
+```
+![explain5](explain/step4_explain_5.png)
 ---
 
 ### 추가 미션
