@@ -129,7 +129,7 @@ ORDER BY c.annual_income DESC
 	- 실행계획을 확인해보니, 다른 컬럼에는 적절하게 인덱싱이 걸려있지만 r.employee_id에 인덱스가 없어 인덱스를 걸면 좀더 빠른 결과가 있을듯 하다!
 	
 - 결과
-![step3_결과.png](/src/main/resources/templates/step3_결과.png)
+![step3_결과.png](/src/main/resources/templates/step3_결과.png)
 	
 ---
 
