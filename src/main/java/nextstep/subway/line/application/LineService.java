@@ -71,6 +71,8 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
+    @CacheEvict(value = {"lines", "paths"}, allEntries = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
