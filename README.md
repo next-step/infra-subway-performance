@@ -167,7 +167,7 @@ WHERE p.hobby = 'Yes'
   AND (p.years_coding = '0-2 years' OR p.student LIKE 'yes%')
 ORDER BY p.id;
 ```
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - `covid_stay.png`
 ```sql
 ALTER TABLE member ADD CONSTRAINT pk_member PRIMARY KEY(id);
@@ -186,9 +186,19 @@ WHERE h.name = '서울대병원'
   AND p.country = 'india'
 GROUP BY c.stay
 ```
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
-
----
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- `user_exercise.png`
+```sql
+SELECT p.exercise,
+       COUNT(p.id)
+FROM hospital h
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+         INNER JOIN member m ON m.id = c.member_id
+WHERE h.name = '서울대병원'
+  AND m.age BETWEEN 30 AND 39
+GROUP BY p.exercise;
+```
 
 ### 추가 미션
 
