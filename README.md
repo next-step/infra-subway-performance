@@ -129,10 +129,103 @@ INNER JOIN record r ON t.id = r.employee_id AND r.record_symbol = 'O'
 ---
 
 ### 4단계 - 인덱스 설계
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+```mysql
+-- 인덱스 추가 쿼리
+-- step 4-1
+ALTER TABLE `subway`.`programmer` ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
+ALTER TABLE `subway`.`programmer` ADD INDEX idx_programmer_hobby (hobby);
+-- step 4-2
+ALTER TABLE `subway`.`hospital` ADD CONSTRAINT pk_hospital PRIMARY KEY (id);
+ALTER TABLE `subway`.`covid` ADD CONSTRAINT pk_covid PRIMARY KEY (id);
+ALTER TABLE `subway`.`covid` ADD INDEX idx_covid_hospital_id (hospital_id);
+-- step 4-3
+ALTER TABLE `subway`.`member` ADD CONSTRAINT pk_member PRIMARY KEY (id);
+ALTER TABLE `subway`.`hospital` ADD INDEX index_hospital_name (name);
+```
 
+- Coding as a Hobby 와 같은 결과를 반환하세요.
+  - 인덱스 적용후 : 0.426sec
+```mysql
+SELECT hobby, 
+       ROUND(count(*) / (SELECT count(*) FROM programmer) * 100, 1) AS rate
+FROM programmer
+GROUP BY hobby
+;
+```
+![쿼리결과](step4/4-1/인덱스_적용후_쿼리결과.png)
+
+![실행계획](step4/4-1/인덱스_적용후_실행계획.png)
+
+
+- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+    - 인덱스 적용후 : ```0.037sec```
+```mysql
+SELECT c.id, h.name
+FROM hospital h
+    INNER JOIN covid c ON c.hospital_id = h.id
+    INNER JOIN programmer p ON c.programmer_id = p.id;
+```
 ---
+![쿼리결과](step4/4-2/인덱스_적용후_쿼리결과.png)
+
+![실행계획](step4/4-2/인덱스_적용후_실행계획.png)
+
+
+- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+    - 인덱스 적용후 : ```0.016sec```
+
+```mysql
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+    INNER JOIN covid c ON c.programmer_id = p.id
+    INNER JOIN hospital h ON h.id = c.hospital_id
+WHERE LOWER(p.hobby) = 'yes'
+  AND (LOWER(p.student) LIKE 'yes%' OR p.years_coding = '0-2 years')
+ORDER BY p.id;
+```
+---
+![쿼리결과](step4/4-3/인덱스_적용후_쿼리결과.png)
+
+![실행계획](step4/4-3/인덱스_적용후_실행계획.png)
+
+- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - 인덱스 적용후 : ```1.196sec```
+
+```mysql
+select c.stay, count(*)
+from hospital h
+	INNER JOIN covid c ON c.hospital_id = h.id
+	INNER JOIN programmer p ON p.id = c.programmer_id AND p.country = 'India'
+	INNER JOIN member m ON m.id = p.member_id AND m.age between 20 AND 29
+WHERE h.name = '서울대병원'
+GROUP BY c.stay
+;
+```
+![쿼리결과](step4/4-4/인덱스_적용후_쿼리결과.png)
+
+![실행계획](step4/4-4/인덱스_적용후_실행계획.png)
+
+- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+  - 인덱스 적용후 : ```0.241sec```
+
+```mysql
+select p.exercise, count(*)
+from hospital h
+	INNER JOIN covid c ON c.hospital_id = h.id
+    INNER JOIN programmer p ON p.id = c.programmer_id
+	INNER JOIN member m ON m.id = c.member_id AND m.age between 30 AND 39
+WHERE h.name = '서울대병원'
+GROUP BY p.exercise
+;
+```
+
+![쿼리결과](step4/4-5/인덱스_적용후_쿼리결과.png)
+
+![실행계획](step4/4-5/인덱스_적용후_실행계획.png)
 
 ### 추가 미션
 
