@@ -46,51 +46,97 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 #### 개선 전 측정
-- Smoke : `k6/smoke/*`
+* Smoke before
 ![Smoke](k6/smoke/before_smoke_k6.png)
-![Smoke](k6/smoke/after_smoke_k6.png)
 ![Smoke](k6/smoke/before_smoke_grafana.png)
+* Smoke after
+![Smoke](k6/smoke/after_smoke_k6.png)
 ![Smoke](k6/smoke/after_smoke_grafana.png)
 
-- Load : `k6/load/*`
+* Load before
 ![Load](k6/load/before_load_k6.png)
-![Load](k6/load/after_load_k6.png)
 ![Load](k6/load/before_load_grafana.png)
+* Load After
+![Load](k6/load/after_load_k6.png)
 ![Load](k6/load/after_load_grafana.png)
 
-- Stress : `k6/stress/*`
+- Stress before
 ![Stress](k6/stress/before_stress_k6.png)
-![Stress](k6/stress/after_stress_k6.png)
 ![Stress](k6/stress/before_stress_grafana.png)
+- Stress before
+![Stress](k6/stress/after_stress_k6.png)
 ![Stress](k6/stress/after_stress_grafana.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
 #### 요구사항
-- [ ] Reverse Proxy 개선
+- [x] Reverse Proxy 개선
   - [x] 개선 전 측정 
   - [x] gzip 압축
   - [x] cache
   - [x] TLS, HTTP/2 설정
-- [ ] WAS 성능 개선
+- [x] WAS 성능 개선
   - [x] Spring Data Cache
-  - [ ] 비동기 처리
-- [ ] Scale out - 초간단 Blue-Green 배포 구성
-- [ ] 정적 파일 경량화
+  - [x] 비동기 처리
 
 ---
 
 ### 2단계 - 스케일 아웃
 
-1. Launch Template 링크를 공유해주세요.
+#### 요구사항
+- [x] 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
+- [x] 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
+- [x] 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가? - 가능합니다.
+- [x] springboot에 HTTP Cache, gzip 설정
+- [x] Launch Template 작성
+- [x] Auto Scaling Group 생성
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
+1. Launch Template 링크를 공유해주세요.  
+* [LaunchTemplate](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-03c5b3a699b0a0c38)
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+* auto scaling
+![부하테스트 auto scaling](step2/auto_scaling.png)
+* k6 결과
+![부하테스트 k6](step2/stress_peak_k6.png)
+* 인스턴스
+![부하테스트 인스턴스](step2/instance.png)
+
+```sh
+// 부하테스트 스크립트
+export let options = {
+    thresholds: {
+        http_req_duration: ['p(99)<1000'], // 99% of requests must complete below 1s
+    },
+    stages: [
+        { duration: '5s', target: 200},
+        { duration: '30s', target: 200},
+        { duration: '5s', target: 3000},
+        { duration: '20s', target: 2000},
+        { duration: '10s', target: 2000},
+        { duration: '20s', target: 2000},
+        { duration: '10s', target: 3000},
+        { duration: '10s', target: 2000},
+        { duration: '30s', target: 1500},
+        { duration: '20s', target: 1500},
+        { duration: '30s', target: 1500},
+    ],
+};
+...
+
+```
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+* smoke test
+![](step2/smoke.png)
+* stress test
+![](step2/stress.png)
+* load test
+![](step2/load.png)
 
 ---
 
