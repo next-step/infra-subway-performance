@@ -103,6 +103,10 @@ FROM (SELECT e.id, e.last_name, s.annual_income, p.position_name
          INNER JOIN record r ON r.employee_id = a.id
 WHERE r.record_symbol = 'O';
 ```
+- 쿼리 실행 시간(m1)
+![img.png](img.png)
+
+
 ---
 
 ### 4단계 - 인덱스 설계
