@@ -1,7 +1,9 @@
 package nextstep.subway.line.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -15,8 +17,12 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    private String createdDate;
-    private String modifiedDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime modifiedDate;
 
     public LineResponse() {
     }
@@ -26,12 +32,8 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
-        if(createdDate != null) {
-            this.createdDate = createdDate.toString();
-        }
-        if(modifiedDate != null) {
-            this.modifiedDate = modifiedDate.toString();
-        }
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static LineResponse of(Line line) {
@@ -67,11 +69,11 @@ public class LineResponse {
         return stations;
     }
 
-    public String getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public String getModifiedDate() {
+    public LocalDateTime getModifiedDate() {
         return modifiedDate;
     }
 }
