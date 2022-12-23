@@ -106,10 +106,10 @@ FROM (SELECT m.employee_id,
              s.annual_income,
              p.position_name
       FROM manager m
-               JOIN department d ON d.id = m.department_id
-               JOIN position p ON p.id = m.employee_id
-               JOIN employee e ON e.id = m.employee_id
-               JOIN salary s ON s.id = e.id
+               INNER JOIN department d ON d.id = m.department_id
+               INNER JOIN position p ON p.id = m.employee_id
+               INNER JOIN employee e ON e.id = m.employee_id
+               INNER JOIN salary s ON s.id = e.id
       WHERE d.note = 'active'
         AND p.position_name = 'manager'
         AND NOW() BETWEEN m.start_date AND m.end_date
