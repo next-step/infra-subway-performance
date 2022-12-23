@@ -92,18 +92,26 @@ $ stress -c 2
 - Query
   - 쿼리 소요 시간 : 1.645 sec
 ```mysql
+-- (MySQL) chracter set이 'utf8mb4', 'utf8mb4_0900_ai_ci'이면 문자열 검색시 대소문자 비교하지 않음??
+-- https://dev.mysql.com/doc/refman/8.0/en/case-sensitivity.html
+    
+-- The default character set and collation are utf8mb4 and utf8mb4_0900_ai_ci, so nonbinary string comparisons are case-insensitive by default. 
+-- This means that if you search with col_name LIKE 'a%', you get all column values that start with A or a.
+-- To make this search case-sensitive, make sure that one of the operands has a case-sensitive or binary collation. 
+-- For example, if you are comparing a column and a string that both have the utf8mb4 character set, you can use the COLLATE operator to cause either operand to have the utf8mb4_0900_as_cs or utf8mb4_bin collation:
+
 SELECT t.id AS 사원번호,
-       t.first_name AS 이름,
+       t.last_name AS 이름,
        t.annual_income AS 연봉,
        t.position_name AS 직급명,
        r.time AS 입출입시간,
        r.region AS 지역,
        r.record_symbol AS 입출입구분
-FROM (SELECT e.id, e.last_name, e.first_name, s.annual_income, p.position_name
+FROM (SELECT e.id, e.last_name, s.annual_income, p.position_name
       FROM department AS d
       INNER JOIN manager m ON m.department_id = d.id AND m.start_date < now() AND m.end_date > now()
       INNER JOIN employee e ON e.id = m.employee_id
-      INNER JOIN position p ON p.id = m.employee_id AND p.position_name = 'Manager'
+      INNER JOIN position p ON p.id = m.employee_id AND LOWER(p.position_name) = 'manager'
       INNER JOIN salary s ON s.id = m.employee_id AND s.start_date < now() AND s.end_date > now()
       WHERE d.note = 'active'
       ORDER BY s.annual_income DESC LIMIT 5) AS t
