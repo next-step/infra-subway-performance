@@ -416,7 +416,8 @@ default ✓ [======================================] 00/14 VUs  29m10s
   * DNS 주소: yeojiin-alb-1510260166.ap-northeast-2.elb.amazonaws.com
 
 * cloudwatch_autoscales
-![img.png](src/main/resources/image/step2/autoscale_monitoring.png)
+![cloudwatch](src/main/resources/image/step2/autoscale_monitoring.png)
+![인스턴스](src/main/resources/image/step2/instance_add.png)
 </details>
 
 
