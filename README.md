@@ -101,8 +101,7 @@ FROM (SELECT e.id, e.last_name, s.annual_income, p.position_name
       ORDER BY s.annual_income DESC
       LIMIT 5) a
          INNER JOIN record r ON r.employee_id = a.id
-WHERE r.record_symbol = 'O'
-ORDER BY a.annual_income DESC;
+WHERE r.record_symbol = 'O';
 ```
 ---
 
