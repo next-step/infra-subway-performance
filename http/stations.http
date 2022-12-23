@@ -1,0 +1,12 @@
+###
+POST {{host}}/stations
+Content-Type: application/json
+
+{
+  "name": "잠실역"
+}
+
+###
+GET {{host}}/stations
+
+###

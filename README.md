@@ -495,3 +495,12 @@ GROUP BY exercise
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+- GET /stations
+- GET /lines
+
+2. Replication 적용 로그
+### POST /stations 요청시 Master 로 라우팅
+![img](img/step5-replication-master.png)
+
+### GET /stations 요청시 Slave 로 라우팅
+![img](img/step5-replication-slave.png)
