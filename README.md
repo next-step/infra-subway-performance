@@ -44,9 +44,27 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
++ k6 파일 폴더에 넣어뒀습니다 !
+
+
+#### 성능 개선 전 (http_req_duration 기준 표 작성)
+|        | http_req_duration(mean) | http_req_duration(max) | http_req_duration(med) |
+|--------|-------------------------|------------------------|------------------------|
+| LOAD   | 8.67ms                  | 424.79ms               | 8.21ms                 | 
+| SMOKE  | 15.90ms                 | 781.65ms               | 9.04ms                 | 
+| STRESS | 57.80ms                 | 353.37ms               | 39.08ms                | 
+
+
+#### 성능 개선 후 (http_req_duration 기준 표 작성)
+|        | http_req_duration(mean) | http_req_duration(max) | http_req_duration(med) |
+|--------|-------------------------|------------------------|------------------------|
+| LOAD   | 11.07ms                 | 879.08ms               | 9.08ms                 | 
+| SMOKE  | 10.75ms                 | 128.89ms               | 10.34ms                | 
+| STRESS | 11.16ms                 | 240.36ms               | 10.23ms                | 
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- nginx gzip 압축, cache, HTTP/2 설정을 통해 리버스 프록시를 개선
+-  redis와 Spring Data Cache를 이용하여 애플리케이션 내 조회 기능에 캐싱을 적용해 조회 성능을 개선
 ---
 
 ### 2단계 - 스케일 아웃
