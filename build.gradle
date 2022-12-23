@@ -33,6 +33,7 @@ dependencies {
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
