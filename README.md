@@ -126,6 +126,7 @@ ORDER BY c.annual_income DESC;
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 - [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+- `Coding as a Hobby.png`
 ```sql
 ALTER TABLE programmer ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
 ALTER TABLE programmer ADD INDEX idx_programmer_hobby(hobby);
@@ -137,7 +138,8 @@ GROUP BY hobby
 ORDER BY hobby DESC;
 
 ```
-- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) (hospital_name.png)
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) 
+- `hospital_name.png`
 ```sql
 ALTER TABLE hospital ADD CONSTRAINT pk_hospital PRIMARY KEY(id);
 ALTER TABLE covid ADD CONSTRAINT pk_covid PRIMARY KEY(id);
@@ -150,9 +152,16 @@ FROM hospital h
          INNER JOIN covid c ON h.id = c.hospital_id
          INNER JOIN programmer p ON c.programmer_id = p.id;
 ```
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+- `hobby.png`
 ```sql
-
+SELECT count(*)
+FROM hospital h
+         INNER JOIN covid c ON h.id = c.hospital_id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+WHERE p.hobby = 'Yes'
+  AND (p.years_coding = '0-2 years' OR p.student LIKE 'yes%')
+ORDER BY p.id;
 ```
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
