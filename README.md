@@ -64,6 +64,39 @@ npm run dev
 
 1. Launch Template 링크를 공유해주세요.
     - [링크](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0b4895710bf98580b)
+```
+#!/bin/bash
+
+sudo apt-get update
+sudo apt -y install default-jre
+sudo apt -y install openjdk-8-jre-headless
+
+sudo apt install unzip 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+sudo apt-get update && \
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common && \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+sudo apt-key fingerprint 0EBFCD88 && \
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+sudo apt-get update && \
+sudo apt-get install -y docker-ce && \
+sudo usermod -aG docker ubuntu && \
+sudo curl -L https://github.com/docker/compose/releases/download/v2.9.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && \
+sudo chmod +x /usr/local/bin/docker-compose && \
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+sudo mkdir -p /home/ubuntu/app
+sudo mkdir -p /home/ubuntu/data/log
+sudo chown -R ubuntu:ubuntu /home/ubuntu/app
+sudo chown -R ubuntu:ubuntu /home/ubuntu/data/log
+
+sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/sixthou-deploy.sh /home/ubuntu/app
+sudo -i -u ubuntu chmod 755 /home/ubuntu/app/sixthou-deploy.sh 
+sudo -i -u ubuntu /bin/bash /home/ubuntu/app/sixthou-deploy.sh step2 prod
+```
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 ![cloutwatch](src/main/resources/docs/step2/cloudwatch/cloudwatch.png)
 ```sh
