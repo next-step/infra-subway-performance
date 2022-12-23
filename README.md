@@ -84,7 +84,7 @@ npm run dev
 ### 2단계 - 스케일 아웃
 #### 요구사항
 
-- springboot에 HTTP Cache, gzip 설정하기
+- # springboot에 HTTP Cache, gzip 설정하기
     - 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증
     - 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정
     - 모든 정적 자원에 대해 no-cache, no-store 설정이 가능한가?
@@ -118,10 +118,44 @@ $ stress -c 2 --timeout 1200
 ---
 
 ### 3단계 - 쿼리 최적화
+#### 요구사항
+~~~
+- 활동중인(Active) 부서의 현재 부서관리자(manager) 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실(O)했는지 조회해보세요.
+(사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+- 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
+M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2s를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+~~~
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+~~~sql
+1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 200ms 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
+```sql
+SELECT r.employee_id   AS 사원번호,
+       e.first_name    AS 이름,
+       e.income        AS 연봉,
+       e.position_name AS 직급명,
+       r.region        AS 지역,
+       r.record_symbol AS 입출입구분
+       r.time          AS 입출입시간
+FROM record r
+         INNER JOIN (SELECT e.id            AS id,
+                            e.first_name    AS first_name,
+                            s.annual_income AS income,
+                            p.position_name AS position_name
+                     FROM employee e
+                              INNER JOIN manager m ON e.id = m.employee_id AND m.end_date = '9999-01-01'
+                              INNER JOIN department d ON d.id = m.department_id AND d.note = 'active'
+                              INNER JOIN position p ON e.id = p.id AND position_name = 'Manager'
+                              INNER JOIN salary s ON s.id = e.id AND s.end_date = '9999-01-01'
+                     ORDER BY s.annual_income DESC
+                     LIMIT 5) AS e
+                    ON r.employee_id = e.id
+WHERE r.record_symbol = 'O';
+~~~
 
 ---
 
