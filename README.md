@@ -580,6 +580,7 @@ default ✓ [======================================] 000/384 VUs  28m10s
 * grafana   
   ![img.png](src/main/resources/image/step2/stress_grafana.png)
 </details>
+
 ---
 
 ### 3단계 - 쿼리 최적화
