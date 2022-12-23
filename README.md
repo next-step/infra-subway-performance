@@ -140,3 +140,138 @@ where record.record_symbol = 'O'
   - 쿼리 플랜
   - <img src="./query/query_plan.png">
 
+  
+## Step4. 인덱스 설계
+
+### 요구사항
+- [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+  - [x] query_1. Coding as a Hobby 와 같은 결과를 반환하세요.
+  - [x] query_2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  - [x] query_3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  - [x] query_4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  - [x] query_5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+
+### 결과
+
+- query_1. Coding as a Hobby 와 같은 결과를 반환하세요. 
+- 결과
+  - 제약조건 추가 전 : 5041 ms
+  - 제약조건 추가 후 : 300 ms
+    - Order by 없을 경우 : 265 ms
+    - 100% index를 타고 있어서, 이 이상 성능향상이 힘들것 같습니다.
+
+```sql 조회 쿼리
+SELECT hobby,
+       Concat(Round(Count(*) / (SELECT Count(*)
+                                FROM   programmer) * 100, 1), '%') AS "result"
+FROM   programmer
+GROUP  BY hobby
+ORDER  BY hobby DESC; 
+```
+```sql 제약조건
+ALTER TABLE programmer
+  ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
+
+CREATE INDEX ix_programmer_hobby ON programmer (hobby); 
+```
+
+
+
+- query_2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- 결과
+  - 제약조건 추가 전 : 143 ms
+  - 제약조건 추가 후 : 33 ms
+
+```sql 조회 쿼리
+SELECT covid.id,
+       hospital.name
+FROM   covid
+         INNER JOIN hospital
+                    ON covid.hospital_id = hospital.id
+         INNER JOIN programmer
+                    ON covid.programmer_id = programmer.id; 
+```
+```sql 제약조건
+ALTER TABLE hospital
+  ADD CONSTRAINT pk_hospital PRIMARY KEY (id);
+
+ALTER TABLE covid
+  ADD CONSTRAINT pk_covid PRIMARY KEY (id);
+
+CREATE INDEX ix_covid_programmer_id_and_hospital_id ON covid(programmer_id, hospital_id);
+```
+
+
+- query_3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- 결과
+  - 제약조건 추가 전 : 38 ms
+    - 현재 explain에서 인덱스를 잘 타고 있어서 제약조건 추가하지 않음.
+```sql 조회 쿼리
+SELECT covid.id,
+       hospital.name,
+       programmer.hobby,
+       programmer.dev_type,
+       programmer.years_coding
+FROM   programmer
+         INNER JOIN covid
+              ON covid.programmer_id = programmer.id
+         INNER JOIN hospital
+              ON hospital.id = covid.hospital_id
+WHERE  programmer.hobby = 'yes'
+  AND ( programmer.student LIKE 'Yes%'
+  OR programmer.years_coding = '0-2 years' )
+ORDER  BY programmer.id;
+
+
+```
+
+- query_4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- 결과
+  - 제약조건 추가 전 : 3011 ms
+  - 제약조건 추가 후 : 144 ms
+    - explain에서 복합인덱스를 통해 filtered 100 
+    - 카디널리티가 높은(1 : 32) hospital.name에 인덱스 추가
+```sql 조회 쿼리
+SELECT covid.stay,
+       Count(*)
+FROM   covid
+         INNER JOIN hospital
+                    ON covid.hospital_id = hospital.id
+                      AND hospital.name = '서울대병원'
+         INNER JOIN member
+                    ON covid.member_id = member.id
+                      AND member.age BETWEEN 20 AND 29
+         INNER JOIN programmer
+                    ON covid.programmer_id = programmer.id
+                      AND programmer.country = 'india'
+GROUP  BY covid.stay; 
+```
+```sql 제약조건
+
+ALTER TABLE member
+  ADD CONSTRAINT pk_member PRIMARY KEY (id);
+
+CREATE INDEX ix_hospital_name ON hospital(name);
+CREATE INDEX ix_covid_hospital_id_and_programmer_id_and_member_id ON covid(hospital_id, programmer_id, member_id);
+```
+
+
+- query_5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- 제약조건 추가 전 : 27 ms
+  - 현재 explain에서 인덱스를 잘 타고 있어서 제약조건 추가하지 않음.
+```sql 조회 쿼리
+SELECT exercise,
+       Count(*)
+FROM   programmer
+         INNER JOIN covid
+                    ON programmer.id = covid.programmer_id
+         INNER JOIN hospital
+                    ON covid.hospital_id = hospital.id
+                      AND hospital.name = '서울대병원'
+         INNER JOIN member
+                    ON covid.member_id = member.id
+                      AND member.age BETWEEN 30 AND 39
+GROUP  BY exercise; 
+```
