@@ -63,19 +63,24 @@ npm run dev
      - https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94
      - https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers
     
- - [] Launch Template 작성하기
- - [] Auto Scailing Group 생성하기
- - [] Smoke, Load, Stress 테스트 후 결과를 기록
+ - [x] Launch Template 작성하기
+ - [x] Auto Scailing Group 생성하기
+ - [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
 1. Launch Template 링크를 공유해주세요.
+https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0800573c3706ba409
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
+/main/k6/step2 위치에 업로드하였습니다!
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+
+/main/k6/step2 위치에 업로드하였습니다!
 
 ---
 
