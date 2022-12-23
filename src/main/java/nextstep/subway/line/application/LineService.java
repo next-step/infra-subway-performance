@@ -28,7 +28,7 @@ public class LineService {
     }
 
     @Transactional
-    @CacheEvict(value = "line", allEntries = true)
+    @CacheEvict(value = {"lines", "paths"}, allEntries = true)
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -36,7 +36,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Cacheable(value = "line")
+    @Cacheable(value = "lines")
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -52,21 +52,21 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Cacheable(value = "line", key = "#id")
+    @Cacheable(value = "lines", key = "#id")
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
     @Transactional
-    @CacheEvict(value = "line", allEntries = true)
+    @CacheEvict(value = {"lines", "paths"}, allEntries = true)
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
-    @CacheEvict(value = "line", allEntries = true)
+    @CacheEvict(value = {"lines", "paths"}, allEntries = true)
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
@@ -79,7 +79,7 @@ public class LineService {
     }
 
     @Transactional
-    @CacheEvict(value = "line", allEntries = true)
+    @CacheEvict(value = {"lines", "paths"}, allEntries = true)
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
