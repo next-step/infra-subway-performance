@@ -46,28 +46,31 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
 #### 개선 전 측정
-- Smoke : `k6/smoke/*`
+* Smoke before
 ![Smoke](k6/smoke/before_smoke_k6.png)
-![Smoke](k6/smoke/after_smoke_k6.png)
 ![Smoke](k6/smoke/before_smoke_grafana.png)
+* Smoke after
+![Smoke](k6/smoke/after_smoke_k6.png)
 ![Smoke](k6/smoke/after_smoke_grafana.png)
 
-- Load : `k6/load/*`
+* Load before
 ![Load](k6/load/before_load_k6.png)
-![Load](k6/load/after_load_k6.png)
 ![Load](k6/load/before_load_grafana.png)
+* Load After
+![Load](k6/load/after_load_k6.png)
 ![Load](k6/load/after_load_grafana.png)
 
-- Stress : `k6/stress/*`
+- Stress before
 ![Stress](k6/stress/before_stress_k6.png)
-![Stress](k6/stress/after_stress_k6.png)
 ![Stress](k6/stress/before_stress_grafana.png)
+- Stress before
+![Stress](k6/stress/after_stress_k6.png)
 ![Stress](k6/stress/after_stress_grafana.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 
 #### 요구사항
-- [ ] Reverse Proxy 개선
+- [x] Reverse Proxy 개선
   - [x] 개선 전 측정 
   - [x] gzip 압축
   - [x] cache
