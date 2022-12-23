@@ -1,5 +1,7 @@
 package nextstep.subway.common;
 
+import static nextstep.subway.common.CacheConstant.cacheTTLByDay;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -18,8 +20,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-import static nextstep.subway.common.CacheConstant.cacheTTLByDay;
-import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair.fromSerializer;
 
 @EnableCaching
 @Configuration
@@ -53,3 +53,4 @@ public class CacheConfig extends CachingConfigurerSupport {
             .build();
     }
 }
+

@@ -7,4 +7,3 @@ public class CacheConstant {
     public static final String stations = "stations";
     public static final Long cacheTTLByDay = 1L;
 }
-
