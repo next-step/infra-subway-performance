@@ -44,9 +44,20 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+   * result directory 에 정리해 뒀습니다.
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+   1. Nginx 개편
+      1. HTTP2 적용
+         ![img.png](image/http2.png)
+      2. Cache Control 처리
+         ![img.png](image/cache.png)
+      3. GZIP을 통한 압축
+         ![img.png](image/gzip.png)
+   2. 캐싱 처리
+      1. Line 조회, 수정, 삭제 캐싱처리
+      2. Station 조회, 삭제 캐싱 처리.
+      ![img.png](image/redis-cache.png)
+   3. Scale Out [2단계에서 로드밸런서 포함해서 테스트 해보겠습니다.]
 ---
 
 ### 2단계 - 스케일 아웃
