@@ -155,7 +155,11 @@ FROM hospital h
 - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
 - `hobby.png`
 ```sql
-SELECT count(*)
+SELECT c.id,
+       h.name,
+       p.hobby,
+       p.dev_type,
+       p.years_coding
 FROM hospital h
          INNER JOIN covid c ON h.id = c.hospital_id
          INNER JOIN programmer p ON p.id = c.programmer_id
@@ -164,6 +168,24 @@ WHERE p.hobby = 'Yes'
 ORDER BY p.id;
 ```
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- `covid_stay.png`
+```sql
+ALTER TABLE member ADD CONSTRAINT pk_member PRIMARY KEY(id);
+ALTER TABLE hospital ADD INDEX idx_hospital_name(name);
+ALTER TABLE member ADD INDEX idx_member_age(age);
+ALTER TABLE programmer ADD INDEX idx_programmer_country(country);
+
+SELECT c.stay,
+       COUNT(c.id)
+FROM hospital h
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+         INNER JOIN member m ON m.id = c.member_id
+WHERE h.name = '서울대병원'
+  AND m.age BETWEEN 20 AND 29
+  AND p.country = 'india'
+GROUP BY c.stay
+```
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ---
