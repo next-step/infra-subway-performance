@@ -94,29 +94,28 @@ $ stress -c 2
 # |2 |DERIVED    |employee  |NULL      |eq_ref|PRIMARY                          |PRIMARY                  |4      |tuning.manager.employee_id|1     |100     |NULL                                                     |
 # +--+-----------+----------+----------+------+---------------------------------+-------------------------+-------+--------------------------+------+--------+---------------------------------------------------------+
 
-select sql_no_cache                                                                                                                                                                                            e.last_name as 이름,
-       t.annual_income as 직급명,
-       t.position_name as 직급명,
-       r.time as 입출입시간,
-       r.region as 지역,
-       r.record_symbol 입출입구분
-from (
-         select annual_income, employee_id
-              , p.position_name
-         from department d
-                  inner join manager m on d.id = m.department_id
-                  inner join salary s on m.employee_id = s.id
-                  inner join position p on m.employee_id = p.id
-         where d.note = 'active'
-           and p.position_name='manager'
-           and p.end_date = STR_TO_DATE('9999-01-01', '%Y-%m-%d')
-           and m.end_date = STR_TO_DATE('9999-01-01', '%Y-%m-%d')
-           and s.end_date = STR_TO_DATE('9999-01-01', '%Y-%m-%d')
-         order by annual_income desc limit 5
-     ) t
-         join employee e on t.employee_id = e.id
-         join record r on t.employee_id = r.employee_id
-where r.record_symbol = 'O'
+select sql_no_cache
+        t.id as '사원번호',
+        t.name as '이름',
+        t.income as '연봉',
+        t.position_name as '직급명',
+        record.time as '입출입시간',
+        record.region as '지역',
+        record.record_symbol as '입출입구분'
+from
+   (
+      select employee.id as id, employee.last_name as name, salary.annual_income as income, position.position_name as position_name
+      from department
+              inner join manager on manager.department_id = department.id
+              inner join salary on salary.id = manager.employee_id
+              inner join employee on employee.id = manager.employee_id
+              inner join position on position.id = employee.id
+      where note = 'active' and manager.end_date = '9999-01-01' and salary.end_date = '9999-01-01' and position.end_date = '9999-01-01'
+      order by salary.annual_income desc limit 5
+   ) t
+      inner join record on record.employee_id = t.id
+where record.record_symbol = 'O';
+
                                                                                                                                                                                                                        [2022-12-23 00:41:09] [HY000][1681] 'SQL_NO_CACHE' is deprecated and will be removed in a future release.
 [2022-12-23 00:41:09] 14 rows retrieved starting from 1 in 387 ms (execution: 335 ms, fetching: 52 ms)
 ```
