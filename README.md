@@ -125,6 +125,24 @@ ORDER BY c.annual_income DESC;
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+```
+ALTER TABLE programmer ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
+ALTER TABLE programmer ADD INDEX idx_programmer_hobby(hobby);
+
+SELECT hobby,
+       ROUND((COUNT(id) / (SELECT COUNT(id) FROM programmer) * 100), 1) as rate
+FROM programmer
+GROUP BY hobby
+ORDER BY hobby DESC;
+
+```
+- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) (Coding as a Hobby.png)
+- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby,
+  user.DevType, user.YearsCoding)
+- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
 ---
 
 ### 추가 미션
