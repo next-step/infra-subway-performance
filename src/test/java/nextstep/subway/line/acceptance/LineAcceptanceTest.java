@@ -80,7 +80,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineCreateParams);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse1.as(LineResponse.class).getId());
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -148,11 +148,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(Long id) {
         return RestAssured.given().log().all().
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 when().
-                get("/lines").
+                get("/lines?id={id}", id).
                 then().
                 log().all().
                 extract();

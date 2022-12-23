@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +41,8 @@ public class LineService {
     }
 
     @Cacheable(value = "lines", unless = "#result.isEmpty()")
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses(Long id, Pageable pageable) {
+        List<Line> persistLines = lineRepository.findAll(id, pageable);
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
