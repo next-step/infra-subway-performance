@@ -247,29 +247,30 @@ order by s.annual_income desc
 limit 5;
 
 # 2. 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-select top5.employee_id   as 사원번호,
-       top5.employee_name as 이름,
-       top5.annual_income as 연봉,
-       top5.position_name as 직급명,
-       r.region           as 지역,
-       r.record_symbol    as 입출입구분,
-       r.time             as 입출입시간
-from (select m.employee_id,
-             concat(e.last_name, ' ', e.first_name) as employee_name,
-             s.annual_income,
-             p.position_name
-      from manager m
-             join salary s on m.employee_id = s.id
-             join position p on m.employee_id = p.id
-             join employee e on m.employee_id = e.id
-             join department d on d.id = m.department_id
-      where d.note = 'active'
-        and p.position_name = 'Manager'
-        and now() between m.start_date and m.end_date
-        and now() between s.start_date and s.end_date
-      order by s.annual_income desc
+select top5.employee_id                             as 사원번호,
+       concat(top5.last_name, ' ', top5.first_name) as 이름,
+       top5.annual_income                           as 연봉,
+       top5.position_name                           as 직급명,
+       record.region                                as 지역,
+       record.record_symbol                         as 입출입구분,
+       record.time                                  as 입출입시간
+from (select manager.employee_id,
+             employee.last_name,
+             employee.first_name,
+             salary.annual_income,
+             position.position_name
+      from manager manager
+             join salary salary on manager.employee_id = salary.id
+             join position position on manager.employee_id = position.id
+             join employee employee on manager.employee_id = employee.id
+             join department department on department.id = manager.department_id
+      where department.note = 'active'
+        and position.position_name = 'Manager'
+        and manager.end_date = '9999-01-01'
+        and now() between salary.start_date and salary.end_date
+      order by salary.annual_income desc
       limit 5) as top5
-       join record r on r.employee_id = top5.employee_id
+       join record record on record.employee_id = top5.employee_id
 where record_symbol = 'O';
 
 # [2022-12-22 03:01:18] 14 rows retrieved starting from 1 in 1 s 684 ms (execution: 1 s 669 ms, fetching: 15 ms)
@@ -291,6 +292,10 @@ where record_symbol = 'O';
 - indexing 전 = 실행시간 : **_1 s 669 ms_** (M1 칩 사용자)
 - indexing 후 = 실행시간 : **_23ms_** (M1 칩 사용자)
 
+
+#### 3단계 피드백
+- [x] manager.end_date의 경우 `9999-01-01` 로 조회 시 성능 개선의 여지가 있음
+- [x] 서브쿼리에서 concat을 적용하기보단, 최종 select 에서 작성 하는 것이 성능 개선의 여지가 있음
 
 ---
 
