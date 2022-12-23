@@ -41,11 +41,28 @@ npm run dev
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
+## 안정적인 서비스 만들기
+### 요구사항
+- [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
+  - [x] Reverse Proxy 개선
+    - [x] gzip 압축
+    - [x] cache
+    - [x] TLS, HTTP/2 설정
+  - [x] WAS 성능 개선
+    - [x] Spring Data Cache 적용
+- [x] 부하테스트 결과 첨부
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- `src/main/resources/load/` 폴더 결과 첨부
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+- Reverse Proxy 개선
+  - gzip 압축
+  - cache 적용
+  - TLS, HTTP/2 설정
+- WAS 성능 개선
+  - Spring Data Cache
 
 ---
 
