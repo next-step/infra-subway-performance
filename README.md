@@ -123,6 +123,8 @@ WHERE r.record_symbol = 'O'
 ORDER BY c.annual_income DESC
 ```
 
+- 실행계획
+![step3_실행계획.png](/src/main/resources/templates/step3_실행계획.png)
 
 
 ---
