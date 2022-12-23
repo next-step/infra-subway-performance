@@ -227,6 +227,70 @@ Cache-Control 정책 정의 알고리듬
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```mysql
+# 실행시간 : 1 s 669 ms (M1 칩 사용자)
+# 1. 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람
+select m.employee_id,
+       concat(e.last_name, ' ', e.first_name) as name,
+       s.annual_income,
+       p.position_name
+from manager m
+         join salary s on m.employee_id = s.id
+         join department d on d.id = m.department_id
+         join position p on m.employee_id = p.id
+         join employee e on m.employee_id = e.id
+where d.note = 'active'
+  and p.position_name = 'Manager'
+  and now() between m.start_date and m.end_date
+  and now() between s.start_date and s.end_date
+order by s.annual_income desc
+limit 5;
+
+# 2. 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+select top5.employee_id   as 사원번호,
+       top5.employee_name as 이름,
+       top5.annual_income as 연봉,
+       top5.position_name as 직급명,
+       r.region           as 지역,
+       r.record_symbol    as 입출입구분,
+       r.time             as 입출입시간
+from (select m.employee_id,
+             concat(e.last_name, ' ', e.first_name) as employee_name,
+             s.annual_income,
+             p.position_name
+      from manager m
+             join salary s on m.employee_id = s.id
+             join position p on m.employee_id = p.id
+             join employee e on m.employee_id = e.id
+             join department d on d.id = m.department_id
+      where d.note = 'active'
+        and p.position_name = 'Manager'
+        and now() between m.start_date and m.end_date
+        and now() between s.start_date and s.end_date
+      order by s.annual_income desc
+      limit 5) as top5
+       join record r on r.employee_id = top5.employee_id
+where record_symbol = 'O';
+
+# [2022-12-22 03:01:18] 14 rows retrieved starting from 1 in 1 s 684 ms (execution: 1 s 669 ms, fetching: 15 ms)
+```
+
+- Explain plan  
+
+![explain-plan.png](images/step3/explain-plan.png)
+
+### 추가) Index 튜닝
+- 현재 실행계획 상 가장 많은 비용이 발생하는 구간은 record 에 대한 인덱스가 적절히 걸려있지 않기 때문입니다.
+- record 의 employee_id 에 index 를 걸게 되면 실행 속도가 현저히 줄어듭니다.
+
+![add-index.png](images/step3/add-index.png)  
+![index-tuning-result.png](images/step3/index-tuning-result.png)  
+
+### 결론
+적절히 index 를 걸어 주면, 쿼리 속도가 드라마틱하게 개선될 수 있다.
+- indexing 전 = 실행시간 : **_1 s 669 ms_** (M1 칩 사용자)
+- indexing 후 = 실행시간 : **_23ms_** (M1 칩 사용자)
+
 
 ---
 
