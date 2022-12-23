@@ -588,12 +588,6 @@ default ✓ [======================================] 000/384 VUs  28m10s
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-<details open>
-<summary> sql </summary>
-
-* 쿼리 측정 시간 : 196ms   
-![img.png](src/main/resources/image/step3/sql_response_time.png)
-
 * sql query
 ```sql
 SELECT ST.id AS '사원번호'
@@ -620,9 +614,16 @@ INNER JOIN (
     LIMIT 5
 ) ST ON ST.id = r.employee_id AND r.record_symbol = 'o'
 ```
+쿼리 측정 시간 : 196ms
 
 * 실행계획 결과
-![실행계획](src/main/resources/image/step3/query_explain.png)
+  ![실행계획](src/main/resources/image/step3/query_explain.png)
+
+<details open>
+<summary> sql 측정 시간 </summary>
+ 
+![img.png](src/main/resources/image/step3/sql_response_time.png)
+
 </details>
 
 ---
