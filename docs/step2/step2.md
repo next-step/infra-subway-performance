@@ -8,10 +8,19 @@
 - [ ] Smoke, Load, Stress 테스트 후 결과를 기록
 
 
-- [ ] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
-- [ ] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
-- [ ] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
-
+- [x] 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+- [x] 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+- [x] 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  - no-store의 경우 캐시를 하지 않는다는 설정인데, no-cache는 매번 유효성을 확인한다는 설정이라서
+  <br>두 설정을 함께쓰는 의미가 없다고 생각합니다!
+  ```
+  * no-cache, no-store
+    - `no-cache`: 매 요청마다 `ETag`를 통해 자원의 유효성을 확인. Cache-Control의 `max-age=0`와 같음
+    - `no-store`: 자원을 캐시하지 않음
+  * private, public
+    - `public`: 중간 단계를 포함해 모든 캐시 서버에 캐시가 가능
+    - `private`: 요청한 사용자만 캐시할 수 있음
+  ```
 ---
 
 * Spring Boot에 컨테이너 설정 및 HTTP 캐싱 적용하기
