@@ -2,6 +2,7 @@ package nextstep.subway;
 
 import io.restassured.RestAssured;
 import nextstep.subway.utils.DatabaseCleanup;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,10 @@ public class AcceptanceTest {
             RestAssured.port = port;
             databaseCleanup.afterPropertiesSet();
         }
+    }
 
+    @AfterEach
+    public void cleanUp() {
         databaseCleanup.execute();
     }
 }

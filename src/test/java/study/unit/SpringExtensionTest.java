@@ -1,6 +1,11 @@
 package study.unit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
+import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -10,11 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import org.springframework.data.domain.Pageable;
 
 @DisplayName("단위 테스트 - SpringExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
@@ -27,11 +28,11 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAllLines(any(Pageable.class))).thenReturn(Lists.newArrayList(new Line()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLineResponses();
+        List<LineResponse> responses = lineService.findLineResponses(Pageable.unpaged());
 
         // then
         assertThat(responses).hasSize(1);
