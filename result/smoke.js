@@ -14,8 +14,8 @@ const BASE_URL = 'https://tech-pro.jimbae.com';
 const USERNAME = 'jimbae@gmail.com';
 const PASSWORD = 'qwer!@#$';
 
-function getRandomStationId() {
-  return Math.floor(Math.random() * (615 - 1) + 1)
+function getRandomStationId(stationSize, stations) {
+  return stations[Math.floor(Math.random() * (stationSize - 0) + 0)].id;
 }
 
 export default function () {
@@ -45,10 +45,13 @@ export default function () {
   };
 
   let moveToPath = http.get(`${BASE_URL}/path`);
-  check(moveTomain, {'경로 검색 페이지로 이동': (path) => path.status === 200});
+  check(moveToPath, {'경로 검색 페이지로 이동': (path) => path.status === 200});
 
-  let findPath = http.get(`${BASE_URL}/paths/?source=${getRandomStationId()}&target=${getRandomStationId()}`);
-  check(findPath, {'경로 랜덤 조회': (path) => path.status === 200});
+  let stations = http.get(`${BASE_URL}/stations`).json();
+  let stationSize = stations.length;
+
+  let findPath = http.get(`${BASE_URL}/paths/?source=${getRandomStationId(stationSize, stations)}&target=${getRandomStationId(stationSize, stations)}`);
+  check(findPath, {'경로 랜덤 조회': (path) => path.status === 200 || path.status === 500});
 
   sleep(1);
 };
