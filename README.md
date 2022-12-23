@@ -374,10 +374,89 @@ PRIMARY 키만 남겨두고 모든 인덱스를 DROP한 후에 시간 측정
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### covid index
+![covid_index](docs/step4/index/covid_index.png)
 
+#### hospital index
+![hospital_index](docs/step4/index/hospital_index.png)
+
+#### member index
+![member_index](docs/step4/index/member_index.png)
+
+#### programmer index
+![programmer_index](docs/step4/index/programmer_index.png)
 
 ---
+#### Coding as a Hobby 와 같은 결과를 반환하세요.
+```mysql
+SELECT hobby,
+       round((count(id) / (SELECT COUNT(id) FROM programmer) * 100), 1) AS rate
+FROM programmer
+GROUP BY hobby
+```
+##### 실행 시간
+![query1_time](docs/step4/time/query1_time.png)
+
+---
+
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```mysql
+SELECT covid.id, hospital.name
+FROM hospital
+       JOIN covid ON covid.hospital_id = hospital.id
+       JOIN programmer ON programmer.id = covid.programmer_id
+```
+##### 실행 시간
+![query2_time](docs/step4/time/query2_time.png)
+
+---
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.(covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```mysql
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+       JOIN covid c ON c.programmer_id = p.id
+       JOIN hospital h ON c.hospital_id = h.id
+WHERE p.hobby = 'YES'
+  AND (p.student LIKE 'Yes%' OR p.years_coding = '0-2%')
+```
+##### 실행 시간
+![query3_time](docs/step4/time/query3_time.png)
+
+---
+
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```mysql
+SELECT c.stay, COUNT(c.member_id)
+FROM hospital h
+       JOIN covid c ON c.hospital_id = h.id
+       JOIN member m ON c.member_id = m.id
+       JOIN programmer p ON m.id = p.member_id
+WHERE h.name LIKE '서울대병원'
+  AND p.country LIKE 'India'
+  AND m.age BETWEEN 20 AND 29
+GROUP BY c.stay
+```
+##### 실행 시간
+![query4_time](docs/step4/time/query4_time.png)
+
+---
+
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```mysql
+SELECT p.exercise, COUNT(c.member_id)
+FROM hospital h
+       JOIN covid c ON c.hospital_id = h.id
+       JOIN member m ON c.member_id = m.id
+       JOIN programmer p ON m.id = p.member_id
+WHERE h.name LIKE '서울대병원'
+  AND m.age BETWEEN 30 AND 39
+GROUP BY p.exercise
+```
+
+##### 실행 시간
+![query5_time](docs/step4/time/query5_time.png)
 
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   - addition.seogineer.kro.kr/stations/page/{id}
