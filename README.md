@@ -47,7 +47,7 @@ npm run dev
    - http_req_duration(avg) 기준
      - smoke : 21.42ms -> 4.21ms
      - load : 67.16ms -> 7.27ms
-     - stess : 914.32ms -> 87.82ms
+     - stess : 914.32ms -> 612.21ms
 
 <details>
 <summary>smoke.js</summary>
@@ -349,8 +349,8 @@ default ✓ [======================================] 00/14 VUs  29m10s
      data_sent......................: 194 MB  115 kB/s
      http_req_blocked...............: avg=33.71µs  min=136ns    med=308ns    max=472.33ms p(90)=393ns    p(95)=433ns
      http_req_connecting............: avg=2.28µs   min=0s       med=0s       max=125.2ms  p(90)=0s       p(95)=0s
-   ✓ http_req_duration..............: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
-       { expected_response:true }...: avg=87.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+   ✓ http_req_duration..............: avg=871.82ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
+       { expected_response:true }...: avg=612.21ms  min=675.69µs med=53.22ms  max=7.49s    p(90)=175.35ms p(95)=229.8ms
      http_req_failed................: 0.00%   ✓ 0           ✗ 2774892
      http_req_receiving.............: avg=734.29µs min=10.69µs  med=35.86µs  max=163.46ms p(90)=1.07ms   p(95)=2.35ms
      http_req_sending...............: avg=49.86µs  min=8.29µs   med=24.38µs  max=137.8ms  p(90)=44.34µs  p(95)=56.32µs
@@ -367,7 +367,7 @@ default ✓ [======================================] 00/14 VUs  29m10s
 
 
 <details>
-<summary>stress.js</summary>
+<summary>grafana</summary>
 
 - 개선 이전 grafana
   ![stress_grafana_before](src/main/resources/image/stress_grafana_before.png)
@@ -379,23 +379,207 @@ default ✓ [======================================] 00/14 VUs  29m10s
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
    - WEB 성능 개선 (nginx.conf 설정 수정)
      - gzip 압축
-     - cache 설정
+     - cache 설정(redis 이용)
      - http/2
+     
 
 ---
 
 ### 2단계 - 스케일 아웃
 
+* 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+* 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+* 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+  <details>
+  <summary> 가능한가? </summary>
+    HTTP의 스펙이 모든 상황을 완벽하게 대응하고 있지 못하기 때문에 no-cache 또는 no-store만으로는 캐시 무효화를 만족하지 못하는 상황이 있을 수 있습니다.
+    따라서 이러한 옵션들을 같이 설정할 수 있음
+  </details>
+
+
 1. Launch Template 링크를 공유해주세요.
+    - [바로가기](https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0a51deb0d23640730)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- cpu 부하를 주고 난 이후 오토스케일링으로 최대 5개까지 추가 생성되는 것을 확인했습니다.
+
+- http_req_duration(avg) 기준(서버 6대)
+  - smoke : 21.42ms -> 4.21ms(step1) -> 3.52ms(step2)
+  - load : 67.16ms -> 7.27ms(step1) -> 6.72ms(step2)
+  - stess : 914.32ms -> 612.21ms(step1) -> 161.7ms(step2)
+
+<details open>
+<summary>cloudwatch</summary>
+
+* autosacle server
+![img.png](src/main/resources/image/step2/autosacle_server.png)
+  * DNS 주소: yeojiin-alb-1510260166.ap-northeast-2.elb.amazonaws.com
+
+* cloudwatch_autoscales
+![cloudwatch](src/main/resources/image/step2/autoscale_monitoring.png)
+![인스턴스](src/main/resources/image/step2/instance_add.png)
+</details>
+
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+<details>
+<summary>smoke</summary>
+   
+* smoke.js
+```text
 
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: smoke.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 1 max VUs, 1m30s max duration (incl. graceful stop):
+           * default: 1 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+running (1m00.0s), 0/1 VUs, 2738 complete and 0 interrupted iterations
+default ✓ [======================================] 1 VUs  1m0s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✓ [Result] Login
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 100.00% ✓ 16428      ✗ 0
+     data_received..................: 19 MB   322 kB/s
+     data_sent......................: 973 kB  16 kB/s
+     http_req_blocked...............: avg=4.46µs  min=259ns    med=464ns   max=21.39ms  p(90)=595ns   p(95)=663ns
+     http_req_connecting............: avg=213ns   min=0s       med=0s      max=279.59µs p(90)=0s      p(95)=0s
+   ✓ http_req_duration..............: avg=3.52ms  min=537.03µs med=1.65ms  max=859.61ms p(90)=8.42ms  p(95)=9.62ms
+       { expected_response:true }...: avg=3.52ms  min=537.03µs med=1.65ms  max=859.61ms p(90)=8.42ms  p(95)=9.62ms
+     http_req_failed................: 0.00%   ✓ 0          ✗ 16428
+     http_req_receiving.............: avg=52.22µs min=24.26µs  med=45.47µs max=7.82ms   p(90)=66.54µs p(95)=75.04µs
+     http_req_sending...............: avg=38.96µs min=18.49µs  med=33.67µs max=4.45ms   p(90)=53.23µs p(95)=61.16µs
+     http_req_tls_handshaking.......: avg=2.99µs  min=0s       med=0s      max=11.77ms  p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=3.42ms  min=0s       med=1.56ms  max=859.48ms p(90)=8.32ms  p(95)=9.51ms
+     http_reqs......................: 16428   273.717028/s
+     iteration_duration.............: avg=21.9ms  min=15.39ms  med=19.95ms max=997.12ms p(90)=28.27ms p(95)=32.96ms
+     iterations.....................: 2738    45.619505/s
+     vus............................: 1       min=1        max=1
+     vus_max........................: 1       min=1        max=1
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/smoke_grafana.png)
+</details>
+
+
+<details>
+<summary>load</summary>
+
+* load.js
+```text
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+  execution: local
+     script: load.js
+     output: InfluxDBv1 (http://localhost:8086)
+
+  scenarios: (100.00%) 1 scenario, 14 max VUs, 29m40s max duration (incl. graceful stop):
+           * default: Up to 14 looping VUs for 29m10s over 12 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+running (29m10.0s), 00/14 VUs, 224983 complete and 0 interrupted iterations
+default ✓ [======================================] 00/14 VUs  29m10s
+
+     ✓ [Result] Main Page
+     ✓ [Result] Login Page
+     ✗ [Result] Login
+      ↳  0% — ✓ 0 / ✗ 224983
+     ✓ [Result] me
+     ✓ [Result] Path Page
+     ✓ [Result] Search Path
+
+     checks.........................: 83.33%  ✓ 1124915    ✗ 224983
+     data_received..................: 1.6 GB  907 kB/s
+     data_sent......................: 79 MB   45 kB/s
+     http_req_blocked...............: avg=13.55µs  min=145ns    med=423ns    max=48.23ms p(90)=537ns    p(95)=608ns
+     http_req_connecting............: avg=1.07µs   min=0s       med=0s       max=16.96ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=10.46ms  min=495.94µs med=7.1ms    max=1.05s   p(90)=24.26ms  p(95)=29.53ms
+       { expected_response:true }...: avg=6.72ms   min=495.94µs med=5.19ms   max=139.5ms p(90)=21.85ms  p(95)=26.43ms
+     http_req_failed................: 33.33%  ✓ 449966     ✗ 899932
+     http_req_receiving.............: avg=677.45µs min=10.52µs  med=169.97µs max=61.35ms p(90)=1.88ms   p(95)=3.03ms
+     http_req_sending...............: avg=112.32µs min=12.41µs  med=32.26µs  max=52.48ms p(90)=101.41µs p(95)=351.24µs
+     http_req_tls_handshaking.......: avg=10.96µs  min=0s       med=0s       max=44.58ms p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=9.67ms   min=0s       med=6.05ms   max=1.04s   p(90)=23.59ms  p(95)=28.89ms
+     http_reqs......................: 1349898 771.367257/s
+     iteration_duration.............: avg=64.84ms  min=10.97ms  med=46.15ms  max=1.12s   p(90)=142.33ms p(95)=165.96ms
+     iterations.....................: 224983  128.561209/s
+     vus............................: 1       min=1        max=14
+     vus_max........................: 14      min=14       max=14
+
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/load_grafana.png)
+</details>
+
+
+
+<details>
+<summary>stress</summary>
+
+* stress.js
+```text
+running (28m10.0s), 000/384 VUs, 238902 complete and 0 interrupted iterations
+default ✓ [======================================] 000/384 VUs  28m10s
+
+     ✗ [Result] Main Page
+      ↳  99% — ✓ 238834 / ✗ 68
+     ✗ [Result] Login Page
+      ↳  99% — ✓ 238860 / ✗ 42
+     ✗ [Result] Login
+      ↳  99% — ✓ 238858 / ✗ 44
+     ✓ [Result] me
+     ✗ [Result] Path Page
+      ↳  99% — ✓ 238747 / ✗ 61
+     ✗ [Result] Search Path
+      ↳  99% — ✓ 238770 / ✗ 38
+
+     checks.........................: 99.98%  ✓ 1432877    ✗ 253
+     data_received..................: 1.8 GB  1.1 MB/s
+     data_sent......................: 126 MB  74 kB/s
+     http_req_blocked...............: avg=12.5ms   min=0s       med=421ns    max=2.04s    p(90)=565ns    p(95)=703ns
+     http_req_connecting............: avg=561.87µs min=0s       med=0s       max=579.57ms p(90)=0s       p(95)=0s
+   ✓ http_req_duration..............: avg=161.76ms min=0s       med=107.38ms max=4.35s    p(90)=345.81ms p(95)=463.57ms
+       { expected_response:true }...: avg=161.7ms  min=558.28µs med=107.36ms max=4.35s    p(90)=345.66ms p(95)=463.17ms
+     http_req_failed................: 0.02%   ✓ 303        ✗ 1432877
+     http_req_receiving.............: avg=33.09ms  min=0s       med=13.86ms  max=762.44ms p(90)=94.58ms  p(95)=127.74ms
+     http_req_sending...............: avg=14.81ms  min=0s       med=36.86µs  max=4.27s    p(90)=324.88µs p(95)=1.7ms
+     http_req_tls_handshaking.......: avg=2.13ms   min=0s       med=0s       max=1.5s     p(90)=0s       p(95)=0s
+     http_req_waiting...............: avg=113.86ms min=0s       med=79.99ms  max=1.68s    p(90)=244.41ms p(95)=328.31ms
+     http_reqs......................: 1433180 848.012665/s
+     iteration_duration.............: avg=995ms    min=17.01ms  med=762.53ms max=8.62s    p(90)=2.16s    p(95)=2.57s
+     iterations.....................: 238902  141.358323/s
+     vus............................: 1       min=1        max=384
+     vus_max........................: 384     min=384      max=384
+```
+
+* grafana   
+  ![img.png](src/main/resources/image/step2/stress_grafana.png)
+</details>
 ---
 
 ### 3단계 - 쿼리 최적화
@@ -418,12 +602,11 @@ $ stress -c 2
 
 ---
 
-### 🚀 1단계 - 화면 응답 개선하기
 <details>
-<summary> </summary>
+<summary> 🚀 1단계 - 화면 응답 개선하기 </summary>
 
 #### 요구사항
-* [ ] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
+* [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
   * 개선 전 / 후를 직접 계측하여 확인
 
 #### 힌트
@@ -888,4 +1071,143 @@ const mainRoutes = [
   src: url(/fonts/BMHANNAPro.otf) format('woff2');
 }
 ```
+
+### 피드백
+- reverse proxy개선 후 부하 테스트, was개선 추가해서 부하 테스트를 진행 -> 어디서 성능 개선이 되었는지 파악 용이
+  - stress같은 경우에는 시스템의 한계치를 확인하는 테스트이기 때문에 VUser를 증가시키면서 한계를 확인하고 성능 개선 전과 비교했을 때 VUser가 얼마나 증가했는지 확인
+</details>
+
+---
+
+
+<details>
+<summary> 🚀 2단계 - 스케일 아웃 (with ASG)</summary>
+
+![img.png](src/main/resources/image/file/second-image-1.png)
+
+지금까지 단일 서버 구성에서 성능 개선을 진행해보았어요.   
+단일 사용자에게는 빠르지만 부하가 많아질 경우 속도가 느려질 경우, 확장성에 문제가 있는 경우로 부하분산이 필요합니다.   
+원활한 부하분산을 위해 시작 템플릿을 구성해고 Scale out을 해봅니다   
+
+
+#### * Spring Boot에 컨테이너 설정 및 HTTP 캐싱 적용하기
+소스코드는 Spring Boot 학습 저장소의 step1-container-http 브랜치 참고하시면 되어요
+- https://github.com/woowacourse/jwp-spring-boot
+  * git clone https://github.com/woowacourse/jwp-spring-boot
+  * git checkout -t origin/step1-container-http
+  
+* **캐싱 설정, 테스트 코드**
+  * myblog.WebMvcConfig: Spring Boot에서 캐싱, ETag 설정
+  * support.handlebars.BlogHandlebarsHelper: 캐싱 무효화를 위한 Handlerbars.java template engine Helper
+    * Helper가 사용된 곳은 src/main/resources/templates의 include/header.html에서 확인 가능합니다.
+  * myblog.web.StaticResourcesTest: 테스트 코드를 활용해 ETag 학습할 수 있어요.
+  
+* **미션 요구사항**
+  * 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+  * 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+  * 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+
+**Spring Boot에 gzip 설정하기**
+```
+# gzip 압축
+server.compression.enabled: true
+server.compression.mime-types: text/html,text/plain,text/css,application/javascript,application/json
+server.compression.min-response-size: 500
+```
+
+#### 요구사항
+* [x] springboot에 HTTP Cache, gzip 설정하기
+* [x] Launch Template 작성하기
+* [x] Auto Scaling Group 생성하기
+* [x] Smoke, Load, Stress 테스트 후 결과를 기록
+
+#### 힌트
+아래 설정들은 자신의 상황에 맞게 세팅합니다. 이미지의 정보는 단순 예시입니다.
+
+1. 배포 스크립트 업로드
+![img.png](src/main/resources/image/file/second-imgae-2.png)
+   * S3 의 nextstep-camp-pro 버킷에 배포 스크립트를 업로드합니다.
+
+2. Launch Template 작성하기
+  * Auto Scaling Group에서 자동으로 생성할 EC2 템플릿을 생성합니다.
+  1. ubuntu 이미지 선택
+![img.png](src/main/resources/image/file/second-image-3.png)
+  * 이미지는 최신 버전이 보안상 안전합니다.
+
+  2. EC2 설정
+![img.png](src/main/resources/image/file/second-image-4.png)
+  * 인스턴스 유형, Key pair, 서브넷, 보안그룹 등을 `WAS에 적용할 정책`을 설정합니다.
+
+  3. IAM 권한 설정
+![img.png](src/main/resources/image/file/second-image-5.png)
+  * 배포 스크립트를 받기 위해서는 EC2에서 S3로 접근 가능해야 합니다.
+  * 사전에 강사가 생성해둔 IAM 역할 `ec2-s3-api` 을 설정합니다.
+
+  4. 배포 명령어 설정
+![img.png](src/main/resources/image/file/second-image-6.png)
+  * EC2가 정상적으로 실행된 후에 동작해야 할 명령어들을 입력합니다.
+  ```
+  #!/bin/bash
+
+sudo apt-get update
+sudo apt install unzip 
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+sudo -i -u ubuntu aws s3 cp s3://nextstep-camp-pro/[자신의스크립트] /home/ubuntu
+sudo -i -u ubuntu chmod 755 /home/ubuntu/[자신의스크립트] 
+sudo -i -u ubuntu /bin/bash /home/ubuntu/[자신의스크립트] 
+
+  ```
+
+3. Auto Scaling Group 생성
+   1. Launch Template 설정
+   ![img.png](src/main/resources/image/file/second-image-7.png)
+  * Launch Template 보안 패치 등의 이유로 버전이 바뀐다면 추후 Auto scaling group 상 템플릿 버전만 바꿔도 보안 패치가 이루어집니다.
+  
+  2. 네트워크 설정
+![img.png](src/main/resources/image/file/second-image-8.png)
+  * 자신의 VPC 인지 다시 확인합니다. 설정되어 있지 않다면, 여기서 설정합니다.
+  * WAS 용도로 사용할 예정이므로 외부망 2개 서브넷을 설정해줍니다.
+
+  3. 로드밸런서 생성
+![img.png](src/main/resources/image/file/second-image-12.png)
+     * EC2 앞단에 부하분산 용도의 로드밸런서를 생성합니다.
+     * Application Load Balancer 로 생성해야 이 후 WAF 등을 추가할 수 있습니다.
+
+  4. 타겟 대상 생성
+     ![img.png](src/main/resources/image/file/second-image-9.png)
+     * 로드밸런서의 트래픽을 전달할 대상그룹을 생성합니다.
+     * 우리가 앞서 작성해둔 LaunchTemplate을 통해 생성되는 EC2 인스턴스가 타겟 대상 그룹에 속하게 됩니다. 
+
+  5. 그룹 크기 설정
+  ![img.png](src/main/resources/image/file/second-image-10.png)
+     * 생성하길 희망하는 EC2 인스턴스 갯수, 최소 갯수, 최대 갯수 등을 설정합니다. 사용하지 않는다면 0으로 두어도 좋습니다.
+
+  6. 임계값 설정
+![img.png](src/main/resources/image/file/second-image-11.png)
+     * CPU 사용률, 네트워크 트래픽 등 특정 지표가 임계값에 이르면 EC2 인스턴스를 증설하도록 구성할 수 있어요.
+
+  7. 종료 정책 구성
+![img.png](src/main/resources/image/file/second-image-13.png)
+
+* 이 정책은 Auto Scaling Group 을 생성한 후에 편집을 통해 설정할 수 있어요.
+* 기본 정책으로 둔다면, 그룹 크기를 줄일 때 임의로 서버를 종료시킵니다.
+* Launch Template 버전, 오래전에 생성된 인스턴스 순으로 먼저 종료시키도록 종료 정책을 구성해봅니다.
+
+4. DNS 설정
+이제 DNS에는 CNAME으로 ALB도메인을 설정합니다.
+
+5. TLS설정하기
+기존에 생성한 인증서를 ACM에 가져옵니다.
+![img.png](src/main/resources/image/file/second-image-15.png)
+BEGIN CERTIFICATE와 END CERTIFICATE 까지 포함하여야 합니다.
+   * 인증서 본문 -> cert.pem
+   * 프라이빗 키 -> privkey.pem
+   * 체인 -> chain.pem
+
+* ALB에 인증서 적용하기
+![img.png](src/main/resources/image/file/second-image-14.png)
+
 </details>
