@@ -21,6 +21,10 @@ const BASE_URL = 'https://tech-pro.jimbae.com';
 const USERNAME = 'jimbae@gmail.com';
 const PASSWORD = 'qwer!@#$';
 
+function getRandomStationId() {
+  return Math.floor(Math.random() * (615 - 1) + 1)
+}
+
 export default function () {
 
   var payload = JSON.stringify({
@@ -34,25 +38,24 @@ export default function () {
     },
   };
 
+  let moveTomain = http.get(`${BASE_URL}`);
+  check(moveTomain, {'메인페이지로이동': (main) => main.status === 200});
+
   let loginRes = http.post(`${BASE_URL}/login/token`, payload, params);
-
   check(loginRes, {
-    'logged in successfully': (resp) => resp.json('accessToken') !== '',
+    '로그인 진행': (resp) => resp.json('accessToken') !== '',
   });
-
   let authHeaders = {
     headers: {
       Authorization: `Bearer ${loginRes.json('accessToken')}`,
     },
   };
-  let myObjects = http.get(`${BASE_URL}/members/me`, authHeaders).json();
-  check(myObjects, {'retrieved member': (obj) => obj.id != 0});
 
-  let line = http.get(`${BASE_URL}/lines/1`, authHeaders);
-  check(line, {'find path': (line) => line.status === 200});
+  let moveToPath = http.get(`${BASE_URL}/path`);
+  check(moveTomain, {'경로 검색 페이지로 이동': (path) => path.status === 200});
 
-  let main = http.get(`${BASE_URL}`);
-  check(main, {'retrieved main': (main) => main.status === 200});
+  let findPath = http.get(`${BASE_URL}/paths/?source=${getRandomStationId()}&target=${getRandomStationId()}`);
+  check(findPath, {'경로 랜덤 조회': (path) => path.status === 200});
 
   sleep(1);
 };
