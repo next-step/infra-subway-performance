@@ -216,8 +216,23 @@ WHERE h.name = '서울대병원'
 GROUP BY c.stay;
 ```
 
-- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+```sql
+/**
+  5 rows
+  0.142 sec (m1)
+ */
+SELECT p.exercise, count(1)
+FROM hospital h
+       INNER JOIN COVID C ON C.HOSPITAL_ID = H.ID
+       INNER JOIN PROGRAMMER P ON P.ID = C.PROGRAMMER_ID
+       INNER JOIN member m on m.id = p.member_id
+WHERE m.age BETWEEN 30 AND 39
+  AND h.name = '서울대병원'
+GROUP BY p.exercise
+
+``` 
 ---
 
 ### 추가 미션
