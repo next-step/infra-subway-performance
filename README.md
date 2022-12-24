@@ -88,7 +88,39 @@ $ stress -c 2
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
+SELECT
+active_dept_top5_manager.employee_id AS 사원번호,
+CONCAT(employee.first_name, ' ', employee.last_name) AS 이름,
+active_dept_top5_manager.annual_income AS 연봉,
+position.position_name AS 직급명,
+record.region AS 지역,
+record.record_symbol AS 입출입구분,
+record.time AS 입출입시간
+from
+(SELECT
+employee_department.employee_id AS employee_id,
+salary.annual_income
+FROM employee_department, department, salary, manager
+WHERE 1=1
+AND department.id = employee_department.department_id
+AND manager.employee_id = employee_department.employee_id
+AND salary.id = employee_department.employee_id
+AND salary.start_date < now()
+AND now() < salary.end_date
+AND manager.start_date < now()
+AND now() < manager.end_date
+AND UPPER(department.note) = 'ACTIVE'
+order by salary.annual_income desc limit 5) active_dept_top5_manager
+INNER JOIN employee ON active_dept_top5_manager.employee_id = employee.id
+INNER JOIN position ON active_dept_top5_manager.employee_id = position.id
+INNER JOIN record ON active_dept_top5_manager.employee_id = record.employee_id
+WHERE 1=1
+AND record.record_symbol = 'O'
+AND UPPER(position.position_name) = 'MANAGER';
+
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+
+- 프로젝트 루트디렉토리에 workbench.png 수행결과 넣어두었습니다!
 
 ---
 
