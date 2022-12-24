@@ -141,8 +141,8 @@ FROM (SELECT emp.id AS 'id', emp.last_name AS 'last_name', sal.annual_income AS 
       WHERE dep.note = 'ACTIVE'
         AND man.end_date = '9999-01-01'
         AND sal.end_date = '9999-01-01'
-        AND pos.end_date = '9999-01-01' 
-        LIMIT 5) inline
+        AND pos.end_date = '9999-01-01'
+      ORDER BY sal.annual_income DESC LIMIT 5) inline
          INNER JOIN
      record rec ON rec.employee_id = inline.id
 WHERE rec.record_symbol = 'O';
