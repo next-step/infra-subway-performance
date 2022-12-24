@@ -150,25 +150,29 @@ registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion()
     select mem.id            사원번호,
            mem.last_name     이름,
            mem.annual_income 연봉,
-           'Manager'         직급명,
+           mem.position_name 직급명,
            r.time            입출국시간,
            r.region          지역,
            r.record_symbol   입출국구분
     from record r
              inner join (select e.id,
                                 e.last_name,
-                                s.annual_income
+                                s.annual_income,
+                                p.position_name
                          from employee e
                                   inner join employee_department ed on e.id = ed.employee_id
                                   inner join department d on ed.department_id = d.id
                                   inner join manager m on d.id = m.department_id and e.id = m.employee_id
                                   inner join salary s on s.id = e.id
+                                  inner join position p on p.id = e.id
                          where d.note = 'active'
-                           and m.end_date > now()
-                           and ed.end_date > now()
-                           and s.end_date > now()
+                           and m.end_date > now()  and m.start_date <= now()
+                           and ed.end_date > now() and ed.start_date <= now()
+                           and s.end_date > now()  and s.start_date <= now()
+                           and p.end_date > now() and s.start_date <= now()
+                           and p.position_name = 'Manager'
                          order by annual_income desc
-                         limit 5) as mem on r.employee_id = mem.id
+                             limit 5) as mem on r.employee_id = mem.id
     where record_symbol = 'O'
     ```
 - 실행결과
