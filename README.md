@@ -176,9 +176,17 @@ WHERE r.record_symbol = 'O';
 #### 인덱스 적용 전
 - 1, 2 는 5초 이내 수행
 - 3, 4, 5는 30초 이상이 소요
-
+- ![before_1.png](step4/before_1.png)
+- ![before_1.png](step4/before_2.png)
+- ![before_1.png](step4/before_3.png)
+- ![before_1.png](step4/before_4.png)
+- ![before_1.png](step4/before_5.png)
 #### 인덱스 적용 후
-
+- ![after_1.png](step4/after_1.png)
+- ![after_2.png](step4/after_2.png)
+- ![after_3.png](step4/after_3.png)
+- ![after_4.png](step4/after_4.png)
+- ![after_5.png](step4/after_5.png)
 - Coding as Hobby
 ```sql
 ALTER TABLE programmer
