@@ -288,6 +288,21 @@ ORDER BY p.id;
 
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
+```sql
+-- 0.189 sec / 0.000012 sec
+select c.stay, count(c.stay)
+from (select id, member_id from programmer where country = 'India') as indian
+         join (select id from member where age between 20 and 29) as twenties
+              on twenties.id = indian.member_id
+         join (select id, hospital_id, member_id, stay from covid) c
+              on twenties.id = c.member_id
+         join (select id from hospital where name = '서울대병원') as h
+              on c.hospital_id = h.id
+group by c.stay;
+```
+
+![실행계획](performance/index/after/4-after.png)
+
 #### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
 ---
