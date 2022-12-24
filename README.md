@@ -56,15 +56,70 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+- 배포 스크립트 : https://s3.console.aws.amazon.com/s3/object/nextstep-camp-pro?region=ap-northeast-2&prefix=cylee9409_deploy.sh
+- Launch Template : https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-021bb0785927bc81b
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- test_result_auto-scaling 디렉토리에 CloudWatch 캡쳐 추가했습니다.
 
+시나리오에 따른 vUser
+- 평소 vUser : 65
+- 최대 vUSer : 75
+- auto-scaling 적용 전 에러 없이 수행되는 vUser 수 (stress.js 기준) : 75
+- auto-scaling 적용 후 에러 없이 수행되는 vUser 수 (stress.js 기준) : 200
+
+기존 stress.js 부하테스트에서는 기존 웹 성능 예상에서 산출한 최대 vUser 99명을 적용한 경우, 
+request block 이 여러 차례 발생하여 에러가 발생하지 않는 최대 치인 75 vUser 기준으로 테스트를 수행하였습니다.
+하지만 auto-scaling 적용 후 instance 를 평소 2개 최대 4개로 설정한 기준으로 수행하였을 때 vUser 200 까지 에러없이 수행 가능해졌습니다.
+
+- auto-scaling 적용 전
 ```sh
-$ stress -c 2
+
+
+export let options = {
+
+        stages: [
+
+                { duration: '1m' , target: 75 },
+                { duration: '5m' , target: 75 },
+                { duration: '10m', target: 75 },
+                { duration: '1m' , target: 0  }
+        ],
+
+        thresholds: {
+                      http_req_duration: ['p(99)<500'],
+                    },
+};
+
+
+```
+
+- auto-scaling 적용 후
+```sh
+
+
+export let options = {
+
+        stages: [
+
+                { duration: '1m' , target: 99 },
+                { duration: '5m' , target: 99 },
+                { duration: '10m', target: 99 },
+                { duration: '3m' , target: 150},
+                { duration: '3m' , target: 200},
+                { duration: '1m' , target: 0  }
+        ],
+
+        thresholds: {
+                      http_req_duration: ['p(99)<500'],
+                    },
+};
+
+
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+- test_result_auto-scaling 디렉토리에 결과 추가했습니다.
 ---
 
 ### 3단계 - 쿼리 최적화
