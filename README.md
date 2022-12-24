@@ -140,7 +140,7 @@ on programmer (hobby);
 
 ```sql
 select h.hobby, count(1) / (select count(1) from programmer) * 100 as percent
-from (select hobby from programmer) h
+from programmer h
 group by hobby;
 ```
 
