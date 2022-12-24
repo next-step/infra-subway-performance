@@ -367,6 +367,7 @@ ORDER by hobby DESC;
   - 쿼리 수행 시간: 4ms
  */
 CREATE INDEX idx_covid_hospital_id ON covid(hospital_id);
+CREATE UNIQUE INDEX idx_programmer_id ON programmer(id);
 
 SELECT programmer_id, hospital.name
 FROM hospital
@@ -382,26 +383,26 @@ FROM hospital
 ```sql
 /*
   - covid 테이블에 id unique index 추가
-  - 쿼리수행시간: 9.1ms
+  - 쿼리수행시간: 30ms
  */
 CREATE UNIQUE INDEX idx_covid_id ON covid(id);
-SELECT covid.programmer_id,
+
+SELECT covid.id,
        hospital.name,
        user.hobby,
        user.dev_type,
        user.years_coding
 FROM
-  (
-    SELECT id, years_coding, hobby, student, dev_type
-    FROM programmer
-    WHERE
-      (hobby = 'Yes' AND student like 'Yes%')
-       OR
-      years_coding like '0-2 years'
-  ) user 
-INNER JOIN covid ON user.id = covid.programmer_id
-INNER JOIN hospital ON covid.hospital_id = hospital.id
-;
+    (
+        SELECT id, years_coding, hobby, student, dev_type
+        FROM programmer
+        WHERE
+            (hobby = 'Yes' AND student like 'Yes%')
+           OR
+            years_coding like '0-2 years'
+    ) user 
+INNER JOIN (SELECT id, hospital_id FROM covid ORDER BY id ) covid ON user.id = covid.id
+    INNER JOIN hospital ON covid.hospital_id = hospital.id
 ;
 ```
 ![img](img/step4-2-result.png)
@@ -454,33 +455,38 @@ WHERE covid.hospital_id = hospital.id;
 - covid.member_id 에 index 추가시 100ms -> 50ms
   */
 
-CREATE UNIQUE INDEX idx_programmer_id ON programmer(id);
-CREATE UNIQUE INDEX idx_covid_member_id ON covid(member_id);
+-- INDEX: hospital
+CREATE INDEX idx_hospital_name ON hospital(name);
+-- INDEX: member
+CREATE UNIQUE INDEX idx_member_id ON member(id);
+CREATE INDEX idx_member_age ON member(age);
+-- INDEX: programmer
+CREATE INDEX idx_programmer_member_id ON programmer(member_id);
+-- INDEX: covid
+CREATE INDEX idx_covid_member_id ON covid(member_id);
+CREATE INDEX idx_covid_hospital_id ON covid(hospital_id);
 
 SELECT stay, count(stay)
 FROM (
-       SELECT id
-       FROM
-         (
-           SELECT id, age FROM member WHERE age BETWEEN 20 AND 29
-         ) member,
-         (
-           SELECT member_id FROM programmer WHERE country = 'India'
-         ) india
-       WHERE member.id = india.member_id ) member,
-     (
-       SELECT member_id, stay
-       FROM
-         (
-           SELECT hospital_id, member_id, stay FROM covid
-         ) covid,
-         (
-           SELECT id FROM hospital WHERE name = '서울대병원'
-         ) hospital
-       WHERE covid.hospital_id = hospital.id
-     ) hospital
-WHERE member.id = hospital.member_id
+         SELECT id
+         FROM
+             (
+                 SELECT id, age FROM member WHERE age BETWEEN 20 AND 29
+             ) member,
+             (
+                 SELECT member_id FROM programmer WHERE country = 'India'
+             ) india
+         WHERE member.id = india.member_id
+     ) member
+         INNER JOIN covid 
+             ON member.id = covid.member_id
+         INNER JOIN
+             (
+                 SELECT id FROM hospital WHERE name = '서울대병원'
+             ) hospital
+            ON covid.hospital_id = hospital.id
 GROUP BY stay
+ORDER BY NULL
 ;
 ```
 ![img](img/step4-3-result.png)
@@ -526,26 +532,38 @@ WHERE programmer.member_id = member.id
 - 드라이빙 테이블을 모수가 적은 member와 조인된 hospital로 지정
 - programmer.exercise Index 추가 후, 20ms -> 40ms 개선
 */
+-- 추가한 모든 인덱스
+---- INDEX: hospital
+CREATE INDEX idx_hospital_name ON hospital(name);
+CREATE UNIQUE INDEX idx_hospital_id ON hospital(id);
+---- INDEX: member
+CREATE UNIQUE INDEX idx_member_id ON member(id);
+CREATE INDEX idx_member_age ON member(age);
+---- INDEX: programmer
+CREATE INDEX idx_programmer_member_id ON programmer(member_id);
 CREATE INDEX idx_programmer_exercise ON programmer(exercise);
+---- INDEX: covid
+CREATE INDEX idx_covid_member_id ON covid(member_id);
+CREATE INDEX idx_covid_hospital_id ON covid(hospital_id);
 
 SELECT exercise, count(exercise) as exercise_count
 FROM (
          SELECT member_id, exercise
          FROM programmer
      ) programmer
-         INNER JOIN (
-                        SELECT member_id
-                        FROM covid, ( SELECT id FROM hospital WHERE name = '서울대병원') hospital
-                        WHERE covid.hospital_id = hospital.id
-                    ) covid
-        ON covid.member_id = programmer.member_id
-    INNER JOIN (
-                    SELECT id, age
-                    FROM member
-                    WHERE age BETWEEN 30 AND 39
-                ) member
-    ON programmer.member_id = member.id
-GROUP BY exercise
+INNER JOIN (
+    SELECT member_id
+    FROM covid, ( SELECT id FROM hospital WHERE name = '서울대병원') hospital
+    WHERE covid.hospital_id = hospital.id
+) covid
+ON covid.member_id = programmer.member_id
+INNER JOIN (
+    SELECT id, age
+    FROM member
+    WHERE age BETWEEN 30 AND 39
+) member
+ON programmer.member_id = member.id
+GROUP BY exercise;
 ```
 ![img](img/step4-4-result.png)
 ![img](img/step4-4-lessthan-1s.png)
