@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
+
     @Query("SELECT l FROM Line l WHERE l.id >= :id")
     List<Line> findAll(@Param("id") Long id, Pageable pageable);
 }

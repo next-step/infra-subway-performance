@@ -1,6 +1,6 @@
 package nextstep.subway.common;
 
-import nextstep.subway.common.version.SubwayVersion;
+import nextstep.subway.common.supprot.version.SubwayVersion;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
