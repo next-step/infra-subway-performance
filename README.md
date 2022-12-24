@@ -765,6 +765,26 @@ INNER JOIN (
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 
+- https://yeojiin-subway.o-r.kr/stations?id=1&size=5
+- https://yeojiin-subway.o-r.kr/lines?id=1&size=5
+
+<details open>
+<summary> replication, pagng 적용 결과 스냅샷 </summary>
+
+- line paging
+![노선 페이징](src/main/resources/image/plus/line_paging.png)
+- stations paging
+![역_페이징](src/main/resources/image/plus/stations_paging.png)
+
+- master/slave line table
+![master and slave line](src/main/resources/image/plus/master_and_slave_line.png)
+
+- master/slave station table
+![master and slave stations](src/main/resources/image/plus/master_and_slave_station.png)
+
+
+</details>
+
 ---
 
 <details>
