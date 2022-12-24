@@ -106,10 +106,10 @@ FROM (SELECT m.employee_id,
              s.annual_income,
              p.position_name
       FROM manager m
-               JOIN department d ON d.id = m.department_id
-               JOIN position p ON p.id = m.employee_id
-               JOIN employee e ON e.id = m.employee_id
-               JOIN salary s ON s.id = e.id
+               INNER JOIN department d ON d.id = m.department_id
+               INNER JOIN position p ON p.id = m.employee_id
+               INNER JOIN employee e ON e.id = m.employee_id
+               INNER JOIN salary s ON s.id = e.id
       WHERE d.note = 'active'
         AND p.position_name = 'manager'
         AND NOW() BETWEEN m.start_date AND m.end_date
@@ -125,7 +125,80 @@ ORDER BY c.annual_income DESC;
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
----
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+- `Coding as a Hobby.png`
+```sql
+ALTER TABLE programmer ADD CONSTRAINT pk_programmer PRIMARY KEY (id);
+ALTER TABLE programmer ADD INDEX idx_programmer_hobby(hobby);
+
+SELECT hobby,
+       ROUND((COUNT(id) / (SELECT COUNT(id) FROM programmer) * 100), 1) as rate
+FROM programmer
+GROUP BY hobby
+ORDER BY hobby DESC;
+
+```
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name) 
+- `hospital_name.png`
+```sql
+ALTER TABLE hospital ADD CONSTRAINT pk_hospital PRIMARY KEY(id);
+ALTER TABLE covid ADD CONSTRAINT pk_covid PRIMARY KEY(id);
+ALTER TABLE covid ADD INDEX idx_covid_programmer_id(programmer_id);
+ALTER TABLE covid ADD INDEX idx_covid_hospital_id(hospital_id);
+
+SELECT c.id, 
+       h.name
+FROM hospital h
+         INNER JOIN covid c ON h.id = c.hospital_id
+         INNER JOIN programmer p ON c.programmer_id = p.id;
+```
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding) 
+- `hobby.png`
+```sql
+SELECT c.id,
+       h.name,
+       p.hobby,
+       p.dev_type,
+       p.years_coding
+FROM hospital h
+         INNER JOIN covid c ON h.id = c.hospital_id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+WHERE p.hobby = 'Yes'
+  AND (p.years_coding = '0-2 years' OR p.student LIKE 'yes%')
+ORDER BY p.id;
+```
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- `covid_stay.png`
+```sql
+ALTER TABLE member ADD CONSTRAINT pk_member PRIMARY KEY(id);
+ALTER TABLE hospital ADD INDEX idx_hospital_name(name);
+ALTER TABLE member ADD INDEX idx_member_age(age);
+ALTER TABLE programmer ADD INDEX idx_programmer_country(country);
+
+SELECT c.stay,
+       COUNT(c.id)
+FROM hospital h
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+         INNER JOIN member m ON m.id = c.member_id
+WHERE h.name = '서울대병원'
+  AND m.age BETWEEN 20 AND 29
+  AND p.country = 'india'
+GROUP BY c.stay
+```
+- [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+- `user_exercise.png`
+```sql
+SELECT p.exercise,
+       COUNT(p.id)
+FROM hospital h
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+         INNER JOIN member m ON m.id = c.member_id
+WHERE h.name = '서울대병원'
+  AND m.age BETWEEN 30 AND 39
+GROUP BY p.exercise;
+```
 
 ### 추가 미션
 
