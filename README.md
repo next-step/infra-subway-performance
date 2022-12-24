@@ -115,8 +115,92 @@ where record.record_symbol = 'O';
 
 ### 4단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요<br>
+- [ ] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+- [ ] M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 
+- 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+#### 1-2 Coding as a Hobby 와 같은 결과를 반환하세요.
+```sql
+# 인덱스 설정전 : 1s 691ms 
+# 인덱스 설정후 : 65ms
+select hobby, round((count(1) / (select count(id) from programmer) * 100), 2) as is_coding
+from programmer
+group by hobby;
 
+ALTER TABLE programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+CREATE INDEX programmer_hobby_index ON programmer (hobby);
+
+```
+
+#### 1-2 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+# 인덱스 설정전 : 227ms
+# 인덱스 설정후 : 16ms
+SELECT 
+    c.id, 
+    h.name
+FROM hospital h
+         INNER JOIN covid c ON h.id = c.hospital_id
+         INNER JOIN programmer p ON c.programmer_id = p.id;
+
+ALTER TABLE hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+CREATE INDEX covid_programmer_id_index ON covid (programmer_id);
+
+```
+#### 1-3 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+# 인덱스 설정전 : 16ms
+SELECT covid.id,
+       hospital.NAME,
+       student.hobby,
+       student.dev_type,
+       student.years_coding
+FROM covid
+         INNER JOIN hospital ON covid.hospital_id = hospital.id
+         INNER JOIN (SELECT id,
+                            years_coding,
+                            hobby,
+                            dev_type
+                     FROM programmer
+                     WHERE hobby = 'Yes'
+                       AND (years_coding = '0-2 years'
+                         OR student IN ('Yes, full-time',
+                                        'Yes, part-time'))) student
+                    ON covid.programmer_id = student.id
+ORDER BY student.id;
+
+```
+#### 1-4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+# 인덱스 설정전 : 1s 710ms
+# 인덱스 설정후 : 1s 80ms
+SELECT c.stay,
+       COUNT(c.id) AS count
+FROM member m
+         INNER JOIN covid c ON m.id = c.member_id AND m.age BETWEEN 20 AND 29
+         INNER JOIN hospital h ON c.hospital_id = h.id AND h.`name` = '서울대병원'
+         INNER JOIN programmer p ON p.id = c.programmer_id AND p.country = 'India'
+GROUP BY c.stay;
+
+ALTER TABLE covid ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+CREATE INDEX covid_hospital_id_index ON covid (hospital_id);
+```
+#### 1-5 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+```sql
+# 인덱스 설정전 : 8s 407ms
+# 인덱스 설정후 : 726ms
+SELECT exercise,
+       Count(*)
+FROM   programmer
+          INNER JOIN covid ON programmer.id = covid.programmer_id
+          INNER JOIN hospital ON covid.hospital_id = hospital.id AND hospital.NAME = '서울대병원'
+          INNER JOIN member ON covid.member_id = member.id AND member.age BETWEEN 30 AND 39
+GROUP  BY exercise;
+
+ALTER TABLE member ADD CONSTRAINT member_pk PRIMARY KEY (id);
+CREATE INDEX covid_member_id_index ON covid (member_id);
+
+```
 ---
 
 ### 추가 미션
