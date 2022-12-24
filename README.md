@@ -116,6 +116,30 @@ $ stress -c 2
 - [x] Auto Scaling Group 생성하기
 - [x] Smoke, Load, Stress 테스트 후 결과를 기록
 
+### 미션 요구사항
+미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- no-cache
+  - 캐시를 하지말라는 것이아니라 캐싱된 복사본을 사용자에게 보여주기 이전에, 재검증을 위한 요청을 원 서버로 보내도록 강제 복사본을 사용해도 되는지 확인을 하라는 옵션입니다.
+- no-store
+  - 클라이언트 요청 혹은 서버 응답에 관해서 어떤 것도 캐싱하지 않습니다.
+- must-revalidate
+  - 캐시는 사용하기 이전에 기존 리소스의 상태를 반드시 확인하고 만료된 리소스는 사용하지 않습니다.
+
+no-store 옵션만으로도 캐시가 무효화되어야 하는것이 맞으나, 버그 및 구버전과의 호한성을 위해 위 3가지 옵션을 함께 가져갑니다. 아래와 같이 설정하면 가능하다고 생각합니다!
+
+```java
+registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
+        .addResourceLocations("classpath:/static/")
+        .setCacheControl(CacheControl.noCache().cachePrivate())
+        .setCacheControl(CacheControl.noStore().mustRevalidate());
+```
+
+- 참고
+  - [how-do-we-control-web-page-caching-all-browsers](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
+  - [no-store 로도 충분할 것 같은데...](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94#84841)
+  - [Cache-Control](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Cache-Control)
 ---
 ### 3단계 - 쿼리 최적화
 

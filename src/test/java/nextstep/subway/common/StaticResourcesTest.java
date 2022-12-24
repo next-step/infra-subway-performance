@@ -5,8 +5,6 @@ import static nextstep.subway.common.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.CacheControl;
@@ -15,7 +13,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StaticResourcesTest {
-    private static final Logger logger = LoggerFactory.getLogger(StaticResourcesTest.class);
 
     @Autowired
     private WebTestClient client;
@@ -36,8 +33,6 @@ public class StaticResourcesTest {
                 .cacheControl(CacheControl.noCache().cachePrivate())
                 .expectBody(String.class)
                 .returnResult();
-
-        logger.debug("body : {}", response.getResponseBody());
 
         String etag = response.getResponseHeaders()
                 .getETag();
@@ -64,7 +59,6 @@ public class StaticResourcesTest {
                 .expectBody(String.class)
                 .returnResult();
 
-        logger.debug("body : {}", response.getResponseBody());
 
         String etag = response.getResponseHeaders()
                 .getETag();
@@ -91,7 +85,6 @@ public class StaticResourcesTest {
                 .expectBody(String.class)
                 .returnResult();
 
-        logger.debug("body : {}", response.getResponseBody());
 
         String etag = response.getResponseHeaders()
                 .getETag();
