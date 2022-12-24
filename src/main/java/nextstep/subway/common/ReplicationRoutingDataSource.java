@@ -4,8 +4,8 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
-    protected static final String DATASOURCE_KEY_MASTER = "master";
-    protected static final String DATASOURCE_KEY_SLAVE = "slave";
+    public static final String DATASOURCE_KEY_MASTER = "master";
+    public static final String DATASOURCE_KEY_SLAVE = "slave";
 
     @Override
     protected Object determineCurrentLookupKey() {

@@ -32,6 +32,7 @@ public class StationService {
     }
 
     @Cacheable(cacheNames = "stations", unless = "#result.isEmpty()")
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations(Long id, Pageable pageable) {
         List<Station> stations = stationRepository.findAll(id, pageable);
 
