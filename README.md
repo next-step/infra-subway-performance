@@ -161,7 +161,21 @@ FROM programmer
 GROUP BY hobby
 ```
 
-- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+- [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+```sql
+/**
+  96180 rows
+  0.044 sec (m1)
+ */
+ALTER TABLE `subway`.`hospital` change COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`);
+ALTER TABLE covid ADD FOREIGN KEY (programmer_id) REFERENCES programmer (id);
+ALTER TABLE covid ADD FOREIGN KEY (hospital_id) REFERENCES hospital (id);
+
+SELECT p.id, h.name
+FROM hospital h
+         INNER JOIN covid c on c.hospital_id = h.id
+         INNER JOIN programmer p on p.id = c.programmer_id;
+```
 
 - [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
