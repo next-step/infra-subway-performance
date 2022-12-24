@@ -105,9 +105,39 @@ $ stress -c 2
 ### 3단계 - 쿼리 최적화
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
-
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-
+```sql
+  select  v1.employee_id 사원번호
+         ,v1.last_name 이름
+         ,v1.annual_income 연봉
+         ,r.time 입출입시간
+         ,r.region 지역
+         ,r.record_symbol 입출입구분
+    from (
+         select m.employee_id,
+                e.last_name,
+                s.annual_income,
+                p.position_name
+         from manager m
+                  join department d on d.id = m.department_id
+                  join position p   on p.id = m.employee_id
+                  join employee e   on e.id = m.employee_id
+                  join salary s     on s.id = e.id
+         where d.note = 'active'
+           and now() between m.start_date and m.end_date
+           and now() between s.start_date and s.end_date
+           and p.position_name = 'manager'
+         order by s.annual_income desc
+         limit 5
+         ) v1
+     join record r on r.employee_id = v1.employee_id
+    where record_symbol = 'O'
+    order by 연봉 desc
+```
+- query plan
+![quert_plan.png](query%2Fquert_plan.png)
+- query result
+![query_result.png](query%2Fquery_result.png)
 ---
 
 ### 4단계 - 인덱스 설계
