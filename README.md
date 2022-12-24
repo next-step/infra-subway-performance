@@ -247,29 +247,30 @@ order by s.annual_income desc
 limit 5;
 
 # 2. 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
-select top5.employee_id   as 사원번호,
-       top5.employee_name as 이름,
-       top5.annual_income as 연봉,
-       top5.position_name as 직급명,
-       r.region           as 지역,
-       r.record_symbol    as 입출입구분,
-       r.time             as 입출입시간
-from (select m.employee_id,
-             concat(e.last_name, ' ', e.first_name) as employee_name,
-             s.annual_income,
-             p.position_name
-      from manager m
-             join salary s on m.employee_id = s.id
-             join position p on m.employee_id = p.id
-             join employee e on m.employee_id = e.id
-             join department d on d.id = m.department_id
-      where d.note = 'active'
-        and p.position_name = 'Manager'
-        and now() between m.start_date and m.end_date
-        and now() between s.start_date and s.end_date
-      order by s.annual_income desc
+select top5.employee_id                             as 사원번호,
+       concat(top5.last_name, ' ', top5.first_name) as 이름,
+       top5.annual_income                           as 연봉,
+       top5.position_name                           as 직급명,
+       record.region                                as 지역,
+       record.record_symbol                         as 입출입구분,
+       record.time                                  as 입출입시간
+from (select manager.employee_id,
+             employee.last_name,
+             employee.first_name,
+             salary.annual_income,
+             position.position_name
+      from manager manager
+             join salary salary on manager.employee_id = salary.id
+             join position position on manager.employee_id = position.id
+             join employee employee on manager.employee_id = employee.id
+             join department department on department.id = manager.department_id
+      where department.note = 'active'
+        and position.position_name = 'Manager'
+        and manager.end_date = '9999-01-01'
+        and now() between salary.start_date and salary.end_date
+      order by salary.annual_income desc
       limit 5) as top5
-       join record r on r.employee_id = top5.employee_id
+       join record record on record.employee_id = top5.employee_id
 where record_symbol = 'O';
 
 # [2022-12-22 03:01:18] 14 rows retrieved starting from 1 in 1 s 684 ms (execution: 1 s 669 ms, fetching: 15 ms)
@@ -292,11 +293,185 @@ where record_symbol = 'O';
 - indexing 후 = 실행시간 : **_23ms_** (M1 칩 사용자)
 
 
+#### 3단계 피드백
+- [x] manager.end_date의 경우 `9999-01-01` 로 조회 시 성능 개선의 여지가 있음
+- [x] 서브쿼리에서 concat을 적용하기보단, 최종 select 에서 작성 하는 것이 성능 개선의 여지가 있음
+
 ---
 
 ### 4단계 - 인덱스 설계
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요  
+- Indexing Checklist  
+![index-checklist.png](images/step4/index-checklist.png)
+
+  
+#### 4단계 기능 목록
+- [x] 주어진 데이터 셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - M1의 경우엔 2배를 기준으로 진행, 어렵다면 일단 리뷰 요청
+ 
+1. [x] [Coding as a Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby) 와 같은 결과를 반환할 것
+```mysql
+select hobby, ROUND(count(hobby) / (select count(hobby) as total from programmer) * 100, 1) as 응답
+from programmer
+group by hobby
+order by hobby desc;
+# 실행결과 : 4 s 869 ms (execution: 4 s 815 ms, fetching: 54 ms)
+```  
+
+- 조치 전 실행 계획  
+![explain_plan_before.png](images/step4/problem1/explain_plan_before.png)
+
+- 문제점
+  - 적절한 인덱스가 없어서, 사용하지 못하고 있다.
+- 조치
+  1. id를 PK로 지정
+  ```mysql
+  alter table programmer add constraint programmer_pk primary key (id);
+  ```
+  2. hobby 단일 컬럼 인덱스 설정
+  ```mysql
+  create index idx_hobby_programmer on programmer (hobby);
+  ```
+  3. 조치 후 쿼리 속도 개선
+  ```mysql
+  # before : 4 s 869 ms (execution: 4 s 815 ms, fetching: 54 ms)
+  # after: 306 ms (execution: 295 ms, fetching: 11 ms)
+  ```
+
+- 조치 후 실행계획  
+![explain_plan_after.png](images/step4/problem1/explain_plan_after.png)
+
+2. [x] 프로그래머별로 해당하는 병원 이름을 반환하세요 (covid.id, hospital.name)
+```mysql
+# full fetch
+select c.id, h.name
+from hospital h
+    join covid c on h.id = c.hospital_id
+    join programmer p on p.id = c.programmer_id
+# 96,180 rows retrieved starting from 1 in 4 s 965 ms (execution: 40 ms, fetching: 4 s 925 ms)
+```
+
+- 조치 전 실행 계획  
+  ![explain_plan_before.png](images/step4/problem2/explain_plan_before.png)
+
+- 문제점
+  - 적절한 인덱스가 없어서, 사용하지 못하고 있다.
+- 조치
+  1. covid, hospital id를 PK로 지정
+  ```mysql
+  alter table covid add constraint pk_id_covid primary key (id);
+  alter table hospital add constraint pk_id_hospital primary key (id);
+  ```
+    2. covid 가 관여하는 컬럼들에 대해 단일 컬럼 인덱스 설정(hospital_id, programmer_id)
+  ```mysql
+  create index idx_hospital_id_covid on covid (hospital_id);
+  create index idx_programmer_id_covid on covid (programmer_id);
+  ```
+    3. 조치 후 쿼리 속도 개선
+  ```mysql
+  # full fetch 기준
+  # before : 4 s 965 ms (execution: 40 ms, fetching: 4 s 925 ms)
+  # after: 2 s 154 ms (execution: 45 ms, fetching: 2 s 109 ms)
+  ```
+  
+- 조치 후 실행 계획  
+![explain_plan_after.png](images/step4/problem2/explain_plan_after.png)
+
+3. [x] 프로그래밍이 취미인 학생 혹은 주니어(0~2년) 들이 다닌 병원 이름을 반환하고, user.id 기준으로 정렬하세요.  
+(covid.id, hospital.name, user.Hobby, user.DevType, userYearsCoding)
+
+```mysql
+# full fetch
+select c.id, h.name, p.hobby, p.dev_type, p.years_coding
+from programmer p
+       join covid c on p.id = c.programmer_id
+       join hospital h on c.hospital_id = h.id
+where hobby = 'YES'
+  and (years_coding = '0-2 years' or (student = 'Yes, part-time' and student = 'Yes, full-time'))
+# 8,169 rows retrieved starting from 1 in 3 s 674 ms (execution: 87 ms, fetching: 3 s 587 ms)
+```  
+
+- 조치 전 실행 계획  
+  ![explain_plan_before.png](images/step4/problem3/explain_plan_before.png)
+
+- 문제점
+  - 적절한 인덱스가 없어서, 사용하지 못하고 있다.
+- 조치
+  1. programmer, hospital 의 적절한 index 추가
+  ```mysql
+  create index idx_hobby_student_years_coding_programmer on programmer (hobby, student ,years_coding);
+  create index idx_id_name_hospital on hospital (id, name);
+  ```
+  2. 조치 후 쿼리 속도 개선
+  ```mysql
+  # full fetch 기준
+  # before : 4 s 499 ms (execution: 81 ms, fetching: 4 s 418 ms)
+  # after: 3 s 584 ms (execution: 125 ms, fetching: 3 s 459 ms)
+  ```
+
+- 조치 후 실행계획  
+  ![explain_plan_after.png](images/step4/problem3/explain_plan_after.png)
+
+4. [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계(covid.Stay)
+```mysql
+select covid.stay AS 입원기간, count(covid.programmer_id) AS 집계결과
+from member
+    join programmer on member.id = programmer.member_id
+    join covid on programmer.id = covid.programmer_id
+    join hospital on covid.hospital_id = hospital.id
+where hospital.name = '서울대병원'
+  and programmer.country = 'India'
+  and member.age between 20 and 29
+group by covid.stay
+# 10 rows retrieved starting from 1 in 1 s 311 ms (execution: 1 s 283 ms, fetching: 28 ms)
+```  
+
+- 조치 전 실행 계획  
+  ![explain_plan_before.png](images/step4/problem4/explain_plan_before.png)
+
+- 문제점
+  - 적절한 인덱스가 없어서, 사용하지 못하고 있다.
+- 조치
+  1. member pk 추가
+  ```mysql
+  alter table member add constraint pk_id_member primary key (id);
+  ```
+  2. member, programmer 의 적절한 index 추가
+  ```mysql
+  create index idx_age_member on member (age);
+  create index idx_country_programmer on programmer (country);
+  create index idx_member_id_programmer on programmer (member_id);
+  ```
+  3. 조치 후 쿼리 속도 개선
+  ```mysql
+  # full fetch 기준
+  # before : 1 s 311 ms (execution: 1 s 283 ms, fetching: 28 ms)
+  # after: 129 ms (execution: 98 ms, fetching: 31 ms)
+  ```
+
+- 조치 후 실행계획  
+  ![explain_plan_after.png](images/step4/problem4/explain_plan_after.png)
+
+
+5. [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계 (user.Exercise)
+```mysql
+select programmer.exercise as 운동회수, count(programmer_id) as 인원집계
+from hospital
+       join covid on hospital.id = covid.hospital_id
+       join member on covid.member_id = member.id
+       join programmer on member.id = programmer.member_id
+where hospital.name = '서울대병원'
+  and member.age between 30 and 39
+group by programmer.exercise
+# 5 rows retrieved starting from 1 in 175 ms (execution: 146 ms, fetching: 29 ms)
+```  
+
+- 실행 계획  
+  ![explain_plan.png](images/step4/problem5/explain_plan.png)
+
+- 연관된 컬럼이 모두 인덱싱되어 있으므로, 이번 단계에서는 딱히 조치해야할 내용이 없습니다.  
+  (모든 체크리스트 통과)
 
 ---
 
