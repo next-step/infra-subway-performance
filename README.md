@@ -128,6 +128,22 @@ export let options = {
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
+select a.employee_id 사원번호, a.last_name 이름, a.annual_income 연봉, a.position_name 직급명, b.time 입출입시간, b.region 지역, b.record_symbol 입출입구분
+from (
+select a.employee_id, e.last_name, d.annual_income, c.position_name
+from (select * from employee_department where start_date < now() and end_date > now()) a
+inner join department b on a.department_id = b.id
+inner join (select id, position_name from position where end_date > now() and end_date > now()) c on a.employee_id = c.id
+inner join (select id, annual_income from salary where start_date < now() and end_date > now()) d on a.employee_id = d.id
+inner join employee e on a.employee_id = e.id
+where upper(b.note) = 'ACTIVE'
+and c.position_name = 'Manager'
+order by d.annual_income desc limit 5
+) a
+inner join (select employee_id, time, record_symbol, region from record where record_symbol = 'O') b on a.employee_id = b.employee_id
+;
+
+- DB 결과는 test_result_query 에 넣어 놓았습니다.
 ---
 
 ### 4단계 - 인덱스 설계
