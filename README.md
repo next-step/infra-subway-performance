@@ -195,7 +195,7 @@ WHERE (p.hobby = 'Yes' AND p.student LIKE ('Yes%'))
 ORDER BY p.id
 ```
 
-- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+- [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 ```sql
 /**
   10 rows

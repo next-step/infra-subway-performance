@@ -37,7 +37,7 @@ class StaticResourcesTest {
 		String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/static/images/main_logo.png";
 		EntityExchangeResult<String> response = client.get().uri(uri)
 			.exchange().expectStatus().isOk()
-			.expectHeader().cacheControl(CacheControl.noCache().cachePrivate())
+			.expectHeader().cacheControl(CacheControl.noCache().cachePrivate().mustRevalidate())
 			.expectBody(String.class).returnResult();
 
 		logger.debug("body : {}", response.getResponseBody());
@@ -55,7 +55,7 @@ class StaticResourcesTest {
 		String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/main.js";
 		EntityExchangeResult<String> response = client.get().uri(uri)
 			.exchange().expectStatus().isOk()
-			.expectHeader().cacheControl(CacheControl.noCache())
+			.expectHeader().cacheControl(CacheControl.noCache().cachePrivate())
 			.expectBody(String.class)
 			.returnResult();
 
