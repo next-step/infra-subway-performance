@@ -201,3 +201,6 @@ inner join record r on r.record_symbol = 'O' and r.employee_id = ranker.employee
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
 - https://gyeom-subway-admin.kro.kr/lines/pages?id=1&pageSize=10
+2. replication 결과물
+![master](replication/replication_master.png)
+![slave](replication/replication_slave.png)
