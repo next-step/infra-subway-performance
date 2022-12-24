@@ -1,102 +1,78 @@
 import http from 'k6/http';
-import {check} from 'k6';
-import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
-
+import { check, group, sleep, fail } from 'k6';
 
 export let options = {
-  thresholds: {
-    http_req_duration: ['p(95)<300'],
-  },
-  ext: {
-    loadimpact: {
-      projectID: "3618944",
-      name: "SMOKE TEST"
-    }
-  },
-  scenarios: {
-    loginTest: {
-      executor: 'constant-vus',
-      exec: 'loginTest',
-      vus: 5,
-      duration: '60s',
-    },
+  vus: 1, // 1 user looping for 1 minute
+  duration: '60s',
 
-    noLoginTest: {
-      executor: 'constant-vus',
-      exec: 'noLoginTest',
-      vus: 12,
-      duration: '60s',
-    },
-  }
+  thresholds: {
+    http_req_duration: ['p(99)<200'], // 99% of requests must complete below 1.5s
+  },
 };
 
-const BASE_URL = 'http://iamsojung.p-e.kr:8080/';
+const BASE_URL = 'https://iamsojung.p-e.kr/';
 const USERNAME = 'test@email.com';
 const PASSWORD = '123';
 
-function sourceRandomNumber() {
-  return randomIntBetween(4, 5)
+function mainPage() {
+  let mainPageResponse = http.get(`${BASE_URL}`);
+
+  check(mainPageResponse, {
+    '메인 페이지 응답 성공': (response) => response.status === 200,
+  });
 }
 
-function targetRandomNumber() {
-  return randomIntBetween(6, 8)
-}
-
-function loginPage() {
+function login() {
   const payload = JSON.stringify({
     email: USERNAME,
     password: PASSWORD,
   });
-
   const params = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
+  let loginResponse = http.post(`${BASE_URL}/login/token`, payload, params);
 
-  // 로그인
-  const response = http.post(`${BASE_URL}/login/token`, payload, params);
+  check(loginResponse, {
+    '로그인 성공': (resp) => resp.json('accessToken') !== '',
+  });
 
-  check(response, {
-    '로그인 페이지': (resp) => resp.json('accessToken') !== '',
-  }, {tags: '로그인 페이지'});
+  return loginResponse.json('accessToken');
+}
 
+function pathPage() {
+  let pathPageResponse = http.get(`${BASE_URL}/path`);
 
-  return {
+  check(pathPageResponse, {
+    '경로 검색 페이지 응답 성공': (response) => response.status === 200,
+  });
+}
+
+function pathSearch() {
+  let pathSearchResponse = http.get(`${BASE_URL}/path?source=13&target=68`);
+  check(pathSearchResponse, {
+    '최단 경로 검색 응답 성공': (response) => response.status === 200,
+  });
+}
+
+function pathSearch(accessToken) {
+  let authHeaders = {
     headers: {
-      Authorization: `Bearer ${response.json('accessToken')}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   };
+  let pathSearchResponse = http.get(`${BASE_URL}/path?source=13&target=68`, authHeaders);
+
+  check(pathSearchResponse, {
+    '최단 경로 검색 응답 성공': (response) => response.status === 200,
+  });
 }
 
-function searchPath() {
-  let source = sourceRandomNumber();
-  let target = targetRandomNumber();
+export default function ()  {
+  mainPage();
+  pathPage();
+  pathSearch();
 
-  let findPathResponse = http.get(`${BASE_URL}/paths?source=${source}&target=${target}`);
-
-  check(findPathResponse, {
-    '경로 검색하기': (response) => response.status === 200,
-  }, {tags: '경로 검색하기'});
-}
-
-function searchPathPage() {
-  // 경로 페이지 검색
-  const getPath = http.get(`${BASE_URL}/path`);
-
-  check(getPath, {
-    '경로 검색 페이지': (response) => response.status === 200,
-  }, {tags: '경로 검색 페이지'});
-}
-
-
-export function loginTest() {
-  loginPage();
-  searchPath();
-  searchPathPage();
-}
-
-export function noLoginTest() {
-  searchPath();
-  searchPathPage();
+  sleep(1);
 }
