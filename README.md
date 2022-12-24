@@ -196,6 +196,25 @@ ORDER BY p.id
 ```
 
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+```sql
+/**
+  10 rows
+  0.142 sec (m1)
+ */
+ALTER TABLE member ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD FOREIGN KEY (member_id) REFERENCES member (id);
+CREATE INDEX index_covid_stay ON covid (stay);
+
+SELECT c.stay, count(1)
+FROM hospital h
+       INNER JOIN covid c ON c.hospital_id = h.id
+       INNER JOIN programmer p ON p.id = c.programmer_id
+       INNER JOIN member m ON m.id = p.member_id
+WHERE h.name = '서울대병원'
+  AND p.country = 'India'
+  AND m.age BETWEEN 20 AND 29
+GROUP BY c.stay;
+```
 
 - [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
