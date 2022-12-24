@@ -103,6 +103,41 @@ registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion()
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+```sql
+# 12 rows
+# 1.669 sec (m1)
+SELECT 
+    inline.id            AS '사원번호',
+    inline.last_name     AS '이름',
+    inline.annual_income AS '연봉',
+    inline.position_name AS '직급명',
+    rec.region           AS '지역',
+    rec.record_symbol    AS '입출입구분',
+    rec.time             AS '입출입시가'
+FROM
+    (SELECT 
+        emp.id AS 'id',
+            emp.last_name AS 'last_name',
+            sal.annual_income AS 'annual_income',
+            pos.position_name AS 'position_name'
+    FROM
+        department dep
+    INNER JOIN manager man ON man.department_id = dep.id
+    INNER JOIN salary sal ON sal.id = man.employee_id
+    INNER JOIN employee emp ON emp.id = man.employee_id
+    INNER JOIN position pos ON pos.id = emp.id
+    WHERE
+        dep.note = 'ACTIVE'
+            AND man.end_date = '9999-01-01'
+            AND sal.end_date = '9999-01-01'
+            AND pos.end_date = '9999-01-01'
+    LIMIT 5) inline
+        INNER JOIN
+    record rec ON rec.employee_id = inline.id
+WHERE
+    rec.record_symbol = 'O';
+
+```
 
 ---
 
