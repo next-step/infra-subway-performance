@@ -80,22 +80,23 @@ npm run dev
 #### 요구사항
 
 * springboot에 HTTP Cache, gzip 설정하기
-* Launch Template 작성하기
-* Auto Scaling Group 생성하기
-* Smoke, Load, Stress 테스트 후 결과를 기록
+* Launch Template 작성하기 [완료]
+* Auto Scaling Group 생성하기 [완료]
+* Smoke, Load, Stress 테스트 후 결과를 기록 [완료]
 
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
-
+    - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-0e60ba4e1f50aa214
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+    - ![img.png](result/scale/stress/stress시_스케일.png)
 
 ```sh
 $ stress -c 2
 ```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-
+    - result 하위 폴더에 있습니다. grafana 는 influx db가 죽어버려서ㅜㅜ 캡처를 못했습니다.
 ---
 
 ### 3단계 - 쿼리 최적화
