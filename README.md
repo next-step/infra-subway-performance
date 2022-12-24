@@ -19,46 +19,70 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew clean build
 ```
+
 <br>
 
 ## 미션
 
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
-
 ### 1단계 - 화면 응답 개선하기
+
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
-   * result directory 에 정리해 뒀습니다.
+    * result directory 에 정리해 뒀습니다.
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-   1. Nginx 개편
-      1. HTTP2 적용
-         ![img.png](image/http2.png)
-      2. Cache Control 처리
-         ![img.png](image/cache.png)
-      3. GZIP을 통한 압축
-         ![img.png](image/gzip.png)
-   2. 캐싱 처리
-      1. Line 조회, 수정, 삭제 캐싱처리
-      2. Station 조회, 삭제 캐싱 처리.
-      ![img.png](image/redis-cache.png)
-   3. Scale Out [2단계에서 로드밸런서 포함해서 테스트 해보겠습니다.]
+    1. Nginx 개편
+        1. HTTP2 적용
+           ![img.png](image/http2.png)
+        2. Cache Control 처리
+           ![img.png](image/cache.png)
+        3. GZIP을 통한 압축
+           ![img.png](image/gzip.png)
+    2. 캐싱 처리
+        1. Line 조회, 수정, 삭제 캐싱처리
+        2. Station 조회, 삭제 캐싱 처리.
+           ![img.png](image/redis-cache.png)
+    3. Scale Out [2단계에서 로드밸런서 포함해서 테스트 해보겠습니다.]
+
 ---
+
+### 2단계 - 요구사항 정의
+
+#### 미션 요구사항
+
+* 미션1: 모든 정적 자원에 대해 no-cache, private 설정을 하고 테스트 코드를 통해 검증합니다.
+* 미션2: 확장자는 css인 경우는 max-age를 1년, js인 경우는 no-cache, private 설정을 합니다.
+* 미션3: 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+
+#### 요구사항
+
+* springboot에 HTTP Cache, gzip 설정하기
+* Launch Template 작성하기
+* Auto Scaling Group 생성하기
+* Smoke, Load, Stress 테스트 후 결과를 기록
 
 ### 2단계 - 스케일 아웃
 
@@ -78,7 +102,8 @@ $ stress -c 2
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역,
+  입출입구분, 입출입시간)
 
 ---
 
