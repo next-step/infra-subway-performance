@@ -305,6 +305,22 @@ group by c.stay;
 
 #### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+```sql
+-- 0.208 sec / 0.0000088 sec
+select p.exercise, count(1)
+from (select id from member where age between 30 and 39) as thirthes
+       join (select id, member_id, programmer_id, hospital_id from covid) as c
+            on thirthes.id = c.member_id
+       join (select id from hospital where name = '서울대병원') as h
+            on c.hospital_id = h.id
+       join (select id, exercise from programmer) as p
+            on c.programmer_id = p.id
+group by p.exercise
+order by null;
+```
+
+![실행계획](performance/index/after/5-after.png)
+
 ---
 
 ### 추가 미션
