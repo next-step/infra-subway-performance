@@ -182,6 +182,7 @@ WHERE r.record_symbol = 'O';
 - ![before_1.png](step4/before_4.png)
 - ![before_1.png](step4/before_5.png)
 #### 인덱스 적용 후
+- 맥 m1에서 수행
 - ![after_1.png](step4/after_1.png)
 - ![after_2.png](step4/after_2.png)
 - ![after_3.png](step4/after_3.png)
