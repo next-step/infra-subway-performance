@@ -256,6 +256,18 @@ group by hobby;
 
 #### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
+```sql
+-- 0.019 sec / 0.0077 sec
+select c.id, h.name
+from (select id from programmer) p
+       join (select id, hospital_id, programmer_id from covid) c
+            on p.id = c.programmer_id
+       join (select id, name from hospital) h
+            on h.id = c.hospital_id;
+```
+
+![실행계획](performance/index/after/2-after.png)
+
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
