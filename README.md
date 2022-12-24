@@ -218,10 +218,8 @@ ORDER BY p.id
   10 rows
   0.142 sec (m1)
  */
-ALTER TABLE member
-    ADD PRIMARY KEY (id);
-ALTER TABLE programmer
-    ADD FOREIGN KEY (member_id) REFERENCES member (id);
+ALTER TABLE member ADD PRIMARY KEY (id);
+ALTER TABLE programmer ADD FOREIGN KEY (member_id) REFERENCES member (id);
 CREATE INDEX index_covid_stay ON covid (stay);
 
 SELECT c.stay, count(1)
@@ -244,12 +242,12 @@ GROUP BY c.stay;
  */
 SELECT p.exercise, count(1)
 FROM hospital h
-         INNER JOIN COVID C ON C.HOSPITAL_ID = H.ID
-         INNER JOIN PROGRAMMER P ON P.ID = C.PROGRAMMER_ID
-         INNER JOIN member m on m.id = p.member_id
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+         INNER JOIN member m on m.id = c.member_id
 WHERE m.age BETWEEN 30 AND 39
   AND h.name = '서울대병원'
-GROUP BY p.exercise
+GROUP BY p.exercise;
 
 ``` 
 
