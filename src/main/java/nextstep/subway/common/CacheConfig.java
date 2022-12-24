@@ -21,13 +21,11 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
 @EnableCaching
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
-
     private final RedisConnectionFactory connectionFactory;
 
     public CacheConfig(RedisConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
-
 
     @Bean
     public CacheManager redisCacheManager() {
@@ -42,7 +40,7 @@ public class CacheConfig extends CachingConfigurerSupport {
     }
 
     /**
-     * LocalTimeDated 역직렬화를 위한 objectMapper 설정
+     * LocalDatetime 역질렬화를 위한 objectMapper
      * @return
      */
     private ObjectMapper objectMapper() {

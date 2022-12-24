@@ -10,10 +10,10 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Temporal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +32,7 @@ public class LineService {
             @CacheEvict(cacheNames = "paths", allEntries = true),
             @CacheEvict(cacheNames = "lines", allEntries = true)
     })
-    @Transactional()
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -41,8 +41,8 @@ public class LineService {
     }
 
     @Cacheable(value = "lines", unless = "#result.isEmpty()")
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses(Long id, Pageable pageable) {
+        List<Line> persistLines = lineRepository.findAll(id, pageable);
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());

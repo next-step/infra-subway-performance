@@ -630,14 +630,161 @@ INNER JOIN (
 ---
 
 ### 4단계 - 인덱스 설계
+인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   
+   1. `Coding as a Hobby`와 같은 결과를 반환하세요.  ref) [coding as Hobby](https://insights.stackoverflow.com/survey/2018#developer-profile-_-coding-as-a-hobby)      
+      
+      **sql query**
+       ```sql
+       select hobby,
+          count(*) / (select count(*) from programmer p) * 100 as percent
+       from programmer p
+       group by p.hobby;
+      
+      --(execution: 410 ms, fetching: 1 s 175 ms)
+       ```
 
-1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+      **인덱스 추가 이후**
+       ```sql
+       -- add programmer pk
+       alter table programmer change column id id bigint(20) not null, add primary key (id);
+    
+       -- add index by hobby on programmer
+       alter table programmer add index programmer_hobby_idx (hobby asc);
+       ```
+
+      `결과`
+      ![hobby_index_result](src/main/resources/image/step4/hobby_index_result.png)
+      `실행계획`
+      ![hobby 실행계획](src/main/resources/image/step4/hobby_explain_result.png)
+
+
+   2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)   
+      **sql query**
+       ```sql
+       select c.id, h.name
+        from covid c
+            inner join hospital h on c.hospital_id = h.id
+            inner join programmer p on c.programmer_id = p.id
+      
+      --(execution: 440 ms, fetching: 1 s 195 ms)
+       ```
+      **인덱스 추가 이후**
+      ```sql
+      -- add hospital pk
+      alter table hospital change column id id int(11) not null, add primary key (id);
+
+      -- add covid pk
+      alter table covid change column id id bigint(20) not null ,add primary key (id);
+
+      -- add index on covid
+      alter table covid add index idx_covid_hospital_id (hospital_id asc)
+        , add index idx_covid_programmer_id (programmer_id asc);
+      ```
+      
+      `결과`
+     ![covid 인덱스 결과](src/main/resources/image/step4/covid_index_result.png)
+      `실행계획`
+     ![covid 실행계획](src/main/resources/image/step4/covid_explain_result.png)
+
+
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+   **sql query**
+   ```sql
+   select c.id,
+          h.name,
+          user.hobby,
+          user.dev_type,
+          user.years_coding
+   from covid c
+          inner join hospital h on h.id = c.hospital_id
+          inner join (select p.id,
+                             p.hobby,
+                             p.dev_type,
+                             p.years_coding
+                      from programmer p
+                      where p.hobby = 'yes'
+                        and (p.student like 'yes%' or p.years_coding = '0-2 years')) user
+   on user.id = c.programmer_id
+   order by user.id;
+   
+   --(execution: 500 ms, fetching: 236 ms)
+   ```
+   `결과`
+![userid 결과](src/main/resources/image/step4/userid_result.png)
+   `실행계획`
+![userid 실행계획](src/main/resources/image/step4/userid_explain.png)
+   
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)   
+    **sql query**
+    ```sql
+    select c.stay, count(*)
+    from covid c
+           inner join hospital h on h.id = c.hospital_id and h.name = '서울대병원'
+           inner join member m on m.id = c.member_id and m.age between 20 and 29
+           inner join programmer p on p.id = c.programmer_id and p.country = 'india'
+    group by c.stay;
+    -- execution: 1 s 199 ms, fetching: 12 ms)
+    ```
+
+    **인덱스 추가 이후**
+    ```sql
+    -- add member pk
+    alter table member change column id id bigint(20) not null, add primary key (id);
+   
+    -- add index by age on memeber
+    alter table member add index idx_member_age (age asc);
+      ```
+      
+    `결과`
+    ![member 인덱스 결과](src/main/resources/image/step4/member_index_result.png)
+    `실행계획`
+    ![member 실행계획](src/main/resources/image/step4/member_index_explain.png)   
+
+   
+6. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+    ```sql
+    select exercise, count(*)
+    from programmer p
+           inner join covid c on c.programmer_id = p.id
+           inner join hospital h on h.id = c.hospital_id and h.name = '서울대병원'
+           inner join member m on m.id = c.member_id and m.age between 30 and 39
+    group by exercise;
+   
+    -- (execution: 99 ms, fetching: 18 ms)
+    ```
+   
+    `결과`
+    ![exercise 결과](src/main/resources/image/step4/exercise_result.png)
+    `실행계획`
+    ![exercise 실행계획](src/main/resources/image/step4/exercise_explain.png)
 
 ---
 
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+
+- https://yeojiin-subway.o-r.kr/stations?id=1&size=5
+- https://yeojiin-subway.o-r.kr/lines?id=1&size=5
+
+
+<details open>
+<summary> replication, pagng 적용 결과 스냅샷 </summary>
+
+- line paging
+![노선 페이징](src/main/resources/image/plus/line_paging.png)
+- stations paging
+![역_페이징](src/main/resources/image/plus/stations_paging.png)
+
+- master/slave line table
+![master and slave line](src/main/resources/image/plus/master_and_slave_line.png)
+
+- master/slave station table
+![master and slave stations](src/main/resources/image/plus/master_and_slave_station.png)
+</details>
+
+`Aws private server 보안그룹에 master/slave 포트 열어주지 않으면 서버 구동 시 에러 발생`
 
 ---
 
@@ -1267,4 +1414,188 @@ $ docker run -d -p 23306:3306 brainbackdoor/data-tuning:0.0.3
 * [x] 인덱스 설정을 추가하지 않고 200ms 이하로 반환합니다.
     * M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2s를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
     * 급여 테이블의 사용여부 필드는 사용하지 않습니다. 현재 근무중인지 여부는 종료일자 필드로 판단해주세요.
+</details>
+
+---
+
+<details>
+<summary> 🚀 4단계 - 인덱스 설계 </summary>
+
+#### 생각해보기
+* 인덱스
+    * 적절한 인덱스를 사용하는가?
+    * 인덱스사 있음에도 사용하지 못하는가?
+    * 인데스 수가 많아서 INSERT 처리 시간이 오래걸리는가?
+
+* 조인
+    * 처리하는 데이터의 양과 연결관계에 맞는 조인방식이 선정됐는가?
+    * 조인 관계에서 선행 테이블은 적합한가?
+
+#### 실습환경
+```
+$ docker run -d -p 13306:3306 brainbackdoor/data-subway:0.0.3
+```
+* workbench를 설치한 후 localhost:13306 (ID : root, PW : masterpw) 로 접속합니다.
+
+#### 요구사항
+* [x] 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  * M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준으로 해보시고 어렵다면, 일단 리뷰요청 부탁드려요
+  * [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+  * [x] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+  * [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+  * [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+  * [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+</details>
+
+---
+
+<details>
+<summary> 🚀 [추가] 페이징, Replication </summary>
+
+#### 페이징 쿼리
+웹 애플리케이션에서는 테이블의 내용을 1~20건 단위로 나눠서 보여주는 것이 일반적입니다. 테이블의 레코드를 일정 단위로 잘라서 조회하는 것을 페이징 쿼리라고 합니다. 일반적으로는 아래와 같이 작성합니다.
+```sql
+SELECT * FROM subway.programmer ORDER BY id LIMIT 20, 10;
+```
+이렇게 작성할 경우에 10개의 레코드만 읽는게 아니라, 첫번째 레코드부터 20번째 레코드까지 읽어서 버리고 10개의 레코드를 읽어 반환합니다. 이에 뒷 페이지로 갈수록 성능이 급격히 저하됩니다.
+따라서 아래와 같이, 테이블의 PK를 WHERE 조건절에 넣어주는 것이 좋습니다.
+
+```sql
+SELECT * FROM subway.programmer
+    WHERE subway.programmer.id >= 20000
+        ORDER BY id LIMIT 0, 10;
+```
+
+Spring Data JPQL은 LIMIT 명령어를 지원하지 않으므로, Pageable 객체를 활용해야 합니다.
+```javascript
+@Query("SELECT * FROM subway.programmer WHERE subway.programmer.id >= ?1")
+List<User> findAll(Pageable pg);
+```
+
+#### MySQL Replication with JPA
+* MySQL Replication의 master/slave는 1:n관계입니다.   
+master는 갱신쿼리를 바이너리 로그파일로 기록하고, 이 로그파일의 내용이 slave로 전송되어 순차적으로 실행함으로써 복제됩니다. 따라서 MySQL Replication은 준동시성입니다. I/O 스레드가 비동기로 동작하기에 마스터에서 생성한 바이너리 로그가 슬레이브에 수신되기 전에 장애가 날 경우 손실이 발생할 수 있습니다.
+
+* 데이터조작쿼리(INSERT, UPDATE, DELETE)는 마스터로, 데이터조회쿼리(SELECT)는 슬레이브로 받아서 부하를 분산할 수 있습니다.
+
+📌 아래 설정을 참고하여 MySQL Replication 구성을 해봅니다. 애플리케이션과 DB를 연결하는 작업은 다음 단계에서 진행합니다.
+
+**master 서버 설정**
+```
+$ docker run --name mysql-master -p 13306:3306 -v ~/mysql/master:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=masterpw -d mysql
+
+$ docker exec -it mysql-master /bin/bash
+$ mysql -u root -p  
+mysql> CREATE USER 'replication_user'@'%' IDENTIFIED WITH mysql_native_password by 'replication_pw';  
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'replication_user'@'%'; 
+
+mysql> SHOW MASTER STATUS\G  
+*************************** 1. row ***************************
+             File: binlog.000002
+         Position: 683
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+1 row in set (0.00 sec)
+```
+
+**slave 서버 설정**
+```
+$ docker run --name mysql-slave -p 13307:3306 -v ~/mysql/slave:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=slavepw -d mysql
+
+$ docker exec -it mysql-slave /bin/bash
+$ mysql -u root -p  
+
+mysql> SET GLOBAL server_id = 2;
+mysql> CHANGE MASTER TO MASTER_HOST='172.17.0.1', MASTER_PORT = 13306, MASTER_USER='replication_user', MASTER_PASSWORD='replication_pw', MASTER_LOG_FILE='binlog.000002', MASTER_LOG_POS=683;  
+
+mysql> START SLAVE;  
+mysql> SHOW SLAVE STATUS\G
+...
+            Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+```
+
+**애플리케이션 설정**
+```
+spring.datasource.hikari.master.username=root
+spring.datasource.hikari.master.password=masterpw
+spring.datasource.hikari.master.jdbc-url=jdbc:mysql://localhost:13306/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+
+spring.datasource.hikari.slave.username=root
+spring.datasource.hikari.slave.password=slavepw
+spring.datasource.hikari.slave.jdbc-url=jdbc:mysql://localhost:13307/subway?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+```
+
+```
+public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+    public static final String DATASOURCE_KEY_MASTER = "master";
+    public static final String DATASOURCE_KEY_SLAVE = "slave";
+
+    @Override
+    protected Object determineCurrentLookupKey() {
+        boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
+        return (isReadOnly)
+            ? DATASOURCE_KEY_SLAVE
+            : DATASOURCE_KEY_MASTER;
+    }
+}
+```
+
+```
+@Configuration
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"nextstep.subway"})
+class DataBaseConfig {
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
+    public DataSource masterDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.slave")
+    public DataSource slaveDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    public DataSource routingDataSource(@Qualifier("masterDataSource") DataSource master,
+                                        @Qualifier("slaveDataSource") DataSource slave) {
+        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
+
+        HashMap<Object, Object> sources = new HashMap<>();
+        sources.put(DATASOURCE_KEY_MASTER, master);
+        sources.put(DATASOURCE_KEY_SLAVE, slave);
+
+        routingDataSource.setTargetDataSources(sources);
+        routingDataSource.setDefaultTargetDataSource(master);
+
+        return routingDataSource;
+    }
+
+    @Primary
+    @Bean
+    public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
+        return new LazyConnectionDataSourceProxy(routingDataSource);
+    }
+}
+```
+
+```
+    public List<Line> findLines() {    
+    ...
+    
+    @Transactional(readOnly = true)
+    public List<StationResponse> findAllStations() {
+```
+
+`findLines()` 메서드는 master에서 `findAllStations()` 메서드는 slave에서 조회합니다. `@Transactional(readOnly = true)`를 사용할 경우 slave를 활용합니다.
+
+
+
+
 </details>

@@ -1,6 +1,6 @@
 package nextstep.subway.web;
 
-import nextstep.subway.common.version.SubwayVersion;
+import nextstep.subway.common.supprot.version.SubwayVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
