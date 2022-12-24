@@ -270,6 +270,22 @@ from (select id from programmer) p
 
 #### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
 
+```sql
+-- 0.042 sec / 0.097 sec
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         INNER JOIN covid c
+                    ON c.programmer_id = p.id
+         INNER JOIN hospital h
+                    ON h.id = c.hospital_id
+WHERE hobby = 'Yes'
+  AND (student IN ('Yes, full-time', 'Yes, part-time')
+    OR years_coding = '0-2 years')
+ORDER BY p.id;
+```
+
+![실행계획](performance/index/after/3-after.png)
+
 #### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
 #### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
