@@ -3,11 +3,11 @@ package nextstep.subway.common.infra;
 import static nextstep.subway.common.infra.ReplicationRoutingDataSource.DATASOURCE_KEY_MASTER;
 import static nextstep.subway.common.infra.ReplicationRoutingDataSource.DATASOURCE_KEY_SLAVE;
 
-import com.zaxxer.hikari.HikariDataSource;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.sql.DataSource;
-import nextstep.subway.common.profile.ReplicationProfile;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -17,17 +17,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.zaxxer.hikari.HikariDataSource;
+
+import nextstep.subway.common.profile.ReplicationProfile;
 
 @Configuration
 @Conditional(value = ReplicationProfile.class)
-@EnableJpaAuditing
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-@EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"nextstep.subway"})
 public class DatabaseConfig {
 
     @Bean
