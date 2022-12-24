@@ -40,6 +40,8 @@ dependencies {
 	// redis
 	implementation('org.springframework.boot:spring-boot-starter-data-redis')
 
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
 
