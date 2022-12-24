@@ -164,7 +164,7 @@ pull() {
 build() {
   echo "function call: build"
   echo -e "${txtcyn}build application${txtrst}"
-  cd $APP_PATH$BUILD_FOLDER_NAME && ./gradlew clean build
+  cd $APP_PATH$BUILD_FOLDER_NAME && sudo ./gradlew clean build
   check_error
 }
 
@@ -297,12 +297,19 @@ function_end_print() {
   echo -e "${txtylw}=======================================${txtrst}"
 }
 
-if [[ "$#" -eq "1" ]] || { [[ "$#" -eq "2" ]] && [[ "$FUNCTION" == "check_diff" ]]; }
+if [[ "$#" -eq "1" ]] || { [[ "$#" -eq "2" ]] && { [[ "$FUNCTION" == "check_diff" ]] || [[ "$FUNCTION" == "service_start" ]]; } ; }
 then
   function_start_print "$FUNCTION"
   case "$FUNCTION" in
     "help") help;;
-    "service_start") service_start;;
+    "service_start")
+        if [ $# -eq 2 ]
+        then
+          service_start $2
+        else
+          service_start
+        fi
+    ;;
     "service_stop") service_stop;;
     "pull") pull;;
     "build") build;;
