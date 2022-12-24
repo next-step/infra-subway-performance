@@ -223,7 +223,103 @@ order by result.annual_income desc;
 
 ### 4단계 - 인덱스 설계
 
+### 튜닝 절차
+
+#### A. 일단 조회해봅니다.
+
+- 의도한 결과가 맞는지 확인합니다.
+- 조회 건수, fetch time/duration time 등을 확인합니다.
+
+#### B. 개선 대상을 파악합니다.
+
+- 실행계획을 확인합니다.
+- 조건절 컬럼, 조인/서브쿼리 구조, 정렬 등을 확인합니다.
+- 인덱스 현황을 파악합니다.
+
+#### C. 개선한다.
+
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+#### Coding as a Hobby 와 같은 결과를 반환하세요.
+
+개선 전에 4.425 sec / 0.000023 sec 정도의 시간이 소요되었는데 hobby index 추가하여 개선되었습니다. 
+
+```sql
+-- 0.278 sec / 0.000019 sec
+select p.hobby,
+       ROUND(count(*) * 100.0 / (select count(*) from programmer), 1) as percent
+from programmer p
+group by hobby;
+```
+
+![실행계획](performance/index/after/1-after.png)
+
+#### 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+```sql
+-- 0.019 sec / 0.0077 sec
+select c.id, h.name
+from (select id from programmer) p
+       join (select id, hospital_id, programmer_id from covid) c
+            on p.id = c.programmer_id
+       join (select id, name from hospital) h
+            on h.id = c.hospital_id;
+```
+
+![실행계획](performance/index/after/2-after.png)
+
+#### 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+```sql
+-- 0.042 sec / 0.097 sec
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         INNER JOIN covid c
+                    ON c.programmer_id = p.id
+         INNER JOIN hospital h
+                    ON h.id = c.hospital_id
+WHERE hobby = 'Yes'
+  AND (student IN ('Yes, full-time', 'Yes, part-time')
+    OR years_coding = '0-2 years')
+ORDER BY p.id;
+```
+
+![실행계획](performance/index/after/3-after.png)
+
+#### 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+```sql
+-- 0.189 sec / 0.000012 sec
+select c.stay, count(c.stay)
+from (select id, member_id from programmer where country = 'India') as indian
+         join (select id from member where age between 20 and 29) as twenties
+              on twenties.id = indian.member_id
+         join (select id, hospital_id, member_id, stay from covid) c
+              on twenties.id = c.member_id
+         join (select id from hospital where name = '서울대병원') as h
+              on c.hospital_id = h.id
+group by c.stay;
+```
+
+![실행계획](performance/index/after/4-after.png)
+
+#### 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+```sql
+-- 0.208 sec / 0.0000088 sec
+select p.exercise, count(1)
+from (select id from member where age between 30 and 39) as thirthes
+       join (select id, member_id, programmer_id, hospital_id from covid) as c
+            on thirthes.id = c.member_id
+       join (select id from hospital where name = '서울대병원') as h
+            on c.hospital_id = h.id
+       join (select id, exercise from programmer) as p
+            on c.programmer_id = p.id
+group by p.exercise
+order by null;
+```
+
+![실행계획](performance/index/after/5-after.png)
 
 ---
 
