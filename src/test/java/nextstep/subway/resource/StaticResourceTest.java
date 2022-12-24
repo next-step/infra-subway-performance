@@ -2,8 +2,8 @@ package nextstep.subway.resource;
 
 import static nextstep.subway.common.WebMvcConfig.PREFIX_STATIC_RESOURCES;
 
+import java.util.concurrent.TimeUnit;
 import nextstep.subway.support.SubwayVersion;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -28,6 +28,36 @@ public class StaticResourceTest {
     @Test
     @DisplayName("정적 자원에 대해 no-cache, private 설정검증")
     void get_static_resources() {
+        String uri =
+            PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/images/logo_small.png";
+        EntityExchangeResult<String> response = client
+            .get()
+            .uri(uri)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .cacheControl(CacheControl.noCache().cachePrivate())
+            .expectBody(String.class)
+            .returnResult();
+
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response.getResponseHeaders()
+            .getETag();
+
+        client
+            .get()
+            .uri(uri)
+            .header("If-None-Match", etag)
+            .exchange()
+            .expectStatus()
+            .isNotModified();
+    }
+
+    @Test
+    @DisplayName("JS 자원에 대해 no-cache, private 설정검증")
+    void jsNoCachePrivate() {
         String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/main.js";
         EntityExchangeResult<String> response = client
             .get()
@@ -55,22 +85,31 @@ public class StaticResourceTest {
     }
 
     @Test
-    void helloworld() {
+    @DisplayName("css 자원에 대해 1년 캐시 설정검증")
+    void cssCachedAYear() {
+        String uri = PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/css/test.css";
         EntityExchangeResult<String> response = client
             .get()
-            .uri("/helloworld")
+            .uri(uri)
             .exchange()
             .expectStatus()
             .isOk()
             .expectHeader()
-            .cacheControl(CacheControl.empty())
+            .cacheControl(CacheControl.maxAge(60 * 60 * 24 * 365, TimeUnit.SECONDS))
             .expectBody(String.class)
             .returnResult();
 
-        String etag = response
-            .getResponseHeaders()
+        logger.debug("body : {}", response.getResponseBody());
+
+        String etag = response.getResponseHeaders()
             .getETag();
 
-        Assertions.assertThat(etag).isNull();
+        client
+            .get()
+            .uri(uri)
+            .header("If-None-Match", etag)
+            .exchange()
+            .expectStatus()
+            .isNotModified();
     }
 }
