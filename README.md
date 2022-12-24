@@ -139,7 +139,7 @@ on programmer (hobby);
 #### query
 
 ```sql
-select h.hobby, count(1) / (select count(1) from programmer) * 100 as percent
+select h.hobby, count(*) / (select count(*) from programmer) * 100 as percent
 from programmer h
 group by hobby;
 ```
@@ -296,7 +296,7 @@ on covid (member_id);
 #### query
 
 ```sql
-select p.exercise, count(1)
+select p.exercise, count(*)
 from (select id from member where age between 30 and 39) as thirthes
 join (select id, member_id, programmer_id, hospital_id from covid) as c
 on thirthes.id = c.member_id
