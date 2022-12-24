@@ -4,9 +4,11 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.net.URI;
 import java.util.List;
@@ -27,8 +29,16 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
+    public ResponseEntity<List<LineResponse>> findAllLines(){
         return ResponseEntity.ok(lineService.findLineResponses());
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<List<LineResponse>> findAllLinesByPaging(@RequestParam(required = false, defaultValue = "1") Long id,
+
+                                                           @Range(min = 1, max = 100)
+                                                           @RequestParam(required = false, defaultValue = "10") int pageSize) {
+        return ResponseEntity.ok(lineService.findAllLinesByPaging(id, pageSize));
     }
 
     @GetMapping("/{id}")
