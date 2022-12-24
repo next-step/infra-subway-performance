@@ -177,7 +177,23 @@ FROM hospital h
          INNER JOIN programmer p on p.id = c.programmer_id;
 ```
 
-- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+- [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+```sql
+
+/**
+  26764 rows
+  0.049 sec (m1)
+ */
+CREATE INDEX `idx_hospital_name` ON `subway`.`hospital` (name);
+
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM hospital h
+         INNER JOIN covid c ON c.hospital_id = h.id
+         INNER JOIN programmer p ON p.id = c.programmer_id
+WHERE (p.hobby = 'Yes' AND p.student LIKE ('Yes%'))
+   OR p.years_coding = '0-2 years'
+ORDER BY p.id
+```
 
 - [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
 
