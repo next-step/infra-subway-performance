@@ -238,8 +238,11 @@ GROUP BY c.stay;
 ```sql
 /**
   5 rows
-  0.142 sec (m1)
+  0.108 sec (m1)
  */
+ 
+CREATE INDEX index_member_id ON covid (member_id_
+    
 SELECT p.exercise, count(1)
 FROM hospital h
          INNER JOIN covid c ON c.hospital_id = h.id
