@@ -28,7 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
 			.addResourceLocations("classpath:/static")
-			.setCacheControl(CacheControl.noCache().cachePrivate());
+			.setCacheControl(CacheControl.noCache().cachePrivate())
+			.setCacheControl(CacheControl.noStore().mustRevalidate());
 
 		registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/js/**")
 			.addResourceLocations("classpath:/static/js/")
