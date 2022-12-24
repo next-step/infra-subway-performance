@@ -69,17 +69,33 @@ npm run dev
 
 ### 2단계 - 스케일 아웃
 #### 요구사항
-- [ ] springboot에 HTTP Cache, gzip 설정
-- [ ] Launch Template 작성
-- [ ] Auto Scaling Group 생성
-- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
-- 
+- [x] springboot에 HTTP Cache, gzip 설정
+- [x] Launch Template 작성
+- [x] Auto Scaling Group 생성
+- [x] Smoke, Load, Stress 테스트 후 결과를 기록
+ 
 1. Launch Template 링크를 공유해주세요.
+- [hahoho87-template](https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-009c4f48b61249b07)
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+- `src/main/resources/auto-scaling` 폴더 결과 첨부
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+- `src/main/resources/auto-scaling` 폴더 결과 첨부
 
+4. 모든 정적 자원에 대해 no-cache, no-store 설정을 한다. 가능한가요?
+- 가능합니다.
+```java
+registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion() + "/**")
+    .addResourceLocations("classpath:/static")
+    .setCacheControl(CacheControl.noCache().cachePrivate())
+    .setCacheControl(CacheControl.noStore().mustRevalidate());
+```
+- `Cache-Control` 헤더에 `no-cache`와 `no-store`를 설정하면 됩니다.
+- 원래는 `no-stroe`만 설정해도 캐시가 무효화 되어야 하지만, HTTP 스펙, 오래된 브라우저와의 호환, 버그등의 문제로 `no-cache`도 같이 설정해야 합니다.
+- reference: 
+  - [How do we control web page caching, across all browsers?](https://stackoverflow.com/questions/49547/how-do-we-control-web-page-caching-across-all-browsers)
+  - [No cache, must-revalidate 사용 이유](https://www.inflearn.com/questions/112647/no-store-%EB%A1%9C%EB%8F%84-%EC%B6%A9%EB%B6%84%ED%95%A0-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0-no-cache-must-revalidate-%EB%8A%94-%EC%99%9C-%EA%B0%99%EC%9D%B4-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EA%B2%83%EC%9D%B8%EA%B0%80%EC%9A%94#84841)
 ---
 
 ### 3단계 - 쿼리 최적화
