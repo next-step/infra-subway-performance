@@ -12,6 +12,7 @@ SHELL_SCRIPT_PATH=$(dirname $0)
 DEFAULT_PATH='/home/ubuntu'
 PROJECT_NAME='infra-subway-performance'
 GIT_URL='https://github.com/hahoho87/infra-subway-performance.git'
+
 BRANCH=$1
 PROFILE=$2
 JAR_NAME="subway-0.0.1-SNAPSHOT.jar"
@@ -39,6 +40,7 @@ function check_df() {
   fi
 }
 
+
 ## clone repository
 function clone() {
   echo -e "${txtgrn}>> [$(date)] Clone repository.${txtrst}"
@@ -58,6 +60,7 @@ function pull() {
 function build() {
   echo -e ""
   echo -e "${txtgrn}>> [$(date)] GRADLE BUILD. ${txtrst}"
+
   echo -e "${txtgrn}>> [$(date)] cmd : ./gradlew clean build -x test${txtrst}"
   ./gradlew clean build -x test
 }
@@ -126,6 +129,7 @@ function run() {
   cd build
   pwd
   nohup java -jar -Dserver.port=8080 -Dspring.profiles.active=$PROFILE ${DEFAULT_PATH}/${PROJECT_NAME}/build/libs/$JAR_NAME 1>infra-subway-performance-log 2>&1 &
+
   PID=$(pgrep -f ${JAR_NAME})
   echo -e "${txtgrn}>> [$(date)] (env: ${PROFILE}) APPLICATION IS STARTED  |  PID : ${PID}"
 }
