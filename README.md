@@ -768,6 +768,7 @@ INNER JOIN (
 - https://yeojiin-subway.o-r.kr/stations?id=1&size=5
 - https://yeojiin-subway.o-r.kr/lines?id=1&size=5
 
+
 <details open>
 <summary> replication, pagng 적용 결과 스냅샷 </summary>
 
@@ -781,9 +782,9 @@ INNER JOIN (
 
 - master/slave station table
 ![master and slave stations](src/main/resources/image/plus/master_and_slave_station.png)
-
-
 </details>
+
+`Aws private server 보안그룹에 master/slave 포트 열어주지 않으면 서버 구동 시 에러 발생`
 
 ---
 
