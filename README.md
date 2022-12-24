@@ -145,6 +145,30 @@ WHERE
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 요구사항 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환(m1 의 경우 2배 기준)
+
+- [x] Coding as a Hobby 와 같은 결과를 반환하세요.
+```sql
+/**
+  2 rows
+  0,256 sec (m1)
+ */
+ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL, ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC);;
+CREATE INDEX `idx_programmer_hobby` ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+
+SELECT hobby, round(count(*) / (SELECT count(*) fRom programmer) * 100, 1) AS rate
+FROM programmer
+GROUP BY hobby
+```
+
+- [ ] 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+- [ ] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+
+- [ ] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+- [ ] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
 ---
 
 ### 추가 미션
