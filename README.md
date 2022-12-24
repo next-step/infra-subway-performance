@@ -42,7 +42,8 @@ npm run dev
 * 미션 진행 후에 아래 질문의 답을 작성하여 PR을 보내주세요.
 
 ## 안정적인 서비스 만들기
-### 요구사항
+### 1단계 - 화면 응답 개선하기
+#### 요구사항
 - [x] 부하테스트 각 시나리오의 요청시간을 목푯값 이하로 개선
   - [x] Reverse Proxy 개선
     - [x] gzip 압축
@@ -52,7 +53,7 @@ npm run dev
     - [x] Spring Data Cache 적용
 - [x] 부하테스트 결과 첨부
 
-### 1단계 - 화면 응답 개선하기
+#### Answer
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 - `src/main/resources/load/` 폴더 결과 첨부
 
@@ -67,14 +68,15 @@ npm run dev
 ---
 
 ### 2단계 - 스케일 아웃
-
+#### 요구사항
+- [ ] springboot에 HTTP Cache, gzip 설정
+- [ ] Launch Template 작성
+- [ ] Auto Scaling Group 생성
+- [ ] Smoke, Load, Stress 테스트 후 결과를 기록
+- 
 1. Launch Template 링크를 공유해주세요.
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
 
