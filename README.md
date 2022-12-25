@@ -137,6 +137,41 @@ WHERE record_symbol = 'O';
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 1-1 Coding as a Hobby 와 같은 결과를 반환
+
+1. 인터넷에서 집계쿼리 확인
+
+```sql
+ROUND
+((SUM(tot_amt) / (SELECT SUM(tot_amt) FROM [RFM_BASE_SEG2]))*100, 2)
+```
+
+2. 쿼리 생성 후 실행
+
+```sql
+SELECT hobby,
+       ROUND((SUM(1) / (SELECT SUM(1) FROM programmer)) * 100, 2)
+FROM programmer
+GROUP by hobby
+```
+
+3. 결과
+
+![image.png](query/1st/index_적용전.png)
+
+4. programmer pk 와 hobby 컬럼 인덱스 설정
+
+> 인덱스 적용은 Datagrip 으로 했습니다 :)
+![img.png](query/1st/hobby_index.png)
+![img.png](query/1st/programmer_pk.png)
+
+5. 적용 후 결과
+
+> 0.26초
+![image.png](query/1st/INDEX_적용후.png)
+
+
+
 ---
 
 ### 추가 미션
