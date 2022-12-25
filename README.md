@@ -113,7 +113,7 @@ $ stress -c 2
    INNER JOIN position ON active_dept_top5_manager.employee_id = position.id
    INNER JOIN record ON active_dept_top5_manager.employee_id = record.employee_id
    WHERE 1=1
-   AND UPPER(position.position_name) = 'MANAGER'
+   AND UPPER(position.position_name) = 'Manager'
    AND record.record_symbol = 'O';
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
@@ -125,6 +125,88 @@ $ stress -c 2
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+
+-쿼리
+-- PK 추가
+ALTER TABLE covid ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+ALTER TABLE hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+ALTER TABLE programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+ALTER TABLE member ADD CONSTRAINT member_pk PRIMARY KEY (id);
+
+
+-- Coding as a Hobby 와 같은 결과를 반환하세요.
+SELECT
+programmer.hobby,
+ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM programmer), 1) AS rate
+FROM programmer
+GROUP BY hobby
+ORDER BY 2 DESC;
+
+-- 추가된 인덱스
+ALTER TABLE programmer ADD INDEX idx_id(id);
+ALTER TABLE programmer ADD INDEX idx_hobby(hobby);
+
+-- 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+SELECT
+covid.id,
+hospital.name
+FROM covid
+INNER JOIN hospital ON covid.hospital_id = hospital.id
+INNER JOIN programmer ON covid.programmer_id = programmer.id;
+
+-- 추가된 인덱스
+ALTER TABLE covid ADD INDEX idx_id(id);
+ALTER TABLE covid ADD INDEX idx_hospital_id(hospital_id);
+ALTER TABLE covid ADD INDEX idx_programmer_id(programmer_id);
+ALTER TABLE hospital ADD INDEX idx_id(id);
+
+-- 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+SELECT
+covid.id,
+hospital.name,
+programmer.hobby,
+programmer.dev_type,
+programmer.years_coding
+FROM covid
+INNER JOIN programmer ON covid.programmer_id = programmer.id
+INNER JOIN hospital ON covid.hospital_id = hospital.id
+WHERE programmer.hobby = 'Yes'
+ANd (student LIKE 'Yes%' OR years_coding = '0-2 years');
+
+
+-- 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요.
+SELECT
+covid.stay,
+count(covid.id)
+FROM covid
+INNER JOIN hospital ON covid.hospital_id = hospital.id
+INNER JOIN programmer ON covid.programmer_id = programmer.id
+INNER JOIN member ON covid.member_id = member.id
+WHERE 1=1
+AND programmer.country = 'India'
+AND hospital.name = '서울대병원'
+AND member.age BETWEEN 20 AND 29
+GROUP BY stay;
+
+ALTER TABLE member ADD INDEX idx_id(id);
+ALTER TABLE member ADD INDEX idx_age(age);
+ALTER TABLE covid ADD INDEX idx_member_id(member_id);
+ALTER TABLE programmer ADD INDEX idx_country(country);
+ALTER TABLE hospital ADD INDEX idx_name(name);
+ALTER TABLE covid ADD INDEX idx_hospital_id_programmer_id(hospital_id, programmer_id);
+
+-- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
+SELECT
+programmer.exercise,
+count(covid.id)
+FROM covid
+INNER JOIN hospital ON covid.hospital_id = hospital.id
+INNER JOIN programmer ON covid.programmer_id = programmer.id
+INNER JOIN member ON covid.member_id = member.id
+WHERE 1=1
+AND hospital.name = '서울대병원'
+AND member.age BETWEEN 30 AND 39
+GROUP BY programmer.exercise;
 
 ---
 
