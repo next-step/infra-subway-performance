@@ -331,6 +331,25 @@ npm run dev
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+    - https://haservi.r-e.kr/stations/1?size=10
+
+    <details>
+    <summary>상세 결과</summary>
+
+    - DB 분리
+        - master
+        - ![master_server](./docs/step5/master_server.png)
+        - slave
+        - ![slave_server](./docs/step5/slave_server.png)
+        - 지하철 생성 시 slave 생성 여부 확인
+        - ![db_status](./docs/step5/db_status.png)
+        - 지하철 조회 시 slave에서 데이터 read 확인
+        - ![read_slave_db](./docs/step5/read_slave_db.png)
+    - 페이징
+        - 지하철 페이징 결과
+        - ![station_page_result](./docs/step5/station_page_result.png)
+
+    </details>
 
 ---
 
@@ -370,5 +389,10 @@ npm run dev
         - [x] 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요.
           (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
         - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
-        - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) 
+        - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
 
+### 추가 미션
+
+1. 요구사항
+    - [x] 페이징 쿼리 추가
+    - [x] MySQL Replication 설정
