@@ -253,3 +253,6 @@ GROUP BY id, region
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+   - `/favorites?page=0&size=10`
+2. MySQL Replication with JPA
+  - replication 디렉토리 내용 참고
