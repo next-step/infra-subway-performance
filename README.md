@@ -254,6 +254,43 @@ index covid_programmer_id_hospital_id_index
 > 0.09 초 소모
 > ![img_1.png](query/3rd/INDEX_적용후.png)
 
+
+#### 1-4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+1. 쿼리 생성
+```sql
+SELECT c.stay, count(1)
+FROM hospital h
+	JOIN covid c on c.hospital_id = h.id
+	JOIN programmer p on p.id= c.programmer_id
+	JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원' and p.country = 'India' and m.age like '2_'
+GROUP BY c.stay;
+```
+2. 1차 결과
+> 15.21 초 소모
+> ![img_1.png](query/4th/적용전.png)
+
+3. 인덱스들 적용
+> 각각 로우를 확인해보고 where 에서 사용하는 인덱스 추가
+>```sql
+>select count(1) from hospital; # 32
+>select count(1) from member; # 96206
+>select count(1) from programmer; # 98855
+>
+>create index programmer_country_indexon programmer (country); #14초로 1초 감소
+>```
+> member 에 pk 추가
+> ```sql
+> alter table member add constraint member_pk primary key (id); #0.5초 로 14초 감소
+>```
+> 다중 컬럼 인덱스 적용
+> ```sql
+> create index covid_hospital_id_programmer_id_member_id_index on covid (hospital_id, programmer_id, member_id); #0.142로 개선
+>```
+
+4. 적용 후 결과
+> 0.142 소모
+![img_2.png](query/4th/적용후.png)
 ---
 
 ### 추가 미션
