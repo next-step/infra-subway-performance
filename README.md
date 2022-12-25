@@ -127,6 +127,13 @@ $ stress -c 2
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
 -쿼리
+-- PK 추가
+ALTER TABLE covid ADD CONSTRAINT covid_pk PRIMARY KEY (id);
+ALTER TABLE hospital ADD CONSTRAINT hospital_pk PRIMARY KEY (id);
+ALTER TABLE programmer ADD CONSTRAINT programmer_pk PRIMARY KEY (id);
+ALTER TABLE member ADD CONSTRAINT member_pk PRIMARY KEY (id);
+
+
 -- Coding as a Hobby 와 같은 결과를 반환하세요.
 SELECT
 programmer.hobby,
@@ -186,6 +193,7 @@ ALTER TABLE member ADD INDEX idx_age(age);
 ALTER TABLE covid ADD INDEX idx_member_id(member_id);
 ALTER TABLE programmer ADD INDEX idx_country(country);
 ALTER TABLE hospital ADD INDEX idx_name(name);
+ALTER TABLE covid ADD INDEX idx_hospital_id_programmer_id(hospital_id, programmer_id);
 
 -- 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요.
 SELECT
