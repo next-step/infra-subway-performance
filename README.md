@@ -137,6 +137,210 @@ WHERE record_symbol = 'O';
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 1-1 Coding as a Hobby 와 같은 결과를 반환
+
+1. 인터넷에서 집계쿼리 확인
+
+```sql
+ROUND
+((SUM(tot_amt) / (SELECT SUM(tot_amt) FROM [RFM_BASE_SEG2]))*100, 2)
+```
+
+2. 쿼리 생성 후 실행
+
+```sql
+SELECT hobby,
+       ROUND((SUM(1) / (SELECT SUM(1) FROM programmer)) * 100, 2)
+FROM programmer
+GROUP by hobby
+```
+
+3. 결과
+
+![image.png](query/1st/index_적용전.png)
+
+4. programmer pk 와 hobby 컬럼 인덱스 설정
+
+> 인덱스 적용은 Datagrip 으로 했습니다 :)
+![img.png](query/1st/hobby_index.png)
+![img.png](query/1st/programmer_pk.png)
+
+5. 적용 후 결과
+
+> 0.26초
+![image.png](query/1st/INDEX_적용후.png)
+
+#### 1-2 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+1. 숫자가 적은 순으로 조인 쿼리 생성
+
+```sql
+SELECT count(1)
+FROM covid;
+#31825
+SELECT count(1)
+FROM hospital;
+#32
+SELECT count(1)
+FROM programmer;
+#98855
+
+SELECT c.id, h.name
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id;
+```
+
+2. 1차 결과
+
+> 3.4초 소모
+![image.png](query/2nd/index_적용전.png)
+
+3. hospital, covid PK 적용 및 각각 FK 적용
+
+```sql
+alter table hospital
+    add constraint hospital_pk
+        primary key (id);
+
+alter table covid
+    add constraint covid_pk
+        primary key (id);
+
+alter table covid
+    add constraint covid_hospital_id_fk
+        foreign key (hospital_id) references hospital (id);
+
+alter table covid
+    add constraint covid_programmer_id_fk
+        foreign key (programmer_id) references programmer (id);
+```
+
+4. 적용 후 결과
+
+> 0.083 초 소모
+![img_1.png](query/2nd/index_적용후.png)
+
+#### 1-3 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+1. 쿼리 생성
+
+```sql
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         JOIN covid c on c.programmer_id = p.id
+         JOIN hospital h on h.id = c.hospital_id
+WHERE (p.hobby = 'Yes' and p.student like 'Yes%')
+   or p.years_coding = '0-2 years'
+ORDER BY p.id;
+```
+
+2. 1차 실행 결과
+
+> 6.7초 소요
+![img_1.png](query/3rd/index_적용전.png)
+
+3. 다중 컬럼 인덱스 설정
+
+> 처음에는 p.student 와, p.year_coding 에 인덱스를 적용해 봤는데 별로 개선이 없어서 찾아보니 다중 컬럼 인덱스를 적용해 보라고 해서 적용해 봤습니다.
+
+```sql
+create
+index covid_programmer_id_hospital_id_index
+	on covid (programmer_id,hospital_id);
+```
+
+4. 적용 후 결과
+
+> 0.09 초 소모
+> ![img_1.png](query/3rd/INDEX_적용후.png)
+
+#### 1-4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
+1. 쿼리 생성
+
+```sql
+SELECT c.stay, count(1)
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and p.country = 'India'
+  and m.age like '2_'
+GROUP BY c.stay;
+```
+
+2. 1차 결과
+
+> 15.21 초 소모
+> ![img_1.png](query/4th/적용전.png)
+
+3. 인덱스들 적용
+
+> 각각 로우를 확인해보고 where 에서 사용하는 인덱스 추가
+>```sql
+>select count(1) from hospital; # 32
+>select count(1) from member; # 96206
+>select count(1) from programmer; # 98855
+>
+>create index programmer_country_indexon programmer (country); #14초로 1초 감소
+>```
+> member 에 pk 추가
+> ```sql
+> alter table member add constraint member_pk primary key (id); #0.5초 로 14초 감소
+>```
+> 다중 컬럼 인덱스 적용
+> ```sql
+> create index covid_hospital_id_programmer_id_member_id_index on covid (hospital_id, programmer_id, member_id); #0.142로 개선
+>```
+
+4. 적용 후 결과
+
+> 0.142 소모
+![img_2.png](query/4th/적용후.png)
+
+#### 1-5 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+1. 쿼리 생성
+
+```sql
+SELECT p.exercise, count(1)
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and m.age LIKE '3_'
+GROUP BY p.exercise;
+```
+
+2. 적용전 결과
+
+> 1.2초.. 그렇게 안느리네요?? 🙄
+![img_1.png](query/5th/적용전.png)
+>
+
+3. 흠.. 나이에 인덱스 적용? 쿼리도 인덱스 타도록 변경
+
+```sql
+create
+index member_age_index on member (age);
+
+SELECT p.exercise, count(1)
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and m.age BETWEEN 30 and 39
+GROUP BY p.exercise;
+```
+4. 개선후 결과
+> 0.09초 소모
+> ![img_2.png](query/5th/적용후.png)
+
+   
 ---
 
 ### 추가 미션
