@@ -206,3 +206,5 @@ WHERE r.record_symbol = 'O'
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+* 로컬에서 작업하였습니다.
+* `http://localhost:8080/lines/pages?id=1&pageSize=10`

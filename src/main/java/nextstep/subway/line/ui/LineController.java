@@ -31,6 +31,13 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    @GetMapping("/pages")
+    public ResponseEntity<List<LineResponse>> findAllLinesByPaging(
+            @RequestParam(required = false, defaultValue = "1") Long id,
+            @RequestParam(required = false, defaultValue = "10") int pageSize) {
+        return ResponseEntity.ok(lineService.findAllLinesByPaging(id, pageSize));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
