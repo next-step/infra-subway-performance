@@ -221,7 +221,38 @@ alter table covid
 > 0.083 초 소모
 ![img_1.png](query/2nd/index_적용후.png)
 
+#### 1-3 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
 
+1. 쿼리 생성
+
+```sql
+SELECT c.id, h.name, p.hobby, p.dev_type, p.years_coding
+FROM programmer p
+         JOIN covid c on c.programmer_id = p.id
+         JOIN hospital h on h.id = c.hospital_id
+WHERE (p.hobby = 'Yes' and p.student like 'Yes%')
+   or p.years_coding = '0-2 years'
+ORDER BY p.id;
+```
+
+2. 1차 실행 결과
+
+> 6.7초 소요
+![img_1.png](query/3rd/index_적용전.png)
+
+3. 다중 컬럼 인덱스 설정
+
+> 처음에는 p.student 와, p.year_coding 에 인덱스를 적용해 봤는데 별로 개선이 없어서 찾아보니 다중 컬럼 인덱스를 적용해 보라고 해서 적용해 봤습니다.
+
+```sql
+create
+index covid_programmer_id_hospital_id_index
+	on covid (programmer_id,hospital_id);
+```
+
+4. 적용 후 결과
+> 0.09 초 소모
+> ![img_1.png](query/3rd/INDEX_적용후.png)
 
 ---
 
