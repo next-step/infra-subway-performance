@@ -78,7 +78,75 @@ npm run dev
 
 1. 인덱스 설정을 추가하지 않고 아래 요구사항에 대해 1s 이하(M1의 경우 2s)로 반환하도록 쿼리를 작성하세요.
 
-- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+- 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요.
+  <br>(사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
+  <br>
+  <br>
+  - 조회 소요 시간 : 약 1.8s (M1 사용)
+  - 작성 쿼리
+    ```sql
+      select
+          te.id as '사원번호',
+          concat(te.first_name,' ',te.last_name) as '이름',
+          te.annual_income as '연봉',
+          rcd.position_name as '직급명',
+          rcd.region as '지역',
+          rcd.time as '입출입구분'
+      from
+      (   select
+              p.id,
+              p.position_name,
+              r.region,
+              r.time
+          from (select id, position_name from position where end_date >= now() or end_date is null) p
+          inner join (select employee_id, region, time from record where record_symbol = 'O') r
+          where p.id = r.employee_id
+      ) rcd
+      inner join
+      (   select
+              m.employee_id,
+              s.annual_income,
+              e.id,
+              e.first_name,
+              e.last_name
+          from manager m
+          inner join employee_department d
+          inner join salary s
+          inner join employee e
+          where m.end_date >= now()
+              and d.start_date <= now() and d.end_date >= now()
+              and s.end_date >= now()
+              and m.employee_id = d.employee_id
+              and m.employee_id = s.id
+              and m.employee_id = e.id
+          order by s.annual_income desc
+          limit 5
+      ) te
+      where rcd.id = te.employee_id
+      order by te.id, region
+      ;
+    ```
+
+  <br>
+  
+  - 최종적으로 아래의 2가지 쿼리를 두고 실행계획 비교해보고 2번째 쿼리를 선택했습니다
+    - 현재는 두 쿼리가 소요시간에 큰 차이를 보이지는 않고 있으나
+      <br>두번째 쿼리를 선택 이유는 첫번째 경우에 사원정보 테이블과 조인하면서 16.75ms가 추가되었으나
+      <br>두번째 경우는 사원정보를 결과개수가 적은 5명을 구한 결과와 먼저 조인함으로써 (더 작은 드라이빙 테이블)
+      <br>사원정보 조인에 걸리는 소요시간이 거의 추가되지 않아 더 나은 실행계획을 보였기 때문입니다
+      <br>
+      <br>
+
+      1. 연봉순 5명 구한 결과 & 최종출력에 맞게 사원정보 조합했을 때
+      ![연봉순 5명 구한 결과 & 최종출력에 맞게 사원정보 조합](./docs/step3/5명%20구하기.png)
+      <br>
+      <br>
+
+      2. 연봉순 5명 구한 후 employee 테이블과 조인한 결과 & 최종출력에 맞게 사원정보 조합했을 때
+      ![연봉순 5명 구한 후 employee 테이블과 조인한 결과 & 최종출력에 맞게 사원정보 조합](./docs/step3/5명%20구하기*사원%20조인.png)
+
+
+
 
 ---
 
