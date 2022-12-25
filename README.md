@@ -260,7 +260,7 @@ registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion()
     from programmer p
              inner join covid c on p.id = c.programmer_id
              inner join hospital h on c.hospital_id = h.id
-    where p.student like '%yes%'
+    where (p.student = 'Yes' || p.student like 'Yes%')
        or p.years_coding = '0-2 years'
     order by p.id
     ```
