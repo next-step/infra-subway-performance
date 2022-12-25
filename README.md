@@ -251,26 +251,33 @@ index covid_programmer_id_hospital_id_index
 ```
 
 4. 적용 후 결과
+
 > 0.09 초 소모
 > ![img_1.png](query/3rd/INDEX_적용후.png)
 
-
 #### 1-4 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+
 1. 쿼리 생성
+
 ```sql
 SELECT c.stay, count(1)
 FROM hospital h
-	JOIN covid c on c.hospital_id = h.id
-	JOIN programmer p on p.id= c.programmer_id
-	JOIN member m on m.id = c.member_id
-WHERE h.name = '서울대병원' and p.country = 'India' and m.age like '2_'
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and p.country = 'India'
+  and m.age like '2_'
 GROUP BY c.stay;
 ```
+
 2. 1차 결과
+
 > 15.21 초 소모
 > ![img_1.png](query/4th/적용전.png)
 
 3. 인덱스들 적용
+
 > 각각 로우를 확인해보고 where 에서 사용하는 인덱스 추가
 >```sql
 >select count(1) from hospital; # 32
@@ -289,8 +296,51 @@ GROUP BY c.stay;
 >```
 
 4. 적용 후 결과
+
 > 0.142 소모
 ![img_2.png](query/4th/적용후.png)
+
+#### 1-5 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+
+1. 쿼리 생성
+
+```sql
+SELECT p.exercise, count(1)
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and m.age LIKE '3_'
+GROUP BY p.exercise;
+```
+
+2. 적용전 결과
+
+> 1.2초.. 그렇게 안느리네요?? 🙄
+![img_1.png](query/5th/적용전.png)
+>
+
+3. 흠.. 나이에 인덱스 적용? 쿼리도 인덱스 타도록 변경
+
+```sql
+create
+index member_age_index on member (age);
+
+SELECT p.exercise, count(1)
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id
+         JOIN member m on m.id = c.member_id
+WHERE h.name = '서울대병원'
+  and m.age BETWEEN 30 and 39
+GROUP BY p.exercise;
+```
+4. 개선후 결과
+> 0.09초 소모
+> ![img_2.png](query/5th/적용후.png)
+
+   
 ---
 
 ### 추가 미션
