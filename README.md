@@ -170,6 +170,57 @@ GROUP by hobby
 > 0.26초
 ![image.png](query/1st/INDEX_적용후.png)
 
+#### 1-2 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+
+1. 숫자가 적은 순으로 조인 쿼리 생성
+
+```sql
+SELECT count(1)
+FROM covid;
+#31825
+SELECT count(1)
+FROM hospital;
+#32
+SELECT count(1)
+FROM programmer;
+#98855
+
+SELECT c.id, h.name
+FROM hospital h
+         JOIN covid c on c.hospital_id = h.id
+         JOIN programmer p on p.id = c.programmer_id;
+```
+
+2. 1차 결과
+
+> 3.4초 소모
+![image.png](query/2nd/index_적용전.png)
+
+3. hospital, covid PK 적용 및 각각 FK 적용
+
+```sql
+alter table hospital
+    add constraint hospital_pk
+        primary key (id);
+
+alter table covid
+    add constraint covid_pk
+        primary key (id);
+
+alter table covid
+    add constraint covid_hospital_id_fk
+        foreign key (hospital_id) references hospital (id);
+
+alter table covid
+    add constraint covid_programmer_id_fk
+        foreign key (programmer_id) references programmer (id);
+```
+
+4. 적용 후 결과
+
+> 0.083 초 소모
+![img_1.png](query/2nd/index_적용후.png)
+
 
 
 ---
