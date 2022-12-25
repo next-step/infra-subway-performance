@@ -150,25 +150,29 @@ registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion()
     select mem.id            사원번호,
            mem.last_name     이름,
            mem.annual_income 연봉,
-           'Manager'         직급명,
+           mem.position_name 직급명,
            r.time            입출국시간,
            r.region          지역,
            r.record_symbol   입출국구분
     from record r
              inner join (select e.id,
                                 e.last_name,
-                                s.annual_income
+                                s.annual_income,
+                                p.position_name
                          from employee e
                                   inner join employee_department ed on e.id = ed.employee_id
                                   inner join department d on ed.department_id = d.id
                                   inner join manager m on d.id = m.department_id and e.id = m.employee_id
                                   inner join salary s on s.id = e.id
+                                  inner join position p on p.id = e.id
                          where d.note = 'active'
-                           and m.end_date > now()
-                           and ed.end_date > now()
-                           and s.end_date > now()
+                           and m.end_date > now()  and m.start_date <= now()
+                           and ed.end_date > now() and ed.start_date <= now()
+                           and s.end_date > now()  and s.start_date <= now()
+                           and p.end_date > now() and s.start_date <= now()
+                           and UPPER(p.position_name) = UPPER('Manager')
                          order by annual_income desc
-                         limit 5) as mem on r.employee_id = mem.id
+                             limit 5) as mem on r.employee_id = mem.id
     where record_symbol = 'O'
     ```
 - 실행결과
@@ -187,6 +191,160 @@ registry.addResourceHandler(PREFIX_STATIC_RESOURCES + "/" + version.getVersion()
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
 
+#### 요구사항
+- 주어진 데이터셋을 활용하여 아래 조회 결과를 100ms 이하로 반환
+  - M1의 경우엔 시간 제약사항을 달성하기 어렵습니다. 2배를 기준 진행.
+
+1. Coding as a Hobby 와 같은 결과를 반환하세요.
+    - Coding as a Hobby
+    - ![Coding as a Hobby](src/main/resources/docs/step4/CodingAsAHobby.png)
+    - 쿼리
+      ```sql
+      select  p.hobby
+            , round(count(*)/(select count(*) from programmer) * 100, 1) as rate
+      from    programmer p
+      group by p.hobby
+      order by p.hobby desc
+      ```
+   - 실행결과
+     - ![실행결과](src/main/resources/docs/step4/1실행결과.png)
+   - 응답시간
+     - ![응답시간](src/main/resources/docs/step4/1응답시간.png)
+   - 실행계획
+     - ![실행계획](src/main/resources/docs/step4/1실행계획1.png)
+     
+     - ![실행계획](src/main/resources/docs/step4/1실행계획2.png)
+   - 변경사항
+     - hobby 인덱스 생성
+     - hobby 테이블이 id값에 pk 설정
+     - 처음에 hobby에 인덱스만 걸었을때는 응답시간이 200ms 이상 나왔고, id 값에 pk설정 후 200ms 아래로 응답되는걸 확인할 수 있엇습니다.
+       ```sql
+       ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       CREATE INDEX `idx_programmer_hobby`  ON `subway`.`programmer` (hobby) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT;
+       ```
+
+2. 프로그래머별로 해당하는 병원 이름을 반환하세요. (covid.id, hospital.name)
+   - 쿼리
+    ```sql
+    select c.id,
+           h.name
+    from programmer p
+             inner join covid c on p.id = c.programmer_id
+             inner join hospital h on c.hospital_id = h.id
+    ```
+   - 실행결과
+     - ![실행결과](src/main/resources/docs/step4/2실행결과.png)
+   - 응답시간
+     - ![실행결과](src/main/resources/docs/step4/2응답시간.png)
+   - 실행계획
+     - ![실행계획](src/main/resources/docs/step4/2실행계획1.png)
+     - ![실행계획](src/main/resources/docs/step4/2실행계획2.png)
+   - 변경사항
+     - programmer, covid, hospital 테이블 pk설정
+     - covid 테이블 programmer_id 인덱스 생성
+     ```sql
+     ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+     ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+     ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL ,ADD PRIMARY KEY (`id`);
+     CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+     ```
+
+3. 프로그래밍이 취미인 학생 혹은 주니어(0-2년)들이 다닌 병원 이름을 반환하고 user.id 기준으로 정렬하세요. (covid.id, hospital.name, user.Hobby, user.DevType, user.YearsCoding)
+   - 쿼리
+    ```sql
+    select c.id,
+           h.name,
+           p.hobby,
+           p.dev_type,
+           p.years_coding
+    from programmer p
+             inner join covid c on p.id = c.programmer_id
+             inner join hospital h on c.hospital_id = h.id
+    where (upper(p.student) = 'YES' || upper(p.student) like 'YES%')
+       or p.years_coding = '0-2 years'
+    order by p.id
+    ```
+    - 실행결과
+        - ![실행결과](src/main/resources/docs/step4/3실행결과.png)
+    - 응답시간
+        - ![실행결과](src/main/resources/docs/step4/3응답시간.png)
+    - 실행계획
+        - ![실행계획](src/main/resources/docs/step4/3실행계획1.png)
+        - ![실행계획](src/main/resources/docs/step4/3실행계획2.png)
+   - 변경사항
+       - programmer, covid, hospital 테이블 pk설정
+       - covid 테이블 programmer_id 인덱스 생성
+       ```sql
+       ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL ,ADD PRIMARY KEY (`id`);
+       CREATE INDEX `idx_covid_programmer_id`  ON `subway`.`covid` (programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+       ```     
+4. 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
+   - 쿼리
+   ```sql
+    select c.stay        머문기간,
+           count(*) 인원
+    from hospital h
+             inner join covid c on h.id = c.hospital_id
+             inner join programmer p on c.programmer_id = p.id
+             inner join member m on c.member_id = m.id and p.member_id = m.id
+    where h.name = '서울대병원'
+      and m.age between 20 and 29
+      and p.country = 'india'
+    group by c.stay
+    ```
+     - 실행결과
+        - ![실행결과](src/main/resources/docs/step4/4실행결과.png)
+    - 응답시간
+        - ![실행결과](src/main/resources/docs/step4/4응답시간.png)
+    - 실행계획
+        - ![실행계획](src/main/resources/docs/step4/4실행계획1.png)
+        - ![실행계획](src/main/resources/docs/step4/4실행계획2.png)
+     - 변경사항
+       - hospital, covid, programmer, member 테이블 pk 설정
+       - hospital 테이블 name 컬럼 유니크 지정
+       - covid 테이블 hospital_id, programmer_id, member_id 복합 인덱스, stay 인덱스 설정
+       ```sql
+       ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL ,ADD PRIMARY KEY (`id`),ADD UNIQUE INDEX `name_UNIQUE` (`name` ASC);
+       ALTER TABLE `subway`.`member` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       
+       CREATE INDEX `idx_covid_hospital_id_member_id_programmer_id`  ON `subway`.`covid` (hospital_id, member_id, programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+       ```
+5. 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise)
+   - 쿼리
+        ```sql
+         select p.exercise 운동횟수,
+                count(*) 인원
+         from hospital h
+                  inner join covid c on h.id = c.hospital_id
+                  inner join programmer p on c.programmer_id = p.id
+                  inner join member m on c.member_id = m.id and p.member_id = m.id
+         where h.name = '서울대병원'
+           and m.age between 30 and 39
+         group by p.exercise;
+        ```
+    - 실행결과
+        - ![실행결과](src/main/resources/docs/step4/5실행결과.png)
+    - 응답시간
+        - ![실행결과](src/main/resources/docs/step4/5응답시간.png)
+    - 실행계획
+        - ![실행계획](src/main/resources/docs/step4/5실행계획1.png)
+        - ![실행계획](src/main/resources/docs/step4/5실행계획2.png)
+    - 변경사항
+        - hospital, covid, programmer, member 테이블 pk 설정
+        - hospital 테이블 name 컬럼 유니크 지정
+        - covid 테이블 hospital_id, programmer_id, member_id 복합 인덱스 설정
+       ```sql
+       ALTER TABLE `subway`.`programmer` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`covid` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       ALTER TABLE `subway`.`hospital` CHANGE COLUMN `id` `id` INT(11) NOT NULL ,ADD PRIMARY KEY (`id`),ADD UNIQUE INDEX `name_UNIQUE` (`name` ASC);
+       ALTER TABLE `subway`.`member` CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL ,ADD PRIMARY KEY (`id`);
+       
+       CREATE INDEX `idx_covid_hospital_id_member_id_programmer_id`  ON `subway`.`covid` (hospital_id, member_id, programmer_id) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT
+       ```
 ---
 
 ### 추가 미션
