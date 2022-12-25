@@ -372,3 +372,8 @@ npm run dev
         - [x] 서울대병원에 다닌 20대 India 환자들을 병원에 머문 기간별로 집계하세요. (covid.Stay)
         - [x] 서울대병원에 다닌 30대 환자들을 운동 횟수별로 집계하세요. (user.Exercise) 
 
+### 추가 미션
+
+1. 요구사항
+    - [ ] 페이징 쿼리 추가
+    - [ ] MySQL Replication 설정
