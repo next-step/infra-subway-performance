@@ -45,7 +45,7 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
    * 아래의 내용 참고 부탁드립니다!
-      - /docs/performance_test : 테스트 결과 캡쳐
+      - /docs/step1/performance_test : 테스트 결과 캡쳐
       - /docs/step1/step1.md : 개선 전 후 측정결과 비교
 
 
@@ -64,14 +64,13 @@ npm run dev
 ### 2단계 - 스케일 아웃
 
 1. Launch Template 링크를 공유해주세요.
+   - https://ap-northeast-2.console.aws.amazon.com/ec2/v2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-01657876b79c51e31
 
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
-
-```sh
-$ stress -c 2
-```
+   - /docs/step2/cloudwatch 디렉토리에 결과 넣어두었습니다!
 
 3. 성능 개선 결과를 공유해주세요 (Smoke, Load, Stress 테스트 결과)
+    - /docs/step2/performance_test2 디렉토리에 결과 넣어두었습니다!
 
 ---
 
