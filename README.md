@@ -224,3 +224,5 @@ group by p.exercise;
 ### 추가 미션
 
 1. 페이징 쿼리를 적용한 API endpoint를 알려주세요
+* https://anwjrrp33-webservice.kro.kr/lines/page?id=1&page=1&size=10
+* [결과 이미지](/step5)
