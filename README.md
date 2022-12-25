@@ -128,33 +128,33 @@ export let options = {
 
 - 활동중인(Active) 부서의 현재 부서관리자 중 연봉 상위 5위안에 드는 사람들이 최근에 각 지역별로 언제 퇴실했는지 조회해보세요. (사원번호, 이름, 연봉, 직급명, 지역, 입출입구분, 입출입시간)
 
-select high_income_employee.employee_id 사원번호,
-high_income_employee.last_name 이름,
-high_income_employee.annual_income 연봉,
-high_income_employee.position_name 직급명,
-record.time 입출입시간,
-record.region 지역,
-record.record_symbol 입출입구분
-from (
-select employee_department.employee_id, employee.last_name, salary.annual_income, position.position_name
-from employee_department
-inner join department on employee_department.department_id = department.id
-inner join manager on employee_department.employee_id = manager.employee_id
-inner join position on manager.employee_id = position.id
-inner join salary on employee_department.employee_id = salary.id
-inner join employee on employee_department.employee_id = employee.id
-where employee_department.start_date < now()
-and employee_department.end_date > now()
-and upper(department.note) = 'ACTIVE'
-and position.position_name = 'Manager'
-and position.end_date > now()
-and position.end_date > now()
-and salary.start_date < now()
-and salary.end_date > now()
-order by salary.annual_income desc limit 5
-) high_income_employee
-inner join record on high_income_employee.employee_id = record.employee_id
-where record.record_symbol = 'O'
+select high_income_employee.employee_id 사원번호,  
+high_income_employee.last_name 이름,  
+high_income_employee.annual_income 연봉,  
+high_income_employee.position_name 직급명,  
+record.time 입출입시간,  
+record.region 지역,  
+record.record_symbol 입출입구분  
+from (  
+select employee_department.employee_id, employee.last_name, salary.annual_income, position.position_name  
+from employee_department  
+inner join department on employee_department.department_id = department.id  
+inner join manager on employee_department.employee_id = manager.employee_id  
+inner join position on manager.employee_id = position.id  
+inner join salary on employee_department.employee_id = salary.id  
+inner join employee on employee_department.employee_id = employee.id  
+where employee_department.start_date < now()  
+and employee_department.end_date > now()  
+and upper(department.note) = 'ACTIVE'  
+and position.position_name = 'Manager'  
+and position.end_date > now()  
+and position.end_date > now()  
+and salary.start_date < now()  
+and salary.end_date > now()  
+order by salary.annual_income desc limit 5  
+) high_income_employee  
+inner join record on high_income_employee.employee_id = record.employee_id  
+where record.record_symbol = 'O'  
 ;
 
 - DB 결과는 test_result_query 에 넣어 놓았습니다.
@@ -163,6 +163,95 @@ where record.record_symbol = 'O'
 ### 4단계 - 인덱스 설계
 
 1. 인덱스 적용해보기 실습을 진행해본 과정을 공유해주세요
+   - 1번 쿼리  
+
+
+    select hobby, round(count(*) / (select count(*) from programmer) * 100, 1) as proportion
+      from programmer  
+    group by hobby  
+    order by 2 desc  
+    ;  
+
+
+- 2번 쿼리  
+mysql로 ERD 를 살펴보니 pk 및 fk 등록이 하나도 되어 있지 않아 테이블별 pk, fk 등록하여 관계 설정을 했습니다.  
+pk와 fk를 등록하니 테이블별로 pk, fk 인덱스가 자동으로 생성되어 별도의 인덱스 생성 없이도 빠른 성능으로 쿼리 결과 조회가 가능했습니다.  
+-- to do  
+-- covid 에 pk 및 fk 생성  
+-- hospital 에 pk 및 fk 생성  
+-- programmer 에 pk 및 fk 생성  
+alter table member add primary key(id);  
+alter table covid add primary key(id);  
+alter table covid add foreign key(hospital_id) references hospital(id);  
+alter table covid add foreign key(member_id) references member(id);  
+alter table covid add foreign key(programmer_id) references programmer(id);  
+alter table hospital add primary key(id);  
+alter table programmer add primary key(id);  
+alter table programmer add foreign key( member_id ) references member(id);
+
+
+    select covid.id, hospital.name
+      from covid  
+    inner join hospital on covid.hospital_id = hospital.id  
+    inner join programmer on covid.programmer_id = programmer.id  
+    order by covid.id  
+    ;  
+
+- 3번 쿼리  
+이번 쿼리에서는 조회 조건에 따라 복합 인덱스와 단일 컬럼 인덱스를 추가했습니다.  
+찾아보니 String 에 대한 like 조건이어도 '찾을문자열%' 처럼 % 가 뒤에 붙는 경우에는 컬럼 인덱스를 탄다는 점을 확인해서 스트링 like 조건이지만 인덱스 추가했습니다.  
+-- to-do  
+-- programmer 에 student 와 years_coding 조합으로 인덱스 추가  
+ALTER TABLE programmer ADD INDEX `ix_student_and_years_coding` (student, years_coding);  
+-- programmer 에 hobby 인덱스 추가  
+ALTER TABLE programmer ADD INDEX `ix_hobby` (hobby);
+
+
+     select covid.id, hospital.name, programmer.hobby, programmer.dev_type, programmer.years_coding
+       from programmer  
+     inner join covid on programmer.id = covid.id  
+     inner join hospital on covid.hospital_id = hospital.id  
+     where hobby = 'Yes'  
+       and (student like 'Yes%' or years_coding = '0-2 years')  
+     order by programmer.id  
+    ; 
+
+- 4번 쿼리  
+-- to-do  
+-- hospital name 에 인덱스 추가  
+ALTER TABLE hospital ADD INDEX `ix_name` (name);  
+-- member age 에 인덱스 추가  
+ALTER TABLE member ADD INDEX `ix_age` (age);  
+
+
+      select covid.stay, count(programmer.id)  
+        from hospital  
+      inner join covid on hospital.id = covid.hospital_id  
+      inner join programmer on covid.id = programmer.id  
+      inner join member on member.id = programmer.id  
+      where hospital.name = '서울대병원'  
+        and programmer.country = 'India'  
+        and member.age between 20 and 29  
+      group by stay  
+      order by 1 desc  
+      ;
+
+
+- 5번 쿼리
+
+    
+    select programmer.exercise, count(programmer.id)  
+      from hospital  
+    inner join covid on hospital.id = covid.hospital_id  
+    inner join programmer on covid.id = programmer.id  
+    inner join member on member.id = programmer.id  
+    where hospital.name = '서울대병원'  
+      and member.age between 30 and 39  
+    group by programmer.exercise  
+    order by 2 desc  
+    ;
+
+각 쿼리에 대한 실행 결과 및 plan 에 대한 캡쳐는 test_result_query 디렉토리 하위에 옮겨두었습니다.
 
 ---
 
