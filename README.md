@@ -46,14 +46,13 @@ npm run dev
 1. 성능 개선 결과를 공유해주세요 (webpagetest 테스트 결과)
 
 ### 개선전
-![](../before-metrics.png)
-![](../before-summary.png)
-![](../before-waterfall.png)
-
+![before-met.png](before-met.png)
+![before-summary](before-summary.png)
+![before-waterfall](before-waterfall.png)
 ### 개선후
-![](../after-metric.png)
-![](../after-summary.png)
-![](../after-waterfall.png)
+![after-met.png](after-met.png)
+![img_4.png](after-summary.png)
+![img_5.png](after-waterfall.png)
 
 3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
 ### Reverse Proxy
