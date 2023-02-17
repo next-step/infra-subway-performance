@@ -4,6 +4,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 const clientPath = path.resolve(__dirname, 'src')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: {
@@ -68,5 +69,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [new VuetifyLoaderPlugin(), new VueLoaderPlugin(), new CaseSensitivePathsPlugin()]
+  plugins: [new VuetifyLoaderPlugin(), new VueLoaderPlugin(), new CaseSensitivePathsPlugin(), new BundleAnalyzerPlugin()]
 }
