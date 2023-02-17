@@ -45,7 +45,27 @@ npm run dev
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (webpagetest 테스트 결과)
 
-2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+### 개선전
+![](../before-metrics.png)
+![](../before-summary.png)
+![](../before-waterfall.png)
+
+### 개선후
+![](../after-metric.png)
+![](../after-summary.png)
+![](../after-waterfall.png)
+
+3. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
+### Reverse Proxy
+- 강의 내용과 힌트를 토대로 gzip 압축 설정을 추가했습니다. -> Compress Transfer 향상 확인
+- 캐시 설정을 추가했습니다. -> Cache static content 성능 향상 확인
+- Http2 설정 추가했습니다.
+- 성능 개선 후 Security score가 낮게 나와 추가적으로 보안관련 설정을 몇가지 추가했습니다.
+
+### 정적 파일 경량화
+- 번들크기 줄이기 vue.config.js 파일 생성후 스크립트 추가
+- async 추가
+- Dynamic import 설정은 어딜 건드려야할지 찾아봐도 자세히 이해가 가지않아서 추가하지 않았습니다.
 
 ---
 
