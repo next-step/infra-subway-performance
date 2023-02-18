@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+    <springProfile name="local,test">
+        <!--spring boot의 기본 logback base.xml은 그대로 가져간다.-->
+        <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+        <logger name="nextstep.subway" level="DEBUG"/>
+    </springProfile>
+
+
+    <springProfile name="prod">
+        <include resource="file-appender.xml" />
+        <include resource="json-appender.xml" />
+
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="nextstep.subway" level="INFO"/>
+
+        <root level="INFO">
+            <appender-ref ref="json"/>
+            <appender-ref ref="file"/>
+        </root>
+    </springProfile>
+</configuration>

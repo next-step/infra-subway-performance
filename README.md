@@ -44,9 +44,17 @@ npm run dev
 
 ### 1단계 - 화면 응답 개선하기
 1. 성능 개선 결과를 공유해주세요 (webpagetest 테스트 결과)
+- 개선전
+![before_1.png](webpagetest%2Fbefore_1.png)
+![before_2.png](webpagetest%2Fbefore_2.png)
+- 개선후
+![after_1.png](webpagetest%2Fafter_1.png)
+![after_2.png](webpagetest%2Fafter_2.png)
 
 2. 어떤 부분을 개선해보셨나요? 과정을 설명해주세요
-
+- 응답에 gzip 적용
+- 정적파일 캐시 적용
+- HTTP/2 적용
 ---
 
 ### 2단계 - 스케일 아웃
