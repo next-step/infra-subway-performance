@@ -163,13 +163,25 @@ async 스크립트의 경우 DOM Interative 이전에 다운로드를 마치고,
 
 1. Launch Template 링크를 공유해주세요.
 
+https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-06fb24a3831482faf
+
 2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
 
 ```sh
 $ stress -c 2
 ```
 
+![autoscale.JPG](https://github.com/waterfogSW/infra-subway-performance/blob/main/page-test-img/autoscale.JPG?raw=true)
+
 3. Scale out 후 성능 개선 결과를 공유해주세요 (Load, Stress 테스트 결과)
+
+**load 테스트 결과**
+
+![autoscale-loadtest.png](https://github.com/waterfogSW/infra-subway-performance/blob/main/page-test-img/autoscale-loadtest.png?raw=true)
+
+**stress 테스트 결과**
+
+![autoscale-stresstest.png](https://github.com/waterfogSW/infra-subway-performance/blob/main/page-test-img/autoscale-stresstest.png?raw=true)
 
 ---
 
