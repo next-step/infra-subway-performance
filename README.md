@@ -85,5 +85,7 @@ $ stress -c 2
 1. springboot에 HTTP Cache, gzip 설정하기
 
 2. Data Cache 설정하기
+- asg 설정에 따라 애플리케이션 인스턴스가 여러대 뜰 수 있으므로 로컬 캐시보다는 redis cache 를 적용했습니다.
 
 3. Scale out 후 성능 개선 결과를 공유해주세요 (Load, Stress 테스트 결과)
+- mission/step3 폴더에 정리했습니다.
