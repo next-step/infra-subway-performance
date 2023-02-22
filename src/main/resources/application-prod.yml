@@ -28,3 +28,8 @@ server:
     enabled: true
     min-response-size: 500
     mime-types: text/html,text/plain,text/css,application/javascript,application/json
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 100
