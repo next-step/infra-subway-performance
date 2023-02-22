@@ -96,5 +96,12 @@ Stress
 1. springboot에 HTTP Cache, gzip 설정하기
 
 2. Data Cache 설정하기
+ - 가장 복잡한 로직인 경로찾기 기능에 캐시를 적용했습니다.
 
 3. Scale out 후 성능 개선 결과를 공유해주세요 (Load, Stress 테스트 결과)
+
+## load
+![img_2.png](img_2.png)
+
+## stress
+![img_3.png](img_3.png)
