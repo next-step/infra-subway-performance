@@ -94,3 +94,9 @@ $ stress -c 2
 2. Data Cache 설정하기
 
 3. Scale out 후 성능 개선 결과를 공유해주세요 (Load, Stress 테스트 결과)
+- load
+  ![load_cahce_1_1.png](capture%2Fload_cahce_1_1.png)
+  ![load_cahce_1_2.png](capture%2Fload_cahce_1_2.png)
+- stress
+  ![stress_cache_1_1.png](capture%2Fstress_cache_1_1.png)
+  ![stress_cache_1_2.png](capture%2Fstress_cache_1_2.png)
