@@ -1,5 +1,6 @@
 package nextstep.subway.map.application;
 
+import java.util.ArrayList;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.map.domain.SectionEdge;
 import nextstep.subway.map.domain.SubwayGraph;
@@ -20,10 +21,16 @@ public class PathService {
         graph.addEdge(lines);
 
         // 다익스트라 최단 경로 찾기
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
+        try {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
 
-        return convertSubwayPath(path);
+            return convertSubwayPath(path);
+        } catch (IllegalArgumentException ex) {
+            //비즈니스 로직 에러 빈리스트 반환 처리
+            return new SubwayPath(new ArrayList<>(), new ArrayList<>());
+        }
+
     }
 
     private SubwayPath convertSubwayPath(GraphPath graphPath) {
