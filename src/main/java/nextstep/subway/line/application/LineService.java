@@ -7,6 +7,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "caffeineCache")
     public List<Line> findLines() {
         return lineRepository.findAll();
     }

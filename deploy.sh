@@ -8,8 +8,6 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-PID=""
-SHELL_SCRIPT_PATH=$(dirname $0)
 BRANCH=$1
 PROFILE=$2
 
@@ -26,42 +24,18 @@ echo -e ""
 echo -e "${txtgrn} $SHELL_SCRIPT_PATH $BRANCH ${txtred}$PROFILE"
 echo -e "${txtylw}=======================================${txtrst}"
 
-cd $SHELL_SCRIPT_PATH
-
 function pull() {
   echo -e ""
   echo -e ">> Pull Request 🏃♂️ "
-  git pull origin ${BRANCH}
+  git clone https://github.com/ifjso/infra-subway-performance.git
+  cd infra-subway-performance
+  git checkout ${BRANCH}
 }
 
 function build() {
   echo -e ""
   echo -e ">> Build 🏃♂️ "
   ./gradlew clean build -x test
-}
-
-function find_pid() {
-  if [[ -e subway.pid ]]; then
-    echo -e ""
-    echo -e ">> Find pid 🏃♂️ "
-
-    PID=$(cat subway.pid)
-    echo -e $PID
-  fi
-}
-
-function shutdown() {
-  if [[ -n $PID ]]; then
-    echo -e ""
-    echo -e ">> Application is shutting down 🏃♂️ "
-    kill $PID
-
-    while [[ -e /proc/$PID ]]
-    do
-      echo -e "."
-      sleep 1
-    done
-  fi
 }
 
 function launch() {
@@ -71,23 +45,9 @@ function launch() {
   nohup java -jar -Dspring.profiles.active=$PROFILE build/libs/subway-0.0.1-SNAPSHOT.jar 1> /dev/null 2>&1 &
 }
 
-function check_df() {
-  git fetch
-  main=$(git rev-parse $BRANCH)
-  remote=$(git rev-parse origin/$BRANCH)
-
-  if [[ $main == $remote ]]; then
-    echo -e "[$(date)] Nothing to do!!! 😫"
-    exit 1
-  fi
-}
-
 function deploy() {
-  check_df;
   pull;
   build;
-  find_pid;
-  shutdown;
   launch;
 }
 
