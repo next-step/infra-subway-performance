@@ -120,13 +120,53 @@ LCP 1.8초
 
 1. Launch Template 링크를 공유해주세요.
 
-2. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+https://ap-northeast-2.console.aws.amazon.com/ec2/home?region=ap-northeast-2#LaunchTemplateDetails:launchTemplateId=lt-07d69966913c3fa2c
 
-```sh
-$ stress -c 2
-```
+3. cpu 부하 실행 후 EC2 추가생성 결과를 공유해주세요. (Cloudwatch 캡쳐)
+
+result 폴더에 '스케일 아웃 후 인스턴스 추가 생성 결과'라는 제목으로 넣어놓았습니다.
 
 3. Scale out 후 성능 개선 결과를 공유해주세요 (Load, Stress 테스트 결과)
+
+마찬가지로 result 폴더에 넣어놓았습니다.
+
+#### 목표 :925rps인 상황에서 경로 검색 결과 페이지의 p95 138ms 이하 달성. (경로 검색 페이지는 이미 달성)
+
+Load Test
+
+성능 개선 전
+
+Vuser3부터 목표 응답 시간을 초과했으며 TPS는 VUser가 아무리 늘어나도 40이 한계였습니다.
+
+성능 개선 후 (WAS 5대로 늘리기)
+
+Vuser 8부터 목표 응답 시간이 150ms로 초과되었습니다. 이 때 TPS는 162였습니다.
+
+성능 개선 후 (WAS 5대, DB Connection Pool Size 10 -> 15로 상향 조정)
+
+Vuser 10부터 목표 응답 시간 150ms로 초과되었습니다. 이 때 TPS는 195였습니다.
+
+DB의 CPU를 봤을 때 50%를 넘고 있지 않아서 커넥션 사이즈가 너무 작은가 싶어서 늘려봤습니다.
+그런데 WAS가 5대이고 어차피 Vuser가 10명이라면 각각 WAS에 많아봤자 커넥션 10개가 최대이고 평균 2개일텐데,
+커넥션을 늘리는 거는 소용없겠구나라는 생각이 이후에 들었는데요. 결과적으로는 소폭의 성능 향상이 있게 됐는데 왜그런지는 잘 모르겠습니다.
+
+Stress 테스트 
+
+성능 개선 전
+
+Vuser 255명부터 급격한 응답 실패가 발생했었습니다.
+
+성능 개선 후 (WAS 5대, DB Connection Pool Size 15)
+
+Vuser 100명 단위로 1000명까지 늘려봤지만, 급격한 응답 실패가 일어나는 구간은 없어졌습니다.
+
+TPS는 아무리 VUser가 늘어나더라도 260이 한계였습니다.
+
+후에 알게된 사실은 255명부터 급격히 응답 실패가 발생한 이유는 Nginx의 Worker Process의 최대 커넥션 갯수가 512개인 것으로
+밝혀졌습니다. K6로부터 255개의 Connection, 다시 WAS로 255개의 Connection을 연결하면 510개가 되더라구요..
+커넥션 갯수를 늘리고 테스트해보니 WAS가 1개일 때도 급격한 응답 실패는 일어나지 않았습니다.
+
+
 
 ---
 
